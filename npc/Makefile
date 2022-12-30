@@ -51,8 +51,6 @@ include ../Makefile
 # 	verilator --trace --cc --exe --build -Wall sim_main.cpp top.v
 # 	./obj_dir/Vtop
 
-clean:
-	rm -rf logs obj_dir $(BUILD_DIR)
 
 # compile all things into one (compile into "build/top")
 
@@ -70,6 +68,6 @@ run: $(BIN)
 	@$<
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf logs obj_dir $(BUILD_DIR)
 
 .PHONY: default all clean run
