@@ -40,7 +40,7 @@ LDFLAGS += -lSDL2 -lSDL2_image
 all:
 	@echo "Write this Makefile by your self."
 
-sim: run
+sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 
 
