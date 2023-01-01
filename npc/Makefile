@@ -44,7 +44,7 @@ sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator --top-module $(TOPNAME) --trace --cc --exe --build -Wall $(abspath ./csrc/sim_main.cpp) $(VSRCS)
 	obj_dir/Vtop
-	gtkwave dum.vcd
+	gtkwave dump.vcd
 
 include ../Makefile
 
