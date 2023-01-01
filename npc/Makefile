@@ -43,6 +43,7 @@ all:
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator --top-module $(TOPNAME) --trace --cc --exe --build -Wall $(abspath ./csrc/sim_main.cpp) $(VSRCS)
+	$(OBJ_DIR)/Vtop
 
 include ../Makefile
 
