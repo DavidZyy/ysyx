@@ -67,6 +67,6 @@ run: $(BIN)
 	@$<
 
 clean:
-	rm -rf logs obj_dir $(BUILD_DIR)
+	rm -rf logs obj_dir $(BUILD_DIR) *.vcd
 
 .PHONY: default all clean run
