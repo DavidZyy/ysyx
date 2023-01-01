@@ -1,7 +1,7 @@
 module top (
     a, b, s, y
 );
-    input a, b, s,
+    input a, b, s;
     output y;
 
     assign y = (~s & a)|(s & b);
