@@ -1,4 +1,4 @@
-module mux21e(a,b,s,y);
+module top(a,b,s,y);
   input   a,b,s;
   output  y;
   MuxKey #(2, 1, 1) i0 (y, s, {
