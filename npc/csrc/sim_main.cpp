@@ -1,4 +1,3 @@
-
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "../obj_dir/VMuxKey.h"
