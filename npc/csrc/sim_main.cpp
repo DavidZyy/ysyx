@@ -19,7 +19,7 @@ void sim_init(){
   top = new Vtop;
   contextp->traceEverOn(true);
   top->trace(tfp, 0);
-  tfp->open("dump.vcd");
+  tfp->open("./logs/dump.vcd");
 }
 
 void sim_exit(){
