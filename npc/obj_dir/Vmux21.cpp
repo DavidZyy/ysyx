@@ -10,10 +10,6 @@
 
 Vmux21::Vmux21(VerilatedContext* _vcontextp__, const char* _vcname__)
     : vlSymsp{new Vmux21__Syms(_vcontextp__, _vcname__, this)}
-    , out{vlSymsp->TOP.out}
-    , key{vlSymsp->TOP.key}
-    , default_out{vlSymsp->TOP.default_out}
-    , lut{vlSymsp->TOP.lut}
     , a{vlSymsp->TOP.a}
     , b{vlSymsp->TOP.b}
     , s{vlSymsp->TOP.s}
@@ -64,7 +60,7 @@ static void _eval_initial_loop(Vmux21__Syms* __restrict vlSymsp) {
             Verilated::debug(1);
             __Vchange = Vmux21___024root___change_request(&(vlSymsp->TOP));
             Verilated::debug(__Vsaved_debug);
-            VL_FATAL_MT("/home/zhuyangyang/project/ysyx-workbench/npc/vsrc/mux21.v", 53, "",
+            VL_FATAL_MT("/home/zhuyangyang/project/ysyx-workbench/npc/vsrc/top.v", 1, "",
                 "Verilated model didn't DC converge\n"
                 "- See https://verilator.org/warn/DIDNOTCONVERGE");
         } else {
@@ -95,7 +91,7 @@ void Vmux21::eval_step() {
             Verilated::debug(1);
             __Vchange = Vmux21___024root___change_request(&(vlSymsp->TOP));
             Verilated::debug(__Vsaved_debug);
-            VL_FATAL_MT("/home/zhuyangyang/project/ysyx-workbench/npc/vsrc/mux21.v", 53, "",
+            VL_FATAL_MT("/home/zhuyangyang/project/ysyx-workbench/npc/vsrc/top.v", 1, "",
                 "Verilated model didn't converge\n"
                 "- See https://verilator.org/warn/DIDNOTCONVERGE");
         } else {

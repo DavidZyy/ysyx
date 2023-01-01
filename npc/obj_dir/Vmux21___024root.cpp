@@ -12,48 +12,13 @@ VL_INLINE_OPT void Vmux21___024root___combo__TOP__1(Vmux21___024root* vlSelf) {
     Vmux21__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vmux21___024root___combo__TOP__1\n"); );
     // Body
-    vlSelf->MuxKeyWithDefault__DOT__i0__DOT__pair_list[0U] 
-        = (3U & (IData)(vlSelf->lut));
-    vlSelf->MuxKeyWithDefault__DOT__i0__DOT__pair_list[1U] 
-        = (3U & ((IData)(vlSelf->lut) >> 2U));
     vlSelf->top__DOT____Vcellinp__i0____pinNumber3 
         = (2U | (((IData)(vlSelf->a) << 2U) | (IData)(vlSelf->b)));
-    vlSelf->MuxKeyWithDefault__DOT__i0__DOT__data_list[0U] 
-        = (1U & vlSelf->MuxKeyWithDefault__DOT__i0__DOT__pair_list
-           [0U]);
-    vlSelf->MuxKeyWithDefault__DOT__i0__DOT__key_list[0U] 
-        = (1U & (vlSelf->MuxKeyWithDefault__DOT__i0__DOT__pair_list
-                 [0U] >> 1U));
-    vlSelf->MuxKeyWithDefault__DOT__i0__DOT__data_list[1U] 
-        = (1U & vlSelf->MuxKeyWithDefault__DOT__i0__DOT__pair_list
-           [1U]);
-    vlSelf->MuxKeyWithDefault__DOT__i0__DOT__key_list[1U] 
-        = (1U & (vlSelf->MuxKeyWithDefault__DOT__i0__DOT__pair_list
-                 [1U] >> 1U));
     vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[0U] 
         = (3U & (IData)(vlSelf->top__DOT____Vcellinp__i0____pinNumber3));
     vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list[1U] 
         = (3U & ((IData)(vlSelf->top__DOT____Vcellinp__i0____pinNumber3) 
                  >> 2U));
-    vlSelf->MuxKeyWithDefault__DOT__i0__DOT__lut_out 
-        = (((IData)(vlSelf->key) == vlSelf->MuxKeyWithDefault__DOT__i0__DOT__key_list
-            [0U]) & vlSelf->MuxKeyWithDefault__DOT__i0__DOT__data_list
-           [0U]);
-    vlSelf->MuxKeyWithDefault__DOT__i0__DOT__hit = 
-        ((IData)(vlSelf->key) == vlSelf->MuxKeyWithDefault__DOT__i0__DOT__key_list
-         [0U]);
-    vlSelf->MuxKeyWithDefault__DOT__i0__DOT__lut_out 
-        = ((IData)(vlSelf->MuxKeyWithDefault__DOT__i0__DOT__lut_out) 
-           | (((IData)(vlSelf->key) == vlSelf->MuxKeyWithDefault__DOT__i0__DOT__key_list
-               [1U]) & vlSelf->MuxKeyWithDefault__DOT__i0__DOT__data_list
-              [1U]));
-    vlSelf->MuxKeyWithDefault__DOT__i0__DOT__hit = 
-        ((IData)(vlSelf->MuxKeyWithDefault__DOT__i0__DOT__hit) 
-         | ((IData)(vlSelf->key) == vlSelf->MuxKeyWithDefault__DOT__i0__DOT__key_list
-            [1U]));
-    vlSelf->out = ((IData)(vlSelf->MuxKeyWithDefault__DOT__i0__DOT__hit)
-                    ? (IData)(vlSelf->MuxKeyWithDefault__DOT__i0__DOT__lut_out)
-                    : (IData)(vlSelf->default_out));
     vlSelf->top__DOT__i0__DOT__i0__DOT__data_list[0U] 
         = (1U & vlSelf->top__DOT__i0__DOT__i0__DOT__pair_list
            [0U]);
@@ -126,12 +91,6 @@ void Vmux21___024root___eval_debug_assertions(Vmux21___024root* vlSelf) {
     Vmux21__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vmux21___024root___eval_debug_assertions\n"); );
     // Body
-    if (VL_UNLIKELY((vlSelf->key & 0xfeU))) {
-        Verilated::overWidthError("key");}
-    if (VL_UNLIKELY((vlSelf->default_out & 0xfeU))) {
-        Verilated::overWidthError("default_out");}
-    if (VL_UNLIKELY((vlSelf->lut & 0xf0U))) {
-        Verilated::overWidthError("lut");}
     if (VL_UNLIKELY((vlSelf->a & 0xfeU))) {
         Verilated::overWidthError("a");}
     if (VL_UNLIKELY((vlSelf->b & 0xfeU))) {
