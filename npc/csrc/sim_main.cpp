@@ -47,7 +47,7 @@
 // }
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include "../obj_dir/Vtop.h"
+#include "../obj_dir/Vmuxkey.h"
 #include <iostream>
 
 VerilatedContext* contextp = NULL;
@@ -87,10 +87,3 @@ int main() {
                       top->b=1;  step_and_dump_wave();
   sim_exit();
 }
-
-
-
-
-
-
-
