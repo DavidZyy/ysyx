@@ -1,4 +1,4 @@
-module top (
+module mux21 (
     a, b, s, y
 );
     input a, b, s;
