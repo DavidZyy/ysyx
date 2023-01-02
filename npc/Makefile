@@ -42,9 +42,9 @@ all:
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	verilator --trace --cc --exe --build -Wall $(abspath ./csrc/sim_main.cpp) $(VSRCS)
-	./obj_dir/Vtop
-	gtkwave ./logs/wave.vcd
+	verilator --top-module $(TOPNAME) --trace --cc --exe --build -Wall $(abspath ./csrc/sim_main.cpp) $(VSRCS)
+	obj_dir/Vtop
+	gtkwave dump.vcd
 
 include ../Makefile
 
@@ -69,6 +69,6 @@ run: $(BIN)
 	@$<
 
 clean:
-	rm -rf logs obj_dir $(BUILD_DIR)
+	rm -rf logs obj_dir $(BUILD_DIR) *.vcd
 
 .PHONY: default all clean run
