@@ -1,11 +1,3 @@
-// module mux21 (
-//     a, b, s, y
-// );
-//     input a, b, s;
-//     output y;
-
-//     assign y = (~s & a)|(s & b);
-// endmodule
 module MuxKeyInternal #(NR_KEY = 2, KEY_LEN = 1, DATA_LEN = 1, HAS_DEFAULT = 0) (
   output reg [DATA_LEN-1:0] out,
   input [KEY_LEN-1:0] key,
