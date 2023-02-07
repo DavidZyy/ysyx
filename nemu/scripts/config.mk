@@ -21,6 +21,7 @@ $(warning $(COLOR_RED)Warning: .config does not exists!$(COLOR_END))
 $(warning $(COLOR_RED)To build the project, first run 'make menuconfig'.$(COLOR_END))
 endif
 
+# Q防止命令输出（回显）？
 Q            := @
 KCONFIG_PATH := $(NEMU_HOME)/tools/kconfig
 FIXDEP_PATH  := $(NEMU_HOME)/tools/fixdep
