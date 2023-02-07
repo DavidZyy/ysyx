@@ -33,7 +33,7 @@ OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 
 
 # new added 
-PRES = $(SRCS:%.c=$(OBJ_DIR)/%.i) $(CXXSRC:%.cc=$(OBJ_DIR)/%.i)
+PRES = $(SRCS:%.c=$(OBJ_DIR)/%.i)
 
 $(OBJ_DIR)/%.i: %.c
 	@$(CC) $(INCLUDES) -E $< -o $@
