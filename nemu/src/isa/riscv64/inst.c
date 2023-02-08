@@ -57,6 +57,10 @@ static int decode_exec(Decode *s) {
   __VA_ARGS__ ; \
 }
 
+/* my guess: use pattern_decode to get "key, mask, shift", and use this 
+     to match instruction, if the ins is matched, use decode_operand
+     to get operands. 
+     refer inst.i file to see the expanded macro. */
   INSTPAT_START();
   INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(dest) = s->pc + imm);
   INSTPAT("??????? ????? ????? 011 ????? 00000 11", ld     , I, R(dest) = Mr(src1 + imm, 8));

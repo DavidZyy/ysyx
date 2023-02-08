@@ -36,7 +36,7 @@ OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
 PRES = $(SRCS:%.c=$(OBJ_DIR)/%.i)
 
 $(OBJ_DIR)/%.i: %.c
-	@$(CC) $(INCLUDES) -E $< -o $@
+	@$(CC) $(INCLUDES) -E -P $< -o $@
 
 # print OBJS value
 # $(error $(OBJS))

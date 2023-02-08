@@ -50,6 +50,17 @@ static inline void pattern_decode(const char *str, int len,
 #define macro16(i) macro8(i);  macro8((i) + 8)
 #define macro32(i) macro16(i); macro16((i) + 16)
 #define macro64(i) macro32(i); macro32((i) + 32)
+/*expended to:
+  macro64(0);
+  ->
+  macro32(0); macro32(32);
+  ->
+  macro16(0); macro16(16); macro16(32); macro16(48);
+  ->
+  ...
+  ->
+  macro(0); macro(1); ... macro(63);
+  */
   macro64(0);
   panic("pattern too long");
 #undef macro
