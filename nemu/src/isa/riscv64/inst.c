@@ -98,6 +98,7 @@ static int decode_exec(Decode *s) {
 
   /* Conditional Branches, B-type */
   INSTPAT("??????? ????? ????? 000 ????? 11000 11", beq    , B, if(src1 == src2) s->dnpc = s->pc + imm); /* it does not matter add or not add (int64_t) before imm? */
+  INSTPAT("??????? ????? ????? 001 ????? 11000 11", bne    , B, if(src1 != src2) s->dnpc = s->pc + imm); /* it does not matter add or not add (int64_t) before imm? */
 
 
 /* 2.6 Load and Store Instructions */
