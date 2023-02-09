@@ -18,6 +18,7 @@
 
 #include <common.h>
 
+/* zero extended (8, 16, 32) --> 64 when return? */
 static inline word_t host_read(void *addr, int len) {
   switch (len) {
     case 1: return *(uint8_t  *)addr;
