@@ -108,10 +108,15 @@ static int decode_exec(Decode *s) {
 /* 2.8 Environment Call and Breakpoints */
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
 
+
 /* RV64I */
   /* 5.2 Integer Computational Instructions */
   /* Integer Register-Immediate Instructions */
   INSTPAT("??????? ????? ????? 000 ????? 00110 11", addiw  , I, R(dest) = SEXT(BITS(src1 + imm, 31, 0), 32)); /* the src1 = R(rs1), see decode_operand */
+
+  /* Integer Register-Register operations */
+  INSTPAT("0000000 ????? ????? 000 ????? 01110 11", addw   , I, R(dest) = SEXT(BITS(src1 + src2, 31, 0), 32)); /* the src1 = R(rs1), see decode_operand */
+  
 
   /* 5.3 Load and Store Instructions */
   INSTPAT("??????? ????? ????? 011 ????? 00000 11", ld     , I, R(dest) = Mr(src1 + imm, 8));
