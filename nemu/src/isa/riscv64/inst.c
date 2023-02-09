@@ -61,6 +61,7 @@ static int decode_exec(Decode *s) {
   __VA_ARGS__ ; \
 }
 
+  printf("inst: %x\n", s->isa.inst.val);
 /* my guess: use pattern_decode to get "key, mask, shift", and use this 
      to match instruction, if the inst. is matched, use decode_operand
      to get operands. 
