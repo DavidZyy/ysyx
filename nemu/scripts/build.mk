@@ -25,12 +25,30 @@ INCLUDES = $(addprefix -I, $(INC_PATH))
 CFLAGS  := -O2 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS)
 LDFLAGS := -O2 $(LDFLAGS)
 
+# $(error $(SRCS))
+
+# find the file which include this .mk(native.mk), and native.mk is included by nemu/Makefile,
+# where SRCS is defined.
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o) $(CXXSRC:%.cc=$(OBJ_DIR)/%.o)
+
+
+# new added 
+PRES = $(SRCS:%.c=$(OBJ_DIR)/%.i)
+
+$(OBJ_DIR)/%.i: %.c
+	@$(CC) $(INCLUDES) -E -P $< -o $@
+
+# print OBJS value
+# $(error $(OBJS))
+
+# $(error $(OBJ_DIR))
 
 # Compilation patterns
 $(OBJ_DIR)/%.o: %.c
 	@echo + CC $<
+# create directory first
 	@mkdir -p $(dir $@)
+# create dir/*.o file
 	@$(CC) $(CFLAGS) -c -o $@ $<
 	$(call call_fixdep, $(@:.o=.d), $@)
 
@@ -49,7 +67,8 @@ $(OBJ_DIR)/%.o: %.cc
 
 app: $(BINARY)
 
-$(BINARY): $(OBJS) $(ARCHIVES)
+$(BINARY): $(OBJS) $(ARCHIVES) $(PRES)
+# $(BINARY): $(OBJS) $(ARCHIVES)
 	@echo + LD $@
 	@$(LD) -o $@ $(OBJS) $(LDFLAGS) $(ARCHIVES) $(LIBS)
 
