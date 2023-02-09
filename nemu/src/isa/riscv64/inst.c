@@ -62,7 +62,7 @@ static int decode_exec(Decode *s) {
 }
 
 /* my guess: use pattern_decode to get "key, mask, shift", and use this 
-     to match instruction, if the ins is matched, use decode_operand
+     to match instruction, if the inst. is matched, use decode_operand
      to get operands. 
      refer inst.i file to see the expanded macro. */
   INSTPAT_START();
