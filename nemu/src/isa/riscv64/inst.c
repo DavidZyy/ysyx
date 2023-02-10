@@ -92,6 +92,7 @@ static int decode_exec(Decode *s) {
   /* Integer Register-Register Operations */
   INSTPAT("0000000 ????? ????? 000 ????? 01100 11", add    , R, R(dest) = src1 + src2);
   INSTPAT("0100000 ????? ????? 000 ????? 01100 11", sub    , R, R(dest) = src1 - src2);
+  INSTPAT("0000000 ????? ????? 111 ????? 01100 11", and    , R, R(dest) = src1 & src2);
 
 /* 2.5 Control Transfer Instructions */
   /* Unconditional Jumps */
@@ -104,7 +105,7 @@ static int decode_exec(Decode *s) {
 
 
 /* 2.6 Load and Store Instructions */
-/* move the 5.3, ld and sd only exist in RV64I, lw needs to sign-extended in RV64I */
+/* move to the 5.3, ld and sd only exist in RV64I, lw needs to sign-extended in RV64I */
 
 /* 2.8 Environment Call and Breakpoints */
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
