@@ -135,6 +135,7 @@ static int decode_exec(Decode *s) {
   /* Integer Register-Register operations */
   INSTPAT("0000000 ????? ????? 000 ????? 01110 11", addw   , R, R(dest) = SEXT(BITS(src1 + src2, 31, 0), 32)); /* the src1 = R(rs1), see decode_operand */
   INSTPAT("0000000 ????? ????? 001 ????? 01110 11", sllw   , R, R(dest) = SEXT(BITS(src1 << RV32_shamt(src2), 31, 0), 32));
+  INSTPAT("0100000 ????? ????? 000 ????? 01110 11", subw   , R, R(dest) = SEXT(BITS(src1 - src2, 31, 0), 32)); /* the src1 = R(rs1), see decode_operand */
   
 
   /* 5.3 Load and Store Instructions */
