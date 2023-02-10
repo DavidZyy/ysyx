@@ -131,12 +131,15 @@ static int decode_exec(Decode *s) {
 
   INSTPAT("010000? ????? ????? 101 ????? 00100 11", srai   , I, R(dest) = (((int64_t) src1) >> RV64_shamt(imm)));
   INSTPAT("0000000 ????? ????? 001 ????? 00110 11", slliw  , I, R(dest) = SEXT(BITS(src1 << RV32_shamt(imm), 31, 0), 32)); /* use (int32_t) to replace BTIS(x, 31, 0) ? */
+  INSTPAT("0000000 ????? ????? 101 ????? 00110 11", srliw  , I, R(dest) = SEXT((uint32_t)src1 >> RV32_shamt(imm), 32)); /* use (int32_t) to replace BTIS(x, 31, 0) ? */
   INSTPAT("0100000 ????? ????? 101 ????? 00110 11", sraiw  , I, R(dest) = SEXT((int32_t)src1 >> RV32_shamt(imm), 32)); /* use (int32_t) to replace BTIS(x, 31, 0) ? */
 
   /* Integer Register-Register operations */
   INSTPAT("0000000 ????? ????? 000 ????? 01110 11", addw   , R, R(dest) = SEXT(BITS(src1 + src2, 31, 0), 32)); /* the src1 = R(rs1), see decode_operand */
   INSTPAT("0000000 ????? ????? 001 ????? 01110 11", sllw   , R, R(dest) = SEXT(BITS(src1 << RV32_shamt(src2), 31, 0), 32));
-  INSTPAT("0100000 ????? ????? 000 ????? 01110 11", subw   , R, R(dest) = SEXT(BITS(src1 - src2, 31, 0), 32)); /* the src1 = R(rs1), see decode_operand */
+  INSTPAT("0000000 ????? ????? 101 ????? 01110 11", srlw   , R, R(dest) = SEXT(BITS((uint32_t)src1 >> RV32_shamt(src2), 31, 0), 32));
+  INSTPAT("0100000 ????? ????? 000 ????? 01110 11", subw   , R, R(dest) = SEXT(BITS(src1 - src2, 31, 0), 32));
+  INSTPAT("0100000 ????? ????? 101 ????? 01110 11", sraw   , R, R(dest) = SEXT((int32_t)src1 >> RV32_shamt(src2), 32));
   
 
   /* 5.3 Load and Store Instructions */
