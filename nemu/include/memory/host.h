@@ -29,6 +29,7 @@ static inline word_t host_read(void *addr, int len) {
   }
 }
 
+/* change data(64) to 32, 16, 8, from the lowest bits? */
 static inline void host_write(void *addr, int len, word_t data) {
   switch (len) {
     case 1: *(uint8_t  *)addr = data; return;
