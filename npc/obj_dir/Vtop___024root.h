@@ -28,7 +28,7 @@ VL_MODULE(Vtop___024root) {
     QData/*63:0*/ top__DOT__current_pc;
     QData/*63:0*/ top__DOT__u_Alu__DOT__add_result;
     QData/*63:0*/ top__DOT__u_PC__DOT__next_pc;
-    VlUnpacked<QData/*63:0*/, 5> top__DOT__u_RegisterFile__DOT__rf;
+    VlUnpacked<QData/*63:0*/, 32> top__DOT__u_RegisterFile__DOT__rf;
 
     // LOCAL VARIABLES
     CData/*0:0*/ __Vclklast__TOP__clk;

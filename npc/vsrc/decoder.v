@@ -52,7 +52,7 @@ module decoder (
   assign alu_add = addi;
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm;
+  assign need_imm = op_imm | ebreak;
 
   assign rd = `RD(inst);
   assign rs1 = `RS1(inst);

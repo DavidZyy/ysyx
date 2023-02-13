@@ -31,17 +31,10 @@ void Vtop___024root___settle__TOP__2(Vtop___024root* vlSelf) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___settle__TOP__2\n"); );
     // Body
     vlSelf->top__DOT__u_PC__DOT__next_pc = (4ULL + vlSelf->pc);
-    vlSelf->top__DOT__u_Alu__DOT__add_result = (((4U 
-                                                  >= 
-                                                  (7U 
-                                                   & (vlSelf->inst 
-                                                      >> 0xfU)))
-                                                  ? 
-                                                 vlSelf->top__DOT__u_RegisterFile__DOT__rf
-                                                 [(7U 
-                                                   & (vlSelf->inst 
-                                                      >> 0xfU))]
-                                                  : 0ULL) 
+    vlSelf->top__DOT__u_Alu__DOT__add_result = (vlSelf->top__DOT__u_RegisterFile__DOT__rf
+                                                [(0x1fU 
+                                                  & (vlSelf->inst 
+                                                     >> 0xfU))] 
                                                 + (
                                                    (0x13U 
                                                     == 
@@ -61,18 +54,11 @@ void Vtop___024root___settle__TOP__2(Vtop___024root* vlSelf) {
                                                                          (vlSelf->inst 
                                                                           >> 0x14U)))))
                                                     : 
-                                                   ((4U 
-                                                     >= 
-                                                     (7U 
-                                                      & (vlSelf->inst 
-                                                         >> 0x14U)))
-                                                     ? 
-                                                    vlSelf->top__DOT__u_RegisterFile__DOT__rf
-                                                    [
-                                                    (7U 
-                                                     & (vlSelf->inst 
-                                                        >> 0x14U))]
-                                                     : 0ULL)));
+                                                   vlSelf->top__DOT__u_RegisterFile__DOT__rf
+                                                   [
+                                                   (0x1fU 
+                                                    & (vlSelf->inst 
+                                                       >> 0x14U))]));
 }
 
 void Vtop___024root___eval_initial(Vtop___024root* vlSelf) {
@@ -107,7 +93,7 @@ void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->inst = VL_RAND_RESET_I(32);
     vlSelf->pc = VL_RAND_RESET_Q(64);
     vlSelf->top__DOT__current_pc = VL_RAND_RESET_Q(64);
-    for (int __Vi0=0; __Vi0<5; ++__Vi0) {
+    for (int __Vi0=0; __Vi0<32; ++__Vi0) {
         vlSelf->top__DOT__u_RegisterFile__DOT__rf[__Vi0] = VL_RAND_RESET_Q(64);
     }
     vlSelf->top__DOT__u_Alu__DOT__add_result = VL_RAND_RESET_Q(64);
