@@ -7,7 +7,7 @@ Add a new instructions is not convenient, I plan to write a
 script to generate verilog codes automaticallly when add new
 instruction
 */
-`include "defines.v"
+`include "./include/defines.v"
 
 module decoder (
   input [`InstWidth-1:0] inst,

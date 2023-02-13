@@ -27,6 +27,10 @@ void sim_exit(){
   tfp->close();
 }
 
+uint32_t mem[10] = {0x12345678, 0x87654321, 0x12345678};
+
+#define inst_id  (pc - 0x80000000)/4
+
 int main() {
   sim_init();
 
