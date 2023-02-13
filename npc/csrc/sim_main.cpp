@@ -27,7 +27,7 @@ void sim_exit(){
   tfp->close();
 }
 
-void single_cycle{
+void single_cycle() {
   top->clk = 0;
   step_and_dump_wave();
   top->clk = 1;
