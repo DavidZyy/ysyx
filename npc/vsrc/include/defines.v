@@ -1,6 +1,6 @@
 
 `define InstWidth   32
-`define PcRst 0x80000000
+`define PcRst 64'h80000000
 /* register related macro */
   `define RegIdWidth      5 /* the width of a number to discribe a register's index */
   `define RegCnt          2**`RegIdWidth /* register counts */
