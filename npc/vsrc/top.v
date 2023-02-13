@@ -1,4 +1,4 @@
-`include "./include/defines.v"
+`include "defines.v"
 
 /* assemble all cpu moudules into top moudule */
 module top(
