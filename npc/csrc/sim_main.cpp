@@ -43,6 +43,7 @@ int main() {
 
   top->rst = 1;
   single_cycle();
+  single_cycle();
   top->rst = 0;
 
   for(int i = 0; i < 10; i++){
