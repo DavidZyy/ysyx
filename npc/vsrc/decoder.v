@@ -15,7 +15,9 @@ module decoder (
   output [`RegIdWidth-1:0] rd,
   output [`RegIdWidth-1:0] rs1,
   output [`RegIdWidth-1:0] rs2,
-  output [`ImmWidth-1:0] imm
+  output [`ImmWidth-1:0] imm,
+  output need_imm,
+  output alu_add
 );
 
   /* opcode */
@@ -28,7 +30,7 @@ module decoder (
   /* funct7, if it has more cases, use script to generate the codes below */
 
 
-  /* funct12, use for system codes? */
+  /* funct12, use for system instructions? */
   wire funct12_000000000001 = (`FUNCT12(inst) == 12'b000000000001);
 
   /* instructions */
@@ -45,4 +47,10 @@ module decoder (
 
 
   assign imm = ({`ImmWidth{I_type}} & I_imm);
+
+  // assign dec_info
+  assign ALU_ADD = addi;
+
+  /* a instruction needs immediate has no rs2 */
+  assign need_imm = op_imm;
 endmodule

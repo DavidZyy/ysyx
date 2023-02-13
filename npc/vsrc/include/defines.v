@@ -1,5 +1,6 @@
 
 `define InstWidth   32
+`define InstLen     `In
 `define PcRst 64'h80000000
 /* register related macro */
   `define RegIdWidth      5 /* the width of a number to discribe a register's index */
@@ -25,6 +26,8 @@
   `define FUNCT3(inst)    inst[14:12]
   `define FUNCT7(inst)    inst[31:25]
   `define FUNCT12(inst)   inst[31:20]
+
+
   /* inst[6:0], opcode, we must make our codes have a 
     great expansibility, as it may add more opcode fields later. */
   `define OP_IMM      7'b0010011
@@ -46,3 +49,4 @@
 
   // `define IsOp(opcode)  (`OPCODE(inst) == `opcode) //or
   // `define IsOp(opcode)  (`OPCODE(inst) == opcode)
+
