@@ -49,7 +49,7 @@ module decoder (
   assign imm = ({`ImmWidth{I_type}} & I_imm);
 
   // assign dec_info
-  assign ALU_ADD = addi;
+  assign alu_add = addi;
 
   /* a instruction needs immediate has no rs2 */
   assign need_imm = op_imm;
