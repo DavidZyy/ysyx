@@ -2,9 +2,11 @@ TOPNAME = top
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 
+INCLUDE = $(abspath ./vsrc)
+
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
-				-O3 --x-assign fast --x-initial fast --noassert
+				-O3 --x-assign fast --x-initial fast --noassert -I$(INCLUDE)
 
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
@@ -42,7 +44,7 @@ all:
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	verilator --top-module $(TOPNAME) --trace --cc --exe --build -Wall $(abspath ./csrc/sim_main.cpp) $(VSRCS)
+	verilator --top-module $(TOPNAME) -I$(INCLUDE) --trace --cc --exe --build -Wall $(abspath ./csrc/sim_main.cpp) $(VSRCS)
 	obj_dir/Vtop
 	gtkwave dump.vcd
 

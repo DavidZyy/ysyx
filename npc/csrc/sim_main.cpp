@@ -27,16 +27,34 @@ void sim_exit(){
   tfp->close();
 }
 
+void single_cycle() {
+  top->clk = 1;
+  step_and_dump_wave();
+  top->clk = 0;
+  step_and_dump_wave();
+}
+
+uint32_t mem[10] = {0b00000000000100000000000010010011,
+                    0b00000000000100001000000100010011,
+                    0b00000000000100010000000110010011
+                    };
+
+#define inst_id (top->pc - 0x80000000)/4
+
 int main() {
   sim_init();
 
-  top->s=0; top->a=0; top->b=0;  step_and_dump_wave();   // 将s，a和b均初始化为“0”
-                      top->b=1;  step_and_dump_wave();   // 将b改为“1”，s和a的值不变，继续保持“0”，
-            top->a=1; top->b=0;  step_and_dump_wave();   // 将a，b分别改为“1”和“0”，s的值不变，
-                      top->b=1;  step_and_dump_wave();   // 将b改为“1”，s和a的值不变，维持10个时间单位
-  top->s=1; top->a=0; top->b=0;  step_and_dump_wave();   // 将s，a，b分别变为“1,0,0”，维持10个时间单位
-                      top->b=1;  step_and_dump_wave();
-            top->a=1; top->b=0;  step_and_dump_wave();
-                      top->b=1;  step_and_dump_wave();
+  top->rst = 1;
+  single_cycle();
+  single_cycle();
+  top->rst = 0;
+
+  for(int i = 0; i < 10; i++){
+    top->inst = mem[inst_id];
+    /* two cycle one instruction */
+    single_cycle();
+    single_cycle();
+  }
+
   sim_exit();
 }
