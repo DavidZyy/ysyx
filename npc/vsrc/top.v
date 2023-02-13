@@ -41,7 +41,7 @@ wire [`ImmWidth-1:0]	rdata_2;
   /* in execute state, read register, in WB state, write back registers */
 RegisterFile 
 #(
-  .ADDR_WIDTH (`RegCnt),
+  .ADDR_WIDTH (`RegIdWidth),
   .DATA_WIDTH (`RegWidth)
 )
 u_RegisterFile(

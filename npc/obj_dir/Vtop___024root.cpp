@@ -21,7 +21,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
         = ((- (QData)((IData)((0x13U == (0x707fU & vlSelf->inst))))) 
            & vlSelf->top__DOT__u_Alu__DOT__add_result);
     __Vdlyvdim0__top__DOT__u_RegisterFile__DOT__rf__v0 
-        = vlSelf->top__DOT__rd;
+        = (0x1fU & (vlSelf->inst >> 7U));
     vlSelf->top__DOT__u_RegisterFile__DOT__rf[__Vdlyvdim0__top__DOT__u_RegisterFile__DOT__rf__v0] 
         = __Vdlyvval__top__DOT__u_RegisterFile__DOT__rf__v0;
     vlSelf->top__DOT__u_PC__DOT__next_pc = (4ULL + vlSelf->pc);
@@ -33,7 +33,9 @@ VL_INLINE_OPT void Vtop___024root___combo__TOP__3(Vtop___024root* vlSelf) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___combo__TOP__3\n"); );
     // Body
     vlSelf->top__DOT__u_Alu__DOT__add_result = (vlSelf->top__DOT__u_RegisterFile__DOT__rf
-                                                [vlSelf->top__DOT__rs1] 
+                                                [(0x1fU 
+                                                  & (vlSelf->inst 
+                                                     >> 0xfU))] 
                                                 + (
                                                    (0x13U 
                                                     == 
@@ -54,7 +56,10 @@ VL_INLINE_OPT void Vtop___024root___combo__TOP__3(Vtop___024root* vlSelf) {
                                                                           >> 0x14U)))))
                                                     : 
                                                    vlSelf->top__DOT__u_RegisterFile__DOT__rf
-                                                   [vlSelf->top__DOT__rs2]));
+                                                   [
+                                                   (0x1fU 
+                                                    & (vlSelf->inst 
+                                                       >> 0x14U))]));
 }
 
 void Vtop___024root___eval(Vtop___024root* vlSelf) {

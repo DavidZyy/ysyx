@@ -2,7 +2,7 @@
 
 `include "./include/defines.v"
 
-module RegisterFile #(ADDR_WIDTH = `RegCnt, DATA_WIDTH = `RegWidth) (
+module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
   input clk,
   input [DATA_WIDTH-1:0] wdata,
   input [ADDR_WIDTH-1:0] rd,
