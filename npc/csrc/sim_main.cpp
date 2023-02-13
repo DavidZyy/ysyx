@@ -27,13 +27,29 @@ void sim_exit(){
   tfp->close();
 }
 
+void single_cycle{
+  top->clk = 0;
+  step_and_dump_wave();
+  top->clk = 1;
+  step_and_dump_wave();
+}
+
 uint32_t mem[10] = {0x12345678, 0x87654321, 0x12345678};
 
-#define inst_id  (pc - 0x80000000)/4
+#define inst_id  (top->pc - 0x80000000)/4
 
 int main() {
   sim_init();
 
+  top->rst = 1;
+  single_cycle();
+  top->rst = 0;
+  single_cycle();;
+
+  for(int i = 0; i < 10; i++){
+    top->inst = mem[inst_id];
+    single_cycle();
+  }
 
   sim_exit();
 }

@@ -24,11 +24,6 @@ VL_MODULE(Vtop___024root) {
     VL_IN(inst,31,0);
     VL_OUT64(pc,63,0);
 
-    // LOCAL SIGNALS
-    CData/*4:0*/ top__DOT__rd;
-    CData/*4:0*/ top__DOT__rs1;
-    CData/*4:0*/ top__DOT__rs2;
-
     // INTERNAL VARIABLES
     Vtop__Syms* vlSymsp;  // Symbol table
 

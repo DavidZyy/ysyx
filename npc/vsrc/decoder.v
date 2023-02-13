@@ -25,10 +25,10 @@ module decoder (
   /* funct3 */
   wire funct3_000 = (`FUNCT3(inst) == 3'b000);
 
-  /* funct7, if it has more case, use script to generate the codes below */
+  /* funct7, if it has more cases, use script to generate the codes below */
 
 
-  /* funct12, use  for system codes? */
+  /* funct12, use for system codes? */
   wire funct12_000000000001 = (`FUNCT12(inst) == 12'b000000000001);
 
   /* instructions */
@@ -44,5 +44,5 @@ module decoder (
   wire [`ImmWidth-1:0] I_imm = `immI(inst);
 
 
-  assign imm = ({`ImmWidth{I_type}} & `immI(inst));
+  assign imm = ({`ImmWidth{I_type}} & I_imm);
 endmodule
