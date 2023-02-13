@@ -15,8 +15,7 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
     CData/*4:0*/ __Vdlyvdim0__top__DOT__u_RegisterFile__DOT__rf__v0;
     QData/*63:0*/ __Vdlyvval__top__DOT__u_RegisterFile__DOT__rf__v0;
     // Body
-    vlSelf->pc = ((IData)(vlSelf->rst) ? 0x80000000ULL
-                   : vlSelf->top__DOT__u_PC__DOT__next_pc);
+    vlSelf->pc = ((IData)(vlSelf->rst) ? 0ULL : vlSelf->top__DOT__u_PC__DOT__next_pc);
     __Vdlyvval__top__DOT__u_RegisterFile__DOT__rf__v0 
         = ((- (QData)((IData)((0x13U == (0x707fU & vlSelf->inst))))) 
            & vlSelf->top__DOT__u_Alu__DOT__add_result);

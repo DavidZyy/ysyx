@@ -79,7 +79,7 @@ void Vtop___024root__traceInitSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->declQuad(c+68,"top u_PC current_pc", false,-1, 63,0);
         tracep->declQuad(c+94,"top u_PC next_pc", false,-1, 63,0);
         tracep->declBus(c+98,"top u_PC Pc_Reg WIDTH", false,-1, 31,0);
-        tracep->declQuad(c+99,"top u_PC Pc_Reg RESET_VAL", false,-1, 63,0);
+        tracep->declBus(c+99,"top u_PC Pc_Reg RESET_VAL", false,-1, 0,0);
         tracep->declBit(c+65,"top u_PC Pc_Reg clk", false,-1);
         tracep->declBit(c+66,"top u_PC Pc_Reg rst", false,-1);
         tracep->declQuad(c+94,"top u_PC Pc_Reg din", false,-1, 63,0);
@@ -298,6 +298,6 @@ void Vtop___024root__traceFullSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->fullBit(oldp+96,(1U));
         tracep->fullIData(oldp+97,(5U),32);
         tracep->fullIData(oldp+98,(0x40U),32);
-        tracep->fullQData(oldp+99,(0x80000000ULL),64);
+        tracep->fullBit(oldp+99,(0U));
     }
 }
