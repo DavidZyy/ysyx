@@ -12,18 +12,31 @@ VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__1\n"); );
     // Variables
-    CData/*4:0*/ __Vdlyvdim0__top__DOT__u_RegisterFile__DOT__rf__v0;
+    CData/*2:0*/ __Vdlyvdim0__top__DOT__u_RegisterFile__DOT__rf__v0;
+    CData/*0:0*/ __Vdlyvset__top__DOT__u_RegisterFile__DOT__rf__v0;
+    QData/*63:0*/ top__DOT__u_RegisterFile__DOT____Vlvbound1;
     QData/*63:0*/ __Vdlyvval__top__DOT__u_RegisterFile__DOT__rf__v0;
     // Body
+    __Vdlyvset__top__DOT__u_RegisterFile__DOT__rf__v0 = 0U;
     vlSelf->pc = ((IData)(vlSelf->rst) ? 0x80000000ULL
                    : vlSelf->top__DOT__u_PC__DOT__next_pc);
-    __Vdlyvval__top__DOT__u_RegisterFile__DOT__rf__v0 
-        = ((- (QData)((IData)((0x13U == (0x707fU & vlSelf->inst))))) 
-           & vlSelf->top__DOT__u_Alu__DOT__add_result);
-    __Vdlyvdim0__top__DOT__u_RegisterFile__DOT__rf__v0 
-        = (0x1fU & (vlSelf->inst >> 7U));
-    vlSelf->top__DOT__u_RegisterFile__DOT__rf[__Vdlyvdim0__top__DOT__u_RegisterFile__DOT__rf__v0] 
-        = __Vdlyvval__top__DOT__u_RegisterFile__DOT__rf__v0;
+    top__DOT__u_RegisterFile__DOT____Vlvbound1 = ((- (QData)((IData)(
+                                                                     (0x13U 
+                                                                      == 
+                                                                      (0x707fU 
+                                                                       & vlSelf->inst))))) 
+                                                  & vlSelf->top__DOT__u_Alu__DOT__add_result);
+    if ((4U >= (7U & (vlSelf->inst >> 7U)))) {
+        __Vdlyvval__top__DOT__u_RegisterFile__DOT__rf__v0 
+            = top__DOT__u_RegisterFile__DOT____Vlvbound1;
+        __Vdlyvset__top__DOT__u_RegisterFile__DOT__rf__v0 = 1U;
+        __Vdlyvdim0__top__DOT__u_RegisterFile__DOT__rf__v0 
+            = (7U & (vlSelf->inst >> 7U));
+    }
+    if (__Vdlyvset__top__DOT__u_RegisterFile__DOT__rf__v0) {
+        vlSelf->top__DOT__u_RegisterFile__DOT__rf[__Vdlyvdim0__top__DOT__u_RegisterFile__DOT__rf__v0] 
+            = __Vdlyvval__top__DOT__u_RegisterFile__DOT__rf__v0;
+    }
     vlSelf->top__DOT__u_PC__DOT__next_pc = (4ULL + vlSelf->pc);
 }
 
@@ -32,10 +45,17 @@ VL_INLINE_OPT void Vtop___024root___combo__TOP__3(Vtop___024root* vlSelf) {
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___combo__TOP__3\n"); );
     // Body
-    vlSelf->top__DOT__u_Alu__DOT__add_result = (vlSelf->top__DOT__u_RegisterFile__DOT__rf
-                                                [(0x1fU 
-                                                  & (vlSelf->inst 
-                                                     >> 0xfU))] 
+    vlSelf->top__DOT__u_Alu__DOT__add_result = (((4U 
+                                                  >= 
+                                                  (7U 
+                                                   & (vlSelf->inst 
+                                                      >> 0xfU)))
+                                                  ? 
+                                                 vlSelf->top__DOT__u_RegisterFile__DOT__rf
+                                                 [(7U 
+                                                   & (vlSelf->inst 
+                                                      >> 0xfU))]
+                                                  : 0ULL) 
                                                 + (
                                                    (0x13U 
                                                     == 
@@ -55,11 +75,18 @@ VL_INLINE_OPT void Vtop___024root___combo__TOP__3(Vtop___024root* vlSelf) {
                                                                          (vlSelf->inst 
                                                                           >> 0x14U)))))
                                                     : 
-                                                   vlSelf->top__DOT__u_RegisterFile__DOT__rf
-                                                   [
-                                                   (0x1fU 
-                                                    & (vlSelf->inst 
-                                                       >> 0x14U))]));
+                                                   ((4U 
+                                                     >= 
+                                                     (7U 
+                                                      & (vlSelf->inst 
+                                                         >> 0x14U)))
+                                                     ? 
+                                                    vlSelf->top__DOT__u_RegisterFile__DOT__rf
+                                                    [
+                                                    (7U 
+                                                     & (vlSelf->inst 
+                                                        >> 0x14U))]
+                                                     : 0ULL)));
 }
 
 void Vtop___024root___eval(Vtop___024root* vlSelf) {

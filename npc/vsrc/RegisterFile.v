@@ -14,7 +14,7 @@ module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
   output [DATA_WIDTH-1:0] rdata_2
 );
 
-  reg [DATA_WIDTH-1:0] rf [ADDR_WIDTH-1:0];
+  reg [DATA_WIDTH-1:0] rf [`RegCnt-1:0];
   always @(posedge clk) begin
     if (wen) rf[rd] <= wdata;
   end
