@@ -298,6 +298,6 @@ void Vtop___024root__traceFullSub0(Vtop___024root* vlSelf, VerilatedVcd* tracep)
         tracep->fullBit(oldp+96,(1U));
         tracep->fullIData(oldp+97,(5U),32);
         tracep->fullIData(oldp+98,(0x40U),32);
-        tracep->fullQData(oldp+99,(0ULL),64);
+        tracep->fullQData(oldp+99,(0x80000000ULL),64);
     }
 }
