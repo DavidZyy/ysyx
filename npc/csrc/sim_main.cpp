@@ -51,6 +51,8 @@ int main() {
 
   for(int i = 0; i < 10; i++){
     top->inst = mem[inst_id];
+    /* two cycle one instruction */
+    single_cycle();
     single_cycle();
   }
 
