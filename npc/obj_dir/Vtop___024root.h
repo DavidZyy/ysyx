@@ -28,7 +28,6 @@ VL_MODULE(Vtop___024root) {
     CData/*4:0*/ top__DOT__rd;
     CData/*4:0*/ top__DOT__rs1;
     CData/*4:0*/ top__DOT__rs2;
-    CData/*0:0*/ top__DOT__alu_add;
     QData/*63:0*/ top__DOT__current_pc;
     QData/*63:0*/ top__DOT__u_Alu__DOT__add_result;
     QData/*63:0*/ top__DOT__u_PC__DOT__next_pc;

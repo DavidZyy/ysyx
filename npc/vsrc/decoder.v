@@ -53,4 +53,8 @@ module decoder (
 
   /* a instruction needs immediate has no rs2 */
   assign need_imm = op_imm;
+
+  assign rd = RD(inst);
+  assign rs1 = RS1(inst);
+  assign rs2 = RS2(inst);
 endmodule
