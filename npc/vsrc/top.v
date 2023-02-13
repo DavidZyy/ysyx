@@ -71,8 +71,6 @@ Alu u_Alu(
 );
 
 
-wire [`RegWidth-1:0]	current_pc;
-
 PC u_PC(
 	//ports
 	.clk        		( clk        		),

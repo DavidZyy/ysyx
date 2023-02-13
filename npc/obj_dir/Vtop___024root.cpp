@@ -37,10 +37,19 @@ VL_INLINE_OPT void Vtop___024root___combo__TOP__3(Vtop___024root* vlSelf) {
                                                   & (vlSelf->inst 
                                                      >> 0xfU))] 
                                                 + (
-                                                   (0x13U 
-                                                    == 
-                                                    (0x7fU 
-                                                     & vlSelf->inst))
+                                                   ((0x13U 
+                                                     == 
+                                                     (0x7fU 
+                                                      & vlSelf->inst)) 
+                                                    | ((IData)(
+                                                               (0x73U 
+                                                                == 
+                                                                (0x707fU 
+                                                                 & vlSelf->inst))) 
+                                                       & (1U 
+                                                          == 
+                                                          (vlSelf->inst 
+                                                           >> 0x14U))))
                                                     ? 
                                                    ((- (QData)((IData)(
                                                                        (0x13U 
