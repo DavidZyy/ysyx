@@ -29,7 +29,7 @@ module decoder (
 
 
   /* funct12, use  for system codes? */
-  wire funct12_000000000001 = (`FUNC12(inst) == 12'b000000000001);
+  wire funct12_000000000001 = (`FUNCT12(inst) == 12'b000000000001);
 
   /* instructions */
   wire addi     = op_imm & funct3_000;
