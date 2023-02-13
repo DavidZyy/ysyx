@@ -13,6 +13,7 @@ Vtop::Vtop(VerilatedContext* _vcontextp__, const char* _vcname__)
     , clk{vlSymsp->TOP.clk}
     , rst{vlSymsp->TOP.rst}
     , inst{vlSymsp->TOP.inst}
+    , pc{vlSymsp->TOP.pc}
     , rootp{&(vlSymsp->TOP)}
 {
 }
