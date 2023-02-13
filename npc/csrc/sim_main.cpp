@@ -47,7 +47,7 @@ int main() {
   top->rst = 0;
 
   for(int i = 0; i < 10; i++){
-    // top->inst = mem[inst_id];
+    top->inst = mem[inst_id];
     single_cycle();
   }
 
