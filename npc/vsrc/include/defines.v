@@ -14,9 +14,7 @@
   /* zero extension */
   `define ZEXT(imm, len)  {(`ImmWidth - len){1'b0}, imm}
 
-  `define immI(inst) {{(`ImmWidth -12){inst[31]}},
-                      inst[31:20]
-                      }
+  `define immI(inst) {{(`ImmWidth -12){inst[31]}}, inst[31:20] }
 
 
 /* decode instruction related */

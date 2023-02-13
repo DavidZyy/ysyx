@@ -20,7 +20,7 @@ module decoder (
 
   /* opcode */
   wire op_imm = (`OPCODE(inst) == `OP_IMM);
-  wire op_system = (`OPCODE(inst) == `OP_SYSTEM)
+  wire op_system = (`OPCODE(inst) == `SYSTEM);
   
   /* funct3 */
   wire funct3_000 = (`FUNCT3(inst) == 3'b000);
@@ -29,7 +29,7 @@ module decoder (
 
 
   /* funct12, use  for system codes? */
-  wire funct12_000000000001 = (`FUNC12(inst) == 12'b000000000001)
+  wire funct12_000000000001 = (`FUNC12(inst) == 12'b000000000001);
 
   /* instructions */
   wire addi     = op_imm & funct3_000;
@@ -41,8 +41,8 @@ module decoder (
 
 
   /* immediate */
-  wire [`ImmWidth-1:0] I_imm = `immI(inst)
+  wire [`ImmWidth-1:0] I_imm = `immI(inst);
 
 
-  assign imm = ({`ImmWidth{I_type}} & );
+  assign imm = ({`ImmWidth{I_type}} & `immI(inst));
 endmodule
