@@ -53,7 +53,7 @@ int main() {
     top->inst = mem[inst_id];
     /* two cycle one instruction */
     single_cycle();
-    single_cycle();
+    // single_cycle();
   }
 
   sim_exit();
