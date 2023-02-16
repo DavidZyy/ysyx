@@ -2,6 +2,9 @@
 #include "verilated_vcd_c.h"
 #include "../obj_dir/Vtop.h"
 #include <iostream>
+/* DPI-C function */
+#include "svdpi.h"
+#include "Vtop__Dpi.h"
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
@@ -41,6 +44,10 @@ uint32_t mem[10] = {0b00000000000100000000000010010011,
 
 #define inst_id (top->pc - 0x80000000)/4
 
+void exit_code(){
+  goto finish;
+}
+
 int main() {
   sim_init();
 
@@ -55,6 +62,8 @@ int main() {
     single_cycle();
     // single_cycle();
   }
+
+finish:
 
   sim_exit();
 }
