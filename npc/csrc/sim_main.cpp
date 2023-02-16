@@ -44,8 +44,9 @@ uint32_t mem[10] = {0b00000000000100000000000010010011,
 
 #define inst_id (top->pc - 0x80000000)/4
 
+int terminal = 0;
 void exit_code(){
-  goto finish;
+  terminal = 1;
 }
 
 int main() {
@@ -61,9 +62,10 @@ int main() {
     /* two cycle one instruction */
     single_cycle();
     // single_cycle();
+    if(terminal)
+      break;
   }
 
-finish:
 
   sim_exit();
 }
