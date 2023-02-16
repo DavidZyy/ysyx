@@ -24,6 +24,7 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 
 # project source
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
+SVSRCS = $(shell find $(abspath ./vsrc) -name "*.sv")
 # CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS = $(abspath ./csrc/main.cpp)
 CSRCS += $(SRC_AUTO_BIND)
@@ -44,7 +45,7 @@ all:
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	verilator --top-module $(TOPNAME) -I$(INCLUDE) --trace --cc --exe --build -Wall $(abspath ./csrc/sim_main.cpp) $(VSRCS)
+	verilator --top-module $(TOPNAME) -I$(INCLUDE) --trace --cc --exe --build -Wall $(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS)
 	obj_dir/Vtop
 	gtkwave dump.vcd
 

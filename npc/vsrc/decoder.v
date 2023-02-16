@@ -17,7 +17,8 @@ module decoder (
   output [`RegIdWidth-1:0] rs2,
   output [`ImmWidth-1:0] imm,
   output need_imm,
-  output alu_add
+  output alu_add,
+  output is_ebreak
 );
 
   /* opcode */
@@ -45,6 +46,8 @@ module decoder (
   /* immediate */
   wire [`ImmWidth-1:0] I_imm = `immI(inst);
 
+
+  assign is_ebreak = ebreak;
 
   assign imm = ({`ImmWidth{I_type}} & I_imm);
 

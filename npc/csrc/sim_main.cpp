@@ -2,6 +2,9 @@
 #include "verilated_vcd_c.h"
 #include "../obj_dir/Vtop.h"
 #include <iostream>
+/* DPI-C function */
+#include "svdpi.h"
+#include "Vtop__Dpi.h"
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
@@ -34,12 +37,19 @@ void single_cycle() {
   step_and_dump_wave();
 }
 
+#define ebreak  0b00000000000100000000000001110011
 uint32_t mem[10] = {0b00000000000100000000000010010011,
                     0b00000000000100001000000100010011,
+                    ebreak,
                     0b00000000000100010000000110010011
                     };
 
 #define inst_id (top->pc - 0x80000000)/4
+
+int terminal = 0;
+void exit_code(){
+  terminal = 1;
+}
 
 int main() {
   sim_init();
@@ -54,7 +64,10 @@ int main() {
     /* two cycle one instruction */
     single_cycle();
     // single_cycle();
+    if(terminal)
+      break;
   }
+
 
   sim_exit();
 }
