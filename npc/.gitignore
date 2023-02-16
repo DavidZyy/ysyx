@@ -10,3 +10,7 @@
 !.gitignore
 !README.md
 build/
+!*.sv
+obj_dir/
+*.vcd
+!scripts/

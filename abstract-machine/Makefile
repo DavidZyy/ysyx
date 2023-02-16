@@ -1,8 +1,10 @@
 # Makefile for AbstractMachine Kernels and Libraries
 
 ### *Get a more readable version of this Makefile* by `make html` (requires python-markdown)
+# markdown_py is in /home/zhuyangyang/.local/bin
 html:
-	cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
+	# cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
+	cat Makefile | sed 's/^\([^#]\)/    \1/g' | python3 -m markdown > Makefile.html
 .PHONY: html
 
 ## 1. Basic Setup and Checks
@@ -88,6 +90,8 @@ CFLAGS   += -O2 -MMD -Wall -Werror $(INCFLAGS) \
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  += -MMD $(INCFLAGS)
 LDFLAGS  += -z noexecstack
+
+# $(error $(CFLAGS))
 
 ## 4. Arch-Specific Configurations
 
