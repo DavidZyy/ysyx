@@ -5,43 +5,109 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 size_t strlen(const char *s) {
-  panic("Not implemented");
+  size_t n = 0;
+  while(s[n] != '\0')
+    n++;
+  return n;
 }
 
 char *strcpy(char *dst, const char *src) {
-  panic("Not implemented");
+  assert(dst != src);
+  while(*src != '\0'){
+    *dst = *src;
+    dst++;
+    src++;
+  }
+  *dst = '\0';
+  return dst;
 }
 
 char *strncpy(char *dst, const char *src, size_t n) {
-  panic("Not implemented");
+  assert(dst != src);
+  while(*src != '\0' && n){
+    *dst = *src;
+    dst++;
+    src++;
+    n--;
+  }
+  *dst = '\0';
+  return dst;
 }
 
 char *strcat(char *dst, const char *src) {
-  panic("Not implemented");
+  while(*dst != '\0') dst++;
+  strcpy(dst, src);
+  return dst;
 }
 
 int strcmp(const char *s1, const char *s2) {
-  panic("Not implemented");
+  while(*s1 != '\0' && *s2 != '\0'){
+    if(!(*s1 - *s2)) return *s1 - *s2;
+    s1++;
+    s2++;
+  }
+  /* '\0' is permited */
+  return *s1 - *s2; 
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {
-  panic("Not implemented");
+  while(*s1 != '\0' && *s2 != '\0' && n){
+    if(!(*s1 - *s2)) return *s1 - *s2;
+    s1++;
+    s2++;
+    n--;
+  }
+  /* '\0' is permited */
+  return *s1 - *s2; 
 }
 
 void *memset(void *s, int c, size_t n) {
-  panic("Not implemented");
+  char *s1 = (char *)s;
+  while(n--){
+    *s1 = (char)c;
+    s1++;
+  }
+  return s;
 }
 
+/* could overlap */
 void *memmove(void *dst, const void *src, size_t n) {
-  panic("Not implemented");
+  char *cdst = (char *)dst;
+  char *csrc = (char *)src;
+  while(*csrc != '\0' && n--){
+    *cdst = *csrc;
+    cdst++;
+    csrc++;
+  }
+  return dst;
 }
 
+/* could not overlap */
 void *memcpy(void *out, const void *in, size_t n) {
-  panic("Not implemented");
+  assert(out >= in + n || out + n <= in);
+  char *cdst = (char *)out;
+  char *csrc = (char *)in;
+  while(*csrc != '\0' && n--){
+    *cdst = *csrc;
+    cdst++;
+    csrc++;
+  }
+  return out;
 }
 
 int memcmp(const void *s1, const void *s2, size_t n) {
-  panic("Not implemented");
+  if(!n)
+    return 0;
+
+  char *cs1 = (char *)s1;
+  char *cs2 = (char *)s2;
+  while(n--){
+    if(*cs1 != *cs2)
+      return *cs1 - *cs2;
+    cs1++;
+    cs2++;
+  }
+  return 0;
 }
 
 #endif
