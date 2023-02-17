@@ -35,9 +35,11 @@ char *strncpy(char *dst, const char *src, size_t n) {
 }
 
 char *strcat(char *dst, const char *src) {
+  /* add to fix bug */
+  char *temp = dst;
   while(*dst != '\0') dst++;
   strcpy(dst, src);
-  return dst;
+  return temp;
 }
 
 int strcmp(const char *s1, const char *s2) {
