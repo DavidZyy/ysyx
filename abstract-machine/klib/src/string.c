@@ -12,6 +12,7 @@ size_t strlen(const char *s) {
 }
 
 char *strcpy(char *dst, const char *src) {
+  char *temp = dst;
   assert(dst != src);
   while(*src != '\0'){
     *dst = *src;
@@ -19,10 +20,12 @@ char *strcpy(char *dst, const char *src) {
     src++;
   }
   *dst = '\0';
-  return dst;
+  return temp;
 }
 
 char *strncpy(char *dst, const char *src, size_t n) {
+  /* add to fix bug */
+  char *temp = dst;
   assert(dst != src);
   while(*src != '\0' && n){
     *dst = *src;
@@ -31,7 +34,7 @@ char *strncpy(char *dst, const char *src, size_t n) {
     n--;
   }
   *dst = '\0';
-  return dst;
+  return temp;
 }
 
 char *strcat(char *dst, const char *src) {
