@@ -1,15 +1,18 @@
+# am-kernels cpu_test will include this file
+
 # Makefile for AbstractMachine Kernels and Libraries
 
 ### *Get a more readable version of this Makefile* by `make html` (requires python-markdown)
 # markdown_py is in /home/zhuyangyang/.local/bin
 html:
-	# cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
+# cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
 	cat Makefile | sed 's/^\([^#]\)/    \1/g' | python3 -m markdown > Makefile.html
 .PHONY: html
 
 ## 1. Basic Setup and Checks
 
 ### Default to create a bare-metal kernel image
+# start with the target image
 ifeq ($(MAKECMDGOALS),)
   MAKECMDGOALS  = image
   .DEFAULT_GOAL = image
@@ -60,6 +63,9 @@ ARCHIVE   = $(WORK_DIR)/build/$(NAME)-$(ARCH).a
 ### Collect the files to be linked: object files (`.o`) and libraries (`.a`)
 OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
 LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recursions
+
+# $(error $(LIBS))
+
 LINKAGE   = $(OBJS) \
   $(addsuffix -$(ARCH).a, $(join \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
