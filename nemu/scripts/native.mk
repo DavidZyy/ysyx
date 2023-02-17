@@ -27,6 +27,8 @@ $(BINARY): compile_git
 
 override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += $(ARGS_DIFF)
+
+# add for batch mode
 override ARGS += -b
 
 # $(error $(ARGS))
