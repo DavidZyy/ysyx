@@ -42,7 +42,7 @@ char *strcat(char *dst, const char *src) {
 
 int strcmp(const char *s1, const char *s2) {
   while(*s1 != '\0' && *s2 != '\0'){
-    if(!(*s1 - *s2)) return *s1 - *s2;
+    if(*s1 - *s2) return *s1 - *s2;
     s1++;
     s2++;
   }
@@ -52,7 +52,7 @@ int strcmp(const char *s1, const char *s2) {
 
 int strncmp(const char *s1, const char *s2, size_t n) {
   while(*s1 != '\0' && *s2 != '\0' && n){
-    if((*s1 - *s2)) return *s1 - *s2;
+    if(*s1 - *s2) return *s1 - *s2;
     s1++;
     s2++;
     n--;
