@@ -1,13 +1,18 @@
+# am-kernels cpu_test will include this file
+
 # Makefile for AbstractMachine Kernels and Libraries
 
 ### *Get a more readable version of this Makefile* by `make html` (requires python-markdown)
+# markdown_py is in /home/zhuyangyang/.local/bin
 html:
-	cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
+# cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
+	cat Makefile | sed 's/^\([^#]\)/    \1/g' | python3 -m markdown > Makefile.html
 .PHONY: html
 
 ## 1. Basic Setup and Checks
 
 ### Default to create a bare-metal kernel image
+# start with the target image
 ifeq ($(MAKECMDGOALS),)
   MAKECMDGOALS  = image
   .DEFAULT_GOAL = image
@@ -55,14 +60,20 @@ IMAGE_REL = build/$(NAME)-$(ARCH)
 IMAGE     = $(abspath $(IMAGE_REL))
 ARCHIVE   = $(WORK_DIR)/build/$(NAME)-$(ARCH).a
 
+# $(error $(LIBS))
 ### Collect the files to be linked: object files (`.o`) and libraries (`.a`)
 OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
+# $(error $(OBJS))
 LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recursions
+
+# $(error $(LIBS))
+
 LINKAGE   = $(OBJS) \
   $(addsuffix -$(ARCH).a, $(join \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
     $(LIBS) ))
 
+# $(error $(LINKAGE))
 ## 3. General Compilation Flags
 
 ### (Cross) compilers, e.g., mips-linux-gnu-g++
@@ -88,6 +99,8 @@ CFLAGS   += -O2 -MMD -Wall -Werror $(INCFLAGS) \
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  += -MMD $(INCFLAGS)
 LDFLAGS  += -z noexecstack
+
+# $(error $(CFLAGS))
 
 ## 4. Arch-Specific Configurations
 
@@ -123,7 +136,9 @@ $(DST_DIR)/%.o: %.S
 	@$(AS) $(ASFLAGS) -c -o $@ $(realpath $<)
 
 ### Rule (recursive make): build a dependent library (am, klib, ...)
+# 5.7 use make command in make file
 $(LIBS): %:
+	echo $*
 	@$(MAKE) -s -C $(AM_HOME)/$* archive
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `IMAGE.elf`, the final ELF binary to be packed into image (ld)
@@ -142,6 +157,7 @@ $(ARCHIVE): $(OBJS)
 ## 6. Miscellaneous
 
 ### Build order control
+# also has an image in nemu.mk ...
 image: image-dep
 archive: $(ARCHIVE)
 image-dep: $(OBJS) am $(LIBS)
