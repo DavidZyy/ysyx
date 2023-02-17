@@ -100,8 +100,8 @@ int memcmp(const void *s1, const void *s2, size_t n) {
   if(!n)
     return 0;
 
-  char *cs1 = (char *)s1;
-  char *cs2 = (char *)s2;
+  unsigned char *cs1 = (unsigned char *)s1;
+  unsigned char *cs2 = (unsigned char *)s2;
   while(n--){
     if(*cs1 != *cs2)
       return *cs1 - *cs2;
