@@ -45,7 +45,7 @@ int sprintf(char *out, const char *fmt, ...) {
         p--;
         while(p >= 0){
           *out = temp_buf[p];
-          out++;
+          // out++;
           p--;
         }
         break;
