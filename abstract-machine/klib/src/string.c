@@ -23,6 +23,9 @@ char *strcpy(char *dst, const char *src) {
   return temp;
 }
 
+/* char *strncpy(const char *const dst, const char *src, size_t n) 
+use const to describe dst.
+  */
 char *strncpy(char *dst, const char *src, size_t n) {
   /* add to fix bug */
   char *temp = dst;
