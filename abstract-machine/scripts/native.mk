@@ -18,6 +18,7 @@ image:
 	@echo + LD "->" $(IMAGE_REL)
 	@g++ -pie -o $(IMAGE) -Wl,--whole-archive $(LINKAGE) -Wl,-no-whole-archive -Wl,-z -Wl,noexecstack -lSDL2 -ldl
 
+# $(error $(IMAGE))
 run: image
 	$(IMAGE)
 
