@@ -54,13 +54,12 @@ int sprintf(char *out, const char *fmt, ...) {
         panic("Not implemented");
         break;
       }
-      fmt++;
     }
     else{
       *out = *fmt;
       out++;
-      fmt++;
     }
+    fmt++;
   }
   *out = '\0';
 
