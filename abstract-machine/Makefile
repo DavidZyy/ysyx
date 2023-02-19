@@ -62,6 +62,7 @@ endif
 ### Create the destination directory (`build/$ARCH`)
 WORK_DIR  = $(shell pwd)
 DST_DIR   = $(WORK_DIR)/build/$(ARCH)
+$(info $(green)$(DST_DIR)$(reset))
 $(shell mkdir -p $(DST_DIR))
 
 ### Compilation targets (a binary image or archive)
@@ -74,7 +75,9 @@ $(info $(red)$(ARCHIVE)$(reset))
 # $(error $(LIBS))
 ### Collect the files to be linked: object files (`.o`) and libraries (`.a`)
 OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
-$(info $(yellow)$(OBJS)$(reset))
+
+# put after include native.mk
+# $(info $(yellow)$(OBJS)$(reset))
 LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recursions
 
 # $(error $(LIBS))
@@ -117,6 +120,7 @@ LDFLAGS  += -z noexecstack
 
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
 -include $(AM_HOME)/scripts/$(ARCH).mk
+$(info $(yellow)$(OBJS)$(reset))
 
 # $(error $(AM_HOME))
 # $(error $(ARCH))
