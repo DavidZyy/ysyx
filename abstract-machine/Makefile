@@ -62,7 +62,7 @@ endif
 ### Create the destination directory (`build/$ARCH`)
 WORK_DIR  = $(shell pwd)
 DST_DIR   = $(WORK_DIR)/build/$(ARCH)
-$(info $(green)$(DST_DIR)$(reset))
+# $(info $(green)$(DST_DIR)$(reset))
 $(shell mkdir -p $(DST_DIR))
 
 ### Compilation targets (a binary image or archive)
@@ -70,7 +70,7 @@ IMAGE_REL = build/$(NAME)-$(ARCH)
 IMAGE     = $(abspath $(IMAGE_REL))
 ARCHIVE   = $(WORK_DIR)/build/$(NAME)-$(ARCH).a
 
-$(info $(red)$(ARCHIVE)$(reset))
+# $(info $(red)$(ARCHIVE)$(reset))
 
 # $(error $(LIBS))
 ### Collect the files to be linked: object files (`.o`) and libraries (`.a`)
