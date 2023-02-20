@@ -104,6 +104,9 @@ void init_monitor(int argc, char *argv[]) {
   /* Parse arguments. */
   parse_args(argc, argv);
 
+  
+  printf("ANSI_FMT(%s, ANSI_FG_RED)\n", img_file);
+
   /* Set random seed. */
   init_rand();
 
