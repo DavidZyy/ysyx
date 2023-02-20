@@ -156,7 +156,7 @@ $(DST_DIR)/%.o: %.S
 ### Rule (recursive make): build a dependent library (am, klib, ...)
 # 5.7 use make command in make file
 $(LIBS): %:
-	echo $*
+# echo $*
 # @$(MAKE) -s -C $(AM_HOME)/$* archive
 	$(MAKE) -C $(AM_HOME)/$* archive
 
