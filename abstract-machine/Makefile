@@ -195,6 +195,9 @@ clean:
 ### Clean all sub-projects within depth 2 (and ignore errors)
 CLEAN_ALL = $(dir $(shell find . -mindepth 2 -name Makefile))
 
+# when in cpu-tests, CLEAN_ALL has nothing, becuase the find is work
+# on the path of cpu-tests. Under $AM_HOME use make clean_all will find something.
+# CLEAN_ALL = $(shell find . -mindepth 2 -name Makefile)
 # $(error $(CLEAN_ALL))
 
 clean-all: $(CLEAN_ALL) clean
