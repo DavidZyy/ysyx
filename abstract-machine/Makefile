@@ -120,7 +120,7 @@ LDFLAGS  += -z noexecstack
 
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
 -include $(AM_HOME)/scripts/$(ARCH).mk
-$(info $(yellow)$(OBJS)$(reset))
+# $(info $(yellow)$(OBJS)$(reset))
 
 # $(error $(AM_HOME))
 # $(error $(ARCH))
@@ -194,6 +194,9 @@ clean:
 
 ### Clean all sub-projects within depth 2 (and ignore errors)
 CLEAN_ALL = $(dir $(shell find . -mindepth 2 -name Makefile))
+
+# $(error $(CLEAN_ALL))
+
 clean-all: $(CLEAN_ALL) clean
 $(CLEAN_ALL):
 	-@$(MAKE) -s -C $@ clean
