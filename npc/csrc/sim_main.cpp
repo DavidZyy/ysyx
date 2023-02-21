@@ -65,7 +65,7 @@ void print_arg(int argc, char *argv[]){
 
 int main(int argc, char *argv[]) {
   print_arg(argc, argv);
-  load_img(argv[1]);
+  // load_img(argv[1]);
 
   sim_init();
 
