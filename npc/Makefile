@@ -37,18 +37,23 @@ include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
+# $(error $(INC_PATH))
 CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
 all:
 	@echo "Write this Makefile by your self."
 
-# the program to be executed on npc, about ?=, see gnu make 6.2.4 Conditional Variable Assignment
+# the program to be executed on npc, about ?=, 
+# see gnu make 6.2.4 Conditional Variable Assignment
 IMG ?= 
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	verilator --top-module $(TOPNAME) -I$(INCLUDE) --trace --cc --exe --build -Wall $(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS)
+	verilator --top-module $(TOPNAME) -I$(INCLUDE) \
+	-$(addprefix -CFLAGS , $(CFLAGS)) \
+	-trace --cc --exe --build -Wall \
+	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS)
 	obj_dir/Vtop $(IMG)
 	gtkwave dump.vcd
 
