@@ -9,7 +9,7 @@ module top(
   input rst,
   input [`Vec(`InstWidth)] inst,
 
-  output [`ImmWidth-1:0] pc
+  output [`Vec(`ImmWidth)] pc
 );
 
 
@@ -17,7 +17,7 @@ module top(
 wire [`RegIdWidth-1:0]	rd;
 wire [`RegIdWidth-1:0]	rs1;
 wire [`RegIdWidth-1:0]	rs2;
-wire [`ImmWidth-1:0]	imm;
+wire [`Vec(`ImmWidth)]	imm;
 wire 	need_imm;
 wire 	alu_add;
 wire  is_ebreak;
@@ -49,11 +49,11 @@ end
 
 /* execute stage */
   
-wire [`ImmWidth-1:0]	wdata = result;
+wire [`Vec(`ImmWidth)]	wdata = result;
 wire wen = 1'b1;
 
-wire [`ImmWidth-1:0]	rdata_1;
-wire [`ImmWidth-1:0]	rdata_2;
+wire [`Vec(`ImmWidth)]	rdata_1;
+wire [`Vec(`ImmWidth)]	rdata_2;
 
   /* in execute state, read register, in WB state, write back registers */
 RegisterFile 
@@ -74,9 +74,9 @@ u_RegisterFile(
 );
 
   /* input */
-wire [`ImmWidth-1:0]	operator_2 = need_imm ? imm : rdata_2;
+wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
   /* output */
-wire [`ImmWidth-1:0]	result;
+wire [`Vec(`ImmWidth)]	result;
 
 Alu u_Alu(
 	//ports
