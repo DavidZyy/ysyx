@@ -55,7 +55,7 @@ sim:
 	-trace --cc --exe --build -Wall \
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS)
 	obj_dir/Vtop $(IMG)
-	# gtkwave dump.vcd
+	gtkwave dump.vcd
 
 wv:
 	gtkwave dump.vcd
