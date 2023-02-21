@@ -37,9 +37,9 @@ void sim_exit(){
 }
 
 void single_cycle() {
-  top->clk = 1;
-  step_and_dump_wave();
   top->clk = 0;
+  step_and_dump_wave();
+  top->clk = 1;
   step_and_dump_wave();
 }
 
@@ -96,6 +96,10 @@ static long load_img(const char *img_file) {
   return size;
 }
 
+/**
+ * The single cycle time series design refers:
+ * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9
+ */
 int main(int argc, char *argv[]) {
   // print_arg(argc, argv);
   load_img(argv[1]);
