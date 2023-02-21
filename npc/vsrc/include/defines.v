@@ -1,4 +1,5 @@
 
+`define Vec(Width) Width-1:0
 `define InstWidth   32
 `define InstLen     `In
 `define PcRst 64'h80000000

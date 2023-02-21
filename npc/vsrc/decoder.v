@@ -10,7 +10,7 @@ instruction
 `include "./include/defines.v"
 
 module decoder (
-  input [`InstWidth-1:0] inst,
+  input [`Vec(`InstWidth)] inst,
   // output inst_type,
   output [`RegIdWidth-1:0] rd,
   output [`RegIdWidth-1:0] rs1,
