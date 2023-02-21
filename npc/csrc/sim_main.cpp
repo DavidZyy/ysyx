@@ -42,14 +42,7 @@ void single_cycle() {
   step_and_dump_wave();
 }
 
-// static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
-
-static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = 
-{0b00000000, 0b00010000, 0b00000000, 0b10010011,
-    0b00000000, 0b00010000, 0b10000001, 0b00010011,
-    ebreak,
-    };
-
+static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
 int terminal = 0;
 void exit_code(){
