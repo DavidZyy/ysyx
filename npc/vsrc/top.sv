@@ -14,9 +14,9 @@ module top(
 
 
 /* decode instructionn stage */
-wire [`RegIdWidth-1:0]	rd;
-wire [`RegIdWidth-1:0]	rs1;
-wire [`RegIdWidth-1:0]	rs2;
+wire [`Vec(`RegIdWidth)]	rd;
+wire [`Vec(`RegIdWidth)]	rs1;
+wire [`Vec(`RegIdWidth)]	rs2;
 wire [`Vec(`ImmWidth)]	imm;
 wire 	need_imm;
 wire 	alu_add;
@@ -37,7 +37,7 @@ decoder u_decoder(
   .inst_not_ipl ( inst_not_ipl)
 );
 
-always @(*) begin
+always @(*posedge clk) begin
   if (inst_not_ipl) begin
     not_ipl_exception();
   end
