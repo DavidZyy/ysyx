@@ -1,4 +1,5 @@
 import "DPI-C" function void exit_code();
+import "DPI-C" function void not_ipl_exception();
 `include "./include/defines.v"
 
 /* assemble all cpu moudules into top moudule */
@@ -19,6 +20,7 @@ wire [`ImmWidth-1:0]	imm;
 wire 	need_imm;
 wire 	alu_add;
 wire  is_ebreak;
+witr  inst_not_ipl;
 
 decoder u_decoder(
 	//ports
@@ -30,8 +32,19 @@ decoder u_decoder(
 	.imm      		( imm      		),
 	.need_imm 		( need_imm 		),
 	.alu_add  		( alu_add  		),
-  .is_ebreak    ( is_ebreak   )
+  .is_ebreak    ( is_ebreak   ),
+  .inst_not_ipl (inst_not_ipl ),
 );
+
+always @(*) begin
+  if (inst_not_ipl) begin
+    not_ipl_exception();
+  end
+  else begin
+    ;
+  end
+end
+
 
 /* execute stage */
   

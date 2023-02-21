@@ -49,6 +49,12 @@ void exit_code(){
   terminal = 1;
 }
 
+void not_ipl_exception(){
+  terminal = 1;
+  printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
+
+}
+
 /**
  * argv[1] is the path of the program to be executed.
  */

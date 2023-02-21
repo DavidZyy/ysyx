@@ -19,11 +19,11 @@ module decoder (
   output [`Vec(`ImmWidth)] imm,
   output need_imm,
   output alu_add,
-  output is_ebreak
+  output is_ebreak,
+  output inst_not_ipl
 );
 
   /* opcode */
-  // wire op_imm = (`OPCODE(inst) == `OP_IMM);
   wire op_imm = `OpIs(`OP_IMM);
   wire op_system = `OpIs(`SYSTEM);
   
@@ -37,8 +37,21 @@ module decoder (
   wire funct12_000000000001 = `FUNCT12_Is(12'b000000000001);
 
 
-  /* instructions */
+  /* instructions ref: volume I: RISC-V Unprivileged ISA V20191213 */
+
+  /* 2.4 integer computational instructions */
+    /* integer register-immediate instructions */
   wire addi     = op_imm & funct3_000;
+    /* integer register-register instructions */
+
+  /* 2.5 control transfer instructions */
+    /* unconditial jumps */
+
+    /* conditianal branches */
+
+  /* 2.6 load and store */
+
+  /* 2.8 environment call and breakpoints */
   wire ebreak   = op_system & funct3_000 & funct12_000000000001;
   
 
@@ -63,4 +76,9 @@ module decoder (
   assign rd = `RD(inst);
   assign rs1 = `RS1(inst);
   assign rs2 = `RS2(inst);
+
+  /* this signal seems silly, but it is useful, 
+    according to the principle "implement first, and than 
+    perfect it", we just use it. */
+  wire inst_not_ipl = ~(addi | ebreak);
 endmodule
