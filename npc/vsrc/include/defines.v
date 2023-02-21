@@ -31,6 +31,10 @@
   `define FUNCT7(inst)    inst[31:25]
   `define FUNCT12(inst)   inst[31:20]
 
+  `define FUNCT3_Is(imm) (`FUNCT3(inst) == imm);
+  `define FUNCT7_Is(imm) (`FUNCT7(inst) == imm);
+  `define FUNCT12_Is(imm) (`FUNCT12(inst) == imm);
+
 
   /* inst[6:0], opcode, we must make our codes have a 
     great expansibility, as it may add more opcode fields later. */

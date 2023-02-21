@@ -27,13 +27,14 @@ module decoder (
   wire op_system = `OpIs(`SYSTEM);
   
   /* funct3 */
-  wire funct3_000 = (`FUNCT3(inst) == 3'b000);
+  wire funct3_000 = `FUNCT7_Is(3'b000);
 
   /* funct7, if it has more cases, use script to generate the codes below */
 
 
   /* funct12, use for system instructions? */
-  wire funct12_000000000001 = (`FUNCT12(inst) == 12'b000000000001);
+  wire funct12_000000000001 = `FUNCT12_Is(12'b000000000001);
+
 
   /* instructions */
   wire addi     = op_imm & funct3_000;

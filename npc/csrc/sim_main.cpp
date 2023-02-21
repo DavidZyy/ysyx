@@ -77,9 +77,15 @@ static long load_img(const char *img_file) {
   return size;
 }
 
+pmem = {0b00000000000100000000000010010011,
+    0b00000000000100001000000100010011,
+    ebreak,
+    0b00000000000100010000000110010011
+    };
+
 int main(int argc, char *argv[]) {
   print_arg(argc, argv);
-  load_img(argv[1]);
+  // load_img(argv[1]);
 
   sim_init();
 
