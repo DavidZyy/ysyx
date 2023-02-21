@@ -79,7 +79,7 @@ static long load_img(const char *img_file) {
 
 int main(int argc, char *argv[]) {
   print_arg(argc, argv);
-  // load_img(argv[1]);
+  load_img(argv[1]);
 
   sim_init();
 
