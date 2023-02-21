@@ -3,6 +3,7 @@ NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 
 INCLUDE = $(abspath ./vsrc)
+INCLUDE += $(abspath ./vsrc)/include
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
