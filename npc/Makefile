@@ -1,6 +1,6 @@
 TOPNAME = top
 NXDC_FILES = constr/top.nxdc
-INC_PATH ?= $(abspath ./csrc)/include
+INC_PATH = $(abspath ./csrc)/include
 
 INCLUDE = $(abspath ./vsrc)
 
