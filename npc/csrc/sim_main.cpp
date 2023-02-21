@@ -6,6 +6,8 @@
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
 
+#include "include/utils.h"
+
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
 
@@ -51,7 +53,8 @@ void exit_code(){
   terminal = 1;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  printf(ANSI_FMT("argc is : %d", ANSI_BG_RED), argc);
   sim_init();
 
   top->rst = 1;

@@ -43,10 +43,13 @@ LDFLAGS += -lSDL2 -lSDL2_image
 all:
 	@echo "Write this Makefile by your self."
 
+# the program to be executed on npc, about ?=, see gnu make 6.2.4 Conditional Variable Assignment
+IMG ?= 
+
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator --top-module $(TOPNAME) -I$(INCLUDE) --trace --cc --exe --build -Wall $(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS)
-	obj_dir/Vtop
+	obj_dir/Vtop $(IMG)
 	gtkwave dump.vcd
 
 include ../Makefile
