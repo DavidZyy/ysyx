@@ -1,4 +1,4 @@
-AM_SRCS := platform/nemu/trm.c \
+AM_SRCS = platform/nemu/trm.c \
            platform/nemu/ioe/ioe.c \
            platform/nemu/ioe/timer.c \
            platform/nemu/ioe/input.c \
