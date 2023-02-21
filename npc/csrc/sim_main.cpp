@@ -49,11 +49,19 @@ void exit_code(){
   terminal = 1;
 }
 
+/**
+ * At the first two clock cycles, the pc is 0, the
+ * instructions at 0 is illegal, so the 
+ * signal is emited. To prevent this case happens,
+ * I add the condition "top->pc > 0".
+ */
 void not_ipl_exception(){
   if(top->pc){
   terminal = 1;
   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
-  printf(ANSI_FMT("pc: %p\n", ANSI_FG_RED), (void *)top->pc);
+  printf(ANSI_FMT("pc: %p  %d", ANSI_FG_RED), 
+    (void *)top->pc, *((uint32_t *)(&pmem[inst_id])));
+  // printf(ANSI_FMT(""))
   }
 }
 
