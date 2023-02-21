@@ -22,7 +22,8 @@ module decoder (
 );
 
   /* opcode */
-  wire op_imm = (`OPCODE(inst) == `OP_IMM);
+  // wire op_imm = (`OPCODE(inst) == `OP_IMM);
+  wire op_imm = `OpIs(`OP_IMM);
   wire op_system = (`OPCODE(inst) == `SYSTEM);
   
   /* funct3 */
