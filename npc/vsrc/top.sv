@@ -34,7 +34,7 @@ decoder u_decoder(
 	.need_imm 		( need_imm 		),
 	.alu_add  		( alu_add  		),
   .is_ebreak    ( is_ebreak   ),
-  .inst_not_ipl (inst_not_ipl )
+  .inst_not_ipl ( inst_not_ipl)
 );
 
 always @(*) begin
