@@ -37,7 +37,7 @@ decoder u_decoder(
   .inst_not_ipl ( inst_not_ipl)
 );
 
-always @(posedge clk) begin
+always @(*) begin
   if (inst_not_ipl) begin
     not_ipl_exception();
   end
@@ -87,7 +87,7 @@ Alu u_Alu(
 	.result     		( result     		)
 );
 
-always @(posedge clk) begin
+always @(*) begin
   if (is_ebreak) begin
     exit_code();
   end
