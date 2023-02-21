@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
   single_cycle();
   top->rst = 0;
 
-  for(int i = 0; i < 10; i++){
+  for(int i = 0; i < 100; i++){
     top->inst = *((uint32_t *)(&pmem[inst_id]));
     /* two cycle one instruction */
     single_cycle();
