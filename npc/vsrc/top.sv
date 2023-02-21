@@ -1,12 +1,13 @@
 import "DPI-C" function void exit_code();
 import "DPI-C" function void not_ipl_exception();
+
 `include "./include/defines.v"
 
 /* assemble all cpu moudules into top moudule */
 module top(
   input clk,
   input rst,
-  input [`InstWidth-1:0] inst,
+  input [`Vec(`InstWidth)] inst,
 
   output [`ImmWidth-1:0] pc
 );

@@ -52,6 +52,7 @@ void exit_code(){
 void not_ipl_exception(){
   terminal = 1;
   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
+  printf(ANSI_FMT("pc: %p\n", ANSI_FG_RED), top->pc);
 
 }
 
@@ -84,7 +85,7 @@ static long load_img(const char *img_file) {
 }
 
 int main(int argc, char *argv[]) {
-  print_arg(argc, argv);
+  // print_arg(argc, argv);
   load_img(argv[1]);
 
   sim_init();

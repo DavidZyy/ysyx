@@ -57,6 +57,10 @@ sim:
 	obj_dir/Vtop $(IMG)
 	gtkwave dump.vcd
 
+wv:
+	gtkwave dump.vcd
+
+
 include ../Makefile
 
 # run:
