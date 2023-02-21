@@ -70,7 +70,7 @@ static long load_img(const char *img_file) {
   long size = ftell(fp);
 
   fseek(fp, 0, SEEK_SET);
-  int ret = fread(pmem, size, 1, fp)
+  int ret = fread(pmem, size, 1, fp);
   assert(ret == 1);
 
   fclose(fp);
