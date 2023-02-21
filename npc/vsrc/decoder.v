@@ -27,7 +27,7 @@ module decoder (
   wire op_system = `OpIs(`SYSTEM);
   
   /* funct3 */
-  wire funct3_000 = `FUNCT7_Is(3'b000);
+  wire funct3_000 = `FUNCT3_Is(3'b000);
 
   /* funct7, if it has more cases, use script to generate the codes below */
 
