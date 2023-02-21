@@ -24,7 +24,12 @@ static uint8_t *pmem = NULL;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #endif
 
+/* my understanding: paddr is the program in the guest's address, paddr - CONFIG_MBASE 
+is the offset from the beginning of the program, pmem is the beginning of the program in
+the host. */
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
+/* haddr is the address in host nemu, - pmem is the offset from the beginning, + CONFIG_MBASE(the
+beginning of the programm in guest) get the address in the guest. */
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t pmem_read(paddr_t addr, int len) {
