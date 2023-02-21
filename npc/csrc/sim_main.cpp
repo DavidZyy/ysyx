@@ -7,6 +7,7 @@
 #include "Vtop__Dpi.h"
 
 #include "include/utils.h"
+#include "include/macro.h"
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
@@ -39,7 +40,6 @@ void single_cycle() {
   step_and_dump_wave();
 }
 
-#define ebreak  0b00000000000100000000000001110011
 uint32_t mem[10] = {0b00000000000100000000000010010011,
                     0b00000000000100001000000100010011,
                     ebreak,
@@ -65,6 +65,8 @@ void print_arg(int argc, char *argv[]){
 
 int main(int argc, char *argv[]) {
   print_arg(argc, argv);
+  load_img(argv[1]);
+
   sim_init();
 
   top->rst = 1;
