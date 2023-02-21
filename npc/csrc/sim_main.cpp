@@ -53,12 +53,18 @@ void exit_code(){
   terminal = 1;
 }
 
-int main(int argc, char *argv[]) {
+/**
+ * argv[1] is the path of the program to be executed.
+ */
+void print_arg(int argc, char *argv[]){
   printf(ANSI_FMT("argc is : %d\n", ANSI_FG_RED), argc);
   for(int i = 0; i < argc; i++){
     printf(ANSI_FMT("argv %d is: %s\n", ANSI_FG_GREEN), i, argv[i]);
   }
+}
 
+int main(int argc, char *argv[]) {
+  print_arg(argc, argv);
   sim_init();
 
   top->rst = 1;
