@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "macro.h"
 #include <stdio.h>
+#include <string.h>
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
@@ -77,6 +78,7 @@ void print_arg(int argc, char *argv[]){
 }
 
 static long load_img(const char *img_file) {
+  memset(pmem, 1, sizeof(pmem));
   assert(img_file != NULL);
 
   FILE *fp = fopen(img_file, "rb");
