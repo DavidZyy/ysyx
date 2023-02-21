@@ -38,7 +38,7 @@ decoder u_decoder(
 );
 
 always @(*) begin
-  if (inst_not_ipl && pc) begin
+  if (inst_not_ipl && (pc > 0)) begin
     not_ipl_exception();
   end
   else begin
