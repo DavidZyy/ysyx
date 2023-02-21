@@ -9,6 +9,7 @@ instruction
 */
 `include "./include/defines.v"
 
+
 module decoder (
   input [`Vec(`InstWidth)] inst,
   // output inst_type,
