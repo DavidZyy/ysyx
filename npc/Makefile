@@ -1,9 +1,8 @@
 TOPNAME = top
 NXDC_FILES = constr/top.nxdc
-INC_PATH ?=
+INC_PATH ?= $(abspath ./csrc)/include
 
 INCLUDE = $(abspath ./vsrc)
-INCLUDE += $(abspath ./csrc)/include
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
