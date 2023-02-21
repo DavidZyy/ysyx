@@ -52,7 +52,7 @@ void exit_code(){
 void not_ipl_exception(){
   terminal = 1;
   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
-  printf(ANSI_FMT("pc: %p\n", ANSI_FG_RED), top->pc);
+  printf(ANSI_FMT("pc: %p\n", ANSI_FG_RED), (void *)top->pc);
 
 }
 
