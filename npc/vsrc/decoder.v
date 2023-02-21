@@ -80,5 +80,5 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  wire inst_not_ipl = ~(addi | ebreak);
+  assign inst_not_ipl = ~(addi | ebreak);
 endmodule
