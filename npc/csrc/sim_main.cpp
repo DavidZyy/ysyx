@@ -37,9 +37,9 @@ void sim_exit(){
 }
 
 void single_cycle() {
-  top->clk = 0;
-  step_and_dump_wave();
   top->clk = 1;
+  step_and_dump_wave();
+  top->clk = 0;
   step_and_dump_wave();
 }
 
