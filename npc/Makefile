@@ -51,7 +51,7 @@ IMG ?=
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator --top-module $(TOPNAME) -I$(INCLUDE) \
-	-$(addprefix -CFLAGS , $(CFLAGS)) \
+	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS)
 	obj_dir/Vtop $(IMG)
