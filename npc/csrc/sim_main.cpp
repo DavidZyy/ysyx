@@ -6,8 +6,8 @@
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
 
-#include "include/utils.h"
-#include "include/macro.h"
+#include "utils.h"
+#include "macro.h"
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
