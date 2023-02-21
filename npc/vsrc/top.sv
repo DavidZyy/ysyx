@@ -20,7 +20,7 @@ wire [`ImmWidth-1:0]	imm;
 wire 	need_imm;
 wire 	alu_add;
 wire  is_ebreak;
-wite  inst_not_ipl;
+wire  inst_not_ipl;
 
 decoder u_decoder(
 	//ports
