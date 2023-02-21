@@ -12,10 +12,10 @@ instruction
 module decoder (
   input [`Vec(`InstWidth)] inst,
   // output inst_type,
-  output [`RegIdWidth-1:0] rd,
-  output [`RegIdWidth-1:0] rs1,
-  output [`RegIdWidth-1:0] rs2,
-  output [`ImmWidth-1:0] imm,
+  output [`Vec(`RegIdWidth)] rd,
+  output [`Vec(`RegIdWidth)] rs1,
+  output [`Vec(`RegIdWidth)] rs2,
+  output [`Vec(`ImmWidth)] imm,
   output need_imm,
   output alu_add,
   output is_ebreak
