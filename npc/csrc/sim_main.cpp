@@ -54,9 +54,9 @@ void exit_code(){
 }
 
 int main(int argc, char *argv[]) {
-  printf(ANSI_FMT("argc is : %d\n", ANSI_BG_RED), argc);
+  printf(ANSI_FMT("argc is : %d\n", ANSI_FG_RED), argc);
   for(int i = 0; i < argc; i++){
-    printf(ANSI_FMT("argv %d is: %s\n", ANSI_BG_GREEN), i, argv[i]);
+    printf(ANSI_FMT("argv %d is: %s\n", ANSI_FG_GREEN), i, argv[i]);
   }
 
   sim_init();
