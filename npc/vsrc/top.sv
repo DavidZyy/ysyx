@@ -39,7 +39,7 @@ decoder u_decoder(
 );
 
 // always @(*) begin
-always @(negedge clk) begin
+always @(posedge clk) begin
   if (inst_not_ipl) begin
     not_ipl_exception();
   end
