@@ -57,11 +57,11 @@ void exit_code(){
  * I add the condition "top->pc > 0".
  */
 void not_ipl_exception(){
-  if(top->pc){
+  if(top->current_pc){
   terminal = 1;
   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
   printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
-    (void *)top->pc, *((uint32_t *)(&pmem[inst_id])));
+    (void *)top->current_pc, *((uint32_t *)(&pmem[inst_id])));
     // (void *)top->pc, top->inst);
   // printf(ANSI_FMT(""))
   }
