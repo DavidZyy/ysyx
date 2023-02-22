@@ -49,7 +49,8 @@ decoder u_decoder(
   is been updated. */
 always @(posedge clk) begin
   if (inst_not_ipl) begin
-    not_ipl_exception();
+    // not_ipl_exception();
+    ;
   end
   else begin
     ;
