@@ -7,7 +7,7 @@ module PC (
     // input jar,
     // input bxx,
     
-    output [`Vec(`RegWidth)] current_pc
+    output [`Vec(`RegWidth)] current_pc,
     output [`Vec(`RegWidth)] next_pc
 );
 
