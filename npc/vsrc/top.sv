@@ -9,7 +9,8 @@ module top(
   input rst,
   input [`Vec(`InstWidth)] inst,
 
-  output [`Vec(`ImmWidth)] pc
+  output [`Vec(`ImmWidth)] current_pc,
+  output [`Vec(`ImmWidth)] next_pc
 );
 
 
@@ -101,7 +102,8 @@ PC u_PC(
 	.clk        		( clk        		),
 	.rst        		( rst        		),
 
-	.current_pc 		( pc )
+	.current_pc 		( current_pc    ),
+  .net_pc         ( next_pc       )
 );
 
 

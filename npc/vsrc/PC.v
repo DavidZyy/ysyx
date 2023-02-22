@@ -8,10 +8,13 @@ module PC (
     // input bxx,
     
     output [`Vec(`RegWidth)] current_pc
+    output [`Vec(`RegWidth)] next_pc
 );
 
 /* a multiplexer to choose which is the next pc */
-wire [`Vec(`RegWidth)] next_pc = current_pc + 4;
+wire [`Vec(`RegWidth)] next_pc_temp1 = current_pc + 4;
+
+wire [`Vec(`RegWidth)] next_pc = rst ? `PcRst :  next_pc_temp1;
 
  Reg 
  #(
