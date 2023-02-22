@@ -88,7 +88,8 @@ Alu u_Alu(
 	.result     		( result     		)
 );
 
-always @(*) begin
+// always @(*) begin
+always @(negedge clk) begin
   if (is_ebreak) begin
     exit_code();
   end
