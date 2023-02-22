@@ -22,6 +22,7 @@ wire [`Vec(`ImmWidth)]	imm;
 wire 	need_imm;
 wire 	alu_add;
 wire  is_ebreak;
+wire  is_auipc;
 wire  inst_not_ipl;
 
 decoder u_decoder(
@@ -35,10 +36,17 @@ decoder u_decoder(
 	.need_imm 		( need_imm 		),
 	.alu_add  		( alu_add  		),
   .is_ebreak    ( is_ebreak   ),
+  .is_auipc     ( is_auipc    ),
   .inst_not_ipl ( inst_not_ipl)
 );
 
-// always @(*) begin
+/*suppose one cycle is begin with the negtive cycle. 
+  can not use negedge, because when in the edge of 
+  neg, the pc and instructions update, but the update
+  moment inst_not_ipl represent the old value, the
+  new value of it is delayed. But in the posedge, 
+  in the middle of the cycle, the inst_not_ipl signal
+  is been updated. */
 always @(posedge clk) begin
   if (inst_not_ipl) begin
     not_ipl_exception();
@@ -76,13 +84,14 @@ u_RegisterFile(
 );
 
   /* input */
+wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? current_pc: rdata_1;
 wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
   /* output */
 wire [`Vec(`ImmWidth)]	result;
 
 Alu u_Alu(
 	//ports
-	.operator_1 		( rdata_1),
+	.operator_1 		( operator_1),
 	.operator_2 		( operator_2 		),
 	.alu_add    		( alu_add    		),
 
