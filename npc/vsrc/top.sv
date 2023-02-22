@@ -103,7 +103,7 @@ PC u_PC(
 	.rst        		( rst        		),
 
 	.current_pc 		( current_pc    ),
-  .next_pc         ( next_pc       )
+  .next_pc        ( next_pc       )
 );
 
 
