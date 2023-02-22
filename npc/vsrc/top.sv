@@ -99,7 +99,7 @@ Alu u_Alu(
 );
 
 // always @(*) begin
-always @(negedge clk) begin
+always @(posedge clk) begin
   if (is_ebreak) begin
     exit_code();
   end
