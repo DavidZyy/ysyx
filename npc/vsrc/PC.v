@@ -14,7 +14,7 @@ module PC (
 /* a multiplexer to choose which is the next pc */
 wire [`Vec(`RegWidth)] next_pc_temp1 = current_pc + 4;
 
-wire [`Vec(`RegWidth)] next_pc = rst ? `PcRst :  next_pc_temp1;
+assign next_pc = rst ? `PcRst :  next_pc_temp1;
 
  Reg 
  #(
