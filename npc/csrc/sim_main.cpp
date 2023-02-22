@@ -48,7 +48,7 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 int terminal = 0;
 void exit_code(){
   terminal = 1;
-  printf(ANSI_FMT("program exit at %px\n", ANSI_FG_RED), 
+  printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
         (void *)top->current_pc);
 }
 
