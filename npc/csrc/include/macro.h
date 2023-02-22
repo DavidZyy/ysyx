@@ -1,7 +1,7 @@
 
 #define PG_ALIGN __attribute((aligned(4096)))
 
-#define inst_id (top->pc - 0x80000000)
+#define inst_id (top->next_pc - 0x80000000)
 #define CONFIG_MSIZE 0x8000000
 
 // instructions
