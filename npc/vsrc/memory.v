@@ -7,7 +7,8 @@ module memory (
     output [`Vec(`InstWidth)] inst
 );
     localparam mem_size = 256;
-    wire inst_id = (pc - `PcRst)/4;
+    wire inst_id;
+    assign inst_id = (pc - `PcRst)/4;
 
     reg [`Vec(`RegWidth)] mem[mem_size-1:0];
 
