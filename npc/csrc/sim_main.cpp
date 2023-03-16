@@ -27,7 +27,8 @@ void step_and_dump_wave(){
 void sim_init(){
   contextp = new VerilatedContext;
   tfp = new VerilatedVcdC;
-  top = new Vtop;
+  // top = new Vtop;
+  top = new Vtop{contextp};
   contextp->traceEverOn(true);
   top->trace(tfp, 0);
   tfp->open("dump.vcd");
@@ -106,8 +107,8 @@ static long load_img(const char *img_file) {
 
 void load_init_img(){
   *(uint32_t*)(&pmem[0]) = 0x00009117;
-  // *(uint32_t*)(&pmem[4]) = 0x00009117;
-  // *(uint32_t*)(&pmem[8]) = 0x00009117;
+  *(uint32_t*)(&pmem[4]) = 0x00009117;
+  *(uint32_t*)(&pmem[8]) = 0x00009117;
   *(uint32_t*)(&pmem[12]) = ebreak;
 }
 
@@ -141,3 +142,27 @@ int main(int argc, char *argv[]) {
   // top = new Vtop;
   // verilated::traceEverOn(true);
 }
+
+//============ Main ============
+// int main(int argc, char** argv, char** env) {
+//   contextp = new VerilatedContext;
+//   contextp->commandArgs(argc, argv);
+//   top = new Vtop{contextp};
+//   //VCD波形设置  start
+//   Verilated::traceEverOn(true);
+//   tfp = new VerilatedVcdC;
+//   top->trace(tfp, 0);
+//   tfp->open("wave.vcd");
+//   //VCD波形设置  end
+//   //initial data
+//   pmem_init();
+//   cpu_init();
+//  
+//   #ifdef CONFIG_DIFFTEST
+//     init_difftest();
+//   #endif
+//  
+//   sdb_mainloop();
+//  
+//   return 0;
+// }
