@@ -16,6 +16,6 @@ module memory (
     initial $readmemh("./test.hex", mem);
 
     always @(negedge clk) begin
-        inst <= mem[inst_id];
+        inst <= mem[inst_id[7:0]];
     end
 endmodule //memory
