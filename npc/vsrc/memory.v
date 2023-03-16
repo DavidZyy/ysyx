@@ -4,7 +4,7 @@ module memory (
     input   clk,
     input [`Vec(`RegWidth)] pc,
 
-    output [`Vec(`InstWidth)] inst
+    output reg [`Vec(`InstWidth)] inst
 );
     localparam mem_size = 256;
     wire [`Vec(`RegWidth)] inst_id;
