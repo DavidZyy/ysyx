@@ -99,7 +99,6 @@ Alu u_Alu(
 	.result     		( result     		)
 );
 
-always @(*) begin
 always @(posedge clk) begin
   if (is_ebreak) begin
     // exit_code();
