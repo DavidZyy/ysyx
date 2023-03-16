@@ -185,6 +185,8 @@ void cpu_exec(uint64_t n) {
       // #ifdef CONFIG_DIFFTEST
         // difftest_exec_once();
       // #endif
+      if(terminal)
+        break;
   }
 }
 
