@@ -40,6 +40,8 @@ void sim_exit(){
 
 void single_cycle() {
   top->clk = 0;
+  printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
+        (void *)top->next_pc);
 
   top->inst = *((uint32_t *)(&pmem[inst_id]));
   step_and_dump_wave();
