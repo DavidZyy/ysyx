@@ -7,7 +7,7 @@ import "DPI-C" function void not_ipl_exception();
 module top(
   input clk,
   input rst,
-  // input [`Vec(`InstWidth)] inst,
+  input [`Vec(`InstWidth)] inst,
 
   output [`Vec(`ImmWidth)] current_pc,
   output [`Vec(`ImmWidth)] next_pc
@@ -15,12 +15,12 @@ module top(
 
 wire [`Vec(`InstWidth)]	inst;
 
-memory u_memory(
-	//ports
-	.clk  		( clk  		),
-	.pc   		( next_pc[7:0]   		),
-	.inst 		( inst 		)
-);
+// memory u_memory(
+// 	//ports
+// 	.clk  		( clk  		),
+// 	.pc   		( next_pc[7:0]   		),
+// 	.inst 		( inst 		)
+// );
 
 
 /* decode instructionn stage */
