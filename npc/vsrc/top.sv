@@ -99,15 +99,15 @@ Alu u_Alu(
 	.result     		( result     		)
 );
 
-// always @(*) begin
-// always @(posedge clk) begin
-//   if (is_ebreak) begin
-//     exit_code();
-//   end
-//   else begin
-//     ;
-//   end
-// end
+always @(*) begin
+always @(posedge clk) begin
+  if (is_ebreak) begin
+    // exit_code();
+  end
+  else begin
+    ;
+  end
+end
 
 PC u_PC(
 	//ports
