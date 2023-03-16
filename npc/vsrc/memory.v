@@ -2,7 +2,7 @@
 
 module memory (
     input   clk,
-    input [7:0] pc_id,
+    input [7:0] pc,
 
     output reg [`Vec(`InstWidth)] inst
 );
@@ -16,6 +16,6 @@ module memory (
     initial $readmemh("./test.hex", mem);
 
     always @(negedge clk) begin
-        inst <= mem[pc_id/4];
+        inst <= mem[pc/4];
     end
 endmodule //memory
