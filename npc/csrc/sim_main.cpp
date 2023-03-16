@@ -17,6 +17,7 @@ VerilatedVcdC* tfp = NULL;
 
 static Vtop* top;
 
+static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1);
@@ -46,7 +47,6 @@ void single_cycle() {
   step_and_dump_wave();
 }
 
-static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
 int terminal = 0;
 void exit_code(){
