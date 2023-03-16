@@ -1,7 +1,7 @@
 
-module memory (
-    input      clk,
-    input [] 
-);
-    
-endmodule //memory
+// module memory (
+//     input      clk,
+//     input [] 
+// );
+//     
+// endmodule //memory
