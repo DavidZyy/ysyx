@@ -13,7 +13,7 @@ module memory (
 
     reg [`Vec(`InstWidth)] mem[mem_size-1:0];
 
-    initial $readmemh("./test.hex", mem);
+    initial $readmemh("/home/zhuyangyang/project/ysyx-workbench/npc/vsrc/test.hex", mem);
 
     always @(negedge clk) begin
         inst <= mem[pc/4];
