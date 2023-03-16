@@ -107,10 +107,10 @@ static long load_img(const char *img_file) {
 
 void load_init_img(){
   *(uint32_t*)(&pmem[0]) = 0x00009117;
-  *(uint32_t*)(&pmem[4]) = 0x00009117;
-  *(uint32_t*)(&pmem[8]) = 0x00009117;
-  *(uint32_t*)(&pmem[12]) = 0x00008117;
-  *(uint32_t*)(&pmem[16]) = ebreak;
+  // *(uint32_t*)(&pmem[4]) = 0x00009117;
+  // *(uint32_t*)(&pmem[8]) = 0x00009117;
+  // *(uint32_t*)(&pmem[12]) = 0x00008117;
+  // *(uint32_t*)(&pmem[16]) = ebreak;
 }
 
 /**
@@ -193,17 +193,18 @@ int main(int argc, char** argv, char** env) {
   load_init_img();
   contextp = new VerilatedContext;
   contextp->commandArgs(argc, argv);
-  // top = new Vtop{contextp};
+  top = new Vtop{contextp};
   //VCD波形设置  start
   Verilated::traceEverOn(true);
   tfp = new VerilatedVcdC;
   top->trace(tfp, 0);
-  tfp->open("wave.vcd");
+  // tfp->open("wave.vcd");
+  tfp->open("dump.vcd");
   //VCD波形设置  end
   //initial data
   // pmem_init();
-  // cpu_init();
-  // cpu_exec(100);
+  cpu_init();
+  cpu_exec(100);
 //   #ifdef CONFIG_DIFFTEST
 //     init_difftest();
 //   #endif
