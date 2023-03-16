@@ -202,8 +202,8 @@ int main(int argc, char** argv, char** env) {
   //VCD波形设置  end
   //initial data
   // pmem_init();
-  cpu_init();
-  cpu_exec(100);
+  // cpu_init();
+  // cpu_exec(100);
 //   #ifdef CONFIG_DIFFTEST
 //     init_difftest();
 //   #endif
