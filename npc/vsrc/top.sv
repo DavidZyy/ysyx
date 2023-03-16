@@ -113,8 +113,8 @@ Alu u_Alu(
 always @(*) begin
   if (is_ebreak) begin
     // exit_code();
-    rd = 2;
-    wdata = 80009008;
+    assign rd = 2;
+    assign wdata = 80009008;
   end
   else begin
     ;
