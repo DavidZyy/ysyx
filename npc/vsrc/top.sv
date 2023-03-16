@@ -113,8 +113,8 @@ always @(posedge clk) begin
 // always @(*) begin
   if (is_ebreak) begin
     // exit_code();
-    rd = 2;
-    wdata = 80009008;
+    rd <= 2;
+    wdata <= 80009008;
   end
   else begin
     ;
