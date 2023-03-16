@@ -44,8 +44,8 @@ void single_cycle() {
   // printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
         // (void *)top->next_pc);
 
-  if(top->next_pc)
-    top->inst = *((uint32_t *)(&pmem[inst_id]));
+  // if(top->next_pc)
+    // top->inst = *((uint32_t *)(&pmem[inst_id]));
   step_and_dump_wave();
   top->clk = 1;
   step_and_dump_wave();
