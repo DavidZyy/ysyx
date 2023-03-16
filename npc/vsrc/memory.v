@@ -13,7 +13,8 @@ module memory (
 
     reg [`Vec(`InstWidth)] mem[mem_size-1:0];
 
-    initial $readmemh("/home/zhuyangyang/project/ysyx-workbench/npc/vsrc/test.hex", mem);
+    // initial $readmemh("/home/zhuyangyang/project/ysyx-workbench/npc/vsrc/test.hex", mem);
+    initial $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/hello-str-riscv64-npc.bin", mem);
 
     always @(negedge clk) begin
     // always @(posedge clk) begin
