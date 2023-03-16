@@ -114,7 +114,7 @@ Alu u_Alu(
 // always @(posedge clk) begin
 always @(*) begin
   if (is_ebreak) begin
-    // exit_code();
+    exit_code();
     // assign rd = 2;
     // assign wdata = 64'h80009008;
   end
