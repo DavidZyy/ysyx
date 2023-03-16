@@ -166,6 +166,7 @@ void exec_once(VerilatedVcdC* tfp) {
   //printf("======clk shoule be 0 now %d\n",top->clk);
   // top->mem_inst = pmem_read(top->mem_addr);
   // printf("excute addr:0x%08lx inst:0x%08x\n",top->mem_addr,top->mem_inst);
+  top->inst = 0;
   top->eval();
   tfp->dump(main_time);
   main_time ++;
@@ -192,7 +193,7 @@ int main(int argc, char** argv, char** env) {
   load_init_img();
   contextp = new VerilatedContext;
   contextp->commandArgs(argc, argv);
-  // top = new Vtop{contextp};
+  top = new Vtop{contextp};
   //VCD波形设置  start
   Verilated::traceEverOn(true);
   tfp = new VerilatedVcdC;
