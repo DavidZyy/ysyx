@@ -133,4 +133,7 @@ int main(int argc, char *argv[]) {
 // 
 // 
 //   sim_exit();
+  int time = 100;
+  top = new Vtop;
+  verilated::traceEverOn(true);
 }
