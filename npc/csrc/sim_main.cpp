@@ -113,8 +113,8 @@ void load_init_img(){
  */
 int main(int argc, char *argv[]) {
   // print_arg(argc, argv);
-  // load_img(argv[1]);
-  load_init_img();
+  load_img(argv[1]);
+  // load_init_img();
 
   sim_init();
 
