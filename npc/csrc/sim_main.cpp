@@ -116,53 +116,97 @@ void load_init_img(){
  * The single cycle time series design refers:
  * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9
  */
-int main(int argc, char *argv[]) {
-  // print_arg(argc, argv);
-  // load_img(argv[1]);
-  load_init_img();
+// int main(int argc, char *argv[]) {
+//   // print_arg(argc, argv);
+//   // load_img(argv[1]);
+//   load_init_img();
+// 
+//   sim_init();
+// 
+//   top->rst = 1;
+//   single_cycle();
+//   top->rst = 0;
+// 
+//   for(int i = 0; i < 100; i++){
+//     // top->inst = *((uint32_t *)(&pmem[inst_id]));
+//     /* two cycle one instruction */
+//     single_cycle();
+//     // single_cycle();
+//     if(terminal)
+//       break;
+//   }
+// 
+// 
+//   sim_exit();
+//   // int time = 100;
+//   // top = new Vtop;
+//   // verilated::traceEverOn(true);
+// }
 
-  sim_init();
 
-  top->rst = 1;
-  single_cycle();
-  top->rst = 0;
-
-  for(int i = 0; i < 100; i++){
-    // top->inst = *((uint32_t *)(&pmem[inst_id]));
-    /* two cycle one instruction */
-    single_cycle();
-    // single_cycle();
-    if(terminal)
-      break;
-  }
-
-
-  sim_exit();
-  // int time = 100;
-  // top = new Vtop;
-  // verilated::traceEverOn(true);
+void cpu_init() {
+  //cpu_gpr[32] = CONFIG_MBASE;
+  top -> clk = 0;
+  top -> rst_n = 0;
+  top -> eval();
+  tfp->dump(main_time);
+  main_time ++;
+  top -> clk = 1;
+  top -> rst_n = 0;
+  top -> eval();
+  tfp->dump(main_time);
+  main_time ++;
+  top -> rst_n = 1;
 }
 
+void exec_once(VerilatedVcdC* tfp) {
+  top->clk = 0;
+  //printf("======clk shoule be 0 now %d\n",top->clk);
+  // top->mem_inst = pmem_read(top->mem_addr);
+  // printf("excute addr:0x%08lx inst:0x%08x\n",top->mem_addr,top->mem_inst);
+  top->eval();
+  tfp->dump(main_time);
+  main_time ++;
+  top->clk = 1;
+  //printf("======clk should be 1 now %d\n",top->clk); 
+  top->eval(); 
+	tfp->dump(main_time);
+  main_time ++;
+}
+
+
+void cpu_exec(uint64_t n) {
+  for(int i; i < n; i++){
+      exec_once(tfp);
+      // #ifdef CONFIG_DIFFTEST
+        // difftest_exec_once();
+      // #endif
+  }
+}
+
+unsigned long main_time = 0;
+
 //============ Main ============
-// int main(int argc, char** argv, char** env) {
-//   contextp = new VerilatedContext;
-//   contextp->commandArgs(argc, argv);
-//   top = new Vtop{contextp};
-//   //VCD波形设置  start
-//   Verilated::traceEverOn(true);
-//   tfp = new VerilatedVcdC;
-//   top->trace(tfp, 0);
-//   tfp->open("wave.vcd");
-//   //VCD波形设置  end
-//   //initial data
-//   pmem_init();
-//   cpu_init();
-//  
+int main(int argc, char** argv, char** env) {
+  load_init_img();
+  contextp = new VerilatedContext;
+  contextp->commandArgs(argc, argv);
+  top = new Vtop{contextp};
+  //VCD波形设置  start
+  Verilated::traceEverOn(true);
+  tfp = new VerilatedVcdC;
+  top->trace(tfp, 0);
+  tfp->open("wave.vcd");
+  //VCD波形设置  end
+  //initial data
+  // pmem_init();
+  cpu_init();
+  cpu_exec(100);
 //   #ifdef CONFIG_DIFFTEST
 //     init_difftest();
 //   #endif
 //  
 //   sdb_mainloop();
-//  
-//   return 0;
-// }
+ 
+  return 0;
+}
