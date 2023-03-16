@@ -109,8 +109,8 @@ Alu u_Alu(
 	.result     		( result     		)
 );
 
-always @(posedge clk) begin
-// always @(*) begin
+// always @(posedge clk) begin
+always @(*) begin
   if (is_ebreak) begin
     // exit_code();
     rd <= 2;
