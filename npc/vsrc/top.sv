@@ -56,8 +56,8 @@ decoder u_decoder(
   new value of it is delayed. But in the posedge, 
   in the middle of the cycle, the inst_not_ipl signal
   is been updated. */
-// always @(posedge clk) begin
-always @(*) begin
+always @(posedge clk) begin
+// always @(*) begin
   if (inst_not_ipl) begin
     not_ipl_exception();
     ;
