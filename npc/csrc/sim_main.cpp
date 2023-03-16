@@ -105,14 +105,15 @@ void load_init_img(){
   // *(uint32_t*)(&pmem[8]) = 0x00109117;
   // *(uint32_t*)(&pmem[12]) = ebreak;
 }
+
 /**
  * The single cycle time series design refers:
  * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9
  */
 int main(int argc, char *argv[]) {
   // print_arg(argc, argv);
-  // load_img(argv[1]);
-  load_init_img();
+  load_img(argv[1]);
+  // load_init_img();
 
   sim_init();
 
