@@ -70,8 +70,8 @@ end
 
 /* execute stage */
   
-wire [`Vec(`ImmWidth)]	wdata = result;
-// wire [`Vec(`ImmWidth)]	wdata = is_ebreak ? 64'h80009008 : result;
+// wire [`Vec(`ImmWidth)]	wdata = result;
+wire [`Vec(`ImmWidth)]	wdata = is_ebreak ? 64'h80009008 : result;
 assign rd = 2;
 wire wen = 1'b1;
 
