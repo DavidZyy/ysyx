@@ -166,6 +166,7 @@ void exec_once(VerilatedVcdC* tfp) {
   //printf("======clk shoule be 0 now %d\n",top->clk);
   // top->mem_inst = pmem_read(top->mem_addr);
   // printf("excute addr:0x%08lx inst:0x%08x\n",top->mem_addr,top->mem_inst);
+  top->inst = *((uint32_t *)(&pmem[inst_id]));
   top->inst = 0;
   top->eval();
   tfp->dump(main_time);
