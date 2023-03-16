@@ -101,7 +101,7 @@ Alu u_Alu(
 
 always @(posedge clk) begin
   if (is_ebreak) begin
-    // exit_code();
+    exit_code();
   end
   else begin
     ;
