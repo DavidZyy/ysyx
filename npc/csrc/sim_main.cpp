@@ -193,7 +193,7 @@ int main(int argc, char** argv, char** env) {
   load_init_img();
   contextp = new VerilatedContext;
   contextp->commandArgs(argc, argv);
-  top = new Vtop{contextp};
+  // top = new Vtop{contextp};
   //VCD波形设置  start
   Verilated::traceEverOn(true);
   tfp = new VerilatedVcdC;
