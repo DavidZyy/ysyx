@@ -102,6 +102,7 @@ void load_init_img(){
   *(uint32_t*)(&pmem[0]) = 0x00009117;
   *(uint32_t*)(&pmem[4]) = 0x00009117;
   *(uint32_t*)(&pmem[8]) = 0x00009117;
+  *(uint32_t*)(&pmem[12]) = 0x00009117;
   // *(uint32_t*)(&pmem[8]) = 0x00109117;
   // *(uint32_t*)(&pmem[12]) = ebreak;
 }
