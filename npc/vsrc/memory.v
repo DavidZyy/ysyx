@@ -15,7 +15,8 @@ module memory (
 
     initial $readmemh("/home/zhuyangyang/project/ysyx-workbench/npc/vsrc/test.hex", mem);
 
-    always @(negedge clk) begin
+    // always @(negedge clk) begin
+    always @(posedge clk) begin
         inst <= mem[pc/4];
     end
 endmodule //memory
