@@ -116,24 +116,24 @@ int main(int argc, char *argv[]) {
   // load_img(argv[1]);
   load_init_img();
 
-//   sim_init();
-// 
-//   top->rst = 1;
-//   single_cycle();
-//   top->rst = 0;
-// 
-//   for(int i = 0; i < 100; i++){
-//     top->inst = *((uint32_t *)(&pmem[inst_id]));
-//     /* two cycle one instruction */
-//     single_cycle();
-//     // single_cycle();
-//     if(terminal)
-//       break;
-//   }
-// 
-// 
-//   sim_exit();
-  int time = 100;
-  top = new Vtop;
-  verilated::traceEverOn(true);
+  sim_init();
+
+  top->rst = 1;
+  single_cycle();
+  top->rst = 0;
+
+  for(int i = 0; i < 100; i++){
+    top->inst = *((uint32_t *)(&pmem[inst_id]));
+    /* two cycle one instruction */
+    single_cycle();
+    // single_cycle();
+    if(terminal)
+      break;
+  }
+
+
+  sim_exit();
+  // int time = 100;
+  // top = new Vtop;
+  // verilated::traceEverOn(true);
 }
