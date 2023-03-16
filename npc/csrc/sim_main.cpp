@@ -211,6 +211,6 @@ int main(int argc, char** argv, char** env) {
 //   #endif
 //  
 //   sdb_mainloop();
- 
+  tfp->close();
   return 0;
 }
