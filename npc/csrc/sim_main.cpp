@@ -133,7 +133,7 @@ int main(int argc, char *argv[]) {
     // single_cycle();
     if(terminal)
       break;
-  }
+  
 
 
   sim_exit();
