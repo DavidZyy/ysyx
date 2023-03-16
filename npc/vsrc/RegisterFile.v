@@ -15,8 +15,8 @@ module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
 );
 
   reg [DATA_WIDTH-1:0] rf [`RegCnt-1:0];
-  always @(posedge clk) begin
-  // always @(negedge clk) begin
+  // always @(posedge clk) begin
+  always @(negedge clk) begin
     if (wen) rf[rd] <= wdata;
   end
 
