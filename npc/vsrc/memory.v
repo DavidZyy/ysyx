@@ -11,7 +11,7 @@ module memory (
 
     assign inst_id = (pc - `PcRst)/4;
 
-    reg [`Vec(`RegWidth)] mem[mem_size-1:0];
+    reg [`Vec(`InstWidth)] mem[mem_size-1:0];
 
     initial $readmemh("./test.hex", mem);
 
