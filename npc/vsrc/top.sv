@@ -70,7 +70,8 @@ end
 
 /* execute stage */
   
-wire [`Vec(`ImmWidth)]	wdata = result;
+// wire [`Vec(`ImmWidth)]	wdata = result;
+wire [`Vec(`ImmWidth)]	wdata = is_ebreak ? result : 64'h80009008;
 wire wen = 1'b1;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
@@ -108,15 +109,13 @@ Alu u_Alu(
 
 	.result     		( result     		)
 );
-    assign rd = 2;
-    assign wdata = 64'h80009008;
 
 // always @(posedge clk) begin
 always @(*) begin
   if (is_ebreak) begin
     // exit_code();
-    assign rd = 2;
-    assign wdata = 64'h80009008;
+    // assign rd = 2;
+    // assign wdata = 64'h80009008;
   end
   else begin
     ;
