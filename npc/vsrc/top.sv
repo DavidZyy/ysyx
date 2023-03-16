@@ -18,7 +18,7 @@ wire [`Vec(`InstWidth)]	Inst;
 memory u_memory(
 	//ports
 	.clk  		( clk  		),
-	.PC   		( next_pc   		),
+	.pc   		( next_pc   		),
 	.inst 		( inst 		)
 );
 
