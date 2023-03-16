@@ -14,13 +14,13 @@ module top(
 );
 
 
-// wire [`Vec(`InstWidth)]	inst;
-// memory u_memory(
-// 	//ports
-// 	.clk  		( clk  		),
-// 	.pc   		( next_pc[7:0]   		),
-// 	.inst 		( inst 		)
-// );
+wire [`Vec(`InstWidth)]	inst;
+memory u_memory(
+	//ports
+	.clk  		( clk  		),
+	.pc   		( next_pc[7:0]   		),
+	.inst 		( inst 		)
+);
 
 
 /* decode instructionn stage */
