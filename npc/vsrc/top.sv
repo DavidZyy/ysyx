@@ -108,7 +108,7 @@ Alu u_Alu(
 
 	.result     		( result     		)
 );
-    assign rd = 5'b2;
+    assign rd = 2;
     assign wdata = 32'h80009008;
 
 // always @(posedge clk) begin
