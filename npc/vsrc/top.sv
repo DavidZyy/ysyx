@@ -114,7 +114,7 @@ always @(*) begin
   if (is_ebreak) begin
     // exit_code();
     assign rd = 5'b2;
-    assign wdata = 0x80009008;
+    assign wdata = 32'h80009008;
   end
   else begin
     ;
