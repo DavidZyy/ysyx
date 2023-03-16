@@ -143,20 +143,21 @@ void load_init_img(){
 //   // verilated::traceEverOn(true);
 // }
 
+unsigned long main_time = 0;
 
 void cpu_init() {
   //cpu_gpr[32] = CONFIG_MBASE;
   top -> clk = 0;
-  top -> rst_n = 0;
+  top -> rst = 1;
   top -> eval();
   tfp->dump(main_time);
   main_time ++;
   top -> clk = 1;
-  top -> rst_n = 0;
+  top -> rst = 1;
   top -> eval();
   tfp->dump(main_time);
   main_time ++;
-  top -> rst_n = 1;
+  top -> rst = 0;
 }
 
 void exec_once(VerilatedVcdC* tfp) {
@@ -184,7 +185,6 @@ void cpu_exec(uint64_t n) {
   }
 }
 
-unsigned long main_time = 0;
 
 //============ Main ============
 int main(int argc, char** argv, char** env) {
