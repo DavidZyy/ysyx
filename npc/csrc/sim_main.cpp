@@ -39,6 +39,8 @@ void sim_exit(){
 
 void single_cycle() {
   top->clk = 0;
+
+  top->inst = *((uint32_t *)(&pmem[inst_id]));
   step_and_dump_wave();
   top->clk = 1;
   step_and_dump_wave();
