@@ -167,7 +167,7 @@ void exec_once(VerilatedVcdC* tfp) {
   //printf("======clk shoule be 0 now %d\n",top->clk);
   // top->mem_inst = pmem_read(top->mem_addr);
   // printf("excute addr:0x%08lx inst:0x%08x\n",top->mem_addr,top->mem_inst);
-  top->inst = *((uint32_t *)(&pmem[inst_id]));
+  // top->inst = *((uint32_t *)(&pmem[inst_id]));
   top->eval();
   tfp->dump(main_time);
   main_time ++;
@@ -203,7 +203,7 @@ int main(int argc, char** argv, char** env) {
   tfp = new VerilatedVcdC;
   top->trace(tfp, 0);
   // tfp->open("wave.vcd");
-  tfp->open("dump.vcd");
+  tfp->open("dump1.vcd");
   //VCD波形设置  end
   //initial data
   // pmem_init();
