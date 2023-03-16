@@ -13,8 +13,8 @@ module top(
   output [`Vec(`ImmWidth)] next_pc
 );
 
-wire [`Vec(`InstWidth)]	inst;
 
+// wire [`Vec(`InstWidth)]	inst;
 // memory u_memory(
 // 	//ports
 // 	.clk  		( clk  		),
