@@ -33,9 +33,11 @@ module memory (
     // input [`Vec(`RegWidth)] wdata,
     // input [`Vec(`RegWidth)] wmask,
 
-    // output [`Vec(`InstWidth)] inst,
-    output [`Vec(`RegWidth)] rdata
+    output [`Vec(`InstWidth)] inst,
+    // output [`Vec(`RegWidth)] rdata
 );
+
+    assign inst = rdata[`Vec(`InstWidth)];
 
     // always @(negedge clk) begin
     always @(*) begin
