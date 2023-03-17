@@ -36,7 +36,7 @@ module memory (
     output [`Vec(`InstWidth)] inst
     // output [`Vec(`RegWidth)] rdata
 );
-    localparam mask = 7;
+    localparam mask = 64'h7;
 
     wire [`Vec(`RegWidth)] rdata;
     assign inst = pc & mask ? rdata[`Vec(`InstWidth)] : rdata[63:32];
