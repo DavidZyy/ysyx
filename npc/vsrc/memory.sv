@@ -37,6 +37,8 @@ module memory (
     // output [`Vec(`RegWidth)] rdata
 );
 
+
+    wire [`Vec(`RegWidth)] rdata;
     assign inst = rdata[`Vec(`InstWidth)];
 
     // always @(negedge clk) begin
