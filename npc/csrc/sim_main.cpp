@@ -115,7 +115,7 @@ void load_init_img(){
   // *(uint32_t*)(&pmem[16]) = ebreak;
 }
 
-#define paddr_t unt64_t
+#define paddr_t uint64_t
 /* my understanding: paddr is the program in the guest's address, paddr - CONFIG_MBASE 
 is the offset from the beginning of the program, pmem is the beginning of the program in
 the host. */
