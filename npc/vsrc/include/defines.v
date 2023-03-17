@@ -1,8 +1,11 @@
 
+/* using for define a vector for 0 to Width-1 */
+`define Vec(Width) Width-1:0
+
 `define InstWidth   32
-`define InstLen     `In
 `define PcRst 64'h80000000
-// `define PcRst 64'b0
+
+
 /* register related macro */
   `define RegIdWidth      5 /* the width of a number to discribe a register's index */
   `define RegCnt          2**`RegIdWidth /* register counts */
@@ -17,6 +20,7 @@
   `define ZEXT(imm, len)  {(`ImmWidth - len){1'b0}, imm}
 
   `define immI(inst) {{(`ImmWidth -12){inst[31]}}, inst[31:20] }
+  `define immU(inst) {{(`ImmWidth -32){inst[31]}}, inst[31:12], {12{1'b0}}}
 
 
 /* decode instruction related */
@@ -27,6 +31,10 @@
   `define FUNCT3(inst)    inst[14:12]
   `define FUNCT7(inst)    inst[31:25]
   `define FUNCT12(inst)   inst[31:20]
+
+  `define FUNCT3_Is(imm) (`FUNCT3(inst) == imm);
+  `define FUNCT7_Is(imm) (`FUNCT7(inst) == imm);
+  `define FUNCT12_Is(imm) (`FUNCT12(inst) == imm);
 
 
   /* inst[6:0], opcode, we must make our codes have a 
@@ -48,6 +56,7 @@
   /* define more here ... */
 
 
-  // `define IsOp(opcode)  (`OPCODE(inst) == `opcode) //or
-  // `define IsOp(opcode)  (`OPCODE(inst) == opcode)
+  /* the format of `define IsOp(opcode)  (`OPCODE(inst) == `opcode) 
+    is worse than below. The abbreviation means if the opcode is ... */
+  `define OpIs(opcode)  (`OPCODE(inst) == opcode)
 

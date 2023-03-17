@@ -3,15 +3,18 @@
 module PC (
     input      clk,
     input      rst,
-    // input [`RegWidth-1:0] JAddr,
+    // input [`Vec(`RegWidth)] JAddr,
     // input jar,
     // input bxx,
     
-    output [`RegWidth-1:0] current_pc
+    output [`Vec(`RegWidth)] current_pc,
+    output [`Vec(`RegWidth)] next_pc
 );
 
 /* a multiplexer to choose which is the next pc */
-wire [`RegWidth-1:0] next_pc = current_pc + 4;
+wire [`Vec(`RegWidth)] next_pc_temp1 = current_pc + 4;
+
+assign next_pc = rst ? `PcRst :  next_pc_temp1;
 
  Reg 
  #(
