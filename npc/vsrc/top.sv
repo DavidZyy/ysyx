@@ -21,7 +21,7 @@ memory u_memory(
 	.clk  		( clk  		),
 	.pc   		( pc   		),
 
-	.rdata ( inst 		)
+	.inst ( inst 		)
 );
 
 
