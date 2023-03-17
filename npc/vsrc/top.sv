@@ -61,7 +61,7 @@ decoder u_decoder(
 always @(posedge clk) begin
 // always @(*) begin
   if (inst_not_ipl) begin
-    // not_ipl_exception();
+    not_ipl_exception();
     ;
   end
   else begin
