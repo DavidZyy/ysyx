@@ -52,6 +52,7 @@ void single_cycle() {
 }
 
 
+/* ebreak means success! */
 int terminal = 0;
 void exit_code(){
   terminal = 1;

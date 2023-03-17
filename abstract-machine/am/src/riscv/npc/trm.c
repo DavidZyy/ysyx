@@ -27,6 +27,7 @@ void putch(char ch) {
 // use inline assembly codes
 void halt(int code) {
   __asm__ volatile ("ebreak");
+  /* if have no this, we will get noreturn error */
   while(1);
 }
 
