@@ -14,14 +14,15 @@ module top(
 );
 
 
-// wire [`Vec(`InstWidth)]	inst;
-// memory u_memory(
-// 	//ports
-// 	.clk  		( clk  		),
-// 	.pc   		( next_pc[7:0]   		),
-// 	.inst 		( inst 		)
-// );
-// 
+wire [`Vec(`RegWidth)]	inst;
+memory u_memory(
+	//ports
+	.clk  		( clk  		),
+	.pc   		( pc   		),
+
+	.rdata ( inst 		)
+);
+
 
 /* decode instructionn stage */
 wire [`Vec(`RegIdWidth)]	rd;
@@ -71,7 +72,7 @@ end
 /* execute stage */
   
 wire [`Vec(`ImmWidth)]	wdata = result;
-wire [`Vec(`ImmWidth)]	wdata = is_ebreak ? 64'h80009008 : result;
+// wire [`Vec(`ImmWidth)]	wdata = is_ebreak ? 64'h80009008 : result;
 // assign rd = 2;
 wire wen = 1'b1;
 

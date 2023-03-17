@@ -3,6 +3,7 @@
 
 #define inst_id (top->next_pc - 0x80000000)
 #define CONFIG_MSIZE 0x8000000
+#define CONFIG_MBASE 0x80000000
 
 // instructions
 /* note the byte order, the machine is little endia */

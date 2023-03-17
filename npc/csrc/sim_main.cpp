@@ -115,107 +115,129 @@ void load_init_img(){
   // *(uint32_t*)(&pmem[16]) = ebreak;
 }
 
+/* my understanding: paddr is the program in the guest's address, paddr - CONFIG_MBASE 
+is the offset from the beginning of the program, pmem is the beginning of the program in
+the host. */
+uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
+/* haddr is the address in host nemu, - pmem is the offset from the beginning, + CONFIG_MBASE(the
+beginning of the programm in guest) get the address in the guest. */
+paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
+
+
+extern "C" void pmem_read(long long raddr, long long *rdata) {
+  // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
+  raddr = raddr & ~0x7; // align to 8
+  raddr = guest_to_host(raddr);
+  *rdata = *(uint64_t *)raddr;
+}
+
+extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
+  // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
+  // `wmask`中每比特表示`wdata`中1个字节的掩码,
+  // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
+}
+
 /**
  * The single cycle time series design refers:
  * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9
  */
-// int main(int argc, char *argv[]) {
-//   // print_arg(argc, argv);
-//   // load_img(argv[1]);
-//   load_init_img();
-// 
-//   sim_init();
-// 
-//   top->rst = 1;
-//   single_cycle();
-//   top->rst = 0;
-// 
-//   for(int i = 0; i < 100; i++){
-//     // top->inst = *((uint32_t *)(&pmem[inst_id]));
-//     /* two cycle one instruction */
-//     single_cycle();
-//     // single_cycle();
-//     if(terminal)
-//       break;
-//   }
-// 
-// 
-//   sim_exit();
-//   // int time = 100;
-//   // top = new Vtop;
-//   // verilated::traceEverOn(true);
-// }
+int main(int argc, char *argv[]) {
+  // print_arg(argc, argv);
+  load_img(argv[1]);
+  // load_init_img();
 
-unsigned long main_time = 0;
+  sim_init();
 
-void cpu_init() {
-  //cpu_gpr[32] = CONFIG_MBASE;
-  top -> clk = 0;
-  top -> rst = 1;
-  top -> eval();
-  tfp->dump(main_time);
-  main_time ++;
-  top -> clk = 1;
-  top -> rst = 1;
-  top -> eval();
-  tfp->dump(main_time);
-  main_time ++;
-  top -> rst = 0;
-}
+  top->rst = 1;
+  single_cycle();
+  top->rst = 0;
 
-void exec_once(VerilatedVcdC* tfp) {
-  top->clk = 0;
-  //printf("======clk shoule be 0 now %d\n",top->clk);
-  // top->mem_inst = pmem_read(top->mem_addr);
-  // printf("excute addr:0x%08lx inst:0x%08x\n",top->mem_addr,top->mem_inst);
-  top->inst = *((uint32_t *)(&pmem[inst_id]));
-  // top->inst = pmem_read();
-  top->eval();
-  tfp->dump(main_time);
-  main_time ++;
-
-  top->clk = 1;
-  //printf("======clk should be 1 now %d\n",top->clk); 
-  top->eval(); 
-	tfp->dump(main_time);
-  main_time ++;
-}
-
-
-void cpu_exec(uint64_t n) {
-  for(int i; i < n; i++){
-      exec_once(tfp);
-      // #ifdef CONFIG_DIFFTEST
-        // difftest_exec_once();
-      // #endif
-      if(terminal)
-        break;
+  for(int i = 0; i < 100; i++){
+    // top->inst = *((uint32_t *)(&pmem[inst_id]));
+    /* two cycle one instruction */
+    single_cycle();
+    // single_cycle();
+    if(terminal)
+      break;
   }
-}
 
 
-//============ Main ============
-int main(int argc, char** argv, char** env) {
-  load_init_img();
-  contextp = new VerilatedContext;
-  contextp->commandArgs(argc, argv);
-  top = new Vtop{contextp};
-  //VCD波形设置  start
-  Verilated::traceEverOn(true);
-  tfp = new VerilatedVcdC;
-  top->trace(tfp, 0);
-  // tfp->open("wave.vcd");
-  tfp->open("dump1.vcd");
-  //VCD波形设置  end
-  //initial data
-  // pmem_init();
-  cpu_init();
-  cpu_exec(100);
-//   #ifdef CONFIG_DIFFTEST
-//     init_difftest();
-//   #endif
-//  
-//   sdb_mainloop();
-  tfp->close();
-  return 0;
+  sim_exit();
+  // int time = 100;
+  // top = new Vtop;
+  // verilated::traceEverOn(true);
 }
+
+// unsigned long main_time = 0;
+// 
+// void cpu_init() {
+//   //cpu_gpr[32] = CONFIG_MBASE;
+//   top -> clk = 0;
+//   top -> rst = 1;
+//   top -> eval();
+//   tfp->dump(main_time);
+//   main_time ++;
+//   top -> clk = 1;
+//   top -> rst = 1;
+//   top -> eval();
+//   tfp->dump(main_time);
+//   main_time ++;
+//   top -> rst = 0;
+// }
+// 
+// void exec_once(VerilatedVcdC* tfp) {
+//   top->clk = 0;
+//   //printf("======clk shoule be 0 now %d\n",top->clk);
+//   // top->mem_inst = pmem_read(top->mem_addr);
+//   // printf("excute addr:0x%08lx inst:0x%08x\n",top->mem_addr,top->mem_inst);
+//   top->inst = *((uint32_t *)(&pmem[inst_id]));
+//   // top->inst = pmem_read();
+//   top->eval();
+//   tfp->dump(main_time);
+//   main_time ++;
+// 
+//   top->clk = 1;
+//   //printf("======clk should be 1 now %d\n",top->clk); 
+//   top->eval(); 
+// 	tfp->dump(main_time);
+//   main_time ++;
+// }
+// 
+// 
+// void cpu_exec(uint64_t n) {
+//   for(int i; i < n; i++){
+//       exec_once(tfp);
+//       // #ifdef CONFIG_DIFFTEST
+//         // difftest_exec_once();
+//       // #endif
+//       if(terminal)
+//         break;
+//   }
+// }
+// 
+// 
+// //============ Main ============
+// int main(int argc, char** argv, char** env) {
+//   load_init_img();
+//   contextp = new VerilatedContext;
+//   contextp->commandArgs(argc, argv);
+//   top = new Vtop{contextp};
+//   //VCD波形设置  start
+//   Verilated::traceEverOn(true);
+//   tfp = new VerilatedVcdC;
+//   top->trace(tfp, 0);
+//   // tfp->open("wave.vcd");
+//   tfp->open("dump1.vcd");
+//   //VCD波形设置  end
+//   //initial data
+//   // pmem_init();
+//   cpu_init();
+//   cpu_exec(100);
+// //   #ifdef CONFIG_DIFFTEST
+// //     init_difftest();
+// //   #endif
+// //  
+// //   sdb_mainloop();
+//   tfp->close();
+//   return 0;
+// }
