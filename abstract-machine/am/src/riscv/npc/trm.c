@@ -17,9 +17,19 @@ static const char mainargs[] = MAINARGS;
 void putch(char ch) {
 }
 
+// // use inline assembly codes
+// void __attribute__((noreturn)) halt(int code) {
+// // void halt(int code) {
+//   // while (1);
+//   __asm__ volatile ("ebreak");
+// }
+
+// use inline assembly codes
 void halt(int code) {
-  while (1);
+  __asm__ volatile ("ebreak");
+  while(1);
 }
+
 
 void _trm_init() {
   int ret = main(mainargs);
