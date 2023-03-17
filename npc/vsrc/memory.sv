@@ -41,8 +41,8 @@ module memory (
     wire [`Vec(`RegWidth)] rdata;
     assign inst = rdata[`Vec(`InstWidth)];
 
-    // always @(negedge clk) begin
-    always @(*) begin
+    always @(negedge clk) begin
+    // always @(*) begin
       pmem_read(pc, rdata);
       // pmem_read(raddr, rdata);
       // pmem_write(waddr, wdata, wmask);
