@@ -39,7 +39,7 @@ module memory (
     localparam mask = 7;
 
     wire [`Vec(`RegWidth)] rdata;
-    assign inst = pc & mask ? rdata[`Vec(`InstWidth)] | rdata[63:32];
+    assign inst = pc & mask ? rdata[`Vec(`InstWidth)] : rdata[63:32];
 
     always @(negedge clk) begin
     // always @(*) begin
