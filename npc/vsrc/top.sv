@@ -37,7 +37,7 @@ wire 	alu_add;
 wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
-// wire  is_jal;
+wire  is_jal;
 
 decoder u_decoder(
 	//ports
@@ -51,8 +51,8 @@ decoder u_decoder(
 	.alu_add  		( alu_add  		),
   .is_ebreak    ( is_ebreak   ),
   .is_auipc     ( is_auipc    ),
-  .inst_not_ipl ( inst_not_ipl)
-  // .is_jal       ( is_jal )
+  .inst_not_ipl ( inst_not_ipl),
+  .is_jal       ( is_jal )
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
