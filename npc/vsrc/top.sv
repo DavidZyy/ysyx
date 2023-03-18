@@ -1,3 +1,6 @@
+/* code style: the name of variable use snake style, 
+  the name of macro use camel style. */
+
 import "DPI-C" function void exit_code();
 import "DPI-C" function void not_ipl_exception();
 
@@ -7,7 +10,6 @@ import "DPI-C" function void not_ipl_exception();
 module top(
   input clk,
   input rst,
-  // input [`Vec(`InstWidth)] inst,
 
   output [`Vec(`ImmWidth)] current_pc,
   output [`Vec(`ImmWidth)] next_pc
@@ -35,6 +37,7 @@ wire 	alu_add;
 wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
+// wire  is_jal;
 
 decoder u_decoder(
 	//ports
@@ -49,6 +52,7 @@ decoder u_decoder(
   .is_ebreak    ( is_ebreak   ),
   .is_auipc     ( is_auipc    ),
   .inst_not_ipl ( inst_not_ipl)
+  // .is_jal       ( is_jal )
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -61,7 +65,7 @@ decoder u_decoder(
 always @(posedge clk) begin
 // always @(*) begin
   if (inst_not_ipl) begin
-    // not_ipl_exception();
+    not_ipl_exception();
     ;
   end
   else begin
@@ -69,12 +73,21 @@ always @(posedge clk) begin
   end
 end
 
+// always @(posedge clk) begin
+always @(*) begin
+  if (is_ebreak) begin
+    exit_code();
+    // assign rd = 2;
+    // assign wdata = 64'h80009008;
+  end
+  else begin
+    ;
+  end
+end
 
 /* execute stage */
   
 wire [`Vec(`ImmWidth)]	wdata = result;
-// wire [`Vec(`ImmWidth)]	wdata = is_ebreak ? 64'h80009008 : result;
-// assign rd = 2;
 wire wen = 1'b1;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
@@ -105,7 +118,6 @@ wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
 wire [`Vec(`ImmWidth)]	result;
 
 Alu u_Alu(
-	//ports
 	.operator_1 		( operator_1),
 	.operator_2 		( operator_2 		),
 	.alu_add    		( alu_add    		),
@@ -113,26 +125,24 @@ Alu u_Alu(
 	.result     		( result     		)
 );
 
-// always @(posedge clk) begin
-always @(*) begin
-  if (is_ebreak) begin
-    exit_code();
-    // assign rd = 2;
-    // assign wdata = 64'h80009008;
-  end
-  else begin
-    ;
-  end
-end
+// two multiplexer
+// assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
+// assign next_pc = rst | is_jal ? `PcRst : next_pc;
+// assign next_pc = is_jal ? `PcRst  : 0;
+assign next_pc = rst ? `PcRst : (current_pc + 4);
 
-PC u_PC(
-	//ports
-	.clk        		( clk        		),
-	.rst        		( rst        		),
+ Reg 
+ #(
+  .WIDTH     (`RegWidth),
+  .RESET_VAL (`PcRst)
+ )
+ Pc_Reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (next_pc),
+  .wen  (1'b1),
 
-	.current_pc 		( current_pc    ),
-  .next_pc        ( next_pc       )
-);
-
+  .dout (current_pc)
+ );
 
 endmodule

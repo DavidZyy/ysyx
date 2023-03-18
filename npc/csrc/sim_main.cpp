@@ -52,6 +52,7 @@ void single_cycle() {
 }
 
 
+/* ebreak means success! */
 int terminal = 0;
 void exit_code(){
   terminal = 1;
@@ -125,7 +126,7 @@ beginning of the programm in guest) get the address in the guest. */
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 
-extern "C" void pmem_read(long long raddr, long long *rdata) {
+void pmem_read(long long raddr, long long *rdata) {
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   raddr = raddr & ~0x7; // align to 8
 
@@ -133,7 +134,7 @@ extern "C" void pmem_read(long long raddr, long long *rdata) {
   *rdata = *(uint64_t *)raddr_temp;
 }
 
-extern "C" void pmem_write(long long waddr, long long wdata, char wmask) {
+void pmem_write(long long waddr, long long wdata, char wmask) {
   // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变

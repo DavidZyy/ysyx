@@ -23,6 +23,7 @@ module decoder (
   output is_ebreak,
   output is_auipc,
   output inst_not_ipl
+  // output is_jal
 );
 
 /* decode infos */
@@ -30,6 +31,7 @@ module decoder (
   wire op_imm = `OpIs(`OP_IMM);
   wire op_system = `OpIs(`SYSTEM);
   wire op_auipc = `OpIs(`AUIPC);
+  wire op_jal = `OpIs(`JAL);
   
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
@@ -52,6 +54,7 @@ module decoder (
 
   /* 2.5 control transfer instructions */
     /* unconditial jumps */
+  wire jal = op_jal;
 
     /* conditianal branches */
 
@@ -84,6 +87,8 @@ module decoder (
   /* alu signals */
   assign alu_add = addi | auipc;
 
+  // assign alu_op
+
   /* a instruction needs immediate has no rs2 */
   assign need_imm = op_imm | auipc;
 
@@ -91,11 +96,12 @@ module decoder (
   /* special instruction signals */
   assign is_ebreak = ebreak;
   assign is_auipc = auipc;
+  // assign is_jal = jal;
 
   /* exception signals */
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~(addi | ebreak | auipc);
+  assign inst_not_ipl = ~(addi | ebreak | auipc | jal);
 
 endmodule
