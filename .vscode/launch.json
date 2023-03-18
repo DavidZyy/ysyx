@@ -11,7 +11,8 @@
       // "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
       "program": "${workspaceFolder}/nemu/build/riscv64-nemu-interpreter",
       "args": [
-        "-l /home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/nemu-log.txt",
+        "-l",
+        "/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/nemu-log.txt",
         "--diff=/home/zhuyangyang/project/ysyx-workbench/nemu/tools/spike-diff/build/riscv64-spike-so",
         "-b",
         "/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/hello-str-riscv64-nemu.bin"
