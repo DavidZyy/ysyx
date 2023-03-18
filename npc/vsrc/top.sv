@@ -1,3 +1,6 @@
+/* code style: the name of variable use snake style, 
+  the name of macro use camel style. */
+
 import "DPI-C" function void exit_code();
 import "DPI-C" function void not_ipl_exception();
 
@@ -35,6 +38,7 @@ wire 	alu_add;
 wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
+wire  is_jal;
 
 decoder u_decoder(
 	//ports
@@ -48,7 +52,8 @@ decoder u_decoder(
 	.alu_add  		( alu_add  		),
   .is_ebreak    ( is_ebreak   ),
   .is_auipc     ( is_auipc    ),
-  .inst_not_ipl ( inst_not_ipl)
+  .inst_not_ipl ( inst_not_ipl),
+  .is_jal       ( is_jal )
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -125,13 +130,17 @@ always @(*) begin
   end
 end
 
+// two multiplexer
+assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
+assign next_pc = rst ? `PcRst : next_pc;
+
 PC u_PC(
 	//ports
 	.clk        		( clk        		),
 	.rst        		( rst        		),
+  .next_pc        ( next_pc       ),
 
-	.current_pc 		( current_pc    ),
-  .next_pc        ( next_pc       )
+	.current_pc 		( current_pc    )
 );
 
 
