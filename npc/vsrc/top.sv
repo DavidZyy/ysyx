@@ -9,7 +9,7 @@ import "DPI-C" function void not_ipl_exception();
 /* assemble all cpu moudules into top moudule */
 module top(
   input clk,
-  input rst
+  input rst,
   // input [`Vec(`InstWidth)] inst,
 
   output [`Vec(`ImmWidth)] current_pc,
