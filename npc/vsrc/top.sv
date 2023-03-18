@@ -16,6 +16,8 @@ module top(
   // output [`Vec(`ImmWidth)] next_pc
 );
 
+wire [`Vec(`ImmWidth)] current_pc,
+wire [`Vec(`ImmWidth)] next_pc
 
 wire [`Vec(`InstWidth)]	inst;
 
