@@ -134,7 +134,7 @@ wire [`Vec(`ImmWidth)] current_pc;
 // two multiplexer
 // assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
 // assign next_pc = rst | is_jal ? `PcRst : next_pc;
-assign next_pc = `PcRst;
+assign next_pc = `PcRst | is_jal;
 
 PC u_PC(
 	//ports
