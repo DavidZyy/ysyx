@@ -96,7 +96,7 @@ module decoder (
   /* special instruction signals */
   assign is_ebreak = ebreak;
   assign is_auipc = auipc;
-  assign is_jal = jal;
+  // assign is_jal = jal;
 
   /* exception signals */
   /* this signal seems silly, but it is useful, 
