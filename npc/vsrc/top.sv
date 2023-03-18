@@ -12,6 +12,7 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
+  /* verilator lint_off UNOPT */
   output [`Vec(`ImmWidth)] next_pc
 );
 
@@ -129,6 +130,7 @@ Alu u_Alu(
 // assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
 // assign next_pc = rst | is_jal ? `PcRst : next_pc;
 // assign next_pc = is_jal ? `PcRst  : 0;
+// assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
 assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
 
  Reg 
