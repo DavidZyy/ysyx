@@ -134,7 +134,7 @@ end
 
 // two multiplexer
 assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
-assign next_pc = rst ? `PcRst : next_pc;
+// assign next_pc = rst ? `PcRst : next_pc;
 
 PC u_PC(
 	//ports
