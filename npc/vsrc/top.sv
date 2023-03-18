@@ -12,8 +12,8 @@ module top(
   input rst
   // input [`Vec(`InstWidth)] inst,
 
-  // output [`Vec(`ImmWidth)] current_pc,
-  // output [`Vec(`ImmWidth)] next_pc
+  output [`Vec(`ImmWidth)] current_pc,
+  output [`Vec(`ImmWidth)] next_pc
 );
 
 
@@ -129,8 +129,6 @@ Alu u_Alu(
 	.result     		( result     		)
 );
 
-wire [`Vec(`ImmWidth)] next_pc;
-wire [`Vec(`ImmWidth)] current_pc;
 // two multiplexer
 // assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
 // assign next_pc = rst | is_jal ? `PcRst : next_pc;
