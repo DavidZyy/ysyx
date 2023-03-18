@@ -88,7 +88,7 @@ end
 
 /* execute stage */
   
-wire [`Vec(`ImmWidth)]	wdata = result;
+wire [`Vec(`ImmWidth)]	wdata = is_jal ? (current_pc + 4) : result;
 wire wen = 1'b1;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
