@@ -89,8 +89,6 @@ end
 /* execute stage */
   
 wire [`Vec(`ImmWidth)]	wdata = result;
-// wire [`Vec(`ImmWidth)]	wdata = is_ebreak ? 64'h80009008 : result;
-// assign rd = 2;
 wire wen = 1'b1;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
@@ -121,7 +119,6 @@ wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
 wire [`Vec(`ImmWidth)]	result;
 
 Alu u_Alu(
-	//ports
 	.operator_1 		( operator_1),
 	.operator_2 		( operator_2 		),
 	.alu_add    		( alu_add    		),
@@ -130,7 +127,7 @@ Alu u_Alu(
 );
 
 // two multiplexer
-// assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
+assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
 // assign next_pc = rst | is_jal ? `PcRst : next_pc;
 assign next_pc = is_jal ? `PcRst  : 0;
 
