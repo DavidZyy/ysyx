@@ -1,18 +1,12 @@
 {
   "tasks": [
     {
-      "type": "cppbuild",
-      "label": "C/C++: gcc build active file",
-      "command": "/usr/bin/gcc",
-      "args": [
-        "-fdiagnostics-color=always",
-        "-g",
-        "${file}",
-        "-o",
-        "${fileDirname}/${fileBasenameNoExtension}"
-      ],
+      "type": "process",
+      "label": "recompile_nemu",
+      "command": "make",
+      "args": [],
       "options": {
-        "cwd": "${fileDirname}"
+        "cwd": "${workspaceFolder}/nemu"
       },
       "problemMatcher": [
         "$gcc"
