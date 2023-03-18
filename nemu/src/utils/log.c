@@ -14,11 +14,28 @@
 ***************************************************************************************/
 
 #include <common.h>
+#include <unistd.h>
 
 extern uint64_t g_nr_guest_inst;
 FILE *log_fp = NULL;
 
+#define grn(str) 	"\e[32;1m"str"\e[0m"
+#define ylw(str) 	"\e[33;1m"str"\e[0m"
+#define rd(str) 	"\e[31;1m"str"\e[0m"
+#define bl(str) 	"\e[34;1m"str"\e[0m"
+int printcwd() {
+   char cwd[1024];  // buffer to hold the cwd
+   if (getcwd(cwd, sizeof(cwd)) != NULL) {
+      printf(grn("Current working directory: %s\n"), cwd);
+   } else {
+      perror("getcwd() error");
+      return 1;
+   }
+   return 0;
+}
+
 void init_log(const char *log_file) {
+  printcwd();
   log_fp = stdout;
   if (log_file != NULL) {
     FILE *fp = fopen(log_file, "w");

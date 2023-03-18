@@ -22,8 +22,8 @@ module decoder (
   output alu_add,
   output is_ebreak,
   output is_auipc,
-  output inst_not_ipl
-  // output is_jal
+  output inst_not_ipl,
+  output is_jal
 );
 
 /* decode infos */
@@ -68,14 +68,17 @@ module decoder (
   /* instruction type, to be the key to choose immediate */
   wire I_type = op_imm;
   wire U_type = auipc;
+  wire J_type = jal;
 
 
   wire [`Vec(`ImmWidth)] I_imm = `immI(inst);
   wire [`Vec(`ImmWidth)] U_imm = `immU(inst);
+  wire [`Vec(`ImmWidth)] J_imm = `immJ(inst);
 
 
   assign imm =  ({`ImmWidth{I_type}} & I_imm) |
-                ({`ImmWidth{U_type}} & U_imm);
+                ({`ImmWidth{U_type}} & U_imm) |
+                ({`ImmWidth{J_type}} & J_imm);
 
 /* registers */
   assign rd = `RD(inst);
@@ -96,7 +99,7 @@ module decoder (
   /* special instruction signals */
   assign is_ebreak = ebreak;
   assign is_auipc = auipc;
-  // assign is_jal = jal;
+  assign is_jal = jal;
 
   /* exception signals */
   /* this signal seems silly, but it is useful, 

@@ -12,6 +12,7 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
+  /* verilator lint_off UNOPT */
   output [`Vec(`ImmWidth)] next_pc
 );
 
@@ -37,7 +38,7 @@ wire 	alu_add;
 wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
-// wire  is_jal;
+wire  is_jal;
 
 decoder u_decoder(
 	//ports
@@ -51,8 +52,8 @@ decoder u_decoder(
 	.alu_add  		( alu_add  		),
   .is_ebreak    ( is_ebreak   ),
   .is_auipc     ( is_auipc    ),
-  .inst_not_ipl ( inst_not_ipl)
-  // .is_jal       ( is_jal )
+  .inst_not_ipl ( inst_not_ipl),
+  .is_jal       ( is_jal )
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -87,7 +88,7 @@ end
 
 /* execute stage */
   
-wire [`Vec(`ImmWidth)]	wdata = result;
+wire [`Vec(`ImmWidth)]	wdata = is_jal ? (current_pc + 4) : result;
 wire wen = 1'b1;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
@@ -129,7 +130,8 @@ Alu u_Alu(
 // assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
 // assign next_pc = rst | is_jal ? `PcRst : next_pc;
 // assign next_pc = is_jal ? `PcRst  : 0;
-assign next_pc = rst ? `PcRst : (current_pc + 4);
+// assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
+assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
 
  Reg 
  #(
