@@ -131,14 +131,26 @@ Alu u_Alu(
 // assign next_pc = is_jal ? `PcRst  : 0;
 assign next_pc = rst ? `PcRst : (current_pc + 4);
 
-PC u_PC(
-	//ports
-	.clk        		( clk        		),
-	.rst        		( rst        		),
-  .next_pc        ( next_pc       ),
+// PC u_PC(
+// 	//ports
+// 	.clk        		( clk        		),
+// 	.rst        		( rst        		),
+//   .next_pc        ( next_pc       ),
+// 
+// 	.current_pc 		( current_pc    )
+// );
+ Reg 
+ #(
+  .WIDTH     (`RegWidth),
+  .RESET_VAL (`PcRst)
+ )
+ Pc_Reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (next_pc),
+  .wen  (1'b1),
 
-	.current_pc 		( current_pc    )
-);
-
+  .dout (current_pc)
+ );
 
 endmodule
