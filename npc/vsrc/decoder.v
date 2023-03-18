@@ -22,8 +22,8 @@ module decoder (
   output alu_add,
   output is_ebreak,
   output is_auipc,
-  output inst_not_ipl,
-  output is_jal
+  output inst_not_ipl
+  // output is_jal
 );
 
 /* decode infos */
