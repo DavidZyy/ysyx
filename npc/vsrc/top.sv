@@ -76,6 +76,17 @@ always @(posedge clk) begin
   end
 end
 
+// always @(posedge clk) begin
+always @(*) begin
+  if (is_ebreak) begin
+    exit_code();
+    // assign rd = 2;
+    // assign wdata = 64'h80009008;
+  end
+  else begin
+    ;
+  end
+end
 
 /* execute stage */
   
@@ -120,21 +131,9 @@ Alu u_Alu(
 	.result     		( result     		)
 );
 
-// always @(posedge clk) begin
-always @(*) begin
-  if (is_ebreak) begin
-    exit_code();
-    // assign rd = 2;
-    // assign wdata = 64'h80009008;
-  end
-  else begin
-    ;
-  end
-end
-
 // two multiplexer
-assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
-// assign next_pc = rst ? `PcRst : next_pc;
+// assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
+assign next_pc = rst ? `PcRst : next_pc;
 
 PC u_PC(
 	//ports
