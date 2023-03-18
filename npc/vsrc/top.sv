@@ -127,8 +127,8 @@ Alu u_Alu(
 
 // two multiplexer
 assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
-// assign next_pc = rst | is_jal ? `PcRst : next_pc;
-assign next_pc = is_jal ? `PcRst  : 0;
+assign next_pc = rst | is_jal ? `PcRst : next_pc;
+// assign next_pc = is_jal ? `PcRst  : 0;
 
 PC u_PC(
 	//ports
