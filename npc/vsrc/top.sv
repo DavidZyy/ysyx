@@ -37,7 +37,7 @@ wire 	alu_add;
 wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
-wire  is_jal;
+// wire  is_jal;
 
 decoder u_decoder(
 	//ports
