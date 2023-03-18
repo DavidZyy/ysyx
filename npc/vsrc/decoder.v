@@ -31,7 +31,7 @@ module decoder (
   wire op_imm = `OpIs(`OP_IMM);
   wire op_system = `OpIs(`SYSTEM);
   wire op_auipc = `OpIs(`AUIPC);
-  wire op_jal = `OpIs(`JAL)
+  wire op_jal = `OpIs(`JAL);
   
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
