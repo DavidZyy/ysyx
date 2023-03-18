@@ -131,14 +131,6 @@ Alu u_Alu(
 // assign next_pc = is_jal ? `PcRst  : 0;
 assign next_pc = rst ? `PcRst : (current_pc + 4);
 
-// PC u_PC(
-// 	//ports
-// 	.clk        		( clk        		),
-// 	.rst        		( rst        		),
-//   .next_pc        ( next_pc       ),
-// 
-// 	.current_pc 		( current_pc    )
-// );
  Reg 
  #(
   .WIDTH     (`RegWidth),
