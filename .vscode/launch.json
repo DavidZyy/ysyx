@@ -18,10 +18,11 @@
       ],
       "stopAtEntry": false,
       // "cwd": "${fileDirname}/..",
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/nemu",
       "environment": [],
       "externalConsole": false,
       "MIMode": "gdb",
+      "miDebuggerArgs": "-s ${workspaceFolder}/nemu/build/riscv64-nemu-interpreter",
       "internalConsoleOptions": "openOnSessionStart",
       "setupCommands": [
           {
