@@ -1,0 +1,18 @@
+{
+  "files.associations": {
+    "common.h": "c",
+    "typeinfo": "c",
+    "klib.h": "c",
+    "stddef.h": "c",
+    "trap.h": "c",
+    "ifetch.h": "c",
+    "nemu.h": "c",
+    "stdint.h": "c",
+    "am.h": "c",
+    "klib-macros.h": "c",
+    "stdarg.h": "c",
+    "locale.h": "c",
+    "difftest.h": "c",
+    "isa.h": "c"
+  }
+}
