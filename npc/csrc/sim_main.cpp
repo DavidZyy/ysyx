@@ -140,10 +140,10 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
 }
 
 
-// uint64_t *cpu_gpr = NULL;
+uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-  // cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
-  cpu.gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+  cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+  // cpu.gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
 // 一个输出RTL中通用寄存器的值的示例
@@ -156,11 +156,18 @@ void dump_gpr() {
   printf("\n");
 }
 
+void get_cpu() {
+  for(int i = 0; i < 32; i++){
+    cpu.gpr[i] = cpu_gpr[i];
+  }
+  cpu->pc = top->current_pc;
+}
 /**
  * The single cycle time series design refers:
  * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9
  */
 int main(int argc, char *argv[]) {
+  get_cpu();
   cpu.pc = RESET_VECTOR;
   // print_arg(argc, argv);
   long size = load_img(argv[1]);
@@ -176,6 +183,7 @@ int main(int argc, char *argv[]) {
   for(int i = 0; i < 100; i++){
     single_cycle();
     difftest_step();
+    get_cpu();
     dump_gpr();
     if(terminal)
       break;
@@ -183,4 +191,3 @@ int main(int argc, char *argv[]) {
 
   sim_exit();
 }
-

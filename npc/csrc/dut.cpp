@@ -62,6 +62,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     goto error;
 
   return true;
+
 error:
   *(&pc) = ref_r->pc;
   return false;

@@ -5,9 +5,10 @@
 #include <macro.h>
 
 typedef struct {
-  // uint64_t gpr[32];
-  uint64_t *gpr;
-  uint64_t padding[31];
+  uint64_t gpr[32];
+  // uint64_t *gpr;
+  /* paddinig */
+  // uint64_t padding[31];
   vaddr_t pc;
 } riscv64_CPU_state;
 
