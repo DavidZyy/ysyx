@@ -8,7 +8,7 @@ module Alu (
     output [`ImmWidth-1:0] result
 );
     
-    wire [`ImmWidth-1:0] add_result = operator_1 - operator_2;
+    wire [`ImmWidth-1:0] add_result = operator_1 + operator_2;
 
     assign result = ({`ImmWidth{alu_add}} & add_result);
 endmodule //Alu
