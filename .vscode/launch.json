@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "(gdb) Launch",
+      "name": "(gdb) Launch nemu",
       "type": "cppdbg",
       "request": "launch",
       // "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
@@ -24,6 +24,41 @@
       "externalConsole": false,
       "MIMode": "gdb",
       "miDebuggerArgs": "-s ${workspaceFolder}/nemu/build/riscv64-nemu-interpreter",
+      "internalConsoleOptions": "openOnSessionStart",
+      "setupCommands": [
+          {
+              "description": "Enable pretty-printing for gdb",
+              "text": "-enable-pretty-printing",
+              "ignoreFailures": true
+          },
+          {
+              "description": "Set Disassembly Flavor to Intel",
+              "text": "-gdb-set disassembly-flavor intel",
+              "ignoreFailures": true
+          },
+          {
+            // 16进制表示数据
+            "description": "ss",
+            "text": " set output-radix 16",
+            "ignoreFailures": false
+          }
+      ],
+      "preLaunchTask": "recompile_nemu"
+    },
+    {
+      "name": "(gdb) Launch npc",
+      "type": "cppdbg",
+      "request": "launch",
+      // "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
+      "program": "${workspaceFolder}/nemu/build/riscv64-nemu-interpreter",
+      "args": [],
+      "stopAtEntry": false,
+      // "cwd": "${fileDirname}/..",
+      "cwd": "${workspaceFolder}/npc",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      // "miDebuggerArgs": "-s ${workspaceFolder}/nemu/build/riscv64-nemu-interpreter",
       "internalConsoleOptions": "openOnSessionStart",
       "setupCommands": [
           {
