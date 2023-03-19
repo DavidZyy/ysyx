@@ -22,4 +22,14 @@
 
 #define ANSI_FMT(str, fmt) fmt str ANSI_NONE
 
+typedef struct {
+  // uint64_t gpr[32];
+  uint64_t *gpr;
+  vaddr_t pc;
+} riscv64_CPU_state;
+
+typedef riscv64_CPU_state CPU_state;
+
+
+void init_difftest(char *ref_so_file, long img_size, int port);
 #endif

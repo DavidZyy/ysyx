@@ -144,13 +144,13 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 
-typedef struct {
-  // uint64_t gpr[32];
-  uint64_t *gpr;
-  vaddr_t pc;
-} riscv64_CPU_state;
-
-typedef riscv64_CPU_state CPU_state;
+// typedef struct {
+//   // uint64_t gpr[32];
+//   uint64_t *gpr;
+//   vaddr_t pc;
+// } riscv64_CPU_state;
+// 
+// typedef riscv64_CPU_state CPU_state;
 
 CPU_state cpu;
 
@@ -177,6 +177,7 @@ void dump_gpr() {
 int main(int argc, char *argv[]) {
   // print_arg(argc, argv);
   load_img(argv[1]);
+  init_difftest(argv[2]);
   // load_init_img();
 
   sim_init();
