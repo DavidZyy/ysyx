@@ -1,15 +1,18 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "../obj_dir/Vtop.h"
-#include <iostream>
 
 /* DPI-C function */
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
 #include "verilated_dpi.h"
 
+// my header
 #include "utils.h"
 #include "macro.h"
+
+// c library
+// #include <iostream>
 #include <stdio.h>
 #include <string.h>
 
@@ -148,6 +151,8 @@ typedef struct {
 } riscv64_CPU_state;
 
 typedef riscv64_CPU_state CPU_state;
+
+CPU_state cpu;
 
 // uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {

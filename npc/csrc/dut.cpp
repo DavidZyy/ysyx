@@ -6,8 +6,6 @@
 #include "utils.h"
 
 #define NULL nullptr
-#define paddr_t uint64_t
-#define vaddr_t uint64_t
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 extern uint8_t pmem[CONFIG_MSIZE];
 
