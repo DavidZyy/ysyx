@@ -165,6 +165,7 @@ int main(int argc, char *argv[]) {
   long size = load_img(argv[1]);
   init_difftest(argv[2], size, 0);
   // load_init_img();
+  cpu.pc = RESET_VECTOR;
 
   sim_init();
 
