@@ -35,13 +35,13 @@ void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
 
 void difftest_regcpy(void *dut, bool direction) {
 
-  printf(grn("dut addr is: %p\n"), dut);
+  // printf(grn("dut addr is: %p\n"), dut);
   if(direction == DIFFTEST_TO_REF){
     for(int i = 0; i < 32; i++){
       cpu.gpr[i] = ((CPU_state *)dut)->gpr[i];
     }
     cpu.pc = ((CPU_state *)dut)->pc;
-    printf(grn("cpu pc is: %p\n"), &(((CPU_state *)dut)->pc));
+    // printf(grn("cpu pc is: %p\n"), &(((CPU_state *)dut)->pc));
   } else {
     for(int i = 0; i < 32; i++){
       ((CPU_state *)dut)->gpr[i] = cpu.gpr[i];
