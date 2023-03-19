@@ -2,22 +2,16 @@
 
 #include <stdint.h>
 #include <assert.h>
-// #include <isa.h>
-// #include <cpu/cpu.h>
-// #include <memory/paddr.h>
-// #include <utils.h>
-// #include <difftest-def.h>
+#include "macro.h"
+#include "utils.h"
 
-#define CONFIG_MSIZE 0x8000000
-#define CONFIG_MBASE 0x80000000
-#define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
-#define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
-#define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
 #define NULL nullptr
 #define paddr_t uint64_t
 #define vaddr_t uint64_t
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 extern uint8_t pmem[CONFIG_MSIZE];
+
+extern CPU_state cpu;
 
 extern uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; };
 

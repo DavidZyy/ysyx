@@ -141,17 +141,26 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 
-uint64_t *cpu_gpr = NULL;
+typedef struct {
+  // uint64_t gpr[32];
+  uint64_t *gpr;
+  vaddr_t pc;
+} riscv64_CPU_state;
+
+typedef riscv64_CPU_state CPU_state;
+
+// uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-  cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+  // cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+  cpu.gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
 // 一个输出RTL中通用寄存器的值的示例
 void dump_gpr() {
   int i;
   for (i = 0; i < 32; i++) {
-    if(cpu_gpr[i])
-      printf("gpr[%d] = 0x%lx\n", i, cpu_gpr[i]);
+    if(cpu.gpr[i])
+      printf("gpr[%d] = 0x%lx\n", i, cpu.gpr[i]);
   }
   printf("\n");
 }
