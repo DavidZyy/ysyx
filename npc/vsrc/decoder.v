@@ -115,7 +115,8 @@ module decoder (
 
   /* write enable */
   assign reg_wen = ~(sd);
-  assign mem_wen = (sd);
+  // assign mem_wen = (sd);
+  assign mem_wen = 1'b0;
 
   assign wmask = sd ? (wmask | 8'hff) : wmask;
 
