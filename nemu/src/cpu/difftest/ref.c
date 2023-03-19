@@ -18,6 +18,11 @@
 #include <difftest-def.h>
 #include <memory/paddr.h>
 
+#define grn(str) 	"\e[32;1m"str"\e[0m"
+#define ylw(str) 	"\e[33;1m"str"\e[0m"
+#define rd(str) 	"\e[31;1m"str"\e[0m"
+#define bl(str) 	"\e[34;1m"str"\e[0m"
+
 void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if(direction == DIFFTEST_TO_REF){
     for (int i = 0; i < n; i++) {
@@ -34,7 +39,7 @@ void difftest_regcpy(void *dut, bool direction) {
       cpu.gpr[i] = ((CPU_state *)dut)->gpr[i];
     }
     cpu.pc = ((CPU_state *)dut)->pc;
-    printf("cpu pc is: %x\n", ((CPU_state *)dut)->pc);
+    printf(grn("cpu pc is: %x\n"), ((CPU_state *)dut)->pc);
   } else {
     for(int i = 0; i < 32; i++){
       ((CPU_state *)dut)->gpr[i] = cpu.gpr[i];
