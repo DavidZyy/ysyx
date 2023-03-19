@@ -47,7 +47,7 @@ wire  inst_not_ipl;
 wire  is_jal;
 wire  reg_wen;
 wire  mem_wen;
-wire  wmask;
+wire [7:0] wmask;
 
 decoder u_decoder(
 	//ports

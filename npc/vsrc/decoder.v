@@ -26,7 +26,7 @@ module decoder (
   output is_jal,
   output reg_wen,
   output mem_wen,
-  output wmask
+  output [7:0] wmask
 );
 
 /* decode infos */
@@ -122,5 +122,5 @@ module decoder (
   assign reg_wen = ~(sd);
   assign mem_wen = (sd);
 
-  assign wmask = sd ? (wmask | 0ff) : wmask;
+  assign wmask = sd ? (wmask | 8'hff) : wmask;
 endmodule
