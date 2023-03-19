@@ -150,8 +150,10 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
 void dump_gpr() {
   int i;
   for (i = 0; i < 32; i++) {
-    printf("gpr[%d] = 0x%lx\n", i, cpu_gpr[i]);
+    if(cpu_gpr[i] != 0)
+      printf("gpr[%d] = 0x%lx\n", i, cpu_gpr[i]);
   }
+  prntf("\n");
 }
 
 /**
