@@ -47,6 +47,7 @@ all:
 # the program to be executed on npc, about ?=, 
 # see gnu make 6.2.4 Conditional Variable Assignment
 IMG ?= 
+SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv64-nemu-interpreter-so
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
@@ -55,7 +56,7 @@ sim:
 	-trace --cc --exe --build -Wall \
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
 	$(abspath ./csrc/dut.cpp)
-	obj_dir/Vtop $(IMG)
+	obj_dir/Vtop $(IMG) $(SO)
 	gtkwave dump.vcd
 	# gtkwave dump1.vcd
 
