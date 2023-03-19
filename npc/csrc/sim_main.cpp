@@ -184,8 +184,8 @@ int main(int argc, char *argv[]) {
 
   for(int i = 0; i < 100; i++){
     single_cycle();
-    get_cpu();
-    difftest_step();
+    // get_cpu();
+    // difftest_step();
     dump_gpr();
     if(terminal)
       break;
