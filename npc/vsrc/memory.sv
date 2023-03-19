@@ -29,7 +29,7 @@ module memory (
     input   clk,
     input [`Vec(`RegWidth)] pc,
     // input [`Vec(`RegWidth)] raddr,
-    // input [`Vec(`RegWidth)] waddr,
+    input [`Vec(`AddrWidth)] waddr,
     // input [`Vec(`RegWidth)] wdata,
     // input [`Vec(`RegWidth)] wmask,
 

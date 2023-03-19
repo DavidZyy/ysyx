@@ -18,11 +18,13 @@ module top(
 
 
 wire [`Vec(`InstWidth)]	inst;
+wire [`Vec(`AddrWidth)] waddr = alu_result;
 
 memory u_memory(
 	//ports
 	.clk  		( clk  		),
 	.pc   		( next_pc   		),
+  .waddr    ( waddr ),
 
 	.inst ( inst 		)
 );
@@ -79,7 +81,7 @@ always @(*) begin
   if (is_ebreak) begin
     exit_code();
     // assign rd = 2;
-    // assign wdata = 64'h80009008;
+    // assign reg_wdata = 64'h80009008;
   end
   else begin
     ;
@@ -88,7 +90,7 @@ end
 
 /* execute stage */
   
-wire [`Vec(`ImmWidth)]	wdata = is_jal ? (current_pc + 4) : result;
+wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (current_pc + 4) : alu_result;
 wire wen = 1'b1;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
@@ -102,7 +104,7 @@ RegisterFile
 )
 u_RegisterFile(
   .clk     (clk     ),
-  .wdata   (wdata   ),
+  .reg_wdata   (reg_wdata   ),
   .rd      (rd      ),
   .wen     (wen     ),
   .rs1     (rs1 ),
@@ -116,14 +118,14 @@ u_RegisterFile(
 wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? current_pc: rdata_1;
 wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
   /* output */
-wire [`Vec(`ImmWidth)]	result;
+wire [`Vec(`ImmWidth)]	alu_result;
 
 Alu u_Alu(
-	.operator_1 		( operator_1),
+	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
 	.alu_add    		( alu_add    		),
 
-	.result     		( result     		)
+	.alu_result     ( alu_result     		)
 );
 
 // two multiplexer

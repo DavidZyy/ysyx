@@ -5,7 +5,7 @@ import "DPI-C" function void set_gpr_ptr(input logic [63:0] a []);
 
 module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
   input clk,
-  input [DATA_WIDTH-1:0] wdata,
+  input [DATA_WIDTH-1:0] reg_wdata,
   input [ADDR_WIDTH-1:0] rd,
   input wen,
   input [ADDR_WIDTH-1:0] rs1,
@@ -21,7 +21,7 @@ module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
 
   // always @(posedge clk) begin
   always @(negedge clk) begin
-    if (wen) rf[rd] <= wdata;
+    if (wen) rf[rd] <= reg_wdata;
   end
 
   assign rdata_1 = rf[rs1];

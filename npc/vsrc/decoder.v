@@ -32,9 +32,13 @@ module decoder (
   wire op_system = `OpIs(`SYSTEM);
   wire op_auipc = `OpIs(`AUIPC);
   wire op_jal = `OpIs(`JAL);
+  wire op_store = `OpIs(`STORE);
   
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
+  // wire funct3_001 = `FUNCT3_Is(3'b001);
+  // wire funct3_010 = `FUNCT3_Is(3'b010);
+  wire funct3_011 = `FUNCT3_Is(3'b011);
 
   /* funct7, if it has more cases, use script to generate the codes below */
 
@@ -59,6 +63,7 @@ module decoder (
     /* conditianal branches */
 
   /* 2.6 load and store */
+  wire sd = op_store &  funct3_011;
 
   /* 2.8 environment call and breakpoints */
   wire ebreak = op_system & funct3_000 & funct12_000000000001;
@@ -69,16 +74,19 @@ module decoder (
   wire I_type = op_imm;
   wire U_type = auipc;
   wire J_type = jal;
+  wire S_type = sd;
 
 
   wire [`Vec(`ImmWidth)] I_imm = `immI(inst);
   wire [`Vec(`ImmWidth)] U_imm = `immU(inst);
   wire [`Vec(`ImmWidth)] J_imm = `immJ(inst);
+  wire [`Vec(`ImmWidth)] S_imm = `immS(inst);
 
 
   assign imm =  ({`ImmWidth{I_type}} & I_imm) |
                 ({`ImmWidth{U_type}} & U_imm) |
-                ({`ImmWidth{J_type}} & J_imm);
+                ({`ImmWidth{J_type}} & J_imm) |
+                ({`ImmWidth{S_type}} & S_imm);
 
 /* registers */
   assign rd = `RD(inst);
