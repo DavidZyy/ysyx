@@ -34,4 +34,5 @@ typedef riscv64_CPU_state CPU_state;
 
 
 void init_difftest(char *ref_so_file, long img_size, int port);
+void difftest_step();
 #endif
