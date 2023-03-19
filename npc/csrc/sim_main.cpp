@@ -193,7 +193,7 @@ void get_cpu() {
 int main(int argc, char *argv[]) {
   // get_cpu();
   cpu.pc = RESET_VECTOR;
-  print_arg(argc, argv);
+  // print_arg(argc, argv);
   long size = load_img(argv[1]);
   init_difftest(argv[2], size, 0);
   // load_init_img();

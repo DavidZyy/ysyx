@@ -100,12 +100,12 @@ module decoder (
 
 /* control signals */
   /* alu signals */
-  assign alu_add = addi | auipc;
+  assign alu_add = addi | auipc | sd;
 
   // assign alu_op
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | auipc;
+  assign need_imm = op_imm | auipcu | sd;
 
 
   /* special instruction signals */
