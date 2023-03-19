@@ -126,7 +126,12 @@ beginning of the programm in guest) get the address in the guest. */
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 
+static inline bool in_pmem(paddr_t addr) {
+  return (addr > CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
+}
+
 void pmem_read(long long raddr, long long *rdata) {
+  assert(in_pmem(raddr));
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   raddr = raddr & ~0x7; // align to 8
 
@@ -135,6 +140,8 @@ void pmem_read(long long raddr, long long *rdata) {
 }
 
 void pmem_write(long long waddr, long long wdata, char wmask) {
+  assert(in_pmem(waddr));
+
   assert(!(waddr & 0x7));
   printf("waddr: %lx\n", waddr);
   printf("wdata: %lx\n", wdata);
