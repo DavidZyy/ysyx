@@ -140,13 +140,13 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
   uint8_t *waddr_temp = guest_to_host(waddr);
-  switch (wmask)
-  {
-  case 0x1:   *(uint8_t  *)waddr_temp = wdata;break;
-  case 0x3:   *(uint16_t *)waddr_temp = wdata;break;
-  case 0xf:   *(uint32_t *)waddr_temp = wdata;break;
-  case 0xff:  *(uint64_t *)waddr_temp = wdata;break;
-  default: printf("pmem_write!\n"); exit(0); break;
+  switch (wmask) {
+    case 0x1:   *(uint8_t  *)waddr_temp = wdata;break;
+    case 0x3:   *(uint16_t *)waddr_temp = wdata;break;
+    case 0xf:   *(uint32_t *)waddr_temp = wdata;break;
+    case 0xff:  *(uint64_t *)waddr_temp = wdata;break;
+    // default: printf("pmem_write!\n"); exit(0); break;
+    default: printf("pmem_write!\n"); terminal = 1; break;
   }
 }
 

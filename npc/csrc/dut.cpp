@@ -99,4 +99,8 @@ void difftest_step(){
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_f, DIFFTEST_TO_DUT);
   checkregs(&ref_f, pc);
+  /* if the instructions is store, check the memory 
+    around the destination address */
+  // if(is_store())
+  // checkmem();
 }
