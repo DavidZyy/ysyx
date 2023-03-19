@@ -18,16 +18,42 @@
 #include <difftest-def.h>
 #include <memory/paddr.h>
 
+#define grn(str) 	"\e[32;1m"str"\e[0m"
+#define ylw(str) 	"\e[33;1m"str"\e[0m"
+#define rd(str) 	"\e[31;1m"str"\e[0m"
+#define bl(str) 	"\e[34;1m"str"\e[0m"
+
 void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
-  assert(0);
+  if(direction == DIFFTEST_TO_REF){
+    for (int i = 0; i < n; i++) {
+      *guest_to_host(addr + i) = *(uint8_t *)(buf + i);      
+    }
+  } else {
+    assert(0);
+  }
 }
 
 void difftest_regcpy(void *dut, bool direction) {
-  assert(0);
+
+  // printf(grn("dut addr is: %p\n"), dut);
+  if(direction == DIFFTEST_TO_REF){
+    for(int i = 0; i < 32; i++){
+      cpu.gpr[i] = ((CPU_state *)dut)->gpr[i];
+    }
+    cpu.pc = ((CPU_state *)dut)->pc;
+    // printf(grn("cpu pc is: %p\n"), &(((CPU_state *)dut)->pc));
+  } else {
+    for(int i = 0; i < 32; i++){
+      ((CPU_state *)dut)->gpr[i] = cpu.gpr[i];
+    }
+      ((CPU_state *)dut)->pc = cpu.pc;
+  }
 }
 
+extern void cpu_exec(uint64_t n);
+
 void difftest_exec(uint64_t n) {
-  assert(0);
+  cpu_exec(n);
 }
 
 void difftest_raise_intr(word_t NO) {

@@ -1,23 +1,29 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "../obj_dir/Vtop.h"
-#include <iostream>
 
 /* DPI-C function */
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
+#include "verilated_dpi.h"
 
+// my header
 #include "utils.h"
 #include "macro.h"
+
+// c library
+// #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
-
 static Vtop* top;
 
-static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+CPU_state cpu;
+uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+
 void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1);
@@ -41,11 +47,6 @@ void sim_exit(){
 
 void single_cycle() {
   top->clk = 0;
-  // printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
-        // (void *)top->next_pc);
-
-  // if(top->next_pc)
-    // top->inst = *((uint32_t *)(&pmem[inst_id]));
   step_and_dump_wave();
   top->clk = 1;
   step_and_dump_wave();
@@ -116,7 +117,6 @@ void load_init_img(){
   // *(uint32_t*)(&pmem[16]) = ebreak;
 }
 
-#define paddr_t uint64_t
 /* my understanding: paddr is the program in the guest's address, paddr - CONFIG_MBASE 
 is the offset from the beginning of the program, pmem is the beginning of the program in
 the host. */
@@ -140,13 +140,41 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 
+
+uint64_t *cpu_gpr = NULL;
+extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
+  cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+  // cpu.gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
+
+// 一个输出RTL中通用寄存器的值的示例
+void dump_gpr() {
+  int i;
+  for (i = 0; i < 32; i++) {
+    if(cpu.gpr[i])
+      printf("gpr[%d] = 0x%lx\n", i, cpu.gpr[i]);
+  }
+  printf("\n");
+}
+
+void get_cpu() {
+  assert(cpu_gpr);
+  for(int i = 0; i < 32; i++){
+    cpu.gpr[i] = cpu_gpr[i];
+  }
+  cpu.pc = top->current_pc;
+}
+// 当nemu的pc和npc的current_pc为xxxx时，说明这个地址的指令还没有执行。
 /**
  * The single cycle time series design refers:
  * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9
  */
 int main(int argc, char *argv[]) {
+  // get_cpu();
+  cpu.pc = RESET_VECTOR;
   // print_arg(argc, argv);
-  load_img(argv[1]);
+  long size = load_img(argv[1]);
+  init_difftest(argv[2], size, 0);
   // load_init_img();
 
   sim_init();
@@ -156,91 +184,14 @@ int main(int argc, char *argv[]) {
   top->rst = 0;
 
   for(int i = 0; i < 100; i++){
-    // top->inst = *((uint32_t *)(&pmem[inst_id]));
-    /* two cycle one instruction */
     single_cycle();
-    // single_cycle();
+    get_cpu();
+    if(i)
+      difftest_step();
+    dump_gpr();
     if(terminal)
       break;
   }
 
-
   sim_exit();
-  // int time = 100;
-  // top = new Vtop;
-  // verilated::traceEverOn(true);
 }
-
-// unsigned long main_time = 0;
-// 
-// void cpu_init() {
-//   //cpu_gpr[32] = CONFIG_MBASE;
-//   top -> clk = 0;
-//   top -> rst = 1;
-//   top -> eval();
-//   tfp->dump(main_time);
-//   main_time ++;
-//   top -> clk = 1;
-//   top -> rst = 1;
-//   top -> eval();
-//   tfp->dump(main_time);
-//   main_time ++;
-//   top -> rst = 0;
-// }
-// 
-// void exec_once(VerilatedVcdC* tfp) {
-//   top->clk = 0;
-//   //printf("======clk shoule be 0 now %d\n",top->clk);
-//   // top->mem_inst = pmem_read(top->mem_addr);
-//   // printf("excute addr:0x%08lx inst:0x%08x\n",top->mem_addr,top->mem_inst);
-//   top->inst = *((uint32_t *)(&pmem[inst_id]));
-//   // top->inst = pmem_read();
-//   top->eval();
-//   tfp->dump(main_time);
-//   main_time ++;
-// 
-//   top->clk = 1;
-//   //printf("======clk should be 1 now %d\n",top->clk); 
-//   top->eval(); 
-// 	tfp->dump(main_time);
-//   main_time ++;
-// }
-// 
-// 
-// void cpu_exec(uint64_t n) {
-//   for(int i; i < n; i++){
-//       exec_once(tfp);
-//       // #ifdef CONFIG_DIFFTEST
-//         // difftest_exec_once();
-//       // #endif
-//       if(terminal)
-//         break;
-//   }
-// }
-// 
-// 
-// //============ Main ============
-// int main(int argc, char** argv, char** env) {
-//   load_init_img();
-//   contextp = new VerilatedContext;
-//   contextp->commandArgs(argc, argv);
-//   top = new Vtop{contextp};
-//   //VCD波形设置  start
-//   Verilated::traceEverOn(true);
-//   tfp = new VerilatedVcdC;
-//   top->trace(tfp, 0);
-//   // tfp->open("wave.vcd");
-//   tfp->open("dump1.vcd");
-//   //VCD波形设置  end
-//   //initial data
-//   // pmem_init();
-//   cpu_init();
-//   cpu_exec(100);
-// //   #ifdef CONFIG_DIFFTEST
-// //     init_difftest();
-// //   #endif
-// //  
-// //   sdb_mainloop();
-//   tfp->close();
-//   return 0;
-// }

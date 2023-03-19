@@ -13,6 +13,12 @@
     "stdarg.h": "c",
     "locale.h": "c",
     "difftest.h": "c",
-    "isa.h": "c"
+    "isa.h": "c",
+    "reg.h": "c",
+    "difftest-def.h": "c",
+    "utils.h": "c",
+    "paddr.h": "c",
+    "dlfcn.h": "c",
+    "stdio.h": "c"
   }
 }
