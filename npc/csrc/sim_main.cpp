@@ -15,6 +15,7 @@
 // #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
@@ -157,6 +158,7 @@ void dump_gpr() {
 }
 
 void get_cpu() {
+  assert(cpu_gpr);
   for(int i = 0; i < 32; i++){
     cpu.gpr[i] = cpu_gpr[i];
   }
@@ -167,11 +169,11 @@ void get_cpu() {
  * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9
  */
 int main(int argc, char *argv[]) {
-  // get_cpu();
+  get_cpu();
   cpu.pc = RESET_VECTOR;
   // print_arg(argc, argv);
   long size = load_img(argv[1]);
-  // init_difftest(argv[2], size, 0);
+  init_difftest(argv[2], size, 0);
   // load_init_img();
 
   sim_init();
@@ -182,9 +184,9 @@ int main(int argc, char *argv[]) {
 
   for(int i = 0; i < 100; i++){
     single_cycle();
-    // get_cpu();
-    // difftest_step();
-    // dump_gpr();
+    get_cpu();
+    difftest_step();
+    dump_gpr();
     if(terminal)
       break;
   }
