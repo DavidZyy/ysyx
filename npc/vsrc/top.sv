@@ -19,12 +19,16 @@ module top(
 
 wire [`Vec(`InstWidth)]	inst;
 wire [`Vec(`AddrWidth)] waddr = alu_result;
+wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
 
 memory u_memory(
 	//ports
 	.clk  		( clk  		),
 	.pc   		( next_pc   		),
   .waddr    ( waddr ),
+  .mem_wdata (mem_wdata),
+  .wmask    (wmask),
+  .mem_wen  (mem_wen),
 
 	.inst ( inst 		)
 );
@@ -41,6 +45,9 @@ wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
 wire  is_jal;
+wire  reg_wen;
+wire  mem_wen;
+wire  wmask;
 
 decoder u_decoder(
 	//ports
@@ -55,7 +62,10 @@ decoder u_decoder(
   .is_ebreak    ( is_ebreak   ),
   .is_auipc     ( is_auipc    ),
   .inst_not_ipl ( inst_not_ipl),
-  .is_jal       ( is_jal )
+  .is_jal       ( is_jal ),
+  .reg_wen  (reg_wen),
+  .mem_wen  (mem_wen),
+  .wmask    (wmask)
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -89,9 +99,7 @@ always @(*) begin
 end
 
 /* execute stage */
-  
 wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (current_pc + 4) : alu_result;
-wire wen = 1'b1;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
 wire [`Vec(`ImmWidth)]	rdata_2;
@@ -106,7 +114,7 @@ u_RegisterFile(
   .clk     (clk     ),
   .reg_wdata   (reg_wdata   ),
   .rd      (rd      ),
-  .wen     (wen     ),
+  .reg_wen     (reg_wen     ),
   .rs1     (rs1 ),
   .rs2     (rs2 ),
 

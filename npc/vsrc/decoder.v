@@ -23,7 +23,10 @@ module decoder (
   output is_ebreak,
   output is_auipc,
   output inst_not_ipl,
-  output is_jal
+  output is_jal,
+  output reg_wen,
+  output mem_wen,
+  output wmask
 );
 
 /* decode infos */
@@ -115,4 +118,9 @@ module decoder (
     perfect it", we just use it. */
   assign inst_not_ipl = ~(addi | ebreak | auipc | jal);
 
+  /* write enable */
+  assign reg_wen = ~(sd);
+  assign mem_wen = (sd);
+
+  assign wmask = sd ? (wmask | 0ff) : wmask;
 endmodule

@@ -7,7 +7,7 @@ module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
   input clk,
   input [DATA_WIDTH-1:0] reg_wdata,
   input [ADDR_WIDTH-1:0] rd,
-  input wen,
+  input reg_wen,
   input [ADDR_WIDTH-1:0] rs1,
   input [ADDR_WIDTH-1:0] rs2,
 
@@ -21,7 +21,9 @@ module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
 
   // always @(posedge clk) begin
   always @(negedge clk) begin
-    if (wen) rf[rd] <= reg_wdata;
+    if (reg_wen) rf[rd] <= reg_wdata;
+    else
+      ;
   end
 
   assign rdata_1 = rf[rs1];

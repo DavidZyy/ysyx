@@ -30,8 +30,9 @@ module memory (
     input [`Vec(`RegWidth)] pc,
     // input [`Vec(`RegWidth)] raddr,
     input [`Vec(`AddrWidth)] waddr,
-    // input [`Vec(`RegWidth)] wdata,
-    // input [`Vec(`RegWidth)] wmask,
+    input [`Vec(`RegWidth)] mem_wdata,
+    input [7:0] wmask,
+    input mem_wen,
 
     output [`Vec(`InstWidth)] inst
     // output [`Vec(`RegWidth)] rdata
@@ -45,7 +46,13 @@ module memory (
     // always @(*) begin
       pmem_read(pc, rdata);
       // pmem_read(raddr, rdata);
-      // pmem_write(waddr, wdata, wmask);
+    end
+
+    always @(negedge clk) begin
+      if(mem_wen)
+        pmem_write(waddr, mem_wdata, wmask);
+      else
+        ;
     end
 
 endmodule //memory

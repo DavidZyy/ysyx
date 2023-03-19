@@ -135,9 +135,19 @@ void pmem_read(long long raddr, long long *rdata) {
 }
 
 void pmem_write(long long waddr, long long wdata, char wmask) {
+  assert(!(waddr & 0x7));
   // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
+  uint8_t *waddr_temp = guest_to_host(waddr);
+  switch (wmask)
+  {
+  case 0x1:   *(uint8_t  *)waddr_temp = wdata;break;
+  case 0x3:   *(uint16_t *)waddr_temp = wdata;break;
+  case 0xf:   *(uint32_t *)waddr_temp = wdata;break;
+  case 0xff:  *(uint64_t *)waddr_temp = wdata;break;
+  default: printf("pmem_write!\n"); exit(0); break;
+  }
 }
 
 
