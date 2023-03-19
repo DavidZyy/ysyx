@@ -18,10 +18,11 @@
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
-
 static Vtop* top;
 
+CPU_state cpu;
 uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+
 void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1);
@@ -45,11 +46,6 @@ void sim_exit(){
 
 void single_cycle() {
   top->clk = 0;
-  // printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
-        // (void *)top->next_pc);
-
-  // if(top->next_pc)
-    // top->inst = *((uint32_t *)(&pmem[inst_id]));
   step_and_dump_wave();
   top->clk = 1;
   step_and_dump_wave();
@@ -120,7 +116,6 @@ void load_init_img(){
   // *(uint32_t*)(&pmem[16]) = ebreak;
 }
 
-#define paddr_t uint64_t
 /* my understanding: paddr is the program in the guest's address, paddr - CONFIG_MBASE 
 is the offset from the beginning of the program, pmem is the beginning of the program in
 the host. */
@@ -144,15 +139,6 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
 }
 
-// typedef struct {
-//   // uint64_t gpr[32];
-//   uint64_t *gpr;
-//   vaddr_t pc;
-// } riscv64_CPU_state;
-// 
-// typedef riscv64_CPU_state CPU_state;
-
-CPU_state cpu;
 
 // uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
@@ -176,8 +162,8 @@ void dump_gpr() {
  */
 int main(int argc, char *argv[]) {
   // print_arg(argc, argv);
-  load_img(argv[1]);
-  init_difftest(argv[2]);
+  long size = load_img(argv[1]);
+  init_difftest(argv[2], size, 0);
   // load_init_img();
 
   sim_init();
