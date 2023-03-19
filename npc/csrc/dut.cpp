@@ -68,10 +68,12 @@ error:
   return false;
 }
 
+extern int terminal;
 static void checkregs(CPU_state *ref, vaddr_t pc){
   if (!isa_difftest_checkregs(ref, pc)) {
-    printf(ANSI_FMT("Regs error!", ANSI_FG_RED));
+    printf(ANSI_FMT("Regs error!\n", ANSI_FG_RED));
     // while(1);
+    terminal = 1;
   }
 }
 
