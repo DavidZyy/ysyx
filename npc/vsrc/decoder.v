@@ -113,15 +113,17 @@ module decoder (
   assign is_auipc = auipc;
   assign is_jal = jal;
 
-  /* exception signals */
-  /* this signal seems silly, but it is useful, 
-    according to the principle "implement first, and than 
-    perfect it", we just use it. */
-  assign inst_not_ipl = ~(addi | ebreak | auipc | jal);
-
   /* write enable */
   assign reg_wen = ~(sd);
   assign mem_wen = (sd);
 
   assign wmask = sd ? (wmask | 8'hff) : wmask;
+
+
+  /* exception signals */
+  /* this signal seems silly, but it is useful, 
+    according to the principle "implement first, and than 
+    perfect it", we just use it. */
+  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd);
+
 endmodule
