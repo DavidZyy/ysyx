@@ -105,7 +105,7 @@ module decoder (
   // assign alu_op
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | auipcu | sd;
+  assign need_imm = op_imm | auipc | sd;
 
 
   /* special instruction signals */
