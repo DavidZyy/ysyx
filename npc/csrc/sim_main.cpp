@@ -107,7 +107,7 @@ static long load_img(const char *img_file) {
   return size;
 }
 
-void load_init_img(){
+int load_init_img(){
   *(uint32_t*)(&pmem[0]) = 0x00009117;
   *(uint32_t*)(&pmem[4]) = 0x00009117;
   *(uint32_t*)(&pmem[8]) = 0x00009117;
@@ -115,6 +115,7 @@ void load_init_img(){
   *(uint32_t*)(&pmem[16]) = 0x00000000;
   // *(uint32_t*)(&pmem[12]) = 0x00008117;
   // *(uint32_t*)(&pmem[16]) = ebreak;
+  return 16;
 }
 
 /* my understanding: paddr is the program in the guest's address, paddr - CONFIG_MBASE 
@@ -195,9 +196,9 @@ int main(int argc, char *argv[]) {
   // get_cpu();
   cpu.pc = RESET_VECTOR;
   // print_arg(argc, argv);
-  long size = load_img(argv[1]);
+  // long size = load_img(argv[1]);
+  long size = load_init_img();
   init_difftest(argv[2], size, 0);
-  // load_init_img();
 
   sim_init();
 
