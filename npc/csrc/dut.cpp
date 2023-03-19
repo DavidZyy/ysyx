@@ -11,6 +11,7 @@ enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
 extern uint8_t pmem[CONFIG_MSIZE];
 extern riscv64_CPU_state cpu;
+extern int terminal;
 
 extern uint8_t* guest_to_host(paddr_t paddr);
 
@@ -68,11 +69,24 @@ error:
   return false;
 }
 
-extern int terminal;
+void isa_reg_display(CPU_state *ref){
+  for(int i = 0; i < 32; i++){
+    if(ref->gpr[i] != cpu.gpr[i]) {
+      printf("nemu: gpr[%d] = 0x%lx", i, ref->gpr[i]);
+      printf("\b");
+      printf("npc: gpr[%d] = 0x%lx\n", i, cpu.gpr[i]);
+    }
+  }
+  printf("nemu: pc = 0x%lx", ref->pc);
+  printf("\b");
+  printf("npc: pc = 0x%lx\n", cpu.pc);
+}
+
 static void checkregs(CPU_state *ref, vaddr_t pc){
   if (!isa_difftest_checkregs(ref, pc)) {
-    printf(ANSI_FMT("Regs error!\n", ANSI_FG_RED));
+    printf(ANSI_FMT("Regs error!:\n", ANSI_FG_RED));
     // while(1);
+    isa_reg_display(ref);
     terminal = 1;
   }
 }
