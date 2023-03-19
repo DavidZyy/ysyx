@@ -8,8 +8,18 @@
 // #include <utils.h>
 // #include <difftest-def.h>
 
+#define CONFIG_MSIZE 0x8000000
+#define CONFIG_MBASE 0x80000000
+#define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
+#define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
+#define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
 #define NULL nullptr
-#define padd
+#define paddr_t uint64_t
+#define vaddr_t uint64_t
+enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
+extern uint8_t pmem[CONFIG_MSIZE];
+
+extern uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; };
 
 void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
