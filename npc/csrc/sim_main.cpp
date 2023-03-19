@@ -147,6 +147,7 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
 int main(int argc, char *argv[]) {
   // print_arg(argc, argv);
   load_img(argv[1]);
+  init_difftest(argv[2], 0, 0);
   // load_init_img();
 
   sim_init();
@@ -166,4 +167,3 @@ int main(int argc, char *argv[]) {
 
   sim_exit();
 }
-
