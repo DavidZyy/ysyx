@@ -73,12 +73,12 @@ void isa_reg_display(CPU_state *ref){
   for(int i = 0; i < 32; i++){
     if(ref->gpr[i] != cpu.gpr[i]) {
       printf("nemu: gpr[%d] = 0x%lx", i, ref->gpr[i]);
-      printf("\b");
+      printf("\t");
       printf("npc: gpr[%d] = 0x%lx\n", i, cpu.gpr[i]);
     }
   }
   printf("nemu: pc = 0x%lx", ref->pc);
-  printf("\b");
+  printf("\t");
   printf("npc: pc = 0x%lx\n", cpu.pc);
 }
 
