@@ -48,8 +48,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 
   ref_difftest_init(port);
   ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
-  // printf(ANSI_FMT("dut cpu pc is: %lx\n", ANSI_FG_GREEN), cpu.pc);
-  printf(ANSI_FMT("cpu addr is: %p\n", ANSI_FG_GREEN), &cpu);
+  printf(ANSI_FMT("dut cpu pc is: %p\n", ANSI_FG_GREEN), &cpu.pc);
+  // printf(ANSI_FMT("cpu addr is: %p\n", ANSI_FG_GREEN), &cpu);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 

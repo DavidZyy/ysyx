@@ -41,7 +41,7 @@ void difftest_regcpy(void *dut, bool direction) {
       cpu.gpr[i] = ((CPU_state *)dut)->gpr[i];
     }
     cpu.pc = ((CPU_state *)dut)->pc;
-    // printf(grn("cpu pc is: %lx\n"), ((CPU_state *)dut)->pc);
+    printf(grn("cpu pc is: %p\n"), &(((CPU_state *)dut)->pc));
   } else {
     for(int i = 0; i < 32; i++){
       ((CPU_state *)dut)->gpr[i] = cpu.gpr[i];
