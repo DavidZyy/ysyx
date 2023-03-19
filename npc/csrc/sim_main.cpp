@@ -160,7 +160,7 @@ void get_cpu() {
   for(int i = 0; i < 32; i++){
     cpu.gpr[i] = cpu_gpr[i];
   }
-  cpu->pc = top->current_pc;
+  cpu.pc = top->current_pc;
 }
 /**
  * The single cycle time series design refers:
