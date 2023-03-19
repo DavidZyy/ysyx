@@ -176,6 +176,7 @@ int main(int argc, char *argv[]) {
     // top->inst = *((uint32_t *)(&pmem[inst_id]));
     /* two cycle one instruction */
     single_cycle();
+    difftest_step();
     dump_gpr();
     // single_cycle();
     if(terminal)
