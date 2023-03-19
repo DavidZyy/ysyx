@@ -29,16 +29,16 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_memcpy = (void (*)(paddr_t , void *, size_t , bool))ref_difftest_memcpy_temp;
   assert(ref_difftest_memcpy);
 
-  ref_difftest_regcpy = dlsym(handle, "difftest_regcpy");
+  ref_difftest_regcpy = (void (*)(void *, bool ))dlsym(handle, "difftest_regcpy");
   assert(ref_difftest_regcpy);
 
-  ref_difftest_exec = dlsym(handle, "difftest_exec");
+  ref_difftest_exec = (void (*)(uint64_t))dlsym(handle, "difftest_exec");
   assert(ref_difftest_exec);
 
   // ref_difftest_raise_intr = dlsym(handle, "difftest_raise_intr");
   // assert(ref_difftest_raise_intr);
 
-  void (*ref_difftest_init)(int) = dlsym(handle, "difftest_init");
+  void (*ref_difftest_init)(int) = (void (*)(int))dlsym(handle, "difftest_init");
   assert(ref_difftest_init);
 
   // Log("Differential testing: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
