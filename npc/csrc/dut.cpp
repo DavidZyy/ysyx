@@ -1,10 +1,15 @@
 #include <dlfcn.h>
 
-#include <isa.h>
-#include <cpu/cpu.h>
-#include <memory/paddr.h>
-#include <utils.h>
-#include <difftest-def.h>
+#include <stdint.h>
+#include <assert.h>
+// #include <isa.h>
+// #include <cpu/cpu.h>
+// #include <memory/paddr.h>
+// #include <utils.h>
+// #include <difftest-def.h>
+
+#define NULL nullptr
+#define padd
 
 void (*ref_difftest_memcpy)(paddr_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;

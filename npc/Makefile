@@ -53,8 +53,8 @@ sim:
 	verilator --top-module $(TOPNAME) -I$(INCLUDE) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
-	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
-	$(abspath ./csrc/dut.cpp)
+	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS)
+	# $(abspath ./csrc/dut.cpp)
 	obj_dir/Vtop $(IMG)
 	gtkwave dump.vcd
 	# gtkwave dump1.vcd

@@ -6,6 +6,7 @@
 /* DPI-C function */
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
+#include "verilated_dpi.h"
 
 #include "utils.h"
 #include "macro.h"
