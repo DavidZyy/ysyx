@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
   cpu.pc = RESET_VECTOR;
   // print_arg(argc, argv);
   long size = load_img(argv[1]);
-  init_difftest(argv[2], size, 0);
+  // init_difftest(argv[2], size, 0);
   // load_init_img();
 
   sim_init();
@@ -182,9 +182,9 @@ int main(int argc, char *argv[]) {
 
   for(int i = 0; i < 100; i++){
     single_cycle();
-    get_cpu();
-    difftest_step();
-    dump_gpr();
+    // get_cpu();
+    // difftest_step();
+    // dump_gpr();
     if(terminal)
       break;
   }
