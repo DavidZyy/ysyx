@@ -153,7 +153,7 @@ void dump_gpr() {
     if(cpu_gpr[i] != 0)
       printf("gpr[%d] = 0x%lx\n", i, cpu_gpr[i]);
   }
-  prntf("\n");
+  printf("\n");
 }
 
 /**
