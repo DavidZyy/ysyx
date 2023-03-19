@@ -6,7 +6,6 @@
 /* DPI-C function */
 #include "svdpi.h"
 #include "Vtop__Dpi.h"
-#include "verilated_dpi.h"
 
 #include "utils.h"
 #include "macro.h"
@@ -150,10 +149,8 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
 void dump_gpr() {
   int i;
   for (i = 0; i < 32; i++) {
-    if(cpu_gpr[i] != 0)
-      printf("gpr[%d] = 0x%lx\n", i, cpu_gpr[i]);
+    printf("gpr[%d] = 0x%lx\n", i, cpu_gpr[i]);
   }
-  printf("\n");
 }
 
 /**
@@ -163,7 +160,6 @@ void dump_gpr() {
 int main(int argc, char *argv[]) {
   // print_arg(argc, argv);
   load_img(argv[1]);
-  // init_difftest(argv[2], 0, 0);
   // load_init_img();
 
   sim_init();
@@ -184,3 +180,4 @@ int main(int argc, char *argv[]) {
 
   sim_exit();
 }
+
