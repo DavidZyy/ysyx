@@ -164,6 +164,7 @@ void get_cpu() {
   }
   cpu.pc = top->current_pc;
 }
+// 当nemu的pc和npc的current_pc为xxxx时，说明这个地址的指令还没有执行。
 /**
  * The single cycle time series design refers:
  * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9
@@ -186,7 +187,7 @@ int main(int argc, char *argv[]) {
     single_cycle();
     get_cpu();
     if(i)
-    difftest_step();
+      difftest_step();
     dump_gpr();
     if(terminal)
       break;
