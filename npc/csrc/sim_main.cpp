@@ -161,11 +161,11 @@ void dump_gpr() {
  * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9
  */
 int main(int argc, char *argv[]) {
+  cpu.pc = RESET_VECTOR;
   // print_arg(argc, argv);
   long size = load_img(argv[1]);
   init_difftest(argv[2], size, 0);
   // load_init_img();
-  cpu.pc = RESET_VECTOR;
 
   sim_init();
 
