@@ -125,6 +125,6 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~(addi | ebreak | auipc | jal  );
+  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd);
 
 endmodule
