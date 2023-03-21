@@ -103,7 +103,8 @@ always @(posedge clk) begin
 end
 
 /* execute stage */
-wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (current_pc + 4) : alu_result;
+// wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (current_pc + 4) : alu_result;
+wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (cur_inst_pc + 4) : alu_result;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
 wire [`Vec(`ImmWidth)]	rdata_2;
@@ -127,7 +128,8 @@ u_RegisterFile(
 );
 
   /* input */
-wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? current_pc: rdata_1;
+// wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? current_pc: rdata_1;
+wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
 wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result;
