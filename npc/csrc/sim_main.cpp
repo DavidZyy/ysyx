@@ -138,7 +138,7 @@ void pmem_read(long long raddr, long long *rdata) {
   }
   printf(ANSI_FMT("current_pc: %p\n", ANSI_FG_RED), (void *)top->current_pc);
   printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
-  printf(ANSI_FMT("raddr: %p\n", ANSI_FG_RED), (void *)raddr);
+  printf(ANSI_FMT("raddr: %ld\n", ANSI_FG_RED), raddr);
   // if(top->next_pc && top->current_pc)
     assert(in_pmem(raddr));
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
