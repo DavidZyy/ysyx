@@ -128,7 +128,7 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 
 static inline bool in_pmem(paddr_t addr) {
-  return (addr > CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
+  return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
 }
 
 void pmem_read(long long raddr, long long *rdata) {
