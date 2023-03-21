@@ -85,7 +85,7 @@ void isa_reg_display(CPU_state *ref){
 
 static void checkregs(CPU_state *ref, vaddr_t pc){
   if (!isa_difftest_checkregs(ref, pc)) {
-    printf(ANSI_FMT("Regs error!:\n", ANSI_FG_RED));
+    printf(ANSI_FMT("Regs Error:\n", ANSI_FG_RED));
     // while(1);
     isa_reg_display(ref);
     terminal = 1;

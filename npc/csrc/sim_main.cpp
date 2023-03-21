@@ -222,7 +222,7 @@ int main(int argc, char *argv[]) {
     get_cpu();
     if(i)
       difftest_step();
-    dump_gpr();
+    // dump_gpr();
     if(terminal)
       break;
   }
