@@ -155,7 +155,7 @@ assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4))
  Reg 
  #(
   .WIDTH     (`RegWidth),
-  .RESET_VAL (`PcRst)
+  .RESET_VAL (0)
  )
  Pc_Reg(
   .clk  (clk  ),

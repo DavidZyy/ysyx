@@ -10,8 +10,7 @@ module Reg #(parameter WIDTH = 1, parameter RESET_VAL = 0) (
   /* Trigger at negedge */
   // always @(negedge clk) begin
   always @(negedge clk) begin
-    // if (rst) dout <= RESET_VAL;
-    if (rst) dout <= 0;
+    if (rst) dout <= RESET_VAL;
     else if (wen) dout <= din;
   end
 endmodule
