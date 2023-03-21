@@ -158,8 +158,8 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
     case 0xf:   *(uint32_t *)waddr_temp = wdata;break;
     // case 0xff:  *(uint64_t *)waddr_temp = wdata;break;
     // default:  *(uint64_t *)waddr_temp = wdata;break;
-    // default: printf("pmem_write!\n"); exit(0); break;
-    default: printf("pmem_write!\n"); break;
+    default: printf("pmem_write!\n"); exit(0); break;
+    // default: printf("pmem_write!\n"); break;
   }
 }
 
