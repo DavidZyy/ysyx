@@ -12,8 +12,8 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
-  // output reg [`Vec(`ImmWidth)] next_pc_wire
-  output [`Vec(`ImmWidth)] next_pc_reg
+  // output reg [`Vec(`ImmWidth)] next_pc
+  output [`Vec(`ImmWidth)] next_pc
 );
 
 
@@ -26,7 +26,7 @@ memory u_memory(
 	//ports
 	.clk  		( clk  		),
 	// .pc   		( current_pc ),
-	.pc   		( next_pc_reg   		),
+	.pc   		( next_pc   		),
   .waddr    ( waddr ),
   .mem_wdata (mem_wdata),
   .wmask    (wmask),
@@ -141,15 +141,15 @@ Alu u_Alu(
 
 /* rst should not used on an wire !*/
 // two multiplexer
-// assign next_pc_wire = is_jal ? (current_pc + imm) : (current_pc + 4);
-// assign next_pc_wire = rst | is_jal ? `PcRst : next_pc_wire;
-// assign next_pc_wire = is_jal ? `PcRst  : 0;
+// assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
+// assign next_pc = rst | is_jal ? `PcRst : next_pc;
+// assign next_pc = is_jal ? `PcRst  : 0;
 
-// assign next_pc_wire = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
-// initial next_pc_wire = `PcRst;
-wire [`Vec(`ImmWidth)] next_pc_wire;
-// assign next_pc_wire = (is_jal ? (current_pc + imm) : (current_pc + 4));
-assign next_pc_wire = (is_jal ? (current_pc + imm) : (next_pc_reg + 4));
+assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
+// initial next_pc = `PcRst;
+// wire [`Vec(`ImmWidth)] next_pc;
+// assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
+// assign next_pc = (is_jal ? (current_pc + imm) : (next_pc + 4));
 
 /* current instruction pc */
  Reg 
@@ -160,23 +160,23 @@ assign next_pc_wire = (is_jal ? (current_pc + imm) : (next_pc_reg + 4));
  Pc_Reg(
   .clk  (clk  ),
   .rst  (rst  ),
-  .din  (next_pc_reg),
+  .din  (next_pc),
   .wen  (1'b1),
 
   .dout (current_pc)
  );
 
- Reg 
- #(
-  .WIDTH     (`RegWidth),
-  .RESET_VAL (`PcRst)
- )
- next_Pc_Reg(
-  .clk  (clk  ),
-  .rst  (rst  ),
-  .din  (next_pc_wire),
-  .wen  (1'b1),
-
-  .dout (next_pc_reg)
- );
+//  Reg 
+//  #(
+//   .WIDTH     (`RegWidth),
+//   .RESET_VAL (`PcRst)
+//  )
+//  next_Pc_Reg(
+//   .clk  (clk  ),
+//   .rst  (rst  ),
+//   .din  (next_pc),
+//   .wen  (1'b1),
+// 
+//   .dout (next_pc)
+//  );
 endmodule
