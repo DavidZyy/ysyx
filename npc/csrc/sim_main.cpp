@@ -216,10 +216,10 @@ int main(int argc, char *argv[]) {
 
   for(int i = 0; i < 100; i++){
     single_cycle();
-    get_cpu();
-    if(i)
-      difftest_step();
-    dump_gpr();
+    // get_cpu();
+    // if(i)
+    //   difftest_step();
+    // dump_gpr();
     if(terminal)
       break;
   }
