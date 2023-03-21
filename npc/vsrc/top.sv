@@ -149,7 +149,7 @@ Alu u_Alu(
 // initial next_pc_wire = `PcRst;
 wire [`Vec(`ImmWidth)] next_pc_wire;
 // assign next_pc_wire = (is_jal ? (current_pc + imm) : (current_pc + 4));
-assign next_pc_wire = (is_jal ? (next_pc_reg + imm) : (next_pc_reg + 4));
+assign next_pc_wire = (is_jal ? (current_pc + imm) : (next_pc_reg + 4));
 
 /* current instruction pc */
  Reg 
