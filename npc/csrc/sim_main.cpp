@@ -132,7 +132,7 @@ static inline bool in_pmem(paddr_t addr) {
 }
 
 void pmem_read(long long raddr, long long *rdata) {
-  // if(top->next_pc && top->current_pc)
+  if(top->next_pc && top->current_pc)
     assert(in_pmem(raddr));
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   raddr = raddr & ~0x7; // align to 8
