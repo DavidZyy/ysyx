@@ -25,8 +25,8 @@ wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
 memory u_memory(
 	//ports
 	.clk  		( clk  		),
-	// .pc   		( current_pc ),
-	.pc   		( next_pc   		),
+	.pc   		( current_pc ),
+	// .pc   		( next_pc   		),
   .waddr    ( waddr ),
   .mem_wdata (mem_wdata),
   .wmask    (wmask),
@@ -147,9 +147,11 @@ Alu u_Alu(
 
 /* 在rst为0的一瞬间，next_pc为4了？ */
 // assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
-initial next_pc = `PcRst;
+// initial next_pc = `PcRst;
 // wire [`Vec(`ImmWidth)] next_pc;
-assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
+/* 初始化之后马上又被改了 */
+assign next_pc = (is_jal ? (cur_inst_pc + imm) : (current_pc + 4));
+// assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
 // assign next_pc = (is_jal ? (current_pc + imm) : (next_pc + 4));
 
 /* current instruction pc */
@@ -167,17 +169,18 @@ assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
   .dout (current_pc)
  );
 
-//  Reg 
-//  #(
-//   .WIDTH     (`RegWidth),
-//   .RESET_VAL (`PcRst)
-//  )
-//  next_Pc_Reg(
-//   .clk  (clk  ),
-//   .rst  (rst  ),
-//   .din  (next_pc),
-//   .wen  (1'b1),
-// 
-//   .dout (next_pc)
-//  );
+wire [`Vec(`ImmWidth)] cur_inst_pc;
+ Reg 
+ #(
+  .WIDTH     (`RegWidth),
+  .RESET_VAL (0)
+ )
+ cur_inst_pc_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (current_pc),
+  .wen  (1'b1),
+
+  .dout (cur_inst_pc)
+ );
 endmodule
