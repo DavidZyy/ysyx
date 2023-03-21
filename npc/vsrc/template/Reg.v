@@ -13,4 +13,11 @@ module Reg #(parameter WIDTH = 1, parameter RESET_VAL = 0) (
     if (rst) dout <= RESET_VAL;
     else if (wen) dout <= din;
   end
+
+  always @(posedge clk) begin
+    if (rst) dout <= RESET_VAL;
+    // else if (wen) dout <= din;
+    else
+      ;
+  end
 endmodule
