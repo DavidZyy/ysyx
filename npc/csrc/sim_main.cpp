@@ -135,7 +135,7 @@ static inline bool in_pmem(paddr_t addr) {
 
 void pmem_read(long long raddr, long long *rdata) {
   printf(ANSI_FMT("current_pc: %p\n", ANSI_FG_RED), (void *)top->current_pc);
-  printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
+  printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc_reg);
   printf(ANSI_FMT("raddr: %p\n", ANSI_FG_RED), raddr);
   if(top->rst){
     *rdata = 0;
@@ -148,7 +148,7 @@ void pmem_read(long long raddr, long long *rdata) {
 
   uint8_t *raddr_temp = guest_to_host(raddr);
   *rdata = *(uint64_t *)raddr_temp;
-  printf(ANSI_FMT("next_pcddddddddd: %p\n", ANSI_FG_RED), (void *)top->next_pc);
+  printf(ANSI_FMT("next_pcddddddddd: %p\n", ANSI_FG_RED), (void *)top->next_pc_reg);
 }
 
 void pmem_write(long long waddr, long long wdata, char wmask) {
