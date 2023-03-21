@@ -26,7 +26,6 @@ module decoder (
   output is_jal,
   output reg_wen,
   output mem_wen,
-/* verilator lint_off UNOPT */
   output [7:0] wmask
 );
 
@@ -118,8 +117,8 @@ module decoder (
   assign mem_wen = (sd);
   // assign mem_wen = 1'b0;
 
-  assign wmask = sd ? (wmask | 8'hff) : wmask;
-  // assign wmask = sd ?  8'hff : 0;
+  // assign wmask = sd ? (wmask | 8'hff) : wmask;
+  assign wmask = sd ?  8'hff : 0;
 
 
   /* exception signals */
