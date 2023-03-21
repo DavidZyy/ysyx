@@ -52,7 +52,7 @@ module decoder (
 
 /* instructions */
   /* inst is zero */
-  wire nop = ~inst;
+  wire nop = (inst == 32'h0);
   /* reference: volume I: RISC-V Unprivileged ISA V20191213 */
 
   /* 2.4 integer computational instructions */
