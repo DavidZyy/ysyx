@@ -196,7 +196,8 @@ void get_cpu() {
   for(int i = 0; i < 32; i++){
     cpu.gpr[i] = cpu_gpr[i];
   }
-  cpu.pc = top->current_pc;
+  // cpu.pc = top->current_pc;
+  cpu.pc = top->cur_inst_pc;
 }
 // 当nemu的pc和npc的current_pc为xxxx时，说明这个地址的指令还没有执行。
 /**

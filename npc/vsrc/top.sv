@@ -12,7 +12,8 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
-  output reg [`Vec(`ImmWidth)] next_pc
+  output [`Vec(`ImmWidth)] cur_inst_pc
+  // output reg [`Vec(`ImmWidth)] next_pc
   // output [`Vec(`ImmWidth)] next_pc
 );
 
@@ -169,7 +170,7 @@ assign next_pc = (is_jal ? (cur_inst_pc + imm) : (current_pc + 4));
   .dout (current_pc)
  );
 
-wire [`Vec(`ImmWidth)] cur_inst_pc;
+// wire [`Vec(`ImmWidth)] cur_inst_pc;
  Reg 
  #(
   .WIDTH     (`RegWidth),
