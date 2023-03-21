@@ -39,6 +39,7 @@ wire [`Vec(`RegIdWidth)]	rd;
 wire [`Vec(`RegIdWidth)]	rs1;
 wire [`Vec(`RegIdWidth)]	rs2;
 wire [`Vec(`ImmWidth)]	imm;
+/* signals */
 wire 	need_imm;
 wire 	alu_add;
 wire  is_ebreak;
@@ -143,7 +144,7 @@ Alu u_Alu(
 
 // assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
 initial next_pc = `PcRst;
-assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
+// assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
 // assign next_pc = rst ? `PcRst : (current_pc + 5);
 // assign next_pc = 4;
 
