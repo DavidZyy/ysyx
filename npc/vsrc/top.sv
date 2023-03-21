@@ -86,8 +86,8 @@ always @(posedge clk) begin
   end
 end
 
-// always @(posedge clk) begin
-always @(*) begin
+always @(posedge clk) begin
+// always @(*) begin
   if (is_ebreak) begin
     exit_code();
     // assign rd = 2;
