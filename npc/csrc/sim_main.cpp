@@ -137,7 +137,8 @@ void pmem_read(long long raddr, long long *rdata) {
   printf(ANSI_FMT("current_pc: %p\n", ANSI_FG_RED), (void *)top->current_pc);
   printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
   printf(ANSI_FMT("raddr: %p\n", ANSI_FG_RED), raddr);
-  if(top->rst){
+  // if(top->rst){
+  if(raar == 0x4){
     *rdata = 0;
     return;
   }
