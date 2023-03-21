@@ -54,6 +54,7 @@ sim:
 	verilator --top-module $(TOPNAME) -I$(INCLUDE) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
+	--prof-cfuncs -CFLAGS -DVL_DEBUG \
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
 	$(abspath ./csrc/dut.cpp)
 	obj_dir/Vtop $(IMG) $(SO)
