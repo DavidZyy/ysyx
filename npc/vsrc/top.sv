@@ -12,9 +12,9 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
-  output [`Vec(`ImmWidth)] cur_inst_pc
+  output [`Vec(`ImmWidth)] cur_inst_pc,
   // output reg [`Vec(`ImmWidth)] next_pc
-  // output [`Vec(`ImmWidth)] next_pc
+  output [`Vec(`ImmWidth)] next_pc
 );
 
 
