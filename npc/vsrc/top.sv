@@ -147,7 +147,7 @@ Alu u_Alu(
 
 /* 在rst为0的一瞬间，next_pc为4了？ */
 // assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
-initial next_pc = `Pcrst;
+initial next_pc = `PcRst;
 // wire [`Vec(`ImmWidth)] next_pc;
 assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
 // assign next_pc = (is_jal ? (current_pc + imm) : (next_pc + 4));

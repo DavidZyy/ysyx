@@ -213,10 +213,10 @@ int main(int argc, char *argv[]) {
 
   sim_init();
 
-  top->rst = 1;
-  single_cycle(0);
+  // top->rst = 1;
   // single_cycle(0);
-  top->rst = 0;
+  // // single_cycle(0);
+  // top->rst = 0;
 
   for(int i = 0; i < 100; i++){
     single_cycle(0);
