@@ -45,9 +45,11 @@ void sim_exit(){
   tfp->close();
 }
 
-void single_cycle() {
+void single_cycle(int rst) {
   top->clk = 0;
+  if(rst) top->rst = 1;
   step_and_dump_wave();
+  if(rst) top->rst = 0;
   top->clk = 1;
   step_and_dump_wave();
 }
@@ -210,12 +212,12 @@ int main(int argc, char *argv[]) {
 
   sim_init();
 
-  // top->rst = 1;
-  single_cycle();
-  // top->rst = 0;
+  top->rst = 1;
+  single_cycle(0);
+  top->rst = 0;
 
   for(int i = 0; i < 100; i++){
-    single_cycle();
+    single_cycle(0);
     get_cpu();
     if(i)
       difftest_step();
