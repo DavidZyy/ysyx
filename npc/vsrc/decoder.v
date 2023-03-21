@@ -51,6 +51,8 @@ module decoder (
 
 
 /* instructions */
+  /* inst is zero */
+  wire nop = ~inst;
   /* reference: volume I: RISC-V Unprivileged ISA V20191213 */
 
   /* 2.4 integer computational instructions */
@@ -125,6 +127,6 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd);
+  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | nop);
 
 endmodule
