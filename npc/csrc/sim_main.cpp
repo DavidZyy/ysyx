@@ -134,10 +134,10 @@ static inline bool in_pmem(paddr_t addr) {
 }
 
 void pmem_read(long long raddr, long long *rdata) {
-  // if(top->current_pc == NULL){
+  if(top->rst){
     *rdata = 0;
     return;
-  // }
+  }
   printf(ANSI_FMT("current_pc: %p\n", ANSI_FG_RED), (void *)top->current_pc);
   printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
   printf(ANSI_FMT("raddr: %lld\n", ANSI_FG_RED), raddr);
