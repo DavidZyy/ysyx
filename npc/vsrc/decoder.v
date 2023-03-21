@@ -26,6 +26,7 @@ module decoder (
   output is_jal,
   output reg_wen,
   output mem_wen,
+  /* verilator lint_off UNOPT */
   output [7:0] wmask
 );
 
