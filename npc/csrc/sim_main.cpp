@@ -46,11 +46,11 @@ void sim_exit(){
 }
 
 void single_cycle(int rst) {
-  top->clk = 0;
+  top->clk = 1;
   if(rst) top->rst = 1;
   step_and_dump_wave();
   if(rst) top->rst = 0;
-  top->clk = 1;
+  top->clk = 0;
   step_and_dump_wave();
 }
 
