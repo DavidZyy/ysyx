@@ -1,7 +1,8 @@
 // 触发器模板
-module Reg #(parameter WIDTH = 1, parameter RESET_VAL = 0) (
+// module Reg #(parameter WIDTH = 1, parameter RESET_VAL = 0) (
+module Reg #(parameter WIDTH = 1) (
   input clk,
-  input rst,
+  // input rst,
   input [WIDTH-1:0] din,
   input wen,
 

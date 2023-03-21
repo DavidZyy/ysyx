@@ -154,12 +154,13 @@ assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4))
 /* current instruction pc */
  Reg 
  #(
-  .WIDTH     (`RegWidth),
-  .RESET_VAL (0)
+  .WIDTH     (`RegWidth)
+  // .WIDTH     (`RegWidth),
+  // .RESET_VAL (0)
  )
  Pc_Reg(
   .clk  (clk  ),
-  .rst  (rst  ),
+  // .rst  (rst  ),
   .din  (next_pc),
   .wen  (1'b1),
 
