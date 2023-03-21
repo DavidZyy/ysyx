@@ -12,11 +12,11 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
-  /* verilator lint_off UNOPT */
   output [`Vec(`ImmWidth)] next_pc
 );
 
 
+/* verilator lint_off UNOPTFLAT */
 wire [`Vec(`InstWidth)]	inst;
 wire [`Vec(`AddrWidth)] waddr = alu_result;
 wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
