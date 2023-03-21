@@ -160,7 +160,7 @@ assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
  )
  Pc_Reg(
   .clk  (clk  ),
-  // .rst  (rst  ),
+  .rst  (rst  ),
   .din  (next_pc),
   .wen  (1'b1),
 
