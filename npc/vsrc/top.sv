@@ -145,18 +145,18 @@ Alu u_Alu(
 // assign next_pc = rst | is_jal ? `PcRst : next_pc;
 // assign next_pc = is_jal ? `PcRst  : 0;
 
-assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
-// initial next_pc = `PcRst;
+/* 在rst为0的一瞬间，next_pc为4了？ */
+// assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
+initial next_pc = `Pcrst;
 // wire [`Vec(`ImmWidth)] next_pc;
-// assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
+assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
 // assign next_pc = (is_jal ? (current_pc + imm) : (next_pc + 4));
 
 /* current instruction pc */
  Reg 
  #(
-  .WIDTH     (`RegWidth)
-  // .WIDTH     (`RegWidth),
-  // .RESET_VAL (0)
+  .WIDTH     (`RegWidth),
+  .RESET_VAL (`PcRst)
  )
  Pc_Reg(
   .clk  (clk  ),
