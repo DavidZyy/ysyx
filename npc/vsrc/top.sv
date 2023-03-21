@@ -13,7 +13,7 @@ module top(
 
   output [`Vec(`ImmWidth)] current_pc,
   /* verilator lint_off UNOPT */
-  output [`Vec(`ImmWidth)] next_pc
+  output reg [`Vec(`ImmWidth)] next_pc
 );
 
 
