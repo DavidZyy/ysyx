@@ -151,6 +151,7 @@ assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
 // assign next_pc = rst ? `PcRst : (current_pc + 5);
 // assign next_pc = 4;
 
+/* current instruction pc */
  Reg 
  #(
   .WIDTH     (`RegWidth),
@@ -165,4 +166,17 @@ assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
   .dout (current_pc)
  );
 
+//  Reg 
+//  #(
+//   .WIDTH     (`RegWidth),
+//   .RESET_VAL (`PcRst)
+//  )
+//  Pc_Reg(
+//   .clk  (clk  ),
+//   .rst  (rst  ),
+//   .din  (next_pc),
+//   .wen  (1'b1),
+// 
+//   .dout (current_pc)
+//  );
 endmodule
