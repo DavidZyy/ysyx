@@ -12,7 +12,6 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
-  /* verilator lint_off UNOPT */
   output [`Vec(`ImmWidth)] next_pc
 );
 
