@@ -6,6 +6,8 @@
 `define PcRst 64'h80000000
 
 
+  `define AddrWidth       64
+
 /* register related macro */
   `define RegIdWidth      5 /* the width of a number to discribe a register's index */
   `define RegCnt          2**`RegIdWidth /* register counts */
@@ -19,9 +21,10 @@
   /* zero extension */
   `define ZEXT(imm, len)  {(`ImmWidth - len){1'b0}, imm}
 
-  `define immI(inst) {{(`ImmWidth-12){inst[31]}}, inst[31:20] }
+  `define immI(inst) {{(`ImmWidth-11){inst[31]}}, inst[30:20] }
   `define immU(inst) {{(`ImmWidth-32){inst[31]}}, inst[31:12], {12{1'b0}}}
   `define immJ(inst) {{(`ImmWidth-20){inst[31]}}, inst[19:12], inst[20], inst[30:21], {1{1'b0}}}
+  `define immS(inst) {{(`ImmWidth-11){inst[31]}}, inst[30:25], inst[11:7]}
 
 
 /* decode instruction related */

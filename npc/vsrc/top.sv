@@ -12,17 +12,26 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
-  /* verilator lint_off UNOPT */
+  // output [`Vec(`ImmWidth)] cur_inst_pc,
+  // output reg [`Vec(`ImmWidth)] next_pc
   output [`Vec(`ImmWidth)] next_pc
 );
 
 
+/* verilator lint_off UNOPTFLAT */
 wire [`Vec(`InstWidth)]	inst;
+wire [`Vec(`AddrWidth)] waddr = alu_result;
+wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
 
 memory u_memory(
 	//ports
 	.clk  		( clk  		),
-	.pc   		( next_pc   		),
+	.pc   		( current_pc ),
+	// .pc   		( next_pc   		),
+  .waddr    ( waddr ),
+  .mem_wdata (mem_wdata),
+  .wmask    (wmask),
+  .mem_wen  (mem_wen),
 
 	.inst ( inst 		)
 );
@@ -33,12 +42,16 @@ wire [`Vec(`RegIdWidth)]	rd;
 wire [`Vec(`RegIdWidth)]	rs1;
 wire [`Vec(`RegIdWidth)]	rs2;
 wire [`Vec(`ImmWidth)]	imm;
+/* signals */
 wire 	need_imm;
 wire 	alu_add;
 wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
 wire  is_jal;
+wire  reg_wen;
+wire  mem_wen;
+wire [7:0] wmask;
 
 decoder u_decoder(
 	//ports
@@ -53,7 +66,10 @@ decoder u_decoder(
   .is_ebreak    ( is_ebreak   ),
   .is_auipc     ( is_auipc    ),
   .inst_not_ipl ( inst_not_ipl),
-  .is_jal       ( is_jal )
+  .is_jal       ( is_jal ),
+  .reg_wen  (reg_wen),
+  .mem_wen  (mem_wen),
+  .wmask    (wmask)
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -74,12 +90,12 @@ always @(posedge clk) begin
   end
 end
 
-// always @(posedge clk) begin
-always @(*) begin
+always @(posedge clk) begin
+// always @(*) begin
   if (is_ebreak) begin
     exit_code();
     // assign rd = 2;
-    // assign wdata = 64'h80009008;
+    // assign reg_wdata = 64'h80009008;
   end
   else begin
     ;
@@ -87,9 +103,8 @@ always @(*) begin
 end
 
 /* execute stage */
-  
-wire [`Vec(`ImmWidth)]	wdata = is_jal ? (current_pc + 4) : result;
-wire wen = 1'b1;
+wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (current_pc + 4) : alu_result;
+// wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (cur_inst_pc + 4) : alu_result;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
 wire [`Vec(`ImmWidth)]	rdata_2;
@@ -102,9 +117,9 @@ RegisterFile
 )
 u_RegisterFile(
   .clk     (clk     ),
-  .wdata   (wdata   ),
+  .reg_wdata   (reg_wdata   ),
   .rd      (rd      ),
-  .wen     (wen     ),
+  .reg_wen     (reg_wen     ),
   .rs1     (rs1 ),
   .rs2     (rs2 ),
 
@@ -114,25 +129,35 @@ u_RegisterFile(
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? current_pc: rdata_1;
+// wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
 wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
   /* output */
-wire [`Vec(`ImmWidth)]	result;
+wire [`Vec(`ImmWidth)]	alu_result;
 
 Alu u_Alu(
-	.operator_1 		( operator_1),
+	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
 	.alu_add    		( alu_add    		),
 
-	.result     		( result     		)
+	.alu_result     ( alu_result     		)
 );
 
+/* rst should not used on an wire !*/
 // two multiplexer
 // assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
 // assign next_pc = rst | is_jal ? `PcRst : next_pc;
 // assign next_pc = is_jal ? `PcRst  : 0;
-// assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
-assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
 
+/* 在rst为0的一瞬间，next_pc为4了？ */
+// assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
+// initial next_pc = `PcRst;
+// wire [`Vec(`ImmWidth)] next_pc;
+/* 初始化之后马上又被改了 */
+// assign next_pc = (is_jal ? (cur_inst_pc + imm) : (current_pc + 4));
+assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
+// assign next_pc = (is_jal ? (current_pc + imm) : (next_pc + 4));
+
+/* current instruction pc */
  Reg 
  #(
   .WIDTH     (`RegWidth),
@@ -147,4 +172,18 @@ assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4))
   .dout (current_pc)
  );
 
+// wire [`Vec(`ImmWidth)] cur_inst_pc;
+//  Reg 
+//  #(
+//   .WIDTH     (`RegWidth),
+//   .RESET_VAL (0)
+//  )
+//  cur_inst_pc_reg(
+//   .clk  (clk  ),
+//   .rst  (rst  ),
+//   .din  (current_pc),
+//   .wen  (1'b1),
+// 
+//   .dout (cur_inst_pc)
+//  );
 endmodule

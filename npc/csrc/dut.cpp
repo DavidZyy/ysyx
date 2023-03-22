@@ -85,7 +85,7 @@ void isa_reg_display(CPU_state *ref){
 
 static void checkregs(CPU_state *ref, vaddr_t pc){
   if (!isa_difftest_checkregs(ref, pc)) {
-    printf(ANSI_FMT("Regs error!:\n", ANSI_FG_RED));
+    printf(ANSI_FMT("Regs Error:\n", ANSI_FG_RED));
     // while(1);
     isa_reg_display(ref);
     terminal = 1;
@@ -99,4 +99,8 @@ void difftest_step(){
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_f, DIFFTEST_TO_DUT);
   checkregs(&ref_f, pc);
+  /* if the instructions is store, check the memory 
+    around the destination address */
+  // if(is_store())
+  // checkmem();
 }

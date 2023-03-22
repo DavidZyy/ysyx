@@ -29,9 +29,10 @@ module memory (
     input   clk,
     input [`Vec(`RegWidth)] pc,
     // input [`Vec(`RegWidth)] raddr,
-    // input [`Vec(`RegWidth)] waddr,
-    // input [`Vec(`RegWidth)] wdata,
-    // input [`Vec(`RegWidth)] wmask,
+    input [`Vec(`AddrWidth)] waddr,
+    input [`Vec(`RegWidth)] mem_wdata,
+    input [7:0] wmask,
+    input mem_wen,
 
     output [`Vec(`InstWidth)] inst
     // output [`Vec(`RegWidth)] rdata
@@ -39,13 +40,20 @@ module memory (
     localparam mask = 64'h7;
 
     wire [`Vec(`RegWidth)] rdata;
-    assign inst = (pc & mask) == 0 ? rdata[63:32] : rdata[`Vec(`InstWidth)];
+    // assign inst = (pc & mask) == 0 ? rdata[63:32] : rdata[`Vec(`InstWidth)];
+    assign inst = (pc & mask) == 0 ? rdata[`Vec(`InstWidth)] : rdata[63:32];
 
-    always @(negedge clk) begin
-    // always @(*) begin
+    // always @(negedge clk) begin
+    always @(*) begin
       pmem_read(pc, rdata);
       // pmem_read(raddr, rdata);
-      // pmem_write(waddr, wdata, wmask);
+    end
+
+    always @(negedge clk) begin
+      if(mem_wen)
+        pmem_write(waddr, mem_wdata, wmask);
+      else
+        ;
     end
 
 endmodule //memory
