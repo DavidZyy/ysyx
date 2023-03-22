@@ -49,6 +49,7 @@ wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
 wire  is_jal;
+wire  is_jalr;
 wire  reg_wen;
 wire  mem_wen;
 wire [7:0] wmask;
@@ -67,6 +68,7 @@ decoder u_decoder(
   .is_auipc     ( is_auipc    ),
   .inst_not_ipl ( inst_not_ipl),
   .is_jal       ( is_jal ),
+  .is_jalr       ( is_jalr ),
   .reg_wen  (reg_wen),
   .mem_wen  (mem_wen),
   .wmask    (wmask)
@@ -103,7 +105,7 @@ always @(posedge clk) begin
 end
 
 /* execute stage */
-wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (current_pc + 4) : alu_result;
+wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : alu_result;
 // wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (cur_inst_pc + 4) : alu_result;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
@@ -154,7 +156,7 @@ Alu u_Alu(
 // wire [`Vec(`ImmWidth)] next_pc;
 /* 初始化之后马上又被改了 */
 // assign next_pc = (is_jal ? (cur_inst_pc + imm) : (current_pc + 4));
-assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
+assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? rdata_1 + imm : current_pc + 4);
 // assign next_pc = (is_jal ? (current_pc + imm) : (next_pc + 4));
 
 /* current instruction pc */

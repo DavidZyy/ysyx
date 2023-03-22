@@ -24,6 +24,7 @@ module decoder (
   output is_auipc,
   output inst_not_ipl,
   output is_jal,
+  output is_jalr,
   output reg_wen,
   output mem_wen,
   output [7:0] wmask
@@ -36,6 +37,7 @@ module decoder (
   wire op_auipc = `OpIs(`AUIPC);
   wire op_jal = `OpIs(`JAL);
   wire op_store = `OpIs(`STORE);
+  wire op_jalr = `OpIs(`JALR);
   
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
@@ -64,6 +66,7 @@ module decoder (
   /* 2.5 control transfer instructions */
     /* unconditial jumps */
   wire jal = op_jal;
+  wire jalr = op_jalr;
 
     /* conditianal branches */
 
@@ -113,10 +116,11 @@ module decoder (
   assign is_ebreak = ebreak;
   assign is_auipc = auipc;
   assign is_jal = jal;
+  assign is_jalr = jarl;
 
   /* write enable */
   // assign reg_wen = ~(sd);
-  assign reg_wen = ( addi | auipc | jal);
+  assign reg_wen = ( addi | auipc | jal | jarl);
   // assign reg_wen = 0;
   assign mem_wen = (sd);
   // assign mem_wen = 1'b0;
@@ -129,6 +133,6 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | nop);
+  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | nop | jalr);
 
 endmodule
