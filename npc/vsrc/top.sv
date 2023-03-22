@@ -48,7 +48,7 @@ wire [`Vec(`ImmWidth)]	imm;
 /* signals */
 wire 	need_imm;
 // wire 	alu_add;
-wire [`Vec(`AluopWidth)] alu_op,
+wire [`Vec(`AluopWidth)] alu_op;
 wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
