@@ -19,7 +19,8 @@ module decoder (
   output [`Vec(`RegIdWidth)] rs2,
   output [`Vec(`ImmWidth)] imm,
   output need_imm,
-  output alu_add,
+  // output alu_add,
+  output [`Vec(`AluopWidth)] alu_op,
   output is_ebreak,
   output is_auipc,
   output inst_not_ipl,
@@ -50,6 +51,7 @@ module decoder (
 
   /* funct7, if it has more cases, use script to generate the codes below */
   wire funct7_0000000 = `FUNCT7_Is(7'b0000000);
+  wire funct7_0100000 = `FUNCT7_Is(7'b0100000);
 
 
   /* funct12, use for system instructions? */
@@ -68,6 +70,7 @@ module decoder (
   wire auipc    = op_auipc;
     /* integer register-register instructions */
   wire add  = op_op & funct3_000 & funct7_0000000;
+  wire sub  = op_op & funct3_000 & funct7_0100000;
 
   /* 2.5 control transfer instructions */
     /* unconditial jumps */
@@ -114,7 +117,9 @@ module decoder (
 
 /* control signals */
   /* alu signals */
-  assign alu_add = addi | auipc | sd | jalr | ld | add;
+  // assign alu_add = addi | auipc | sd | jalr | ld | add;
+  assign alu_op[`AluopAdd]  = addi | auipc | sd | jalr | ld | add;
+  assign alu_op[`AluopSub]  = sub;
 
   // assign alu_op
 

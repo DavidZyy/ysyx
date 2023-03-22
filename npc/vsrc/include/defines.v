@@ -65,3 +65,14 @@
     is worse than below. The abbreviation means if the opcode is ... */
   `define OpIs(opcode)  (`OPCODE(inst) == opcode)
 
+
+  /* alu_op decode information */
+  `define AluopWidth  32
+
+  `define AluopAdd 0
+  `define AluopSub 1
+
+
+  /* AluAdd equals to 1<<`AluopAdd, and so on */
+  `define AluAdd `AluopWidth'h00000000
+  `define AluSub `AluopWidth'h00000001

@@ -12,6 +12,8 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
+  // output [`Vec(`ImmWidth)] cur_inst_pc,
+  // output reg [`Vec(`ImmWidth)] next_pc
   output [`Vec(`ImmWidth)] next_pc
 );
 
@@ -45,7 +47,8 @@ wire [`Vec(`RegIdWidth)]	rs2;
 wire [`Vec(`ImmWidth)]	imm;
 /* signals */
 wire 	need_imm;
-wire 	alu_add;
+// wire 	alu_add;
+wire [`Vec(`AluopWidth)] alu_op,
 wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
@@ -65,7 +68,8 @@ decoder u_decoder(
 	.rs2      		( rs2      		),
 	.imm      		( imm      		),
 	.need_imm 		( need_imm 		),
-	.alu_add  		( alu_add  		),
+	// .alu_add  		( alu_add  		),
+  .alu_op       ( alu_op      ),
   .is_ebreak    ( is_ebreak   ),
   .is_auipc     ( is_auipc    ),
   .inst_not_ipl ( inst_not_ipl),
@@ -142,7 +146,8 @@ wire [`Vec(`ImmWidth)]	alu_result;
 Alu u_Alu(
 	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
-	.alu_add    		( alu_add    		),
+	// .alu_add    		( alu_add    		),
+	.alu_op    		  ( alu_op    		),
 
 	.alu_result     ( alu_result     		)
 );
