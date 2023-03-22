@@ -116,7 +116,7 @@ module decoder (
 
   /* write enable */
   // assign reg_wen = ~(sd);
-  assign reg_wen = ( auipc | jal);
+  assign reg_wen = ( addi | auipc | jal);
   // assign reg_wen = 0;
   assign mem_wen = (sd);
   // assign mem_wen = 1'b0;
