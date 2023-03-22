@@ -221,8 +221,8 @@ int main(int argc, char *argv[]) {
   for(int i = 0; i < 100; i++){
     single_cycle(0);
     get_cpu();
-    // if(i)
-      // difftest_step();
+    if(i)
+      difftest_step();
     // dump_gpr();
     if(terminal)
       break;
