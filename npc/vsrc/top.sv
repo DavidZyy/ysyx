@@ -12,8 +12,6 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
-  // output [`Vec(`ImmWidth)] cur_inst_pc,
-  // output reg [`Vec(`ImmWidth)] next_pc
   output [`Vec(`ImmWidth)] next_pc
 );
 
@@ -149,20 +147,8 @@ Alu u_Alu(
 	.alu_result     ( alu_result     		)
 );
 
-/* rst should not used on an wire !*/
-// two multiplexer
-// assign next_pc = is_jal ? (current_pc + imm) : (current_pc + 4);
-// assign next_pc = rst | is_jal ? `PcRst : next_pc;
-// assign next_pc = is_jal ? `PcRst  : 0;
 
-/* 在rst为0的一瞬间，next_pc为4了？ */
-// assign next_pc = rst ? `PcRst : (is_jal ? (current_pc + imm) : (current_pc + 4));
-// initial next_pc = `PcRst;
-// wire [`Vec(`ImmWidth)] next_pc;
-/* 初始化之后马上又被改了 */
-// assign next_pc = (is_jal ? (cur_inst_pc + imm) : (current_pc + 4));
 assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? alu_result : current_pc + 4);
-// assign next_pc = (is_jal ? (current_pc + imm) : (next_pc + 4));
 
 /* current instruction pc */
  Reg 
@@ -179,18 +165,5 @@ assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? alu_result : current_p
   .dout (current_pc)
  );
 
-// wire [`Vec(`ImmWidth)] cur_inst_pc;
-//  Reg 
-//  #(
-//   .WIDTH     (`RegWidth),
-//   .RESET_VAL (0)
-//  )
-//  cur_inst_pc_reg(
-//   .clk  (clk  ),
-//   .rst  (rst  ),
-//   .din  (current_pc),
-//   .wen  (1'b1),
-// 
-//   .dout (cur_inst_pc)
-//  );
+
 endmodule

@@ -40,6 +40,7 @@ module decoder (
   wire op_store = `OpIs(`STORE);
   wire op_jalr = `OpIs(`JALR);
   wire op_load  = `OpIs(`LOAD);
+  wire op_op  = `OpIs(`OP)
   
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
@@ -48,6 +49,7 @@ module decoder (
   wire funct3_011 = `FUNCT3_Is(3'b011);
 
   /* funct7, if it has more cases, use script to generate the codes below */
+  wire funct7_0000000 = `FUNCT7_Is(7'b0000000);
 
 
   /* funct12, use for system instructions? */
@@ -65,6 +67,7 @@ module decoder (
   wire addi     = op_imm & funct3_000;
   wire auipc    = op_auipc;
     /* integer register-register instructions */
+  wire add  = op_op & funct3_000 & funct7_0000000;
 
   /* 2.5 control transfer instructions */
     /* unconditial jumps */
@@ -87,18 +90,21 @@ module decoder (
   wire U_type = auipc;
   wire J_type = jal;
   wire S_type = op_store;
+  wire R_type = op_op;
 
 
   wire [`Vec(`ImmWidth)] I_imm = `immI(inst);
   wire [`Vec(`ImmWidth)] U_imm = `immU(inst);
   wire [`Vec(`ImmWidth)] J_imm = `immJ(inst);
   wire [`Vec(`ImmWidth)] S_imm = `immS(inst);
+  wire [`Vec(`ImmWidth)] R_imm = `immR(inst);
 
 
   assign imm =  ({`ImmWidth{I_type}} & I_imm) |
                 ({`ImmWidth{U_type}} & U_imm) |
                 ({`ImmWidth{J_type}} & J_imm) |
-                ({`ImmWidth{S_type}} & S_imm);
+                ({`ImmWidth{S_type}} & S_imm) |
+                ({`ImmWidth{R_type}} & R_imm);
 
 /* registers */
   assign rd = `RD(inst);
@@ -108,7 +114,7 @@ module decoder (
 
 /* control signals */
   /* alu signals */
-  assign alu_add = addi | auipc | sd | jalr | ld;
+  assign alu_add = addi | auipc | sd | jalr | ld | add;
 
   // assign alu_op
 
@@ -125,9 +131,9 @@ module decoder (
 
   /* write enable */
   // assign reg_wen = ~(sd);
-  assign reg_wen = ( addi | auipc | jal | jalr | ld);
+  assign reg_wen = addi | auipc | jal | jalr | ld | add;
   // assign reg_wen = 0;
-  assign mem_wen = (sd);
+  assign mem_wen = sd;
   // assign mem_wen = 1'b0;
 
   // assign wmask = sd ? (wmask | 8'hff) : wmask;
@@ -139,6 +145,6 @@ module decoder (
     according to the principle "implement first, and than 
     perfect it", we just use it. */
   assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | nop | jalr 
-  | ld);
+  | ld | add);
 
 endmodule

@@ -25,6 +25,7 @@
   `define immU(inst) {{(`ImmWidth-32){inst[31]}}, inst[31:12], {12{1'b0}}}
   `define immJ(inst) {{(`ImmWidth-20){inst[31]}}, inst[19:12], inst[20], inst[30:21], {1{1'b0}}}
   `define immS(inst) {{(`ImmWidth-11){inst[31]}}, inst[30:25], inst[11:7]}
+  `define immR(inst) `ImmWidth'b0
 
 
 /* decode instruction related */
