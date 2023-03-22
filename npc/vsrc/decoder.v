@@ -40,7 +40,7 @@ module decoder (
   wire op_store = `OpIs(`STORE);
   wire op_jalr = `OpIs(`JALR);
   wire op_load  = `OpIs(`LOAD);
-  wire op_op  = `OpIs(`OP)
+  wire op_op  = `OpIs(`OP);
   
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
