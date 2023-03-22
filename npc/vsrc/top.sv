@@ -12,7 +12,7 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
-  output [`Vec(`ImmWidth)] cur_inst_pc,
+  // output [`Vec(`ImmWidth)] cur_inst_pc,
   // output reg [`Vec(`ImmWidth)] next_pc
   output [`Vec(`ImmWidth)] next_pc
 );
@@ -103,8 +103,8 @@ always @(posedge clk) begin
 end
 
 /* execute stage */
-// wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (current_pc + 4) : alu_result;
-wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (cur_inst_pc + 4) : alu_result;
+wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (current_pc + 4) : alu_result;
+// wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (cur_inst_pc + 4) : alu_result;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
 wire [`Vec(`ImmWidth)]	rdata_2;
@@ -128,8 +128,8 @@ u_RegisterFile(
 );
 
   /* input */
-// wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? current_pc: rdata_1;
-wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
+wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? current_pc: rdata_1;
+// wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
 wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result;
@@ -153,8 +153,8 @@ Alu u_Alu(
 // initial next_pc = `PcRst;
 // wire [`Vec(`ImmWidth)] next_pc;
 /* 初始化之后马上又被改了 */
-assign next_pc = (is_jal ? (cur_inst_pc + imm) : (current_pc + 4));
-// assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
+// assign next_pc = (is_jal ? (cur_inst_pc + imm) : (current_pc + 4));
+assign next_pc = (is_jal ? (current_pc + imm) : (current_pc + 4));
 // assign next_pc = (is_jal ? (current_pc + imm) : (next_pc + 4));
 
 /* current instruction pc */
@@ -173,17 +173,17 @@ assign next_pc = (is_jal ? (cur_inst_pc + imm) : (current_pc + 4));
  );
 
 // wire [`Vec(`ImmWidth)] cur_inst_pc;
- Reg 
- #(
-  .WIDTH     (`RegWidth),
-  .RESET_VAL (0)
- )
- cur_inst_pc_reg(
-  .clk  (clk  ),
-  .rst  (rst  ),
-  .din  (current_pc),
-  .wen  (1'b1),
-
-  .dout (cur_inst_pc)
- );
+//  Reg 
+//  #(
+//   .WIDTH     (`RegWidth),
+//   .RESET_VAL (0)
+//  )
+//  cur_inst_pc_reg(
+//   .clk  (clk  ),
+//   .rst  (rst  ),
+//   .din  (current_pc),
+//   .wen  (1'b1),
+// 
+//   .dout (cur_inst_pc)
+//  );
 endmodule
