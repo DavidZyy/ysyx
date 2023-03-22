@@ -218,11 +218,13 @@ int main(int argc, char *argv[]) {
   single_cycle(0);
   top->rst = 0;
 
+  difftest_step();
+
   for(int i = 0; i < 100; i++){
     single_cycle(0);
     get_cpu();
-    if(i)
-      difftest_step();
+    
+    difftest_step();
     // dump_gpr();
     if(terminal)
       break;
