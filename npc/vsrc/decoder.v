@@ -20,6 +20,7 @@ module decoder (
   output [`Vec(`ImmWidth)] imm,
   output need_imm,
   // output alu_add,
+  /* verilator lint_off UNDRIVEN */
   output [`Vec(`AluopWidth)] alu_op,
   output is_ebreak,
   output is_auipc,
