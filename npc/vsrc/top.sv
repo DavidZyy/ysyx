@@ -26,8 +26,8 @@ wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
 memory u_memory(
 	//ports
 	.clk  		( clk  		),
-	.pc   		( current_pc ),
-	// .pc   		( next_pc   		),
+	// .pc   		( current_pc ),
+	.pc   		( next_pc   		),
   .waddr    ( waddr ),
   .mem_wdata (mem_wdata),
   .wmask    (wmask),
