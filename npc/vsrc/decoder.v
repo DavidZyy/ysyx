@@ -107,12 +107,12 @@ module decoder (
 
 /* control signals */
   /* alu signals */
-  assign alu_add = addi | auipc | sd | jalr;
+  assign alu_add = addi | auipc | sd | jalr | ld;
 
   // assign alu_op
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | auipc | sd | jalr;
+  assign need_imm = op_imm | auipc | sd | jalr | ld;
 
 
   /* special instruction signals */
