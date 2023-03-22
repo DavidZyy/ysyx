@@ -22,13 +22,13 @@ module top(
 wire [`Vec(`InstWidth)]	inst;
 wire [`Vec(`AddrWidth)] waddr = alu_result;
 wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
-wire [`Vec(`RegWidth)] mem_raddr;
+wire [`Vec(`RegWidth)] mem_rdata;
 
 memory u_memory(
 	//ports
 	.clk  		( clk  		),
 	.pc   		( current_pc ),
-  .raddr    (alu_result),
+  .mem_raddr    (alu_result),
 	// .pc   		( next_pc   		),
   .waddr    ( waddr ),
   .mem_wdata (mem_wdata),
@@ -36,7 +36,7 @@ memory u_memory(
   .mem_wen  (mem_wen),
 
 	.inst ( inst 		),
-  .mem_raddr(mem_raddr)
+  .mem_rdata(mem_rdata)
 );
 
 
