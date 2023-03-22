@@ -156,7 +156,7 @@ Alu u_Alu(
 // wire [`Vec(`ImmWidth)] next_pc;
 /* 初始化之后马上又被改了 */
 // assign next_pc = (is_jal ? (cur_inst_pc + imm) : (current_pc + 4));
-assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? rdata_1 + imm : current_pc + 4);
+assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? alu_result : current_pc + 4);
 // assign next_pc = (is_jal ? (current_pc + imm) : (next_pc + 4));
 
 /* current instruction pc */
