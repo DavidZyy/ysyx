@@ -22,18 +22,21 @@ module top(
 wire [`Vec(`InstWidth)]	inst;
 wire [`Vec(`AddrWidth)] waddr = alu_result;
 wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
+wire [`Vec(`RegWidth)] mem_raddr;
 
 memory u_memory(
 	//ports
 	.clk  		( clk  		),
 	.pc   		( current_pc ),
+  .raddr    (alu_result),
 	// .pc   		( next_pc   		),
   .waddr    ( waddr ),
   .mem_wdata (mem_wdata),
   .wmask    (wmask),
   .mem_wen  (mem_wen),
 
-	.inst ( inst 		)
+	.inst ( inst 		),
+  .mem_raddr(mem_raddr)
 );
 
 
@@ -53,6 +56,7 @@ wire  is_jalr;
 wire  reg_wen;
 wire  mem_wen;
 wire [7:0] wmask;
+wire  is_load;
 
 decoder u_decoder(
 	//ports
@@ -71,7 +75,8 @@ decoder u_decoder(
   .is_jalr       ( is_jalr ),
   .reg_wen  (reg_wen),
   .mem_wen  (mem_wen),
-  .wmask    (wmask)
+  .wmask    (wmask),
+  .is_load  (is_load)
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -105,7 +110,7 @@ always @(posedge clk) begin
 end
 
 /* execute stage */
-wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : alu_result;
+wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : (is_load ? mem_raddr : alu_result);
 // wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (cur_inst_pc + 4) : alu_result;
 
 wire [`Vec(`ImmWidth)]	rdata_1;

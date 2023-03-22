@@ -120,10 +120,11 @@ module decoder (
   assign is_auipc = auipc;
   assign is_jal = jal;
   assign is_jalr = jalr;
+  assign is_load  = ld;
 
   /* write enable */
   // assign reg_wen = ~(sd);
-  assign reg_wen = ( addi | auipc | jal | jalr);
+  assign reg_wen = ( addi | auipc | jal | jalr | ld);
   // assign reg_wen = 0;
   assign mem_wen = (sd);
   // assign mem_wen = 1'b0;
@@ -136,6 +137,7 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | nop | jalr );
+  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | nop | jalr 
+  | ld);
 
 endmodule
