@@ -27,7 +27,8 @@ module decoder (
   output is_jalr,
   output reg_wen,
   output mem_wen,
-  output [7:0] wmask
+  output [7:0] wmask,
+  output is_load;
 );
 
 /* decode infos */
