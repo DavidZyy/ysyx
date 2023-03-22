@@ -116,7 +116,7 @@ module decoder (
   assign is_ebreak = ebreak;
   assign is_auipc = auipc;
   assign is_jal = jal;
-  assign is_jalr = jarl;
+  assign is_jalr = jalr;
 
   /* write enable */
   // assign reg_wen = ~(sd);
