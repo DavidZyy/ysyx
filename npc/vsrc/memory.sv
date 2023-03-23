@@ -13,9 +13,10 @@ module memory (
     input [`Vec(`RegWidth)] mem_wdata,
     input [7:0] wmask,
     input mem_wen,
+    input mem_ren,
 
     output [`Vec(`InstWidth)] inst,
-    output [`Vec(`ImmWidth)] mem_rdata 
+    output [`Vec(`ImmWidth)] mem_rdata
 );
     localparam mask = 64'h7;
 
@@ -28,7 +29,10 @@ module memory (
     end
 
     always @(posedge clk) begin
-      pmem_read(mem_raddr, mem_rdata);
+      if(mem_ren)
+        pmem_read(mem_raddr, mem_rdata);
+      else
+        ;
     end
 
     always @(negedge clk) begin

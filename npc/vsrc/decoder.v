@@ -31,7 +31,8 @@ module decoder (
   output mem_wen,
   output [7:0] wmask,
   output is_load,
-  output is_branch
+  output is_branch,
+  output mem_ren
 );
 
 /* decode infos */
@@ -184,6 +185,7 @@ module decoder (
   /* write enable */
   assign reg_wen = op_imm | lui | auipc | op_op | jal | jalr | ld;
   assign mem_wen = sd;
+  assign mem_ren = ld;
 
   // assign wmask = sd ? (wmask | 8'hff) : wmask;
   assign wmask = sd ?  8'hff : 0;
