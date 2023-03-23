@@ -84,6 +84,11 @@
   `define AluopNe       12
   `define AluopGe       13
   `define AluopGeu      14
+  `define AluopAddw     15
+  `define AluopSllw     16
+  `define AluopSrlw     17
+  `define AluopSraw     18
+  `define AluopSubw     19
 
   /* AluAdd equals to 1<<`AluopAdd, and so on */
   `define AluAdd        `AluopWidth'h00000001
@@ -101,6 +106,10 @@
   `define AluNe         `AluopWidth'h00001000
   `define AluGe         `AluopWidth'h00002000
   `define AluGeu        `AluopWidth'h00004000
+  `define AluAddw       `AluopWidth'h00008000
+  `define AluSllw       `AluopWidth'h00010000
+  `define AluSrlw       `AluopWidth'h00020000
+  `define AluSubw       `AluopWidth'h00080000
 
   `define ShtWdt  6 // shift fileds width, for slli, srli, srai ...
   `define ShtWdtW 5 // for slliw, srliw, sraiw ...

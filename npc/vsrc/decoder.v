@@ -47,6 +47,7 @@ module decoder (
   wire op_op      = `OpIs(`OP);
   wire op_lui     = `OpIs(`LUI);
   wire op_branch  = `OpIs(`BRANCH);
+  wire op_imm_32  = `OpIs(`OP_IMM_32);
 
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
@@ -71,6 +72,7 @@ module decoder (
 /* instructions */
   /* reference: volume I: RISC-V Unprivileged ISA V20191213 */
 
+/* RV32I */
   /* 2.4 integer computational instructions */
     /* integer register-immediate instructions */
   wire addi     = op_imm & funct3_000;
@@ -117,6 +119,9 @@ module decoder (
   /* 2.8 environment call and breakpoints */
   wire ebreak = op_system & funct3_000 & funct12_000000000001;
   
+/* RV64I */
+  /* integer register-immediate instructions */
+  wire addiw = op_imm_32 & funct3_000;
 
 /* immediate */
   /* instruction type, to be the key to choose immediate */
@@ -154,8 +159,8 @@ module decoder (
   // assign alu_add = addi | auipc | sd | jalr | ld | add;
   assign alu_op[`AluopAdd]      = addi  | auipc | sd | jal | jalr | ld | add;
   assign alu_op[`AluopSub]      = sub;
-  assign alu_op[`AluopLt]       = slti  | slt  | blt;
-  assign alu_op[`AluopLtu]      = sltiu | sltu | bltu;
+  assign alu_op[`AluopLt]       = slti  | slt   | blt;
+  assign alu_op[`AluopLtu]      = sltiu | sltu  | bltu;
   assign alu_op[`AluopAnd]      = andi  | and_inst;
   assign alu_op[`AluopOr]       = ori   | or_inst;
   assign alu_op[`AluopXor]      = xori  | xor_inst;
@@ -167,11 +172,12 @@ module decoder (
   assign alu_op[`AluopNe]       = bne;
   assign alu_op[`AluopGe]       = bge;
   assign alu_op[`AluopGeu]      = bgeu;
+  assign alu_op[`AluopAddw]     = addiw;
 
   // assign alu_op
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | lui | auipc | sd | jal | jalr | ld;
+  assign need_imm = op_imm | op_imm_32 | lui | auipc | sd | jal | jalr | ld;
 
 
   /* special instruction signals */
@@ -183,7 +189,7 @@ module decoder (
   assign is_branch  = op_branch;
 
   /* write enable */
-  assign reg_wen = op_imm | lui | auipc | op_op | jal | jalr | ld;
+  assign reg_wen = op_imm | op_imm_32 | lui | auipc | op_op | jal | jalr | ld;
   assign mem_wen = sd;
   assign mem_ren = ld;
 
@@ -196,6 +202,6 @@ module decoder (
     according to the principle "implement first, and than 
     perfect it", we just use it. */
   assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | jalr 
-  | ld | add | sub | slti | sltiu | andi | beq | bne);
+  | ld | add | sub | slti | sltiu | andi | beq | bne | addiw);
 
 endmodule
