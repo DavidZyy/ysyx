@@ -48,7 +48,7 @@ wire [`Vec(`ImmWidth)]	imm;
 /* signals */
 wire 	need_imm;
 // wire 	alu_add;
-wire [`Vec(`AluopWidth)] alu_op;
+wire  [`Vec(`AluopWidth)] alu_op;
 wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
@@ -56,29 +56,30 @@ wire  is_jal;
 wire  is_jalr;
 wire  reg_wen;
 wire  mem_wen;
-wire [7:0] wmask;
+wire  [7:0] wmask;
 wire  is_load;
+wire  is_branch;
 
 decoder u_decoder(
 	//ports
-	.inst     		( inst     		),
+	.inst     		    ( inst     		),
 
-	.rd       		( rd       		),
-	.rs1      		( rs1      		),
-	.rs2      		( rs2      		),
-	.imm      		( imm      		),
-	.need_imm 		( need_imm 		),
-	// .alu_add  		( alu_add  		),
-  .alu_op       ( alu_op      ),
-  .is_ebreak    ( is_ebreak   ),
-  .is_auipc     ( is_auipc    ),
-  .inst_not_ipl ( inst_not_ipl),
-  .is_jal       ( is_jal ),
-  .is_jalr       ( is_jalr ),
-  .reg_wen  (reg_wen),
-  .mem_wen  (mem_wen),
-  .wmask    (wmask),
-  .is_load  (is_load)
+	.rd       		    ( rd       		),
+	.rs1      		    ( rs1      		),
+	.rs2      		    ( rs2      		),
+	.imm      		    ( imm      		),
+	.need_imm 		    ( need_imm 		),
+  .alu_op           ( alu_op      ),
+  .is_ebreak        ( is_ebreak   ),
+  .is_auipc         ( is_auipc    ),
+  .inst_not_ipl     ( inst_not_ipl),
+  .is_jal           ( is_jal ),
+  .is_jalr          ( is_jalr ),
+  .reg_wen          ( reg_wen),
+  .mem_wen          ( mem_wen),
+  .wmask            ( wmask),
+  .is_load          ( is_load),
+  .is_branch        ( is_branch)
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -149,14 +150,16 @@ Alu u_Alu(
 	// .alu_add    		( alu_add    		),
 	.alu_op    		  ( alu_op    		),
 
-	.alu_result     ( alu_result     		)
+	.alu_result     ( alu_result   	)
 );
 
 
 // assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? alu_result : current_pc + 4);
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
-assign next_pc = (is_jal | is_jalr) ? (alu_result & ~1) : (current_pc + 4);
+wire [`Vec(`InstWidth)] next_pc_temp;
+assign next_pc_temp = (is_branch && (alu_result == 1)) ? (current_pc + imm) : (current_pc + 4);
+assign next_pc = (is_jal | is_jalr) ? (alu_result & ~1) : next_pc_temp;
 
 /* current instruction pc */
  Reg 

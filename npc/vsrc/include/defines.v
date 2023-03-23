@@ -26,6 +26,7 @@
   `define immJ(inst) {{(`ImmWidth-20){inst[31]}}, inst[19:12], inst[20], inst[30:21], {1{1'b0}}}
   `define immS(inst) {{(`ImmWidth-11){inst[31]}}, inst[30:25], inst[11:7]}
   `define immR(inst) `ImmWidth'b0
+  `define immB(inst) {{(`ImmWidth-12){inst[31]}}, inst[7], inst[30:25], inst[11:8], {1{1'b0}}}
 
 
 /* decode instruction related */
@@ -79,6 +80,10 @@
   `define AluopSrl      8 // shift right logically
   `define AluopSra      9 // shift right arithmetically
   `define AluopOutImm   10 // output immediate (operator2) directly
+  `define AluopEq       11
+  `define AluopNe       12
+  `define AluopGe       13
+  `define AluopGeu      14
 
   /* AluAdd equals to 1<<`AluopAdd, and so on */
   `define AluAdd        `AluopWidth'h00000001
@@ -92,6 +97,10 @@
   `define AluSrl        `AluopWidth'h00000100
   `define AluSra        `AluopWidth'h00000200
   `define AluOutImm     `AluopWidth'h00000400
+  `define AluEq         `AluopWidth'h00000800
+  `define AluNe         `AluopWidth'h00001000
+  `define AluGe         `AluopWidth'h00002000
+  `define AluGeu        `AluopWidth'h00004000
 
   `define ShtWdt  6 // shift fileds width, for slli, srli, srai ...
   `define ShtWdtW 5 // for slliw, srliw, sraiw ...
