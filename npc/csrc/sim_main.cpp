@@ -217,7 +217,9 @@ int main(int argc, char *argv[]) {
   single_cycle(0);
   top->rst = 0;
 
-  for(int i = 0; i < 100; i++){
+  uint64_t i;
+  uint64_t times = -1;
+  for(i = 0; i < times; i++){
     single_cycle(0);
     get_cpu();
     
