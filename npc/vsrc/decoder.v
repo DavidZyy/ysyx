@@ -139,9 +139,8 @@ module decoder (
   assign is_load  = ld;
 
   /* write enable */
-  // assign reg_wen = addi | auipc | jal | jalr | ld | add | sub;
+  assign reg_wen = op_imm | auipc | jal | jalr | ld | add | sub;
   assign mem_wen = sd;
-  assign reg_wen = ~mem_wen;
 
   // assign wmask = sd ? (wmask | 8'hff) : wmask;
   assign wmask = sd ?  8'hff : 0;
