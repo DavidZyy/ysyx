@@ -26,17 +26,17 @@ wire [`Vec(`RegWidth)] mem_rdata;
 
 memory u_memory(
 	//ports
-	.clk  		( clk  		),
-	.pc   		( current_pc ),
-  .mem_raddr    (alu_result),
-	// .pc   		( next_pc   		),
-  .waddr    ( waddr ),
-  .mem_wdata (mem_wdata),
-  .wmask    (wmask),
-  .mem_wen  (mem_wen),
+	.clk  		  ( clk  		),
+	.pc   		  ( current_pc ),
+  .mem_raddr  ( alu_result),
+  .waddr      ( waddr ),
+  .mem_wdata  ( mem_wdata),
+  .wmask      ( wmask),
+  .mem_wen    ( mem_wen),
+  .mem_ren    ( mem_ren),
 
-	.inst ( inst 		),
-  .mem_rdata(mem_rdata)
+	.inst       ( inst 		),
+  .mem_rdata  ( mem_rdata)
 );
 
 
@@ -48,7 +48,7 @@ wire [`Vec(`ImmWidth)]	imm;
 /* signals */
 wire 	need_imm;
 // wire 	alu_add;
-wire [`Vec(`AluopWidth)] alu_op;
+wire  [`Vec(`AluopWidth)] alu_op;
 wire  is_ebreak;
 wire  is_auipc;
 wire  inst_not_ipl;
@@ -56,29 +56,32 @@ wire  is_jal;
 wire  is_jalr;
 wire  reg_wen;
 wire  mem_wen;
-wire [7:0] wmask;
+wire  [7:0] wmask;
 wire  is_load;
+wire  is_branch;
+wire  mem_ren;
 
 decoder u_decoder(
 	//ports
-	.inst     		( inst     		),
+	.inst     		    ( inst     		),
 
-	.rd       		( rd       		),
-	.rs1      		( rs1      		),
-	.rs2      		( rs2      		),
-	.imm      		( imm      		),
-	.need_imm 		( need_imm 		),
-	// .alu_add  		( alu_add  		),
-  .alu_op       ( alu_op      ),
-  .is_ebreak    ( is_ebreak   ),
-  .is_auipc     ( is_auipc    ),
-  .inst_not_ipl ( inst_not_ipl),
-  .is_jal       ( is_jal ),
-  .is_jalr       ( is_jalr ),
-  .reg_wen  (reg_wen),
-  .mem_wen  (mem_wen),
-  .wmask    (wmask),
-  .is_load  (is_load)
+	.rd       		    ( rd       		),
+	.rs1      		    ( rs1      		),
+	.rs2      		    ( rs2      		),
+	.imm      		    ( imm      		),
+	.need_imm 		    ( need_imm 		),
+  .alu_op           ( alu_op      ),
+  .is_ebreak        ( is_ebreak   ),
+  .is_auipc         ( is_auipc    ),
+  .inst_not_ipl     ( inst_not_ipl),
+  .is_jal           ( is_jal ),
+  .is_jalr          ( is_jalr ),
+  .reg_wen          ( reg_wen),
+  .mem_wen          ( mem_wen),
+  .wmask            ( wmask),
+  .is_load          ( is_load),
+  .is_branch        ( is_branch),
+  .mem_ren          ( mem_ren)
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -137,7 +140,7 @@ u_RegisterFile(
 );
 
   /* input */
-wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? current_pc: rdata_1;
+wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | is_jal) ? current_pc: rdata_1;
 // wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
 wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
   /* output */
@@ -149,11 +152,16 @@ Alu u_Alu(
 	// .alu_add    		( alu_add    		),
 	.alu_op    		  ( alu_op    		),
 
-	.alu_result     ( alu_result     		)
+	.alu_result     ( alu_result   	)
 );
 
 
-assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? alu_result : current_pc + 4);
+// assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? alu_result : current_pc + 4);
+/* only jalr should clean the least-significant bit, but clean jal
+  have no incluence, for code simplicity, we clean it as well. */
+wire [`Vec(`ImmWidth)] next_pc_temp;
+assign next_pc_temp = (is_branch && (alu_result == 1)) ? (current_pc + imm) : (current_pc + 4);
+assign next_pc = (is_jal | is_jalr) ? (alu_result & ~1) : next_pc_temp;
 
 /* current instruction pc */
  Reg 

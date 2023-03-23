@@ -13,21 +13,26 @@ module memory (
     input [`Vec(`RegWidth)] mem_wdata,
     input [7:0] wmask,
     input mem_wen,
+    input mem_ren,
 
     output [`Vec(`InstWidth)] inst,
-    output [`Vec(`ImmWidth)] mem_rdata 
+    output [`Vec(`ImmWidth)] mem_rdata
 );
     localparam mask = 64'h7;
 
     wire [`Vec(`RegWidth)] rinst;
     assign inst = (pc & mask) == 0 ? rinst[`Vec(`InstWidth)] : rinst[63:32];
 
+    /* We should read instructions immediately when pc changes. */
     always @(*) begin
       pmem_read(pc, rinst);
     end
 
     always @(posedge clk) begin
-      pmem_read(mem_raddr, mem_rdata);
+      if(mem_ren)
+        pmem_read(mem_raddr, mem_rdata);
+      else
+        ;
     end
 
     always @(negedge clk) begin

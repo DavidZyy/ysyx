@@ -30,7 +30,9 @@ module decoder (
   output reg_wen,
   output mem_wen,
   output [7:0] wmask,
-  output is_load
+  output is_load,
+  output is_branch,
+  output mem_ren
 );
 
 /* decode infos */
@@ -44,7 +46,7 @@ module decoder (
   wire op_load    = `OpIs(`LOAD);
   wire op_op      = `OpIs(`OP);
   wire op_lui     = `OpIs(`LUI);
-  // wire op_branch  = `OpIs(`BRANCH);
+  wire op_branch  = `OpIs(`BRANCH);
 
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
@@ -101,7 +103,12 @@ module decoder (
   wire jalr = op_jalr;
 
     /* conditianal branches */
-  // wire beq  = op_branch & funct3_000;
+  wire beq  = op_branch & funct3_000;
+  wire bne  = op_branch & funct3_001;
+  wire blt  = op_branch & funct3_100;
+  wire bltu = op_branch & funct3_110;
+  wire bge  = op_branch & funct3_101;
+  wire bgeu = op_branch & funct3_111;
 
   /* 2.6 load and store */
   wire sd = op_store &  funct3_011;
@@ -118,6 +125,7 @@ module decoder (
   wire J_type = jal;
   wire S_type = op_store;
   wire R_type = op_op;
+  wire B_type = op_branch;
 
 
   wire [`Vec(`ImmWidth)] I_imm = `immI(inst);
@@ -125,12 +133,14 @@ module decoder (
   wire [`Vec(`ImmWidth)] J_imm = `immJ(inst);
   wire [`Vec(`ImmWidth)] S_imm = `immS(inst);
   wire [`Vec(`ImmWidth)] R_imm = `immR(inst);
+  wire [`Vec(`ImmWidth)] B_imm = `immB(inst);
 
 
   assign imm =  ({`ImmWidth{I_type}} & I_imm) |
                 ({`ImmWidth{U_type}} & U_imm) |
                 ({`ImmWidth{J_type}} & J_imm) |
                 ({`ImmWidth{S_type}} & S_imm) |
+                ({`ImmWidth{B_type}} & B_imm) |
                 ({`ImmWidth{R_type}} & R_imm);
 
 /* registers */
@@ -142,21 +152,26 @@ module decoder (
 /* control signals */
   /* alu signals */
   // assign alu_add = addi | auipc | sd | jalr | ld | add;
-  assign alu_op[`AluopAdd]  = addi  | auipc | sd | jalr | ld | add;
-  assign alu_op[`AluopSub]  = sub;
-  assign alu_op[`AluopLt]   = slti  | slt;
-  assign alu_op[`AluopLtu]  = sltiu | sltu;
-  assign alu_op[`AluopAnd]  = andi  | and_inst;
-  assign alu_op[`AluopOr]   = ori   | or_inst;
-  assign alu_op[`AluopXor]  = xori  | xor_inst;
-  assign alu_op[`AluopSll]  = slli  | sll;
-  assign alu_op[`AluopSrl]  = srli  | srl;
-  assign alu_op[`AluopSra]  = srai  | sra;
+  assign alu_op[`AluopAdd]      = addi  | auipc | sd | jal | jalr | ld | add;
+  assign alu_op[`AluopSub]      = sub;
+  assign alu_op[`AluopLt]       = slti  | slt  | blt;
+  assign alu_op[`AluopLtu]      = sltiu | sltu | bltu;
+  assign alu_op[`AluopAnd]      = andi  | and_inst;
+  assign alu_op[`AluopOr]       = ori   | or_inst;
+  assign alu_op[`AluopXor]      = xori  | xor_inst;
+  assign alu_op[`AluopSll]      = slli  | sll;
+  assign alu_op[`AluopSrl]      = srli  | srl;
+  assign alu_op[`AluopSra]      = srai  | sra;
+  assign alu_op[`AluopOutImm]   = lui;
+  assign alu_op[`AluopEq]       = beq;
+  assign alu_op[`AluopNe]       = bne;
+  assign alu_op[`AluopGe]       = bge;
+  assign alu_op[`AluopGeu]      = bgeu;
 
   // assign alu_op
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | lui | auipc | sd | jalr | ld;
+  assign need_imm = op_imm | lui | auipc | sd | jal | jalr | ld;
 
 
   /* special instruction signals */
@@ -165,10 +180,12 @@ module decoder (
   assign is_jal     = jal;
   assign is_jalr    = jalr;
   assign is_load    = ld;
+  assign is_branch  = op_branch;
 
   /* write enable */
   assign reg_wen = op_imm | lui | auipc | op_op | jal | jalr | ld;
   assign mem_wen = sd;
+  assign mem_ren = ld;
 
   // assign wmask = sd ? (wmask | 8'hff) : wmask;
   assign wmask = sd ?  8'hff : 0;
@@ -179,6 +196,6 @@ module decoder (
     according to the principle "implement first, and than 
     perfect it", we just use it. */
   assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | jalr 
-  | ld | add | sub | slti | sltiu | andi);
+  | ld | add | sub | slti | sltiu | andi | beq | bne);
 
 endmodule
