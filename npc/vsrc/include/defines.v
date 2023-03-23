@@ -75,4 +75,4 @@
   /* AluAdd equals to 1<<`AluopAdd, and so on */
   `define AluAdd `AluopWidth'h00000001
   `define AluSub `AluopWidth'h00000002
-  `define AluLt  `AluopWidth`h00000004
+  `define AluLt  `AluopWidth'h00000004
