@@ -19,7 +19,7 @@
   /* sign extension to ImmWidth, len is the length of the current input imm */
   `define SEXT(imm, len)  {(`ImmWidth - len){imm[len-1]}, imm}
   /* zero extension */
-  `define ZEXT(imm, len)  {(`ImmWidth - len){1'b0}, imm}
+  `define ZEXT(imm, len)  {{(`ImmWidth - len){1'b0}}, {imm}}
 
   `define immI(inst) {{(`ImmWidth-11){inst[31]}}, inst[30:20] }
   `define immU(inst) {{(`ImmWidth-32){inst[31]}}, inst[31:12], {12{1'b0}}}
