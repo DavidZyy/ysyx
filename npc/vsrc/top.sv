@@ -153,7 +153,10 @@ Alu u_Alu(
 );
 
 
-assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? alu_result : current_pc + 4);
+// assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? alu_result : current_pc + 4);
+/* only jalr should clean the least-significant bit, but clean jal
+  have no incluence, for code simplicity, we clean it as well. */
+assign next_pc = (is_jal | is_jalr) ? (alu_result & ~1) : (current_pc + 4)
 
 /* current instruction pc */
  Reg 

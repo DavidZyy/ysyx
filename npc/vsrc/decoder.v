@@ -142,7 +142,7 @@ module decoder (
 /* control signals */
   /* alu signals */
   // assign alu_add = addi | auipc | sd | jalr | ld | add;
-  assign alu_op[`AluopAdd]  = addi  | auipc | sd | jalr | ld | add;
+  assign alu_op[`AluopAdd]  = addi  | auipc | sd | jal | jalr | ld | add;
   assign alu_op[`AluopSub]  = sub;
   assign alu_op[`AluopLt]   = slti  | slt;
   assign alu_op[`AluopLtu]  = sltiu | sltu;
