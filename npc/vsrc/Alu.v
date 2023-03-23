@@ -34,11 +34,11 @@ module Alu (
         `AluSll,    operator_1 << operator_2[`Vec(`ShtWdt)],
         `AluSrl,    operator_1 >> operator_2[`Vec(`ShtWdt)],
         `AluSra,    operator_1 >>> operator_2[`Vec(`ShtWdt)],
-        `AluOutImm, operator_2,
         `AluEq,     `ZEXT(operator_1 == operator_2, 1),
         `AluNe,     `ZEXT(operator_1 != operator_2, 1),
         `AluGe,     `ZEXT($signed(operator_1) >= $signed(operator_2), 1),
         `AluGeu,    `ZEXT($unsigned(operator_1) >= $unsigned(operator_2), 1),
+        `AluOutImm, operator_2,
         })
         );
 endmodule //Alu
