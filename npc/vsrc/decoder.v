@@ -47,7 +47,7 @@ module decoder (
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
   // wire funct3_001 = `FUNCT3_Is(3'b001);
-  // wire funct3_010 = `FUNCT3_Is(3'b010);
+  wire funct3_010 = `FUNCT3_Is(3'b010);
   wire funct3_011 = `FUNCT3_Is(3'b011);
 
   /* funct7, if it has more cases, use script to generate the codes below */
@@ -68,6 +68,8 @@ module decoder (
   /* 2.4 integer computational instructions */
     /* integer register-immediate instructions */
   wire addi     = op_imm & funct3_000;
+  wire slti    = op_imm & funct3_010;
+  // wire sltiu    = op_imm & funct3_011;
   wire auipc    = op_auipc;
     /* integer register-register instructions */
   wire add  = op_op & funct3_000 & funct7_0000000;
@@ -121,6 +123,7 @@ module decoder (
   // assign alu_add = addi | auipc | sd | jalr | ld | add;
   assign alu_op[`AluopAdd]  = addi | auipc | sd | jalr | ld | add;
   assign alu_op[`AluopSub]  = sub;
+  assign alu_op[`AluopLt] = slti;
 
   // assign alu_op
 
@@ -136,8 +139,9 @@ module decoder (
   assign is_load  = ld;
 
   /* write enable */
-  assign reg_wen = addi | auipc | jal | jalr | ld | add | sub;
+  // assign reg_wen = addi | auipc | jal | jalr | ld | add | sub;
   assign mem_wen = sd;
+  assign reg_wen = ~mem_wen;
 
   // assign wmask = sd ? (wmask | 8'hff) : wmask;
   assign wmask = sd ?  8'hff : 0;
@@ -148,6 +152,6 @@ module decoder (
     according to the principle "implement first, and than 
     perfect it", we just use it. */
   assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | nop | jalr 
-  | ld | add | sub);
+  | ld | add | sub | slti);
 
 endmodule
