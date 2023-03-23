@@ -17,7 +17,7 @@
 /* immediate ralated macro */
   `define ImmWidth        64 /* width of immediate */
   /* sign extension to ImmWidth, len is the length of the current input imm */
-  `define SEXT(imm, len)  {(`ImmWidth - len){imm[len-1]}, imm}
+  `define SEXT(imm, len)  {{(`ImmWidth - len){imm[len-1]}}, {imm}}
   /* zero extension */
   `define ZEXT(imm, len)  {{(`ImmWidth - len){1'b0}}, {imm}}
 
@@ -37,8 +37,8 @@
   `define FUNCT7(inst)    inst[31:25]
   `define FUNCT12(inst)   inst[31:20]
 
-  `define FUNCT3_Is(imm) (`FUNCT3(inst) == imm);
-  `define FUNCT7_Is(imm) (`FUNCT7(inst) == imm);
+  `define FUNCT3_Is(imm)  (`FUNCT3(inst) == imm);
+  `define FUNCT7_Is(imm)  (`FUNCT7(inst) == imm);
   `define FUNCT12_Is(imm) (`FUNCT12(inst) == imm);
 
 
@@ -68,11 +68,26 @@
   /* alu_op decode information */
   `define AluopWidth  32
 
-  `define AluopAdd 0
-  `define AluopSub 1
-  `define AluopLt 2 //less than, signed, use for slti
+  `define AluopAdd  0
+  `define AluopSub  1
+  `define AluopLt   2 // less than, signed, use for slti
+  `define AluopLtu  3 // less than, unsigned, use for sltiu
+  `define AluopAnd  4
+  `define AluopOr   5
+  `define AluopXor  6
+  `define AluopSll  7 // shift left logically
+  `define AluopSrl  8 // shift right logically
+  `define AluopSra  9 // shift right arithmetically
 
   /* AluAdd equals to 1<<`AluopAdd, and so on */
-  `define AluAdd `AluopWidth'h00000001
-  `define AluSub `AluopWidth'h00000002
-  `define AluLt  `AluopWidth'h00000004
+  `define AluAdd  `AluopWidth'h00000001
+  `define AluSub  `AluopWidth'h00000002
+  `define AluLt   `AluopWidth'h00000004
+  `define AluLtu  `AluopWidth'h00000008
+  `define AluAnd  `AluopWidth'h00000010
+  `define AluOr   `AluopWidth'h00000020
+  `define AluXor  `AluopWidth'h00000040
+  `define AluSll  `AluopWidth'h00000080
+  `define AluSrl  `AluopWidth'h00000100
+  `define AluSra  `AluopWidth'h00000200
+

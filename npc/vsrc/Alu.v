@@ -16,7 +16,7 @@ module Alu (
     /* use a multiplexer */
     MuxKey
     #(
-        .NR_KEY     (3),
+        .NR_KEY     (?),
         .KEY_LEN    (`AluopWidth),
         .DATA_LEN   (`ImmWidth)
     )
@@ -24,9 +24,14 @@ module Alu (
         .out(alu_result),
         .key(alu_op),
         .lut({
-        `AluAdd, operator_1 + operator_2,
-        `AluSub, operator_1 - operator_2,
-        `AluLt,  `ZEXT($signed(operator_1) < $signed(operator_2), 1)
+        `AluAdd,    operator_1 + operator_2,
+        `AluSub,    operator_1 - operator_2,
+        `AluLt,     `ZEXT($signed(operator_1) < $signed(operator_2), 1),
+        `AluLtu,    `ZEXT($unsigned(operator_1) < $unsigned(operator_2), 1),
+        `AluAnd,    operator_1 & operator_2,
+        `AluOr,     operator_1 | operator_2,
+        `AluXor,    operator_1 ^ operator_2,
+        `AluSll,    operator_1 << operator_2[5:0]
         })
         );
 endmodule //Alu

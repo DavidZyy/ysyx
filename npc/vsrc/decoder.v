@@ -35,20 +35,23 @@ module decoder (
 
 /* decode infos */
   /* opcode */
-  wire op_imm = `OpIs(`OP_IMM);
-  wire op_system = `OpIs(`SYSTEM);
-  wire op_auipc = `OpIs(`AUIPC);
-  wire op_jal = `OpIs(`JAL);
-  wire op_store = `OpIs(`STORE);
-  wire op_jalr = `OpIs(`JALR);
-  wire op_load  = `OpIs(`LOAD);
-  wire op_op  = `OpIs(`OP);
+  wire op_imm     = `OpIs(`OP_IMM);
+  wire op_system  = `OpIs(`SYSTEM);
+  wire op_auipc   = `OpIs(`AUIPC);
+  wire op_jal     = `OpIs(`JAL);
+  wire op_store   = `OpIs(`STORE);
+  wire op_jalr    = `OpIs(`JALR);
+  wire op_load    = `OpIs(`LOAD);
+  wire op_op      = `OpIs(`OP);
   
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
-  // wire funct3_001 = `FUNCT3_Is(3'b001);
+  wire funct3_001 = `FUNCT3_Is(3'b001);
   wire funct3_010 = `FUNCT3_Is(3'b010);
   wire funct3_011 = `FUNCT3_Is(3'b011);
+  wire funct3_100 = `FUNCT3_Is(3'b100);
+  wire funct3_110 = `FUNCT3_Is(3'b110);
+  wire funct3_111 = `FUNCT3_Is(3'b111);
 
   /* funct7, if it has more cases, use script to generate the codes below */
   wire funct7_0000000 = `FUNCT7_Is(7'b0000000);
@@ -58,7 +61,7 @@ module decoder (
   /* funct12, use for system instructions? */
   wire funct12_000000000001 = `FUNCT12_Is(12'b000000000001);
 
-
+  wire inst_31_26_000000  = (inst[31:26] == 6'b000000);
 /* instructions */
   /* inst is zero */
   wire nop = (inst == 32'h0);
@@ -68,16 +71,21 @@ module decoder (
   /* 2.4 integer computational instructions */
     /* integer register-immediate instructions */
   wire addi     = op_imm & funct3_000;
-  wire slti    = op_imm & funct3_010;
-  // wire sltiu    = op_imm & funct3_011;
+  wire slti     = op_imm & funct3_010;
+  wire sltiu    = op_imm & funct3_011;
+  wire andi     = op_imm & funct3_111;
+  wire ori      = op_imm & funct3_110;
+  wire xori     = op_imm & funct3_100;
+  wire slli     = op_imm & funct3_001 & inst_31_26_000000;
   wire auipc    = op_auipc;
+
     /* integer register-register instructions */
   wire add  = op_op & funct3_000 & funct7_0000000;
   wire sub  = op_op & funct3_000 & funct7_0100000;
 
   /* 2.5 control transfer instructions */
     /* unconditial jumps */
-  wire jal = op_jal;
+  wire jal  = op_jal;
   wire jalr = op_jalr;
 
     /* conditianal branches */
@@ -113,7 +121,7 @@ module decoder (
                 ({`ImmWidth{R_type}} & R_imm);
 
 /* registers */
-  assign rd = `RD(inst);
+  assign rd  = `RD(inst);
   assign rs1 = `RS1(inst);
   assign rs2 = `RS2(inst);
 
@@ -123,7 +131,12 @@ module decoder (
   // assign alu_add = addi | auipc | sd | jalr | ld | add;
   assign alu_op[`AluopAdd]  = addi | auipc | sd | jalr | ld | add;
   assign alu_op[`AluopSub]  = sub;
-  assign alu_op[`AluopLt] = slti;
+  assign alu_op[`AluopLt]   = slti;
+  assign alu_op[`AluopLtu]  = sltiu;
+  assign alu_op[`AluopAnd]  = andi;
+  assign alu_op[`AluopOr]   = ori;
+  assign alu_op[`AluopXor]  = xori;
+  assign alu_op[`AluopSll]  = slli;
 
   // assign alu_op
 
@@ -132,11 +145,11 @@ module decoder (
 
 
   /* special instruction signals */
-  assign is_ebreak = ebreak;
-  assign is_auipc = auipc;
-  assign is_jal = jal;
-  assign is_jalr = jalr;
-  assign is_load  = ld;
+  assign is_ebreak  = ebreak;
+  assign is_auipc   = auipc;
+  assign is_jal     = jal;
+  assign is_jalr    = jalr;
+  assign is_load    = ld;
 
   /* write enable */
   assign reg_wen = op_imm | auipc | jal | jalr | ld | add | sub;
@@ -151,6 +164,6 @@ module decoder (
     according to the principle "implement first, and than 
     perfect it", we just use it. */
   assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | nop | jalr 
-  | ld | add | sub | slti);
+  | ld | add | sub | slti | sltiu | andi);
 
 endmodule
