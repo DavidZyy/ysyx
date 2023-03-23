@@ -26,7 +26,7 @@ module Alu (
         .lut({
         `AluAdd, operator_1 + operator_2,
         `AluSub, operator_1 - operator_2,
-        `AluLt,  ZEXT($signed(operator_1) < $signed(operator_2), 1)
+        `AluLt,  `ZEXT($signed(operator_1) < $signed(operator_2), 1)
         })
         );
 endmodule //Alu
