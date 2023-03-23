@@ -87,7 +87,7 @@ module decoder (
   wire add  = op_op & funct3_000 & funct7_0000000;
   wire slt  = op_op & funct3_010 & funct7_0000000;
   wire sltu = op_op & funct3_011 & funct7_0000000;
-  wire and  = op_op & funct3_111 & funct7_0000000;
+  wire and_inst  = op_op & funct3_111 & funct7_0000000;
   wire or   = op_op & funct3_110 & funct7_0000000;
   wire xor  = op_op & funct3_100 & funct7_0000000;
   wire sll  = op_op & funct3_001 & funct7_0000000;
@@ -146,7 +146,7 @@ module decoder (
   assign alu_op[`AluopSub]  = sub;
   assign alu_op[`AluopLt]   = slti | slt;
   assign alu_op[`AluopLtu]  = sltiu | sltu;
-  assign alu_op[`AluopAnd]  = andi | and;
+  assign alu_op[`AluopAnd]  = andi | and_inst;
   assign alu_op[`AluopOr]   = ori | or;
   assign alu_op[`AluopXor]  = xori | xor;
   assign alu_op[`AluopSll]  = slli | sll;
