@@ -68,26 +68,30 @@
   /* alu_op decode information */
   `define AluopWidth  32
 
-  `define AluopAdd  0
-  `define AluopSub  1
-  `define AluopLt   2 // less than, signed, use for slti
-  `define AluopLtu  3 // less than, unsigned, use for sltiu
-  `define AluopAnd  4
-  `define AluopOr   5
-  `define AluopXor  6
-  `define AluopSll  7 // shift left logically
-  `define AluopSrl  8 // shift right logically
-  `define AluopSra  9 // shift right arithmetically
+  `define AluopAdd      0
+  `define AluopSub      1
+  `define AluopLt       2 // less than, signed, use for slti
+  `define AluopLtu      3 // less than, unsigned, use for sltiu
+  `define AluopAnd      4
+  `define AluopOr       5
+  `define AluopXor      6
+  `define AluopSll      7 // shift left logically
+  `define AluopSrl      8 // shift right logically
+  `define AluopSra      9 // shift right arithmetically
+  `define AluopOutImm   10 // output immediate (operator2) directly
 
   /* AluAdd equals to 1<<`AluopAdd, and so on */
-  `define AluAdd  `AluopWidth'h00000001
-  `define AluSub  `AluopWidth'h00000002
-  `define AluLt   `AluopWidth'h00000004
-  `define AluLtu  `AluopWidth'h00000008
-  `define AluAnd  `AluopWidth'h00000010
-  `define AluOr   `AluopWidth'h00000020
-  `define AluXor  `AluopWidth'h00000040
-  `define AluSll  `AluopWidth'h00000080
-  `define AluSrl  `AluopWidth'h00000100
-  `define AluSra  `AluopWidth'h00000200
+  `define AluAdd        `AluopWidth'h00000001
+  `define AluSub        `AluopWidth'h00000002
+  `define AluLt         `AluopWidth'h00000004
+  `define AluLtu        `AluopWidth'h00000008
+  `define AluAnd        `AluopWidth'h00000010
+  `define AluOr         `AluopWidth'h00000020
+  `define AluXor        `AluopWidth'h00000040
+  `define AluSll        `AluopWidth'h00000080
+  `define AluSrl        `AluopWidth'h00000100
+  `define AluSra        `AluopWidth'h00000200
+  `define AluOutImm     `AluopWidth'h00000400
 
+  `define ShtWdt  6 // shift fileds width, for slli, srli, srai ...
+  `define ShtWdtW 5 // for slliw, srliw, sraiw ...

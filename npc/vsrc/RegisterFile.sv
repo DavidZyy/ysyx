@@ -21,7 +21,7 @@ module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
 
   // always @(posedge clk) begin
   always @(negedge clk) begin
-    /* do not write reg0*/
+    /* do not write reg0, remain it to zero */
     if (reg_wen && (rd != 0)) rf[rd] <= reg_wdata;
     else
       ;

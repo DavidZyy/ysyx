@@ -31,7 +31,9 @@ module Alu (
         `AluAnd,    operator_1 & operator_2,
         `AluOr,     operator_1 | operator_2,
         `AluXor,    operator_1 ^ operator_2,
-        `AluSll,    operator_1 << operator_2[5:0]
+        `AluSll,    operator_1 << operator_2[`Vec(ShtWdt)],
+        `AluSrl,    operator_1 >> operator_2[`Vec(ShtWdt)],
+        `AluSra,    operator_1 >>> operator_2[`Vec(ShtWdt)]
         })
         );
 endmodule //Alu
