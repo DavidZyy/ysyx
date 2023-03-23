@@ -136,11 +136,8 @@ module decoder (
   assign is_load  = ld;
 
   /* write enable */
-  // assign reg_wen = ~(sd);
-  assign reg_wen = addi | auipc | jal | jalr | ld | add;
-  // assign reg_wen = 0;
+  assign reg_wen = addi | auipc | jal | jalr | ld | add | sub;
   assign mem_wen = sd;
-  // assign mem_wen = 1'b0;
 
   // assign wmask = sd ? (wmask | 8'hff) : wmask;
   assign wmask = sd ?  8'hff : 0;
@@ -151,6 +148,6 @@ module decoder (
     according to the principle "implement first, and than 
     perfect it", we just use it. */
   assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | nop | jalr 
-  | ld | add);
+  | ld | add | sub);
 
 endmodule
