@@ -178,7 +178,7 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | nop | jalr 
+  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | jalr 
   | ld | add | sub | slti | sltiu | andi);
 
 endmodule
