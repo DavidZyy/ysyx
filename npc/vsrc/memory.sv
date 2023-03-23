@@ -22,6 +22,7 @@ module memory (
     wire [`Vec(`RegWidth)] rinst;
     assign inst = (pc & mask) == 0 ? rinst[`Vec(`InstWidth)] : rinst[63:32];
 
+    /* We should read instructions immediately when pc changes. */
     always @(*) begin
       pmem_read(pc, rinst);
     end
