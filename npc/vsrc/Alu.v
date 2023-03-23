@@ -13,8 +13,8 @@ module Alu (
 
     // assign alu_result = ({`ImmWidth{alu_add}} & add_result);
     wire [31:0] temp;
-    // assign temp = (operator_1 + operator_2)[31:0];
-    assign temp = operator_1[31:0];
+    assign temp = (operator_1 + operator_2)[31:0];
+    // assign temp = operator_1[31:0];
 
     /* use a multiplexer */
     MuxKey
