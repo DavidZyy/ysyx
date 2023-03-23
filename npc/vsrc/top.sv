@@ -26,17 +26,16 @@ wire [`Vec(`RegWidth)] mem_rdata;
 
 memory u_memory(
 	//ports
-	.clk  		( clk  		),
-	.pc   		( current_pc ),
-  .mem_raddr    (alu_result),
-	// .pc   		( next_pc   		),
-  .waddr    ( waddr ),
-  .mem_wdata (mem_wdata),
-  .wmask    (wmask),
-  .mem_wen  (mem_wen),
+	.clk  		  ( clk  		),
+	.pc   		  ( current_pc ),
+  .mem_raddr  ( alu_result),
+  .waddr      ( waddr ),
+  .mem_wdata  ( mem_wdata),
+  .wmask      ( wmask),
+  .mem_wen    ( mem_wen),
 
-	.inst ( inst 		),
-  .mem_rdata(mem_rdata)
+	.inst       ( inst 		),
+  .mem_rdata  ( mem_rdata)
 );
 
 
