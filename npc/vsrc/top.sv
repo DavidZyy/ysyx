@@ -137,7 +137,7 @@ u_RegisterFile(
 );
 
   /* input */
-wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? current_pc: rdata_1;
+wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | is_jal) ? current_pc: rdata_1;
 // wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
 wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
   /* output */
