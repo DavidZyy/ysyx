@@ -12,8 +12,6 @@ module top(
   input rst,
 
   output [`Vec(`ImmWidth)] current_pc,
-  // output [`Vec(`ImmWidth)] cur_inst_pc,
-  // output reg [`Vec(`ImmWidth)] next_pc
   output [`Vec(`ImmWidth)] next_pc
 );
 
@@ -47,7 +45,6 @@ wire [`Vec(`RegIdWidth)]	rs2;
 wire [`Vec(`ImmWidth)]	imm;
 /* signals */
 wire 	need_imm;
-// wire 	alu_add;
 wire  [`Vec(`AluopWidth)] alu_op;
 wire  is_ebreak;
 wire  is_auipc;
@@ -128,15 +125,15 @@ RegisterFile
   .DATA_WIDTH (`RegWidth)
 )
 u_RegisterFile(
-  .clk     (clk     ),
-  .reg_wdata   (reg_wdata   ),
-  .rd      (rd      ),
-  .reg_wen     (reg_wen     ),
-  .rs1     (rs1 ),
-  .rs2     (rs2 ),
+  .clk        ( clk     ),
+  .reg_wdata  ( reg_wdata   ),
+  .rd         ( rd      ),
+  .reg_wen    ( reg_wen     ),
+  .rs1        ( rs1 ),
+  .rs2        ( rs2 ),
 
-  .rdata_1 (rdata_1 ),
-  .rdata_2 (rdata_2 )
+  .rdata_1    ( rdata_1 ),
+  .rdata_2    ( rdata_2 )
 );
 
   /* input */

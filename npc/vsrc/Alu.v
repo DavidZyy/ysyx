@@ -12,6 +12,8 @@ module Alu (
     // wire [`Vec(`IWmm)] add_result = operator_1 + operator_2;
 
     // assign alu_result = ({`ImmWidth{alu_add}} & add_result);
+    wire [31:0] temp;
+    assign temp = (operator_1 + operator_2)[31:0];
 
     /* use a multiplexer */
     MuxKey
@@ -39,7 +41,8 @@ module Alu (
         `AluNe,     `ZEXT(operator_1 != operator_2, 1),
         `AluGe,     `ZEXT($signed(operator_1) >= $signed(operator_2), 1),
         `AluGeu,    `ZEXT($unsigned(operator_1) >= $unsigned(operator_2), 1),
-        `AluAddw,   `SEXT((operator_1 + operator_2)[31:0], 32)
+        // `AluAddw,   `SEXT((operator_1 + operator_2)[31:0], 32)
+        `AluAddw,   `SEXT(temp, 32)
         })
         );
 endmodule //Alu
