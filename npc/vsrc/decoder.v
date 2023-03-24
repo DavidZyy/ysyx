@@ -47,6 +47,8 @@ module decoder (
   wire op_op      = `OpIs(`OP);
   wire op_lui     = `OpIs(`LUI);
   wire op_branch  = `OpIs(`BRANCH);
+  wire op_imm_32  = `OpIs(`OP_IMM_32);
+  wire op_32      = `OpIs(`OP_32);
 
   /* funct3 */
   wire funct3_000 = `FUNCT3_Is(3'b000);
@@ -65,12 +67,14 @@ module decoder (
   /* funct12, use for system instructions? */
   wire funct12_000000000001 = `FUNCT12_Is(12'b000000000001);
 
+  /* for shift instructions */
   wire inst_31_26_000000  = (inst[31:26] == 6'b000000);
   wire inst_31_26_010000  = (inst[31:26] == 6'b010000);
 
-/* instructions */
+/* Instructions */
   /* reference: volume I: RISC-V Unprivileged ISA V20191213 */
 
+/* RV32I */
   /* 2.4 integer computational instructions */
     /* integer register-immediate instructions */
   wire addi     = op_imm & funct3_000;
@@ -117,10 +121,22 @@ module decoder (
   /* 2.8 environment call and breakpoints */
   wire ebreak = op_system & funct3_000 & funct12_000000000001;
   
+/* RV64I */
+  /* integer register-immediate instructions */
+  wire addiw = op_imm_32 & funct3_000;
+  wire slliw = op_imm_32 & funct3_001 & funct7_0000000;
+  wire srliw = op_imm_32 & funct3_101 & funct7_0000000;
+  wire sraiw = op_imm_32 & funct3_101 & funct7_0100000;
 
-/* immediate */
+  /* integer register-register instructions */
+  wire sllw = op_32 & & funct3_001 & funct7_0000000;
+  wire srlw = op_32 & & funct3_101 & funct7_0000000;
+  wire sraw = op_32 & & funct3_101 & funct7_0100000;
+
+
+/* Immediate */
   /* instruction type, to be the key to choose immediate */
-  wire I_type = op_imm | op_load | jalr;
+  wire I_type = op_imm | op_imm_32 | op_load | jalr;
   wire U_type = lui | auipc;
   wire J_type = jal;
   wire S_type = op_store;
@@ -143,19 +159,18 @@ module decoder (
                 ({`ImmWidth{B_type}} & B_imm) |
                 ({`ImmWidth{R_type}} & R_imm);
 
-/* registers */
+/* Registers */
   assign rd  = `RD(inst);
   assign rs1 = `RS1(inst);
   assign rs2 = `RS2(inst);
 
 
-/* control signals */
+/* Control Signals */
   /* alu signals */
-  // assign alu_add = addi | auipc | sd | jalr | ld | add;
   assign alu_op[`AluopAdd]      = addi  | auipc | sd | jal | jalr | ld | add;
   assign alu_op[`AluopSub]      = sub;
-  assign alu_op[`AluopLt]       = slti  | slt  | blt;
-  assign alu_op[`AluopLtu]      = sltiu | sltu | bltu;
+  assign alu_op[`AluopLt]       = slti  | slt   | blt;
+  assign alu_op[`AluopLtu]      = sltiu | sltu  | bltu;
   assign alu_op[`AluopAnd]      = andi  | and_inst;
   assign alu_op[`AluopOr]       = ori   | or_inst;
   assign alu_op[`AluopXor]      = xori  | xor_inst;
@@ -167,11 +182,14 @@ module decoder (
   assign alu_op[`AluopNe]       = bne;
   assign alu_op[`AluopGe]       = bge;
   assign alu_op[`AluopGeu]      = bgeu;
+  assign alu_op[`AluopAddw]     = addiw;
+  assign alu_op[`AluopSllw]     = slliw | sllw;
+  assign alu_op[`AluopSrlw]     = srliw | srlw;
+  assign alu_op[`AluopSraw]     = sraiw | sraw;
 
-  // assign alu_op
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | lui | auipc | sd | jal | jalr | ld;
+  assign need_imm = op_imm | op_imm_32 | lui | auipc | sd | jal | jalr | ld;
 
 
   /* special instruction signals */
@@ -183,7 +201,7 @@ module decoder (
   assign is_branch  = op_branch;
 
   /* write enable */
-  assign reg_wen = op_imm | lui | auipc | op_op | jal | jalr | ld;
+  assign reg_wen = op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | ld;
   assign mem_wen = sd;
   assign mem_ren = ld;
 
@@ -196,6 +214,6 @@ module decoder (
     according to the principle "implement first, and than 
     perfect it", we just use it. */
   assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | jalr 
-  | ld | add | sub | slti | sltiu | andi | beq | bne);
+  | ld | add | sub | slti | sltiu | andi | beq | bne | addiw);
 
 endmodule
