@@ -3,15 +3,12 @@
 module Alu (
     input [`Vec(`ImmWidth)] operator_1,
     input [`Vec(`ImmWidth)] operator_2,
-    // input alu_add,
     input [`Vec(`AluopWidth)] alu_op,
 
     output [`Vec(`ImmWidth)] alu_result
 );
     
-    // wire [`Vec(`IWmm)] add_result = operator_1 + operator_2;
-
-    // assign alu_result = ({`ImmWidth{alu_add}} & add_result);
+    /* verilator lint_off UNUSEDSIGNAL */
     wire[`Vec(`ImmWidth)] temp_0;
     wire [`Vec(`WordWidth)]  temp_1;
     assign temp_0 = (operator_1 + operator_2);
