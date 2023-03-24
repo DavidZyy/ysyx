@@ -13,13 +13,11 @@ instruction
 module decoder (
   input [`Vec(`InstWidth)] inst,
 
-  // output inst_type,
   output [`Vec(`RegIdWidth)] rd,
   output [`Vec(`RegIdWidth)] rs1,
   output [`Vec(`RegIdWidth)] rs2,
   output [`Vec(`ImmWidth)] imm,
   output need_imm,
-  // output alu_add,
   /* verilator lint_off UNDRIVEN */
   output [`Vec(`AluopWidth)] alu_op,
   output is_ebreak,
@@ -31,8 +29,8 @@ module decoder (
   output mem_wen,
   output [7:0] wmask,
   output is_load,
-  output is_branch,
-  output mem_ren
+  output is_branch
+  // output mem_ren
 );
 
 /* decode infos */
@@ -203,7 +201,7 @@ module decoder (
   /* write enable */
   assign reg_wen = op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | ld;
   assign mem_wen = sd;
-  assign mem_ren = ld;
+  // assign mem_ren = ld;
 
   // assign wmask = sd ? (wmask | 8'hff) : wmask;
   assign wmask = sd ?  8'hff : 0;

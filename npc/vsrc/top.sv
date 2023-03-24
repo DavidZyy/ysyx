@@ -31,7 +31,7 @@ memory u_memory(
   .mem_wdata  ( mem_wdata),
   .wmask      ( wmask),
   .mem_wen    ( mem_wen),
-  .mem_ren    ( mem_ren),
+  .mem_ren    ( is_load),
 
 	.inst       ( inst 		),
   .mem_rdata  ( mem_rdata)
@@ -56,7 +56,7 @@ wire  mem_wen;
 wire  [7:0] wmask;
 wire  is_load;
 wire  is_branch;
-wire  mem_ren;
+// wire  mem_ren;
 
 decoder u_decoder(
 	//ports
@@ -78,7 +78,7 @@ decoder u_decoder(
   .wmask            ( wmask),
   .is_load          ( is_load),
   .is_branch        ( is_branch),
-  .mem_ren          ( mem_ren)
+  // .mem_ren          ( mem_ren)
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -146,7 +146,6 @@ wire [`Vec(`ImmWidth)]	alu_result;
 Alu u_Alu(
 	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
-	// .alu_add    		( alu_add    		),
 	.alu_op    		  ( alu_op    		),
 
 	.alu_result     ( alu_result   	)
