@@ -12,9 +12,10 @@ module Alu (
     // wire [`Vec(`IWmm)] add_result = operator_1 + operator_2;
 
     // assign alu_result = ({`ImmWidth{alu_add}} & add_result);
-    wire [31:0] temp_0, temp_1;
+    wire[`Vec(`ImmWidth)] temp_0;
+    wire [`Vec(`WordWidth)]  temp_1;
     assign temp_0 = (operator_1 + operator_2);
-    assign temp_1 = temp_0[31:0];
+    assign temp_1 = temp_0[`Vec(`WordWidth)];
 
     /* use a multiplexer */
     MuxKey
