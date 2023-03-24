@@ -122,6 +122,9 @@ module decoder (
 /* RV64I */
   /* integer register-immediate instructions */
   wire addiw = op_imm_32 & funct3_000;
+  wire slliw = op_imm_32 & funct3_001 & funct7_0000000;
+  wire srliw = op_imm_32 & funct3_101 & funct7_0000000;
+  wire sraiw = op_imm_32 & funct3_101 & funct7_0100000;
 
 /* immediate */
   /* instruction type, to be the key to choose immediate */
@@ -173,6 +176,9 @@ module decoder (
   assign alu_op[`AluopGe]       = bge;
   assign alu_op[`AluopGeu]      = bgeu;
   assign alu_op[`AluopAddw]     = addiw;
+  assign alu_op[`AluopSllw]     = slliw;
+  assign alu_op[`AluopSrlw]     = srliw;
+  assign alu_op[`AluopSraw]     = sraiw;
 
   // assign alu_op
 

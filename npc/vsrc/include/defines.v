@@ -109,6 +109,7 @@
   `define AluAddw       `AluopWidth'h00008000
   `define AluSllw       `AluopWidth'h00010000
   `define AluSrlw       `AluopWidth'h00020000
+  `define AluSraw       `AluopWidth'h00040000
   `define AluSubw       `AluopWidth'h00080000
 
   `define ShtWdt  6 // shift fileds width, for slli, srli, srai ...

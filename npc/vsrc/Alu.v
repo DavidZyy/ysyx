@@ -13,6 +13,7 @@ module Alu (
     wire [`Vec(`WordWidth)]  temp_1;
     assign temp_0 = (operator_1 + operator_2);
     assign temp_1 = temp_0[`Vec(`WordWidth)];
+    // assign 
 
     /* use a multiplexer */
     MuxKey
@@ -41,7 +42,10 @@ module Alu (
         `AluGe,     `ZEXT($signed(operator_1) >= $signed(operator_2), 1),
         `AluGeu,    `ZEXT($unsigned(operator_1) >= $unsigned(operator_2), 1),
         // `AluAddw,   `SEXT(((operator_1 + operator_2)[31:0]), 32),
-        `AluAddw,   `SEXT(temp_1, `WordWidth)
+        `AluAddw,   `SEXT(temp_1, `WordWidth),
+        `AluSllw,   `SEXT((operator_1 << operator_2[`Vec(`ShtWdtW)])[`Vec(`WordWdith)], `WordWidth),
+        `AluSrlw,   `SEXT((operator_1 >> operator_2[`Vec(`ShtWdtW)])[`Vec(`WordWdith)], `WordWidth),
+        `AluSraw,   `SEXT((operator_1 >>> operator_2[`Vec(`ShtWdtW)])[`Vec(`WordWdith)], `WordWidth)
         })
         );
 endmodule //Alu
