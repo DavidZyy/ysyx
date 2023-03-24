@@ -125,7 +125,7 @@ module decoder (
 
 /* immediate */
   /* instruction type, to be the key to choose immediate */
-  wire I_type = op_imm | op_load | jalr;
+  wire I_type = op_imm | op_imm_32 | op_load | jalr;
   wire U_type = lui | auipc;
   wire J_type = jal;
   wire S_type = op_store;
