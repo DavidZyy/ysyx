@@ -77,7 +77,7 @@ decoder u_decoder(
   .mem_wen          ( mem_wen),
   .wmask            ( wmask),
   .is_load          ( is_load),
-  .is_branch        ( is_branch),
+  .is_branch        ( is_branch)
   // .mem_ren          ( mem_ren)
 );
 
