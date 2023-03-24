@@ -41,7 +41,7 @@ module Alu (
         `AluGe,     `ZEXT($signed(operator_1) >= $signed(operator_2), 1),
         `AluGeu,    `ZEXT($unsigned(operator_1) >= $unsigned(operator_2), 1),
         // `AluAddw,   `SEXT(((operator_1 + operator_2)[31:0]), 32),
-        `AluAddw,   `SEXT(temp_1, 32)
+        `AluAddw,   `SEXT(temp_1, `WordWidth)
         })
         );
 endmodule //Alu
