@@ -9,8 +9,8 @@ module Alu (
 );
     
     /* verilator lint_off UNUSEDSIGNAL */
-    wire[`Vec(`ImmWidth)] temp_0, temp_1, temp_2, temp_3;
-    wire [`Vec(`WordWidth)] temp_0_slice, temp_1_slice, temp_2_slice, temp_3_slice;
+    wire[`Vec(`ImmWidth)] temp_0, temp_1, temp_2, temp_3, temp_4;
+    wire [`Vec(`WordWidth)] temp_0_slice, temp_1_slice, temp_2_slice, temp_3_slice, temp_4_slice;
 
     assign temp_0 = (operator_1 + operator_2);
     assign temp_1 = (operator_1 <<  operator_2[`Vec(`ShtWdtW)]);
