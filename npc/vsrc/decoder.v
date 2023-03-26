@@ -27,7 +27,7 @@ module decoder (
   output is_jalr,
   output reg_wen,
   output mem_wen,
-  output [7:0] wmask,
+  // output [7:0] wmask,
   output is_load,
   output is_branch,
   // output mem_ren
@@ -116,6 +116,9 @@ module decoder (
 
   /* 2.6 load and store */
   wire sd = op_store &  funct3_011;
+  wire sw = op_store &  funct3_010;
+  wire sh = op_store &  funct3_001;
+  wire sb = op_store &  funct3_000;
 
   wire ld   = op_load & funct3_011;
   wire lw   = op_load & funct3_010;
@@ -176,7 +179,7 @@ module decoder (
 
 /* Control Signals */
   /* alu signals */
-  assign alu_op[`AluopAdd]      = addi  | auipc | sd | jal | jalr | add | op_load;
+  assign alu_op[`AluopAdd]      = addi  | auipc | op_store | jal | jalr | add | op_load;
   assign alu_op[`AluopSub]      = sub;
   assign alu_op[`AluopLt]       = slti  | slt   | blt;
   assign alu_op[`AluopLtu]      = sltiu | sltu  | bltu;
@@ -199,7 +202,7 @@ module decoder (
 
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | op_imm_32 | lui | auipc | sd | jal | jalr | op_load;
+  assign need_imm = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
 
 
   /* special instruction signals */
@@ -212,14 +215,14 @@ module decoder (
 
   /* write enable */
   assign reg_wen = op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | op_load;
-  assign mem_wen = sd;
+  assign mem_wen = op_store;
 
-  assign wmask = sd ?  8'hff : 0;
+  // assign wmask = sd ?  8'hff : 0;
 
-  assign wdt_op[`Wdtop8]  = lb | lbu;
-  assign wdt_op[`Wdtop16] = lh | lhu;
-  assign wdt_op[`Wdtop32] = lw | lwu;
-  assign wdt_op[`Wdtop64] = ld;
+  assign wdt_op[`Wdtop8]  = lb | lbu | sb;
+  assign wdt_op[`Wdtop16] = lh | lhu | sh;
+  assign wdt_op[`Wdtop32] = lw | lwu | sw;
+  assign wdt_op[`Wdtop64] = ld | sd;
 
   assign is_unsigned = lbu | lhu | lwu;
 
@@ -227,7 +230,7 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~( ebreak | auipc | jal | jalr | sd 
+  assign inst_not_ipl = ~( ebreak | auipc | jal | jalr | op_store
   | op_load | op_imm | op_op | op_branch | op_imm_32 | op_32);
 
 endmodule

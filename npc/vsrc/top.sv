@@ -29,7 +29,7 @@ memory u_memory(
   .mem_raddr  ( alu_result),
   .waddr      ( waddr ),
   .mem_wdata  ( mem_wdata),
-  .wmask      ( wmask),
+  // .wmask      ( wmask),
   .mem_wen    ( mem_wen),
   .mem_ren    ( is_load),
   .wdt_op     ( wdt_op),
@@ -65,7 +65,7 @@ wire  is_jal;
 wire  is_jalr;
 wire  reg_wen;
 wire  mem_wen;
-wire  [7:0] wmask;
+// wire  [7:0] wmask;
 wire  is_load;
 wire  is_branch;
 // wire  mem_ren;
@@ -89,7 +89,7 @@ decoder u_decoder(
   .is_jalr          ( is_jalr ),
   .reg_wen          ( reg_wen),
   .mem_wen          ( mem_wen),
-  .wmask            ( wmask),
+  // .wmask            ( wmask),
   .is_load          ( is_load),
   .is_branch        ( is_branch),
   .wdt_op           ( wdt_op),
