@@ -97,7 +97,7 @@ module memory (
       .DATA_LEN (`ImmWidth)
     )
     width_16_mux(
-      .out(width_8_out),
+      .out(width_16_out),
       .key(mem_raddr[2:0] & 3'b111),
       .lut({
         3'b000, `ZEXT(slice_15_0,   16),
