@@ -84,7 +84,7 @@ module memory (
         3'b100, `ZEXT(slice_39_32, 8),
         3'b101, `ZEXT(slice_47_40, 8),
         3'b110, `ZEXT(slice_55_48, 8),
-        3'b111, `ZEXT(slice_63_56, 8),
+        3'b111, `ZEXT(slice_63_56, 8)
       })
     );
 
