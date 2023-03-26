@@ -1,11 +1,11 @@
 /*
-Input an instruction, to tell which instrction it is,
-and ouput its relative components.
-Which signals shoulld decoder to produce to pass to 
-executor?
-Add a new instructions is not convenient, I plan to write a 
-script to generate verilog codes automaticallly when add new
-instruction
+  Input an instruction, to tell which instrction it is,
+  and ouput its relative components.
+  Which signals shoulld decoder to produce to pass to 
+  executor?
+  Add a new instructions is not convenient, I plan to write a 
+  script to generate verilog codes automaticallly when add new
+  instruction
 */
 `include "./include/defines.v"
 
@@ -13,13 +13,11 @@ instruction
 module decoder (
   input [`Vec(`InstWidth)] inst,
 
-  // output inst_type,
   output [`Vec(`RegIdWidth)] rd,
   output [`Vec(`RegIdWidth)] rs1,
   output [`Vec(`RegIdWidth)] rs2,
   output [`Vec(`ImmWidth)] imm,
   output need_imm,
-  // output alu_add,
   /* verilator lint_off UNDRIVEN */
   output [`Vec(`AluopWidth)] alu_op,
   output is_ebreak,
@@ -32,7 +30,9 @@ module decoder (
   output [7:0] wmask,
   output is_load,
   output is_branch,
-  output mem_ren
+  // output mem_ren
+  output [`Vec(`WdtTypeCnt)] wdt_op,
+  output is_unsigned
 );
 
 /* decode infos */
@@ -116,7 +116,14 @@ module decoder (
 
   /* 2.6 load and store */
   wire sd = op_store &  funct3_011;
-  wire ld = op_load & funct3_011;
+
+  wire ld   = op_load & funct3_011;
+  wire lw   = op_load & funct3_010;
+  wire lwu  = op_load & funct3_110;
+  wire lh   = op_load & funct3_001;
+  wire lhu  = op_load & funct3_101;
+  wire lb   = op_load & funct3_000;
+  wire lbu  = op_load & funct3_100;
 
   /* 2.8 environment call and breakpoints */
   wire ebreak = op_system & funct3_000 & funct12_000000000001;
@@ -129,9 +136,11 @@ module decoder (
   wire sraiw = op_imm_32 & funct3_101 & funct7_0100000;
 
   /* integer register-register instructions */
-  wire sllw = op_32 & & funct3_001 & funct7_0000000;
-  wire srlw = op_32 & & funct3_101 & funct7_0000000;
-  wire sraw = op_32 & & funct3_101 & funct7_0100000;
+  wire addw = op_32 & funct3_000 & funct7_0000000;
+  wire sllw = op_32 & funct3_001 & funct7_0000000;
+  wire srlw = op_32 & funct3_101 & funct7_0000000;
+  wire subw = op_32 & funct3_000 & funct7_0100000;
+  wire sraw = op_32 & funct3_101 & funct7_0100000;
 
 
 /* Immediate */
@@ -167,7 +176,7 @@ module decoder (
 
 /* Control Signals */
   /* alu signals */
-  assign alu_op[`AluopAdd]      = addi  | auipc | sd | jal | jalr | ld | add;
+  assign alu_op[`AluopAdd]      = addi  | auipc | sd | jal | jalr | add | op_load;
   assign alu_op[`AluopSub]      = sub;
   assign alu_op[`AluopLt]       = slti  | slt   | blt;
   assign alu_op[`AluopLtu]      = sltiu | sltu  | bltu;
@@ -182,14 +191,15 @@ module decoder (
   assign alu_op[`AluopNe]       = bne;
   assign alu_op[`AluopGe]       = bge;
   assign alu_op[`AluopGeu]      = bgeu;
-  assign alu_op[`AluopAddw]     = addiw;
+  assign alu_op[`AluopAddw]     = addiw | addw;
   assign alu_op[`AluopSllw]     = slliw | sllw;
   assign alu_op[`AluopSrlw]     = srliw | srlw;
   assign alu_op[`AluopSraw]     = sraiw | sraw;
+  assign alu_op[`AluopSubw]     = subw;
 
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | op_imm_32 | lui | auipc | sd | jal | jalr | ld;
+  assign need_imm = op_imm | op_imm_32 | lui | auipc | sd | jal | jalr | op_load;
 
 
   /* special instruction signals */
@@ -197,23 +207,27 @@ module decoder (
   assign is_auipc   = auipc;
   assign is_jal     = jal;
   assign is_jalr    = jalr;
-  assign is_load    = ld;
+  assign is_load    = op_load;
   assign is_branch  = op_branch;
 
   /* write enable */
-  assign reg_wen = op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | ld;
+  assign reg_wen = op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | op_load;
   assign mem_wen = sd;
-  assign mem_ren = ld;
 
-  // assign wmask = sd ? (wmask | 8'hff) : wmask;
   assign wmask = sd ?  8'hff : 0;
 
+  assign wdt_op[`Wdtop8]  = lb | lbu;
+  assign wdt_op[`Wdtop16] = lh | lhu;
+  assign wdt_op[`Wdtop32] = lw | lwu;
+  assign wdt_op[`Wdtop64] = ld;
+
+  assign is_unsigned = lbu | lhu | lwu;
 
   /* exception signals */
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | jalr 
-  | ld | add | sub | slti | sltiu | andi | beq | bne | addiw);
+  assign inst_not_ipl = ~( ebreak | auipc | jal | jalr | sd 
+  | op_load | op_imm | op_op | op_branch | op_imm_32 | op_32);
 
 endmodule

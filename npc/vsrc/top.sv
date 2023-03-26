@@ -31,12 +31,24 @@ memory u_memory(
   .mem_wdata  ( mem_wdata),
   .wmask      ( wmask),
   .mem_wen    ( mem_wen),
-  .mem_ren    ( mem_ren),
+  .mem_ren    ( is_load),
+  .wdt_op     ( wdt_op),
 
 	.inst       ( inst 		),
   .mem_rdata  ( mem_rdata)
 );
 
+
+wire [`Vec(`ImmWidth)] extended_data;
+
+load_extend u_load_extend(
+	//ports
+	.mem_rdata 		    ( mem_rdata 		),
+	.wdt_op        		( wdt_op        		),
+	.is_unsigned   		( is_unsigned   		),
+
+	.extended_data 		( extended_data 		)
+);
 
 /* decode instructionn stage */
 wire [`Vec(`RegIdWidth)]	rd;
@@ -56,7 +68,9 @@ wire  mem_wen;
 wire  [7:0] wmask;
 wire  is_load;
 wire  is_branch;
-wire  mem_ren;
+// wire  mem_ren;
+wire [`Vec(`WdtTypeCnt)] wdt_op;
+wire is_unsigned;
 
 decoder u_decoder(
 	//ports
@@ -78,7 +92,10 @@ decoder u_decoder(
   .wmask            ( wmask),
   .is_load          ( is_load),
   .is_branch        ( is_branch),
-  .mem_ren          ( mem_ren)
+  .wdt_op           ( wdt_op),
+  .is_unsigned      ( is_unsigned)
+  // .mem_ren          ( mem_ren)
+
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -112,7 +129,7 @@ always @(posedge clk) begin
 end
 
 /* execute stage */
-wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : (is_load ? mem_rdata : alu_result);
+wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : (is_load ? extended_data: alu_result);
 // wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (cur_inst_pc + 4) : alu_result;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
@@ -146,7 +163,6 @@ wire [`Vec(`ImmWidth)]	alu_result;
 Alu u_Alu(
 	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
-	// .alu_add    		( alu_add    		),
 	.alu_op    		  ( alu_op    		),
 
 	.alu_result     ( alu_result   	)

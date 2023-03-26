@@ -92,6 +92,10 @@ static void checkregs(CPU_state *ref, vaddr_t pc){
   }
 }
 
+static void checkmem(){
+
+}
+
 void difftest_step(){
   CPU_state ref_f;
   int pc = 0;

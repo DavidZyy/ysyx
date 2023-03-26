@@ -116,3 +116,16 @@
   `define ShtWdtW 5 // for slliw, srliw, sraiw ...
 
   `define WordWidth 32
+
+  /* for lb, lh, lw, ld, sb instructions ... */
+  `define WdtTypeCnt  4 // 8, 16, 32, 64, there are four width types
+
+  `define Wdtop8  0
+  `define Wdtop16 1
+  `define Wdtop32 2
+  `define Wdtop64 3
+
+  `define Wdt8    `WdtTypeCnt'h1
+  `define Wdt16   `WdtTypeCnt'h2
+  `define Wdt32   `WdtTypeCnt'h4    
+  `define Wdt64   `WdtTypeCnt'h8
