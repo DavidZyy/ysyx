@@ -147,7 +147,7 @@ module decoder (
 
 /* RV64M */
   /* M standard extension for integer multiplication and division */
-  wire 
+  // wire 
 
 
 /* Immediate */
