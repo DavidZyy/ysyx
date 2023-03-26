@@ -11,9 +11,9 @@ module load_extend (
   wire [`Vec(`ImmWidth)] signed_out;
   wire [`Vec(`ImmWidth)] unsigned_out;
 
-  wire [7:0] slice_7_0  = load_mem_data[7:0];
-  wire [15:0] slice_15_0 = load_mem_data[15:0];
-  wire [31:0] slice_31_0 = load_mem_data[31:0];
+  wire [7:0] slice_7_0   = mem_rdata[7:0];
+  wire [15:0] slice_15_0 = mem_rdata[15:0];
+  wire [31:0] slice_31_0 = mem_rdata[31:0];
 
   MuxKey
   #(
@@ -28,7 +28,7 @@ module load_extend (
     `Wdt8,   `SEXT(slice_7_0, 8),
     `Wdt16,  `SEXT(slice_15_0, 16),
     `Wdt32,  `SEXT(slice_31_0, 32),
-    `Wdt64,  load_mem_data
+    `Wdt64,  mem_rdata
     })
   );
 
@@ -45,7 +45,7 @@ module load_extend (
     `Wdt8,   `ZEXT(slice_7_0, 8),
     `Wdt16,  `ZEXT(slice_15_0, 16),
     `Wdt32,  `ZEXT(slice_31_0, 32),
-    `Wdt64,  load_mem_data
+    `Wdt64,  mem_rdata
     })
   );
 
