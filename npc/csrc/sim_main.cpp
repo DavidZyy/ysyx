@@ -154,7 +154,7 @@ void pmem_read(long long raddr, long long *rdata) {
 void pmem_write(long long waddr, long long wdata, char wmask) {
   assert(in_pmem(waddr));
 
-  assert(!(waddr & 0x7));
+  // assert(!(waddr & 0x7));
   printf("waddr: %lx\n", waddr);
   printf("wdata: %lx\n", wdata);
   printf("wmask: %lx\n", wmask);
