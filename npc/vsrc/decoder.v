@@ -1,11 +1,11 @@
 /*
-Input an instruction, to tell which instrction it is,
-and ouput its relative components.
-Which signals shoulld decoder to produce to pass to 
-executor?
-Add a new instructions is not convenient, I plan to write a 
-script to generate verilog codes automaticallly when add new
-instruction
+  Input an instruction, to tell which instrction it is,
+  and ouput its relative components.
+  Which signals shoulld decoder to produce to pass to 
+  executor?
+  Add a new instructions is not convenient, I plan to write a 
+  script to generate verilog codes automaticallly when add new
+  instruction
 */
 `include "./include/defines.v"
 
@@ -29,8 +29,10 @@ module decoder (
   output mem_wen,
   output [7:0] wmask,
   output is_load,
-  output is_branch
+  output is_branch,
   // output mem_ren
+  output [`Vec(`WdtTypeCnt)] wdt_op,
+  output is_unsigned
 );
 
 /* decode infos */
@@ -114,7 +116,14 @@ module decoder (
 
   /* 2.6 load and store */
   wire sd = op_store &  funct3_011;
-  wire ld = op_load & funct3_011;
+
+  wire ld   = op_load & funct3_011;
+  wire lw   = op_load & funct3_010;
+  wire lwu  = op_load & funct3_110;
+  wire lh   = op_load & funct3_001;
+  wire lhu  = op_load & funct3_101;
+  wire lb   = op_load & funct3_000;
+  wire lbu  = op_load & funct3_100;
 
   /* 2.8 environment call and breakpoints */
   wire ebreak = op_system & funct3_000 & funct12_000000000001;
@@ -201,12 +210,15 @@ module decoder (
   /* write enable */
   assign reg_wen = op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | ld;
   assign mem_wen = sd;
-  // assign mem_ren = ld;
 
   assign wmask = sd ?  8'hff : 0;
 
+  assign wdt_op[Wdtop8]  = lb | lbu;
+  assign wdt_op[Wdtop16] = lh | lhu;
+  assign wdt_op[Wdtop32] = lw | lwu;
+  assign wdt_op[Wdtop64] = ld;
 
-
+  assign is_unsigned = lbu | lhu | lwu;
 
   /* exception signals */
   /* this signal seems silly, but it is useful, 
