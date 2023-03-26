@@ -27,7 +27,7 @@ module Alu (
     /* use a multiplexer */
     MuxKey
     #(
-        .NR_KEY     (19),
+        .NR_KEY     (20),
         .KEY_LEN    (`AluopWidth),
         .DATA_LEN   (`ImmWidth)
     )
