@@ -125,7 +125,7 @@
   `define Wdtop32 2
   `define Wdtop64 3
 
-  `define Wdt8  0  `WdtTypeCnt'h1
-  `define Wdt16 1  `WdtTypeCnt'h2
-  `define Wdt32 2  `WdtTypeCnt'h4    
-  `define Wdt64 3  `WdtTypeCnt'h8
+  `define Wdt8    `WdtTypeCnt'h1
+  `define Wdt16   `WdtTypeCnt'h2
+  `define Wdt32   `WdtTypeCnt'h4    
+  `define Wdt64   `WdtTypeCnt'h8
