@@ -213,10 +213,10 @@ module decoder (
 
   assign wmask = sd ?  8'hff : 0;
 
-  assign wdt_op[Wdtop8]  = lb | lbu;
-  assign wdt_op[Wdtop16] = lh | lhu;
-  assign wdt_op[Wdtop32] = lw | lwu;
-  assign wdt_op[Wdtop64] = ld;
+  assign wdt_op[`Wdtop8]  = lb | lbu;
+  assign wdt_op[`Wdtop16] = lh | lhu;
+  assign wdt_op[`Wdtop32] = lw | lwu;
+  assign wdt_op[`Wdtop64] = ld;
 
   assign is_unsigned = lbu | lhu | lwu;
 
