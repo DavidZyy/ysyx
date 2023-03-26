@@ -14,7 +14,7 @@ module memory (
     input [7:0] wmask,
     input mem_wen,
     input mem_ren,
-    input wdt_op,
+    input [`Vec(`WdtTypeCnt)] wdt_op,
 
     output [`Vec(`InstWidth)] inst,
     output [`Vec(`ImmWidth)] mem_rdata
