@@ -117,8 +117,8 @@ module memory (
       .out(width_32_out),
       .key(mem_raddr[2:0] & 3'b111),
       .lut({
-        3'000, `ZEXT(slice_31_0,  32),
-        3'100, `ZEXT(slice_63_32, 32)
+        3'b000, `ZEXT(slice_31_0,  32),
+        3'b100, `ZEXT(slice_63_32, 32)
       })
     );
 
