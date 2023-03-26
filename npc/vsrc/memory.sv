@@ -28,12 +28,12 @@ module memory (
       pmem_read(pc, rinst);
     end
 
-    // always @(posedge clk) begin
-    always @(*) begin
+    always @(posedge clk) begin
+    // always @(*) begin
       if(mem_ren)
         pmem_read(mem_raddr, mem_rdata);
-      else
-        mem_rdata <= 0;
+      // else
+        // mem_rdata <= 0;
     end
 
     always @(negedge clk) begin
