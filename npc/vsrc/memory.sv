@@ -130,7 +130,7 @@ module memory (
       .KEY_LEN  (`WdtTypeCnt),
       .DATA_LEN (`ImmWidth)
     )
-    width_16_mux(
+    rdata_mux(
       .out(mem_rdata),
       .key(wdt_op),
       .lut({
