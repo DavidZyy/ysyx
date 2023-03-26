@@ -11,7 +11,7 @@ module memory (
     input [`Vec(`RegWidth)] mem_raddr,
     input [`Vec(`AddrWidth)] waddr,
     input [`Vec(`RegWidth)] mem_wdata,
-    input [7:0] wmask,
+    // input [7:0] wmask,
     input mem_wen,
     input mem_ren,
     input [`Vec(`WdtTypeCnt)] wdt_op,
@@ -35,6 +35,25 @@ module memory (
       // else
         // mem_rdata <= 0;
     end
+
+    wire [7:0] wmask;
+
+    MuxKey
+    #(
+      .NR_KEY   (4),
+      .KEY_LEN  (`WdtTypeCnt),
+      .DATA_LEN (8)
+    )
+    wmask_mux(
+      .out(wmask),
+      .key(wdt_op),
+      .lut({
+        `Wdt8,   8'h01,
+        `Wdt16,  8'h03,
+        `Wdt32,  8'h0f,
+        `Wdt64,  8'hff
+      })
+    );
 
     always @(negedge clk) begin
       if(mem_wen)
