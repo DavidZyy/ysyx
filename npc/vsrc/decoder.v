@@ -208,7 +208,7 @@ module decoder (
   assign is_branch  = op_branch;
 
   /* write enable */
-  assign reg_wen = op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | ld;
+  assign reg_wen = op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | op_load;
   assign mem_wen = sd;
 
   assign wmask = sd ?  8'hff : 0;
