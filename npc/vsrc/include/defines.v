@@ -68,7 +68,7 @@
 
   /* alu_op decode information */
   // `define AluopWidth  32
-  `define AluopWidth  64
+  `define AluopWidth  48
 
   `define AluopAdd      0
   `define AluopSub      1
@@ -92,26 +92,26 @@
   `define AluopSubw     19
 
   /* AluAdd equals to 1<<`AluopAdd, and so on */
-  `define AluAdd        `AluopWidth'h00000001
-  `define AluSub        `AluopWidth'h00000002
-  `define AluLt         `AluopWidth'h00000004
-  `define AluLtu        `AluopWidth'h00000008
-  `define AluAnd        `AluopWidth'h00000010
-  `define AluOr         `AluopWidth'h00000020
-  `define AluXor        `AluopWidth'h00000040
-  `define AluSll        `AluopWidth'h00000080
-  `define AluSrl        `AluopWidth'h00000100
-  `define AluSra        `AluopWidth'h00000200
-  `define AluOutImm     `AluopWidth'h00000400
-  `define AluEq         `AluopWidth'h00000800
-  `define AluNe         `AluopWidth'h00001000
-  `define AluGe         `AluopWidth'h00002000
-  `define AluGeu        `AluopWidth'h00004000
-  `define AluAddw       `AluopWidth'h00008000
-  `define AluSllw       `AluopWidth'h00010000
-  `define AluSrlw       `AluopWidth'h00020000
-  `define AluSraw       `AluopWidth'h00040000
-  `define AluSubw       `AluopWidth'h00080000
+  `define AluAdd        `AluopWidth'h000000000001
+  `define AluSub        `AluopWidth'h000000000002
+  `define AluLt         `AluopWidth'h000000000004
+  `define AluLtu        `AluopWidth'h000000000008
+  `define AluAnd        `AluopWidth'h000000000010
+  `define AluOr         `AluopWidth'h000000000020
+  `define AluXor        `AluopWidth'h000000000040
+  `define AluSll        `AluopWidth'h000000000080
+  `define AluSrl        `AluopWidth'h000000000100
+  `define AluSra        `AluopWidth'h000000000200
+  `define AluOutImm     `AluopWidth'h000000000400
+  `define AluEq         `AluopWidth'h000000000800
+  `define AluNe         `AluopWidth'h000000001000
+  `define AluGe         `AluopWidth'h000000002000
+  `define AluGeu        `AluopWidth'h000000004000
+  `define AluAddw       `AluopWidth'h000000008000
+  `define AluSllw       `AluopWidth'h000000010000
+  `define AluSrlw       `AluopWidth'h000000020000
+  `define AluSraw       `AluopWidth'h000000040000
+  `define AluSubw       `AluopWidth'h000000080000
 
   `define ShtWdt  6 // shift fileds width, for slli, srli, srai ...
   `define ShtWdtW 5 // for slliw, srliw, sraiw ...
