@@ -31,7 +31,7 @@ module memory (
 
     always @(posedge clk) begin
       if(mem_ren)
-        pmem_read(mem_raddr, mem_rdata_temp);
+        pmem_read(mem_raddr, width_64_out);
       // else
         // mem_rdata <= 0;
     end
@@ -46,26 +46,28 @@ module memory (
 
     /* we need to deal with mem_rdata, because it's 8 bits aligned */
     /* lw has two cases: 63:32, 31:0, lh has four cases and lb has eight cases */
-    wire [`Vec(`ImmWidth)] mem_rdata_temp;
 
-    wire [7:0] slice_7_0     = mem_rdata_temp[7:0];
-    wire [7:0] slice_15_8    = mem_rdata_temp[15:8];
-    wire [7:0] slice_23_16   = mem_rdata_temp[23:16];
-    wire [7:0] slice_31_24   = mem_rdata_temp[31:24];
-    wire [7:0] slice_39_32   = mem_rdata_temp[39:32];
-    wire [7:0] slice_47_40   = mem_rdata_temp[47:40];
-    wire [7:0] slice_55_48   = mem_rdata_temp[55:48];
-    wire [7:0] slice_63_56   = mem_rdata_temp[63:56];
+    wire [7:0] slice_7_0     = width_64_out[7:0];
+    wire [7:0] slice_15_8    = width_64_out[15:8];
+    wire [7:0] slice_23_16   = width_64_out[23:16];
+    wire [7:0] slice_31_24   = width_64_out[31:24];
+    wire [7:0] slice_39_32   = width_64_out[39:32];
+    wire [7:0] slice_47_40   = width_64_out[47:40];
+    wire [7:0] slice_55_48   = width_64_out[55:48];
+    wire [7:0] slice_63_56   = width_64_out[63:56];
 
-//     wire [15:0] slice_15_0  = mem_rdata_temp[15:0];
-//     wire [15:0] slice_31_16 = mem_rdata_temp[31:16];
-//     wire [15:0] slice_47_32 = mem_rdata_temp[47:32];
-//     wire [15:0] slice_63_48 = mem_rdata_temp[63:48];
-// 
-//     wire [31:0] slice_31_0  = mem_rdata_temp[31:0];
-//     wire [31:0] slice_63_32 = mem_rdata_temp[63:32];
+    wire [15:0] slice_15_0  = width_64_out[15:0];
+    wire [15:0] slice_31_16 = width_64_out[31:16];
+    wire [15:0] slice_47_32 = width_64_out[47:32];
+    wire [15:0] slice_63_48 = width_64_out[63:48];
+
+    wire [31:0] slice_31_0  = width_64_out[31:0];
+    wire [31:0] slice_63_32 = width_64_out[63:32];
 
     wire [`Vec(`ImmWidth)] width_8_out;
+    wire [`Vec(`ImmWidth)] width_16_out;
+    wire [`Vec(`ImmWidth)] width_32_out;
+    wire [`Vec(`ImmWidth)] width_64_out;
 
     MuxKey
     #(
@@ -88,23 +90,56 @@ module memory (
       })
     );
 
-    // MuxKey
-    // #(
-    //   .NR_KEY   (4),
-    //   .KEY_LEN  (`WdtTypeCnt),
-    //   .DATA_LEN (`ImmWidth)
-    // )
-    // width_mux(
-    //   .out(mem_rdata),
-    //   .key(wdt_op),
-    //   .lut({
-    //   `Wdt8,   `ZEXT(slice_7_0, 8),
-    //   `Wdt16,  `ZEXT(slice_15_0, 16),
-    //   `Wdt32,  `ZEXT(slice_31_0, 32),
-    //   `Wdt64,  mem_rdata_temp
-    //   })
-    // );
+    MuxKey
+    #(
+      .NR_KEY   (4),
+      .KEY_LEN  (3),
+      .DATA_LEN (`ImmWidth)
+    )
+    width_16_mux(
+      .out(width_8_out),
+      .key(mem_raddr[2:0] & 3'b111),
+      .lut({
+        3'b000, `ZEXT(slice_15_0,   16),
+        3'b010, `ZEXT(slice_31_16,  16),
+        3'b100, `ZEXT(slice_47_32,  16),
+        3'b110, `ZEXT(slice_63_48,  16)
+      })
+    );
+
+    MuxKey
+    #(
+      .NR_KEY   (2),
+      .KEY_LEN  (3),
+      .DATA_LEN (`ImmWidth)
+    )
+    width_32_mux(
+      .out(width_32_out),
+      .key(mem_raddr[2:0] & 3'b111),
+      .lut({
+        3'000, `ZEXT(slice_31_0,  32),
+        3'100, `ZEXT(slice_63_32, 32)
+      })
+    );
 
 
-  assign mem_rdata = width_8_out;
+  /* choose the true memory read data acording to width */
+    MuxKey
+    #(
+      .NR_KEY   (4),
+      .KEY_LEN  (`WdtTypeCnt),
+      .DATA_LEN (`ImmWidth)
+    )
+    width_16_mux(
+      .out(mem_rdata),
+      .key(wdt_op),
+      .lut({
+        `Wdt8,  width_8_out,
+        `Wdt16,  width_16_out,
+        `Wdt32,  width_32_out,
+        `Wdt16,  width_64_out,
+      })
+    );
+
+
 endmodule //memory
