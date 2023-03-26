@@ -38,7 +38,7 @@ module load_extend (
     .KEY_LEN  (`WdtTypeCnt),
     .DATA_LEN (`ImmWidth)
   )
-  signed_mux(
+  unsigned_mux(
     .out(unsigned_out),
     .key(wdt_op),
     .lut({
