@@ -57,13 +57,13 @@ module memory (
     wire [7:0] slice_55_48   = mem_rdata_temp[55:48];
     wire [7:0] slice_63_56   = mem_rdata_temp[63:56];
 
-    wire [15:0] slice_15_0  = mem_rdata_temp[15:0];
-    wire [15:0] slice_31_16 = mem_rdata_temp[31:16];
-    wire [15:0] slice_47_32 = mem_rdata_temp[47:32];
-    wire [15:0] slice_63_48 = mem_rdata_temp[63:48];
-
-    wire [31:0] slice_31_0  = mem_rdata_temp[31:0];
-    wire [31:0] slice_63_32 = mem_rdata_temp[63:32];
+//     wire [15:0] slice_15_0  = mem_rdata_temp[15:0];
+//     wire [15:0] slice_31_16 = mem_rdata_temp[31:16];
+//     wire [15:0] slice_47_32 = mem_rdata_temp[47:32];
+//     wire [15:0] slice_63_48 = mem_rdata_temp[63:48];
+// 
+//     wire [31:0] slice_31_0  = mem_rdata_temp[31:0];
+//     wire [31:0] slice_63_32 = mem_rdata_temp[63:32];
 
     wire [`Vec(`ImmWidth)] width_8_out;
 
