@@ -44,7 +44,7 @@ module memory (
       .KEY_LEN  (`WdtTypeCnt),
       .DATA_LEN (8)
     )
-    rdata_mux(
+    wmask_mux(
       .out(wmask),
       .key(wdt_op),
       .lut({
