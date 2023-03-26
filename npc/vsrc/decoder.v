@@ -145,6 +145,10 @@ module decoder (
   wire subw = op_32 & funct3_000 & funct7_0100000;
   wire sraw = op_32 & funct3_101 & funct7_0100000;
 
+/* RV64M */
+  /* M standard extension for integer multiplication and division */
+  wire 
+
 
 /* Immediate */
   /* instruction type, to be the key to choose immediate */

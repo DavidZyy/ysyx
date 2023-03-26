@@ -67,7 +67,8 @@
   `define OpIs(opcode)  (`OPCODE(inst) == opcode)
 
   /* alu_op decode information */
-  `define AluopWidth  32
+  // `define AluopWidth  32
+  `define AluopWidth  64
 
   `define AluopAdd      0
   `define AluopSub      1
