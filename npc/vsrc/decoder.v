@@ -204,7 +204,7 @@ module decoder (
   assign is_auipc   = auipc;
   assign is_jal     = jal;
   assign is_jalr    = jalr;
-  assign is_load    = ld;
+  assign is_load    = op_load;
   assign is_branch  = op_branch;
 
   /* write enable */
