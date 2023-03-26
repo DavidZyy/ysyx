@@ -11,9 +11,9 @@ module load_extend (
   wire [`Vec(`ImmWidth)] signed_out;
   wire [`Vec(`ImmWidth)] unsigned_out;
 
-  wire slice_7_0  = load_mem_data[7:0];
-  wire slice_15_0 = load_mem_data[15:0];
-  wire slice_31_0 = load_mem_data[31:0];
+  wire [7:0] slice_7_0  = load_mem_data[7:0];
+  wire [15:0] slice_15_0 = load_mem_data[15:0];
+  wire [31:0] slice_31_0 = load_mem_data[31:0];
 
   MuxKey
   #(
