@@ -25,10 +25,10 @@ module load_extend (
     .out(signed_out),
     .key(wdt_op),
     .lut({
-    `Wdt8   `SEXT(slice_7_0, 8),
-    `Wdt16  `SEXT(slice_15_0, 16),
-    `Wdt32  `SEXT(slice_31_0, 32),
-    `Wdt64  load_mem_data
+    `Wdt8,   `SEXT(slice_7_0, 8),
+    `Wdt16,  `SEXT(slice_15_0, 16),
+    `Wdt32,  `SEXT(slice_31_0, 32),
+    `Wdt64,  load_mem_data
     })
   );
 
@@ -42,10 +42,10 @@ module load_extend (
     .out(unsigned_out),
     .key(wdt_op),
     .lut({
-    `Wdt8   `ZEXT(slice_7_0, 8),
-    `Wdt16  `ZEXT(slice_15_0, 16),
-    `Wdt32  `ZEXT(slice_31_0, 32),
-    `Wdt64  load_mem_data
+    `Wdt8,   `ZEXT(slice_7_0, 8),
+    `Wdt16,  `ZEXT(slice_15_0, 16),
+    `Wdt32,  `ZEXT(slice_31_0, 32),
+    `Wdt64,  load_mem_data
     })
   );
 
