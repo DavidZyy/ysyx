@@ -137,7 +137,7 @@ module memory (
         `Wdt8,   width_8_out,
         `Wdt16,  width_16_out,
         `Wdt32,  width_32_out,
-        `Wdt16,  width_64_out
+        `Wdt64,  width_64_out
       })
     );
 
