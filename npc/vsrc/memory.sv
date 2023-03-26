@@ -14,6 +14,7 @@ module memory (
     input [7:0] wmask,
     input mem_wen,
     input mem_ren,
+    input wdt_op,
 
     output [`Vec(`InstWidth)] inst,
     output [`Vec(`ImmWidth)] mem_rdata
@@ -28,10 +29,32 @@ module memory (
       pmem_read(pc, rinst);
     end
 
+    /* we need to deal with mem_rdata, because it's 8 bits aligned */
+    wire [`Vec(`ImmWidth)] mem_rdata_temp;
+    wire [7:0] slice_7_0   = mem_rdata_temp[63:56];
+    wire [15:0] slice_15_0 = mem_rdata_temp[63:48];
+    wire [31:0] slice_31_0 = mem_rdata_temp[63:32];
+
+    MuxKey
+    #(
+      .NR_KEY   (4),
+      .KEY_LEN  (`WdtTypeCnt),
+      .DATA_LEN (`ImmWidth)
+    )
+    width_mux(
+      .out(mem_rdata),
+      .key(wdt_op),
+      .lut({
+      `Wdt8,   `ZEXT(slice_7_0, 8),
+      `Wdt16,  `ZEXT(slice_15_0, 16),
+      `Wdt32,  `ZEXT(slice_31_0, 32),
+      `Wdt64,  mem_rdata_temp
+      })
+    );
+
     always @(posedge clk) begin
-    // always @(*) begin
       if(mem_ren)
-        pmem_read(mem_raddr, mem_rdata);
+        pmem_read(mem_raddr, mem_rdata_temp);
       // else
         // mem_rdata <= 0;
     end

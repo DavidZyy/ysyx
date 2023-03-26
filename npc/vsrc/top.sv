@@ -32,6 +32,7 @@ memory u_memory(
   .wmask      ( wmask),
   .mem_wen    ( mem_wen),
   .mem_ren    ( is_load),
+  .wdt_op     ( wdt_op),
 
 	.inst       ( inst 		),
   .mem_rdata  ( mem_rdata)
