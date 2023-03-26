@@ -176,7 +176,7 @@ module decoder (
 
 /* Control Signals */
   /* alu signals */
-  assign alu_op[`AluopAdd]      = addi  | auipc | sd | jal | jalr | ld | add;
+  assign alu_op[`AluopAdd]      = addi  | auipc | sd | jal | jalr | add | op_load;
   assign alu_op[`AluopSub]      = sub;
   assign alu_op[`AluopLt]       = slti  | slt   | blt;
   assign alu_op[`AluopLtu]      = sltiu | sltu  | bltu;
@@ -199,7 +199,7 @@ module decoder (
 
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | op_imm_32 | lui | auipc | sd | jal | jalr | ld;
+  assign need_imm = op_imm | op_imm_32 | lui | auipc | sd | jal | jalr | op_load;
 
 
   /* special instruction signals */
