@@ -16,11 +16,13 @@ module Alu (
     assign temp_1 = (operator_1 <<  operator_2[`Vec(`ShtWdtW)]);
     assign temp_2 = (operator_1 >>  operator_2[`Vec(`ShtWdtW)]);
     assign temp_3 = (operator_1 >>> operator_2[`Vec(`ShtWdtW)]);
+    assign temp_4 = (operator_1 - operator_2);
 
     assign temp_0_slice = temp_0[`Vec(`WordWidth)];
     assign temp_1_slice = temp_1[`Vec(`WordWidth)];
     assign temp_2_slice = temp_2[`Vec(`WordWidth)];
     assign temp_3_slice = temp_3[`Vec(`WordWidth)];
+    assign temp_4_slice = temp_4[`Vec(`WordWidth)];
     
     /* use a multiplexer */
     MuxKey
@@ -51,7 +53,8 @@ module Alu (
         `AluAddw,   `SEXT(temp_0_slice, `WordWidth),
         `AluSllw,   `SEXT(temp_1_slice, `WordWidth),
         `AluSrlw,   `SEXT(temp_2_slice, `WordWidth),
-        `AluSraw,   `SEXT(temp_3_slice, `WordWidth)
+        `AluSraw,   `SEXT(temp_3_slice, `WordWidth),
+        `AluSubw,   `SEXT(temp_4_slice, `WordWidth)
         })
         );
 endmodule //Alu

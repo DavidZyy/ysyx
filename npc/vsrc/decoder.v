@@ -136,9 +136,11 @@ module decoder (
   wire sraiw = op_imm_32 & funct3_101 & funct7_0100000;
 
   /* integer register-register instructions */
-  wire sllw = op_32 & & funct3_001 & funct7_0000000;
-  wire srlw = op_32 & & funct3_101 & funct7_0000000;
-  wire sraw = op_32 & & funct3_101 & funct7_0100000;
+  wire addw = op_32 & funct3_000 & funct7_0000000;
+  wire sllw = op_32 & funct3_001 & funct7_0000000;
+  wire srlw = op_32 & funct3_101 & funct7_0000000;
+  wire subw = op_32 & funct3_000 & funct7_0100000;
+  wire sraw = op_32 & funct3_101 & funct7_0100000;
 
 
 /* Immediate */
@@ -189,10 +191,11 @@ module decoder (
   assign alu_op[`AluopNe]       = bne;
   assign alu_op[`AluopGe]       = bge;
   assign alu_op[`AluopGeu]      = bgeu;
-  assign alu_op[`AluopAddw]     = addiw;
+  assign alu_op[`AluopAddw]     = addiw | addw;
   assign alu_op[`AluopSllw]     = slliw | sllw;
   assign alu_op[`AluopSrlw]     = srliw | srlw;
   assign alu_op[`AluopSraw]     = sraiw | sraw;
+  assign alu_op[`AluopSubw]     = subw;
 
 
   /* a instruction needs immediate has no rs2 */
@@ -224,7 +227,7 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~(addi | ebreak | auipc | jal | sd | jalr 
-  | op_load | add | sub | slti | sltiu | andi | beq | bne | addiw);
+  assign inst_not_ipl = ~( ebreak | auipc | jal | jalr | sd 
+  | op_load | op_imm | op_op | op_branch | op_imm_32 | op_32);
 
 endmodule
