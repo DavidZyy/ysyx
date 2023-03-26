@@ -31,9 +31,12 @@ module memory (
 
     /* we need to deal with mem_rdata, because it's 8 bits aligned */
     wire [`Vec(`ImmWidth)] mem_rdata_temp;
-    wire [7:0] slice_7_0   = mem_rdata_temp[63:56];
-    wire [15:0] slice_15_0 = mem_rdata_temp[63:48];
-    wire [31:0] slice_31_0 = mem_rdata_temp[63:32];
+    // wire [7:0] slice_7_0   = mem_rdata_temp[63:56];
+    // wire [15:0] slice_15_0 = mem_rdata_temp[63:48];
+    // wire [31:0] slice_31_0 = mem_rdata_temp[63:32];
+    wire [7:0] slice_7_0   = mem_rdata_temp[7:0];
+    wire [15:0] slice_15_0 = mem_rdata_temp[15:0];
+    wire [31:0] slice_31_0 = mem_rdata_temp[31:0];
 
     MuxKey
     #(
