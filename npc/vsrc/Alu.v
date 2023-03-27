@@ -14,8 +14,10 @@ module Alu (
 
     wire[`Vec(`ImmWidth)] temp_0 = (operator_1 + operator_2);
     wire[`Vec(`ImmWidth)] temp_1 = (operator_1 <<  operator_2[`Vec(`ShtWdtW)]);
-    wire[`Vec(`ImmWidth)] temp_2 = (operator_1 >>  operator_2[`Vec(`ShtWdtW)]);
-    wire[`Vec(`ImmWidth)] temp_3 = (operator_1 >>> operator_2[`Vec(`ShtWdtW)]);
+    // wire[`Vec(`ImmWidth)] temp_2 = (operator_1 >>  operator_2[`Vec(`ShtWdtW)]);
+    // wire[`Vec(`ImmWidth)] temp_3 = (operator_1 >>> operator_2[`Vec(`ShtWdtW)]);
+    wire[`Vec(`WordWidth)] temp_2 = operator_1[`Vec(`WordWidth)];
+    wire[`Vec(`WordWidth)] temp_3 = operator_1[`Vec(`WordWidth)];
     wire[`Vec(`ImmWidth)] temp_4 = (operator_1 - operator_2);
     wire[127:0] temp_5 = ($signed(operator_1) * $signed(operator_2)); // mulh
     wire[127:0] temp_6 = ($signed(operator_1) * $unsigned(operator_2)); // mulhsu
@@ -29,8 +31,10 @@ module Alu (
 
     wire [`Vec(`WordWidth)] temp_0_slice  = temp_0[`Vec(`WordWidth)];
     wire [`Vec(`WordWidth)] temp_1_slice  = temp_1[`Vec(`WordWidth)];
-    wire [`Vec(`WordWidth)] temp_2_slice  = temp_2[`Vec(`WordWidth)];
-    wire [`Vec(`WordWidth)] temp_3_slice  = temp_3[`Vec(`WordWidth)];
+    // wire [`Vec(`WordWidth)] temp_2_slice  = temp_2[`Vec(`WordWidth)];
+    // wire [`Vec(`WordWidth)] temp_3_slice  = temp_3[`Vec(`WordWidth)];
+    wire [`Vec(`WordWidth)] temp_2_slice  = temp_2 >> operator_2[`Vec(`ShtWdtW)];
+    wire [`Vec(`WordWidth)] temp_3_slice  = temp_3 >>> operator_3[`Vec(`ShtWdtW)];
     wire [`Vec(`WordWidth)] temp_4_slice  = temp_4[`Vec(`WordWidth)];
     wire [`Vec(`ImmWidth)]  temp_5_slice  = temp_5[127:64]; // temp_5 >> `ImmWidth;
     wire [`Vec(`ImmWidth)]  temp_6_slice  = temp_6[127:64];
