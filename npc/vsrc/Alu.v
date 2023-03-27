@@ -69,7 +69,7 @@ module Alu (
         `AluGeu,    `ZEXT($unsigned(operator_1) >= $unsigned(operator_2), 1),
         `AluAddw,   `SEXT(temp_0_slice, `WordWidth),
         `AluSllw,   `SEXT(temp_1_slice, `WordWidth),
-        `AluSrlw,   `SEXT(temp_2_slice, `WordWidth),
+        `AluSrlw,   `ZEXT(temp_2_slice, `WordWidth),
         `AluSraw,   `SEXT(temp_3_slice, `WordWidth),
         `AluSubw,   `SEXT(temp_4_slice, `WordWidth),
         `AluMul,     operator_1 * operator_2,
