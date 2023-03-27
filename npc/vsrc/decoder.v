@@ -260,7 +260,7 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~(ebreak | auipc | jal | jalr | op_store
+  assign inst_not_ipl = ~(ebreak | auipc | lui | jal | jalr | op_store
   | op_load | op_imm | op_op | op_branch | op_imm_32 | op_32);
 
 endmodule
