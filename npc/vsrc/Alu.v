@@ -33,8 +33,8 @@ module Alu (
     wire [`Vec(`WordWidth)] temp_3_slice  = temp_3[`Vec(`WordWidth)];
     wire [`Vec(`WordWidth)] temp_4_slice  = temp_4[`Vec(`WordWidth)];
     wire [`Vec(`ImmWidth)]  temp_5_slice  = temp_5[127:64]; // temp_5 >> `ImmWidth;
-    wire [`Vec(`ImmWidth)]  temp_6_slice  = temp_6 >> `ImmWidth;
-    wire [`Vec(`ImmWidth)]  temp_7_slice  = temp_7 >> `ImmWidth;
+    wire [`Vec(`ImmWidth)]  temp_6_slice  = temp_6[127:64];
+    wire [`Vec(`ImmWidth)]  temp_7_slice  = temp_7[127:64];
     wire [`Vec(`WordWidth)] temp_8_slice  = temp_8[`Vec(`WordWidth)];
     wire [`Vec(`WordWidth)] temp_9_slice  = temp_9[`Vec(`WordWidth)];
     wire [`Vec(`WordWidth)] temp_10_slice = temp_10[`Vec(`WordWidth)];
