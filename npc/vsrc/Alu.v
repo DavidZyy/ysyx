@@ -55,6 +55,7 @@ module Alu (
         `AluSrlw,   `SEXT(temp_2_slice, `WordWidth),
         `AluSraw,   `SEXT(temp_3_slice, `WordWidth),
         `AluSubw,   `SEXT(temp_4_slice, `WordWidth)
+        `AluMul,     operator_1 * operator_2
         })
         );
 endmodule //Alu

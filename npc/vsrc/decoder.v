@@ -63,7 +63,7 @@ module decoder (
   /* funct7, if it has more cases, use script to generate the codes below */
   wire funct7_0000000 = `FUNCT7_Is(7'b0000000);
   wire funct7_0100000 = `FUNCT7_Is(7'b0100000);
-  // wire funct7_0000001 = `FUNCT7_Is(7'b0000001); // muldiv
+  wire funct7_0000001 = `FUNCT7_Is(7'b0000001); // muldiv
 
   /* funct12, use for system instructions? */
   wire funct12_000000000001 = `FUNCT12_Is(12'b000000000001);
@@ -148,7 +148,7 @@ module decoder (
 
 /* RV64M */
   /* M standard extension for integer multiplication and division */
-  // wire mul  = op_op & funct3_000 & funct7_0000001;
+  wire mul  = op_op & funct3_000 & funct7_0000001;
 
 
 /* Immediate */
@@ -204,6 +204,7 @@ module decoder (
   assign alu_op[`AluopSrlw]     = srliw | srlw;
   assign alu_op[`AluopSraw]     = sraiw | sraw;
   assign alu_op[`AluopSubw]     = subw;
+  assign alu_op[`AluopMul]      = mul;
 
 
   /* a instruction needs immediate has no rs2 */

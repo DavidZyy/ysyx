@@ -208,8 +208,6 @@
   `define Aluremw       ( `Aludivuw   << 1)
   `define Aluremuw      ( `Aluremw    << 1) 
 
-
-
   `define ShtWdt  6 // shift fileds width, for slli, srli, srai ...
   `define ShtWdtW 5 // for slliw, srliw, sraiw ...
 
