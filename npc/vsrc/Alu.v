@@ -81,10 +81,10 @@ module Alu (
         `Aludivu  ,  temp_10,
         `Alurem   ,  temp_11,
         `Aluremu  ,  temp_12,
-        `Aludivw  ,  temp_9_slice,
-        `Aludivuw ,  temp_10_slice,
-        `Aluremw  ,  temp_11_slice,
-        `Aluremuw ,  temp_12_slice
+        `Aludivw  ,  `SEXT(temp_9_slice,  `WordWidth),
+        `Aludivuw ,  `SEXT(temp_10_slice, `WordWidth), 
+        `Aluremw  ,  `SEXT(temp_11_slice, `WordWidth), 
+        `Aluremuw ,  `SEXT(temp_12_slice, `WordWidth)
         })
         );
 endmodule //Alu
