@@ -34,7 +34,7 @@ module Alu (
     // wire [`Vec(`WordWidth)] temp_2_slice  = temp_2[`Vec(`WordWidth)];
     // wire [`Vec(`WordWidth)] temp_3_slice  = temp_3[`Vec(`WordWidth)];
     wire [`Vec(`WordWidth)] temp_2_slice  = temp_2 >> operator_2[`Vec(`ShtWdtW)];
-    wire [`Vec(`WordWidth)] temp_3_slice  = temp_3 >>> operator_2[`Vec(`ShtWdtW)];
+    wire [`Vec(`WordWidth)] temp_3_slice  = $signed(temp_3 ) >>> operator_2[`Vec(`ShtWdtW)];
     wire [`Vec(`WordWidth)] temp_4_slice  = temp_4[`Vec(`WordWidth)];
     wire [`Vec(`ImmWidth)]  temp_5_slice  = temp_5[127:64]; // temp_5 >> `ImmWidth;
     wire [`Vec(`ImmWidth)]  temp_6_slice  = temp_6[127:64];
