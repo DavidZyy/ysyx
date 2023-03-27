@@ -76,7 +76,7 @@ module Alu (
         `AluMulh  ,  temp_5_slice,
         `AluMulhsu,  temp_6_slice,
         `AluMulhu ,  temp_7_slice,
-        `AluMulw  ,  temp_8_slice,
+        `AluMulw  ,  `SEXT(temp_8_slice, `WordWidth),
         `Aludiv   ,  temp_9,
         `Aludivu  ,  temp_10,
         `Alurem   ,  temp_11,
