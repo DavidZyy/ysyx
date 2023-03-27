@@ -57,7 +57,7 @@ sim:
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
 	$(abspath ./csrc/dut.cpp)
 	obj_dir/Vtop $(IMG) $(SO)
-	gtkwave dump.vcd
+	# gtkwave dump.vcd
 	# gtkwave dump1.vcd
 
 wv:
