@@ -157,6 +157,12 @@ module decoder (
   wire rem    = op_op & funct3_110 & funct7_0000001;
   wire remu   = op_op & funct3_111 & funct7_0000001;
 
+  wire mulw   = op_32 & funct3_000 & funct7_0000001;
+  wire divw   = op_32 & funct3_100 & funct7_0000001;
+  wire divuw  = op_32 & funct3_101 & funct7_0000001;
+  wire remw   = op_32 & funct3_110 & funct7_0000001;
+  wire remuw  = op_32 & funct3_111 & funct7_0000001;
+
 
 /* Immediate */
   /* instruction type, to be the key to choose immediate */
