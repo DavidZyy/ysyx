@@ -148,7 +148,14 @@ module decoder (
 
 /* RV64M */
   /* M standard extension for integer multiplication and division */
-  wire mul  = op_op & funct3_000 & funct7_0000001;
+  wire mul    = op_op & funct3_000 & funct7_0000001;
+  wire mulh   = op_op & funct3_001 & funct7_0000001;
+  wire mulhsu = op_op & funct3_010 & funct7_0000001;
+  wire mulhu  = op_op & funct3_011 & funct7_0000001;
+  wire div    = op_op & funct3_100 & funct7_0000001;
+  wire divu   = op_op & funct3_101 & funct7_0000001;
+  wire rem    = op_op & funct3_110 & funct7_0000001;
+  wire remu   = op_op & funct3_111 & funct7_0000001;
 
 
 /* Immediate */
@@ -205,7 +212,18 @@ module decoder (
   assign alu_op[`AluopSraw]     = sraiw | sraw;
   assign alu_op[`AluopSubw]     = subw;
   assign alu_op[`AluopMul]      = mul;
-
+  assign alu_op[`AluopMulh  ]   = mulh  ;  
+  assign alu_op[`AluopMulhsu]   = mulhsu;  
+  assign alu_op[`AluopMulhu ]   = mulhu ;  
+  assign alu_op[`AluopMulw  ]   = mulw  ;  
+  assign alu_op[`AluopDiv   ]   = div   ;  
+  assign alu_op[`AluopDivu  ]   = divu  ;  
+  assign alu_op[`AluopRem   ]   = rem   ;  
+  assign alu_op[`AluopRemu  ]   = remu  ;  
+  assign alu_op[`AluopDivw  ]   = divw  ;  
+  assign alu_op[`AluopDivuw ]   = divuw ;  
+  assign alu_op[`AluopRemw  ]   = remw  ;  
+  assign alu_op[`AluopRemuw ]   = remuw ;  
 
   /* a instruction needs immediate has no rs2 */
   assign need_imm = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;

@@ -95,13 +95,13 @@
 //   `define AluopMulhsu   22
 //   `define AluopMulhu    23
 //   `define AluopMulw     24
-//   `define Aluopdiv      25
-//   `define Aluopdivu     26
-//   `define Aluoprem      27
-//   `define Aluopremu     28
-//   `define Aluopdivw     29
-//   `define Aluopdivuw    30
-//   `define Aluopremw     31
+//   `define AluopDiv      25
+//   `define AluopDivu     26
+//   `define AluopRem      27
+//   `define AluopRemu     28
+//   `define AluopDivw     29
+//   `define AluopDivuw    30
+//   `define AluopRemw     31
 //   `define Aluopremuw    32
 // 
 //   /* AluAdd equals to 1<<`AluopAdd, and so on */
@@ -164,14 +164,14 @@
   `define AluopMulhsu   `AluopMulh   +  1 
   `define AluopMulhu    `AluopMulhsu +  1 
   `define AluopMulw     `AluopMulhu  +  1 
-  `define Aluopdiv      `AluopMulw   +  1 
-  `define Aluopdivu     `Aluopdiv    +  1 
-  `define Aluoprem      `Aluopdivu   +  1 
-  `define Aluopremu     `Aluoprem    +  1 
-  `define Aluopdivw     `Aluopremu   +  1 
-  `define Aluopdivuw    `Aluopdivw   +  1 
-  `define Aluopremw     `Aluopdivuw  +  1 
-  `define Aluopremuw    `Aluopremw   +  1 
+  `define AluopDiv      `AluopMulw   +  1 
+  `define AluopDivu     `AluopDiv    +  1 
+  `define AluopRem      `AluopDivu   +  1 
+  `define AluopRemu     `AluopRem    +  1 
+  `define AluopDivw     `AluopRemu   +  1 
+  `define AluopDivuw    `AluopDivw   +  1 
+  `define AluopRemw     `AluopDivuw  +  1 
+  `define AluopRemuw    `AluopRemw   +  1 
 
   /* AluAdd equals to 1<<`AluopAdd, and so on */
   `define AluAdd        `AluopWidth'h000000000001
