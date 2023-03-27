@@ -134,9 +134,9 @@ static inline bool in_pmem(paddr_t addr) {
 }
 
 void pmem_read(long long raddr, long long *rdata) {
-  printf(ANSI_FMT("current_pc: %p\n", ANSI_FG_RED), (void *)top->current_pc);
-  printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
-  printf(ANSI_FMT("raddr: %p\n\n", ANSI_FG_RED), raddr);
+  // printf(ANSI_FMT("current_pc: %p\n", ANSI_FG_RED), (void *)top->current_pc);
+  // printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
+  // printf(ANSI_FMT("raddr: %p\n\n", ANSI_FG_RED), raddr);
   // if(top->rst){
   if(raddr <= 0x40){
     *rdata = 0;
