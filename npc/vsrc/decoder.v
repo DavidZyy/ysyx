@@ -63,6 +63,7 @@ module decoder (
   /* funct7, if it has more cases, use script to generate the codes below */
   wire funct7_0000000 = `FUNCT7_Is(7'b0000000);
   wire funct7_0100000 = `FUNCT7_Is(7'b0100000);
+  // wire funct7_0000001 = `FUNCT7_Is(7'b0000001); // muldiv
 
   /* funct12, use for system instructions? */
   wire funct12_000000000001 = `FUNCT12_Is(12'b000000000001);
@@ -147,7 +148,7 @@ module decoder (
 
 /* RV64M */
   /* M standard extension for integer multiplication and division */
-  // wire 
+  // wire mul  = op_op & funct3_000 & funct7_0000001;
 
 
 /* Immediate */
@@ -234,7 +235,7 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~( ebreak | auipc | jal | jalr | op_store
+  assign inst_not_ipl = ~(ebreak | auipc | jal | jalr | op_store
   | op_load | op_imm | op_op | op_branch | op_imm_32 | op_32);
 
 endmodule
