@@ -134,9 +134,9 @@ static inline bool in_pmem(paddr_t addr) {
 }
 
 void pmem_read(long long raddr, long long *rdata) {
-  printf(ANSI_FMT("current_pc: %p\n", ANSI_FG_RED), (void *)top->current_pc);
-  printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
-  printf(ANSI_FMT("raddr: %p\n\n", ANSI_FG_RED), raddr);
+  // printf(ANSI_FMT("current_pc: %p\n", ANSI_FG_RED), (void *)top->current_pc);
+  // printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
+  // printf(ANSI_FMT("raddr: %p\n\n", ANSI_FG_RED), raddr);
   // if(top->rst){
   if(raddr <= 0x40){
     *rdata = 0;
@@ -155,9 +155,9 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
   assert(in_pmem(waddr));
 
   // assert(!(waddr & 0x7));
-  printf("waddr: %lx\n", waddr);
-  printf("wdata: %lx\n", wdata);
-  printf("wmask: %lx\n", wmask);
+  // printf("waddr: %lx\n", waddr);
+  // printf("wdata: %lx\n", wdata);
+  // printf("wmask: %lx\n", wmask);
   // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变

@@ -63,6 +63,7 @@ module decoder (
   /* funct7, if it has more cases, use script to generate the codes below */
   wire funct7_0000000 = `FUNCT7_Is(7'b0000000);
   wire funct7_0100000 = `FUNCT7_Is(7'b0100000);
+  wire funct7_0000001 = `FUNCT7_Is(7'b0000001); // muldiv
 
   /* funct12, use for system instructions? */
   wire funct12_000000000001 = `FUNCT12_Is(12'b000000000001);
@@ -145,6 +146,23 @@ module decoder (
   wire subw = op_32 & funct3_000 & funct7_0100000;
   wire sraw = op_32 & funct3_101 & funct7_0100000;
 
+/* RV64M */
+  /* M standard extension for integer multiplication and division */
+  wire mul    = op_op & funct3_000 & funct7_0000001;
+  wire mulh   = op_op & funct3_001 & funct7_0000001;
+  wire mulhsu = op_op & funct3_010 & funct7_0000001;
+  wire mulhu  = op_op & funct3_011 & funct7_0000001;
+  wire div    = op_op & funct3_100 & funct7_0000001;
+  wire divu   = op_op & funct3_101 & funct7_0000001;
+  wire rem    = op_op & funct3_110 & funct7_0000001;
+  wire remu   = op_op & funct3_111 & funct7_0000001;
+
+  wire mulw   = op_32 & funct3_000 & funct7_0000001;
+  wire divw   = op_32 & funct3_100 & funct7_0000001;
+  wire divuw  = op_32 & funct3_101 & funct7_0000001;
+  wire remw   = op_32 & funct3_110 & funct7_0000001;
+  wire remuw  = op_32 & funct3_111 & funct7_0000001;
+
 
 /* Immediate */
   /* instruction type, to be the key to choose immediate */
@@ -199,7 +217,19 @@ module decoder (
   assign alu_op[`AluopSrlw]     = srliw | srlw;
   assign alu_op[`AluopSraw]     = sraiw | sraw;
   assign alu_op[`AluopSubw]     = subw;
-
+  assign alu_op[`AluopMul]      = mul;
+  assign alu_op[`AluopMulh  ]   = mulh  ;  
+  assign alu_op[`AluopMulhsu]   = mulhsu;  
+  assign alu_op[`AluopMulhu ]   = mulhu ;  
+  assign alu_op[`AluopMulw  ]   = mulw  ;  
+  assign alu_op[`AluopDiv   ]   = div   ;  
+  assign alu_op[`AluopDivu  ]   = divu  ;  
+  assign alu_op[`AluopRem   ]   = rem   ;  
+  assign alu_op[`AluopRemu  ]   = remu  ;  
+  assign alu_op[`AluopDivw  ]   = divw  ;  
+  assign alu_op[`AluopDivuw ]   = divuw ;  
+  assign alu_op[`AluopRemw  ]   = remw  ;  
+  assign alu_op[`AluopRemuw ]   = remuw ;  
 
   /* a instruction needs immediate has no rs2 */
   assign need_imm = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
@@ -230,7 +260,7 @@ module decoder (
   /* this signal seems silly, but it is useful, 
     according to the principle "implement first, and than 
     perfect it", we just use it. */
-  assign inst_not_ipl = ~( ebreak | auipc | jal | jalr | op_store
+  assign inst_not_ipl = ~(ebreak | auipc | jal | jalr | op_store
   | op_load | op_imm | op_op | op_branch | op_imm_32 | op_32);
 
 endmodule

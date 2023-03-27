@@ -67,50 +67,146 @@
   `define OpIs(opcode)  (`OPCODE(inst) == opcode)
 
   /* alu_op decode information */
-  `define AluopWidth  32
+  // `define AluopWidth  32
+  `define AluopWidth  48
+
+//   `define AluopAdd      0
+//   `define AluopSub      1
+//   `define AluopLt       2 // less than, signed, use for slti
+//   `define AluopLtu      3 // less than, unsigned, use for sltiu
+//   `define AluopAnd      4
+//   `define AluopOr       5
+//   `define AluopXor      6
+//   `define AluopSll      7 // shift left logically
+//   `define AluopSrl      8 // shift right logically
+//   `define AluopSra      9 // shift right arithmetically
+//   `define AluopOutImm   10 // output immediate (operator2) directly
+//   `define AluopEq       11
+//   `define AluopNe       12
+//   `define AluopGe       13
+//   `define AluopGeu      14
+//   `define AluopAddw     15
+//   `define AluopSllw     16
+//   `define AluopSrlw     17
+//   `define AluopSraw     18
+//   `define AluopSubw     19
+//   `define AluopMul      20
+//   `define AluopMulh     21
+//   `define AluopMulhsu   22
+//   `define AluopMulhu    23
+//   `define AluopMulw     24
+//   `define AluopDiv      25
+//   `define AluopDivu     26
+//   `define AluopRem      27
+//   `define AluopRemu     28
+//   `define AluopDivw     29
+//   `define AluopDivuw    30
+//   `define AluopRemw     31
+//   `define Aluopremuw    32
+// 
+//   /* AluAdd equals to 1<<`AluopAdd, and so on */
+//   `define AluAdd        `AluopWidth'h000000000001
+//   `define AluSub        `AluopWidth'h000000000002
+//   `define AluLt         `AluopWidth'h000000000004
+//   `define AluLtu        `AluopWidth'h000000000008
+//   `define AluAnd        `AluopWidth'h000000000010
+//   `define AluOr         `AluopWidth'h000000000020
+//   `define AluXor        `AluopWidth'h000000000040
+//   `define AluSll        `AluopWidth'h000000000080
+//   `define AluSrl        `AluopWidth'h000000000100
+//   `define AluSra        `AluopWidth'h000000000200
+//   `define AluOutImm     `AluopWidth'h000000000400
+//   `define AluEq         `AluopWidth'h000000000800
+//   `define AluNe         `AluopWidth'h000000001000
+//   `define AluGe         `AluopWidth'h000000002000
+//   `define AluGeu        `AluopWidth'h000000004000
+//   `define AluAddw       `AluopWidth'h000000008000
+//   `define AluSllw       `AluopWidth'h000000010000
+//   `define AluSrlw       `AluopWidth'h000000020000
+//   `define AluSraw       `AluopWidth'h000000040000
+//   `define AluSubw       `AluopWidth'h000000080000
+//   `define AluMul        `AluopWidth'h000000100000
+//   `define AluMulh       `AluopWidth'h000000200000
+//   `define AluMulhsu     `AluopWidth'h000000400000
+//   `define AluMulhu      `AluopWidth'h000000800000
+//   `define AluMulw       `AluopWidth'h000001000000   
+//   `define Aludiv        `AluopWidth'h000002000000
+//   `define Aludivu       `AluopWidth'h000004000000
+//   `define Alurem        `AluopWidth'h000008000000
+//   `define Aluremu       `AluopWidth'h000010000000
+//   `define Aludivw       `AluopWidth'h000020000000
+//   `define Aludivuw      `AluopWidth'h000040000000
+//   `define Aluremw       `AluopWidth'h000080000000
+//   `define Aluremuw      `AluopWidth'h000100000000
 
   `define AluopAdd      0
-  `define AluopSub      1
-  `define AluopLt       2 // less than, signed, use for slti
-  `define AluopLtu      3 // less than, unsigned, use for sltiu
-  `define AluopAnd      4
-  `define AluopOr       5
-  `define AluopXor      6
-  `define AluopSll      7 // shift left logically
-  `define AluopSrl      8 // shift right logically
-  `define AluopSra      9 // shift right arithmetically
-  `define AluopOutImm   10 // output immediate (operator2) directly
-  `define AluopEq       11
-  `define AluopNe       12
-  `define AluopGe       13
-  `define AluopGeu      14
-  `define AluopAddw     15
-  `define AluopSllw     16
-  `define AluopSrlw     17
-  `define AluopSraw     18
-  `define AluopSubw     19
+  `define AluopSub      `AluopAdd    +  1
+  `define AluopLt       `AluopSub    +  1  // less than, signed, use for slti
+  `define AluopLtu      `AluopLt     +  1  // less than, unsigned, use for sltiu
+  `define AluopAnd      `AluopLtu    +  1
+  `define AluopOr       `AluopAnd    +  1
+  `define AluopXor      `AluopOr     +  1
+  `define AluopSll      `AluopXor    +  1  // shift left logically
+  `define AluopSrl      `AluopSll    +  1  // shift right logically
+  `define AluopSra      `AluopSrl    +  1  // shift right arithmetically
+  `define AluopOutImm   `AluopSra    +  1  // output immediate (operator2) directly
+  `define AluopEq       `AluopOutImm +  1 
+  `define AluopNe       `AluopEq     +  1 
+  `define AluopGe       `AluopNe     +  1 
+  `define AluopGeu      `AluopGe     +  1 
+  `define AluopAddw     `AluopGeu    +  1 
+  `define AluopSllw     `AluopAddw   +  1 
+  `define AluopSrlw     `AluopSllw   +  1 
+  `define AluopSraw     `AluopSrlw   +  1 
+  `define AluopSubw     `AluopSraw   +  1 
+  `define AluopMul      `AluopSubw   +  1 
+  `define AluopMulh     `AluopMul    +  1 
+  `define AluopMulhsu   `AluopMulh   +  1 
+  `define AluopMulhu    `AluopMulhsu +  1 
+  `define AluopMulw     `AluopMulhu  +  1 
+  `define AluopDiv      `AluopMulw   +  1 
+  `define AluopDivu     `AluopDiv    +  1 
+  `define AluopRem      `AluopDivu   +  1 
+  `define AluopRemu     `AluopRem    +  1 
+  `define AluopDivw     `AluopRemu   +  1 
+  `define AluopDivuw    `AluopDivw   +  1 
+  `define AluopRemw     `AluopDivuw  +  1 
+  `define AluopRemuw    `AluopRemw   +  1 
 
   /* AluAdd equals to 1<<`AluopAdd, and so on */
-  `define AluAdd        `AluopWidth'h00000001
-  `define AluSub        `AluopWidth'h00000002
-  `define AluLt         `AluopWidth'h00000004
-  `define AluLtu        `AluopWidth'h00000008
-  `define AluAnd        `AluopWidth'h00000010
-  `define AluOr         `AluopWidth'h00000020
-  `define AluXor        `AluopWidth'h00000040
-  `define AluSll        `AluopWidth'h00000080
-  `define AluSrl        `AluopWidth'h00000100
-  `define AluSra        `AluopWidth'h00000200
-  `define AluOutImm     `AluopWidth'h00000400
-  `define AluEq         `AluopWidth'h00000800
-  `define AluNe         `AluopWidth'h00001000
-  `define AluGe         `AluopWidth'h00002000
-  `define AluGeu        `AluopWidth'h00004000
-  `define AluAddw       `AluopWidth'h00008000
-  `define AluSllw       `AluopWidth'h00010000
-  `define AluSrlw       `AluopWidth'h00020000
-  `define AluSraw       `AluopWidth'h00040000
-  `define AluSubw       `AluopWidth'h00080000
+  `define AluAdd        `AluopWidth'h000000000001
+  `define AluSub        ( `AluAdd     << 1)
+  `define AluLt         ( `AluSub     << 1)
+  `define AluLtu        ( `AluLt      << 1)
+  `define AluAnd        ( `AluLtu     << 1)
+  `define AluOr         ( `AluAnd     << 1)
+  `define AluXor        ( `AluOr      << 1)
+  `define AluSll        ( `AluXor     << 1)
+  `define AluSrl        ( `AluSll     << 1)
+  `define AluSra        ( `AluSrl     << 1)
+  `define AluOutImm     ( `AluSra     << 1)
+  `define AluEq         ( `AluOutImm  << 1)
+  `define AluNe         ( `AluEq      << 1)
+  `define AluGe         ( `AluNe      << 1)
+  `define AluGeu        ( `AluGe      << 1)
+  `define AluAddw       ( `AluGeu     << 1)
+  `define AluSllw       ( `AluAddw    << 1)
+  `define AluSrlw       ( `AluSllw    << 1)
+  `define AluSraw       ( `AluSrlw    << 1)
+  `define AluSubw       ( `AluSraw    << 1)
+  `define AluMul        ( `AluSubw    << 1)
+  `define AluMulh       ( `AluMul     << 1)
+  `define AluMulhsu     ( `AluMulh    << 1)
+  `define AluMulhu      ( `AluMulhsu  << 1)
+  `define AluMulw       ( `AluMulhu   << 1)
+  `define Aludiv        ( `AluMulw    << 1)
+  `define Aludivu       ( `Aludiv     << 1)
+  `define Alurem        ( `Aludivu    << 1)
+  `define Aluremu       ( `Alurem     << 1)
+  `define Aludivw       ( `Aluremu    << 1)
+  `define Aludivuw      ( `Aludivw    << 1)
+  `define Aluremw       ( `Aludivuw   << 1)
+  `define Aluremuw      ( `Aluremw    << 1) 
 
   `define ShtWdt  6 // shift fileds width, for slli, srli, srai ...
   `define ShtWdtW 5 // for slliw, srliw, sraiw ...
