@@ -19,6 +19,7 @@
     "utils.h": "c",
     "paddr.h": "c",
     "dlfcn.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "sdl.h": "c"
   }
 }
