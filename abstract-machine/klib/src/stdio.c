@@ -13,6 +13,7 @@ int printf(const char *fmt, ...) {
 
   va_list args;
   va_start(args, fmt);
+  /* not right pass args */
   int char_cnt = sprintf(buffer, fmt, args);
   if(char_cnt > max_char_cnt) {
     panic("printf out of bound!");
@@ -39,37 +40,36 @@ int sprintf(char *out, const char *fmt, ...) {
   while(*fmt != '\0'){
     if(*fmt == '%'){
       fmt++;
-      switch (*fmt)
-      {
-      case 's':
-        str = va_arg(ap, char*);
-        strcpy(out, str);
-        out += strlen(str);
-        break;
-      
-      case 'd':
-        d = va_arg(ap, int);
-        /* change int to char* */
-        char temp_buf[32];
-        p = 0;
-        while (d)
-        {
-          int rem = d%10;
-          d = d/10;
-          char ch = (char)((int)'0' + rem);
-          temp_buf[p++] = ch;
-        }
-        p--;
-        while(p >= 0){
-          *out = temp_buf[p];
-          out++;
-          p--;
-        }
-        break;
+      switch (*fmt) {
+       case 's':
+         str = va_arg(ap, char*);
+         strcpy(out, str);
+         out += strlen(str);
+         break;
+       
+       case 'd':
+         d = va_arg(ap, int);
+         /* change int to char* */
+         char temp_buf[32];
+         p = 0;
+         while (d)
+         {
+           int rem = d%10;
+           d = d/10;
+           char ch = (char)((int)'0' + rem);
+           temp_buf[p++] = ch;
+         }
+         p--;
+         while(p >= 0){
+           *out = temp_buf[p];
+           out++;
+           p--;
+         }
+         break;
 
-      default:
-        panic("Not implemented");
-        break;
+       default:
+         panic("Not implemented");
+         break;
       }
     }
     else{
