@@ -139,7 +139,7 @@ endif
 ### Rule (compile): a single `.c` -> `.o` (gcc)
 $(DST_DIR)/%.i: %.c
 	@mkdir -p $(dir $@) && echo + PRE $<
-	@$(CC) $(INCFLAGS) -E -P -o $@ $(realpath $<)
+	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
 
 $(DST_DIR)/%.o: %.c
 	@mkdir -p $(dir $@) && echo + CC $<
@@ -168,7 +168,7 @@ $(LIBS): %:
 	$(MAKE) -C $(AM_HOME)/$* archive
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `IMAGE.elf`, the final ELF binary to be packed into image (ld)
-$(IMAGE).elf: $(OBJS) am $(LIBS)
+$(IMAGE).elf: $(OBJS) am $(LIBS) $(PRES)
 	@echo + LD "->" $(IMAGE_REL).elf
 	@$(LD) $(LDFLAGS) -o $(IMAGE).elf --start-group $(LINKAGE) --end-group
 
