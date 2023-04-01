@@ -9,6 +9,8 @@
 /* */
 int printf(const char *fmt, ...) {
   char buffer[max_char_cnt];
+  memset(buffer, 0, max_char_cnt);
+
   va_list args;
   va_start(args, fmt);
   int char_cnt = sprintf(buffer, fmt, args);
@@ -17,7 +19,9 @@ int printf(const char *fmt, ...) {
   }
   va_end(args);
 
-  for(int i = 0; i < max_char_cnt; i++)
+  // for(int i = 0; i < max_char_cnt; i++)
+    // putch(buffer[i]);
+  for(int i = 0; buffer[i] != '\0'; i++)
     putch(buffer[i]);
 
   return 0;
