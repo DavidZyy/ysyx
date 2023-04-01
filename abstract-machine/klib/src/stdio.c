@@ -19,8 +19,6 @@ int printf(const char *fmt, ...) {
   }
   va_end(args);
 
-  // for(int i = 0; i < max_char_cnt; i++)
-    // putch(buffer[i]);
   for(int i = 0; buffer[i] != '\0'; i++)
     putch(buffer[i]);
 
