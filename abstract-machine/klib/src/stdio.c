@@ -5,8 +5,22 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
+#define max_char_cnt  256
+/* */
 int printf(const char *fmt, ...) {
-  panic("Not implemented");
+  char buffer[max_char_cnt];
+  va_list args;
+  va_start(args, fmt);
+  int char_cnt = sprintf(buffer, fmt, args);
+  if(char_cnt > max_char_cnt) {
+    panic("printf out of bound!");
+  }
+  va_end(args);
+
+  for(int i = 0; i < max_char_cnt; i++)
+    putch(buffer[i]);
+
+  return 0;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
@@ -14,6 +28,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 }
 
 int sprintf(char *out, const char *fmt, ...) {
+  char *origin_out = out;
   va_list ap;
   va_start(ap, fmt);
   int d, p;
@@ -64,7 +79,8 @@ int sprintf(char *out, const char *fmt, ...) {
   *out = '\0';
 
   va_end(ap);
-  return 0;
+  /* the chars copyed */
+  return out - origin_out;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
