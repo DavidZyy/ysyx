@@ -20,6 +20,10 @@
     "paddr.h": "c",
     "dlfcn.h": "c",
     "stdio.h": "c",
-    "sdl.h": "c"
+    "sdl.h": "c",
+    "map.h": "c",
+    "string.h": "c",
+    "inttypes.h": "c",
+    "stdbool.h": "c"
   }
 }
