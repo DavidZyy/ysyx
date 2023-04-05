@@ -68,6 +68,8 @@ $(OBJ_DIR)/%.o: %.cc
 
 app: $(BINARY)
 
+# $(error $(BINARY))
+
 $(BINARY): $(OBJS) $(ARCHIVES) $(PRES)
 # $(BINARY): $(OBJS) $(ARCHIVES)
 	@echo + LD $@
