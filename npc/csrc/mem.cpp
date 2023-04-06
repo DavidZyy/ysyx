@@ -4,9 +4,9 @@
 #include "utils.h"
 
 /* DPI-C function */
-#include "svdpi.h"
-#include "Vtop__Dpi.h"
-// #include "verilated_dpi.h"
+// #include "svdpi.h"
+// #include "Vtop__Dpi.h"
+#include "verilated_dpi.h"
 
 uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
