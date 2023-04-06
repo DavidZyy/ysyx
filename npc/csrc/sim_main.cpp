@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 
+extern void pmem_write(long long waddr, long long wdata, char wmask);
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
 static Vtop* top;
