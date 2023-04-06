@@ -1,3 +1,4 @@
+/* move instructions to rom, this module act like ram */
 `include "./include/defines.v"
 
 import "DPI-C" function void pmem_read(
@@ -7,7 +8,7 @@ import "DPI-C" function void pmem_write(
 
 module memory (
     input   clk,
-    input [`Vec(`RegWidth)] pc,
+    // input [`Vec(`RegWidth)] pc,
     input [`Vec(`RegWidth)] mem_raddr,
     input [`Vec(`AddrWidth)] waddr,
     input [`Vec(`RegWidth)] mem_wdata,
@@ -16,18 +17,18 @@ module memory (
     input mem_ren,
     input [`Vec(`WdtTypeCnt)] wdt_op,
 
-    output [`Vec(`InstWidth)] inst,
+    // output [`Vec(`InstWidth)] inst,
     output [`Vec(`ImmWidth)] mem_rdata
 );
-    localparam mask = 64'h7;
-
-    wire [`Vec(`RegWidth)] rinst;
-    assign inst = (pc & mask) == 0 ? rinst[`Vec(`InstWidth)] : rinst[63:32];
-
-    /* We should read instructions immediately when pc changes. */
-    always @(*) begin
-      pmem_read(pc, rinst);
-    end
+//     localparam mask = 64'h7;
+// 
+//     wire [`Vec(`RegWidth)] rinst;
+//     assign inst = (pc & mask) == 0 ? rinst[`Vec(`InstWidth)] : rinst[63:32];
+// 
+//     /* We should read instructions immediately when pc changes. */
+//     always @(*) begin
+//       pmem_read(pc, rinst);
+//     end
 
     always @(posedge clk) begin
       if(mem_ren)

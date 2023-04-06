@@ -41,6 +41,7 @@ INCFLAGS = $(addprefix -I, $(INC_PATH))
 CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
+CPP_FILE = $(abspath ./csrc/dut.cpp) $(abspath ./csrc/mem.cpp)
 all:
 	@echo "Write this Makefile by your self."
 
@@ -55,7 +56,7 @@ sim:
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
-	$(abspath ./csrc/dut.cpp)
+	$(CPP_FILE)
 	obj_dir/Vtop $(IMG) $(SO)
 	# gtkwave dump.vcd
 	# gtkwave dump1.vcd

@@ -22,10 +22,16 @@ wire [`Vec(`AddrWidth)] waddr = alu_result;
 wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
 wire [`Vec(`RegWidth)] mem_rdata;
 
+rom inst_rom(
+  .pc (current_pc), 
+
+  .inst (inst)
+);
+
 memory u_memory(
 	//ports
 	.clk  		  ( clk  		),
-	.pc   		  ( current_pc ),
+	// .pc   		  ( current_pc ),
   .mem_raddr  ( alu_result),
   .waddr      ( waddr ),
   .mem_wdata  ( mem_wdata),
@@ -34,7 +40,7 @@ memory u_memory(
   .mem_ren    ( is_load),
   .wdt_op     ( wdt_op),
 
-	.inst       ( inst 		),
+	// .inst       ( inst 		),
   .mem_rdata  ( mem_rdata)
 );
 
