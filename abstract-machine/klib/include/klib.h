@@ -32,6 +32,19 @@ int    abs       (int x);
 int    atoi      (const char *nptr);
 
 // stdio.h
+// #define    printf         printf_
+// #define    sprintf        sprintf_
+// #define    snprintf       snprintf_ 
+// #define    vsprintf       vsprintf_
+// #define    vsnprintf      vsnprintf_
+
+
+// int    printf_   (const char *format, ...);
+// int    sprintf_  (char *str, const char *format, ...);
+// int    snprintf_ (char *str, size_t size, const char *format, ...);
+// int    vsprintf_ (char *str, const char *format, va_list ap);
+// int    vsnprintf_(char *str, size_t size, const char *format, va_list ap);
+
 int    printf    (const char *format, ...);
 int    sprintf   (char *str, const char *format, ...);
 int    snprintf  (char *str, size_t size, const char *format, ...);
