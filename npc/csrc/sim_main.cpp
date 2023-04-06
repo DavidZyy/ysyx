@@ -3,9 +3,9 @@
 #include "../obj_dir/Vtop.h"
 
 /* DPI-C function */
-// #include "svdpi.h"
-// #include "Vtop__Dpi.h"
-// #include "verilated_dpi.h"
+#include "svdpi.h"
+#include "Vtop__Dpi.h"
+#include "verilated_dpi.h"
 
 // my header
 #include "utils.h"
