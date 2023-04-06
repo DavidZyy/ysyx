@@ -121,9 +121,6 @@ int load_init_img(){
   return 16;
 }
 
-
-
-
 uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
