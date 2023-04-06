@@ -1,5 +1,7 @@
 #include <stdint.h>
-#include <utils.h>
+#include <assert.h>
+
+#include "utils.h"
 
 uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 

@@ -16,7 +16,6 @@
 // #include <iostream>
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
