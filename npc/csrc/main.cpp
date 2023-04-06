@@ -2,6 +2,8 @@
 #include <Vtop.h>
 #include <unistd.h>
 
+#include "mem.h"
+
 static TOP_NAME dut;
 
 void nvboard_bind_all_pins(Vtop* top);
