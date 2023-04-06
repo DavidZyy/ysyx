@@ -8,7 +8,7 @@
 module rom (
     input [`Vec(`RegWidth)] pc,
 
-    output [`Vec(`InstWidth)] inst,
+    output [`Vec(`InstWidth)] inst
 );
     
     localparam mask = 64'h7;
