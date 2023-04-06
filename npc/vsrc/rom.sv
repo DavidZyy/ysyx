@@ -2,8 +2,8 @@
 
 `include "./include/defines.v"
 
-import "DPI-C" function void pmem_read(
-  input longint mem_raddr, output longint rinst);
+// import "DPI-C" function void pmem_read(
+  // input longint mem_raddr, output longint rinst);
 
 module rom (
     input      pc,
