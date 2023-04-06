@@ -24,7 +24,7 @@ static Vtop* top;
 
 CPU_state cpu;
 // uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
-extern pmem;
+extern uint8_t pmem[CONFIG_MSIZE];
 
 void step_and_dump_wave(){
   top->eval();
