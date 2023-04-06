@@ -7,3 +7,5 @@
 // void pmem_write(long long waddr, long long wdata, char wmask);
 
 extern uint8_t pmem[CONFIG_MSIZE];
+int load_init_img();
+long load_img(const char *img_file);

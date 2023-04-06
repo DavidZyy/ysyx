@@ -90,36 +90,6 @@ void print_arg(int argc, char *argv[]){
   }
 }
 
-static long load_img(const char *img_file) {
-  memset(pmem, 1, sizeof(pmem));
-  assert(img_file != NULL);
-
-  FILE *fp = fopen(img_file, "rb");
-
-  assert(fp != NULL);
-
-  fseek(fp, 0, SEEK_END);
-  long size = ftell(fp);
-
-  fseek(fp, 0, SEEK_SET);
-  int ret = fread(pmem, size, 1, fp);
-  assert(ret == 1);
-
-  fclose(fp);
-  return size;
-}
-
-int load_init_img(){
-  *(uint32_t*)(&pmem[0]) = 0x00009117;
-  *(uint32_t*)(&pmem[4]) = 0x00009117;
-  *(uint32_t*)(&pmem[8]) = 0x00009117;
-  *(uint32_t*)(&pmem[12]) = ebreak;
-  *(uint32_t*)(&pmem[16]) = 0x00000000;
-  // *(uint32_t*)(&pmem[12]) = 0x00008117;
-  // *(uint32_t*)(&pmem[16]) = ebreak;
-  return 16;
-}
-
 uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
