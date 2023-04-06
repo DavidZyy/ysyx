@@ -6,7 +6,7 @@
   // input longint mem_raddr, output longint rinst);
 
 module rom (
-    input      pc,
+    input [`Vec(`RegWidth)] pc,
 
     output [`Vec(`InstWidth)] inst,
 );
