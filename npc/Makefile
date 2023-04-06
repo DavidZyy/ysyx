@@ -55,7 +55,8 @@ sim:
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
-	$(abspath ./csrc/dut.cpp)
+	$(abspath ./csrc/dut.cpp) \
+	$(abspath ./csrc/mem.cpp)
 	obj_dir/Vtop $(IMG) $(SO)
 	# gtkwave dump.vcd
 	# gtkwave dump1.vcd
