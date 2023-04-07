@@ -31,7 +31,7 @@ rom inst_rom (
 );
 
 IF_ID u_IF_ID (
-  
+
 );
 
 /* ram */
