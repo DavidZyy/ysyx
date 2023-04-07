@@ -3,8 +3,8 @@ module top(
   input clk,
   input rst,
 
-  // output [`Vec(`ImmWidth)] current_pc,
-  // output [`Vec(`ImmWidth)] next_pc
+  output [`Vec(`ImmWidth)] current_pc,
+  output [`Vec(`ImmWidth)] next_pc,
   output [7:0]	seg0,
   output [7:0]	seg1,
   output [7:0]	seg2,
@@ -15,8 +15,8 @@ module top(
   output [7:0]	seg7
 );
 
-wire [`Vec(`ImmWidth)]	current_pc;
-wire [`Vec(`ImmWidth)]	next_pc;
+// wire [`Vec(`ImmWidth)]	current_pc;
+// wire [`Vec(`ImmWidth)]	next_pc;
 wire [`Vec(`InstWidth)]	inst;
 
 cpu u_cpu(
