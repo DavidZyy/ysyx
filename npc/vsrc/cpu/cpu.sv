@@ -1,8 +1,8 @@
 /* code style: the name of variable use snake style, 
   the name of macro use camel style. */
 
-// import "DPI-C" function void exit_code();
-// import "DPI-C" function void not_ipl_exception();
+import "DPI-C" function void exit_code();
+import "DPI-C" function void not_ipl_exception();
 
 `include "./include/defines.v"
 
@@ -117,8 +117,8 @@ decoder u_decoder(
 always @(posedge clk) begin
 // always @(*) begin
   if (inst_not_ipl) begin
-    // not_ipl_exception();
-    $display("instructions not implemented!");
+    not_ipl_exception();
+    // $display("instructions not implemented!");
     ;
   end
   else begin
@@ -129,8 +129,8 @@ end
 always @(posedge clk) begin
 // always @(*) begin
   if (is_ebreak) begin
-    // exit_code();
-    $display("exit code");
+    exit_code();
+    // $display("exit code");
     // assign rd = 2;
     // assign reg_wdata = 64'h80009008;
   end
