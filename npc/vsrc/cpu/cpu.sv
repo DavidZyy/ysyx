@@ -36,7 +36,7 @@ wire [`Vec(`InstWidth)]	IF_ID_inst;
 
 IF_ID u_IF_ID (
   .clk (clk),
-  .rs1 (rst),
+  .rst (rst),
   .current_pc (current_pc),
   .inst (inst),
 
