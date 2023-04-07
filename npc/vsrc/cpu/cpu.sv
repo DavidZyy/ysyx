@@ -159,7 +159,8 @@ end
 // end
 
 /* execute stage */
-wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : (is_load ? extended_data: alu_result);
+// wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : (is_load ? extended_data: alu_result);
+wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (IF_ID_pc + 4) : (is_load ? extended_data: alu_result);
 // wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (cur_inst_pc + 4) : alu_result;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
