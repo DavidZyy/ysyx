@@ -42,7 +42,7 @@ CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
 # cpp file for nvboard and simulation
-COMMON_CPP_FILE = $(abspath ./csrc/mem.cpp) $(abspath ./csrc/dpi_c.cpp)
+COMMON_CPP_FILE = $(abspath ./csrc/mem.cpp)
 # cpp file for only simulation
 SIM_CPP_FILE = $(abspath ./csrc/dut.cpp)
 
