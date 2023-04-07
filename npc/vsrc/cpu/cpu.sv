@@ -30,9 +30,19 @@ rom inst_rom (
   .inst (inst)
 );
 
-// IF_ID u_IF_ID (
-// 
-// );
+
+wire [`Vec(`ImmWidth)] IF_ID_pc,
+wire [`Vec(`InstWidth)]	IF_ID_inst
+
+IF_ID u_IF_ID (
+  .clk (clk),
+  .rs1 (rst),
+  .current_pc (current_pc),
+  .inst (inst),
+
+  .IF_ID_pc (IF_ID_pc),
+  .IF_ID_inst (IF_ID_inst)
+);
 
 /* ram */
 memory u_memory(
@@ -87,7 +97,7 @@ wire is_unsigned;
 
 decoder u_decoder(
 	//ports
-	.inst     		    ( inst     		),
+	.inst     		    ( IF_ID_inst ),
 
 	.rd       		    ( rd       		),
 	.rs1      		    ( rs1      		),
