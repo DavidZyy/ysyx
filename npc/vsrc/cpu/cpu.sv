@@ -24,10 +24,14 @@ wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
 wire [`Vec(`RegWidth)] mem_rdata;
 
 /* rom */
-rom inst_rom(
-  .pc (current_pc), 
+rom inst_rom (
+  .pc (current_pc),
 
   .inst (inst)
+);
+
+IF_ID u_IF_ID (
+  
 );
 
 /* ram */
