@@ -3,8 +3,8 @@ module top(
   input clk,
   input rst,
 
-  // output [`Vec(`ImmWidth)] current_pc,
-  // output [`Vec(`ImmWidth)] next_pc
+  output [`Vec(`ImmWidth)] current_pc,
+  output [`Vec(`ImmWidth)] next_pc
   output [7:0]	seg0,
   output [7:0]	seg1,
   output [7:0]	seg2,
