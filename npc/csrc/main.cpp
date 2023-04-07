@@ -20,7 +20,8 @@ static void reset(int n) {
 }
 
 int main(int argc, char *argv[]) {
-  load_img(argv[1]);
+  // load_img(argv[1]);
+  load_init_img();
 
   nvboard_bind_all_pins(&dut);
   nvboard_init();
