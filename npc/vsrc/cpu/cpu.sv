@@ -139,9 +139,9 @@ always @(posedge clk) begin
   end
 end
 
-always @(*) begin
-    $display("pc: %x inst: %x", current_pc, inst);
-end
+// always @(*) begin
+    // $display("pc: %x inst: %x", current_pc, inst);
+// end
 
 /* execute stage */
 wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : (is_load ? extended_data: alu_result);
