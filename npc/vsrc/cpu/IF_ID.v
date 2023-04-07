@@ -15,7 +15,7 @@ module IF_ID (
   .WIDTH     (`ImmWidth),
   .RESET_VAL (0)
  )
- Pc_Reg(
+ Pc_Reg_pc(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (current_pc),
@@ -29,7 +29,7 @@ module IF_ID (
   .WIDTH     (`InstWidth),
   .RESET_VAL (0)
  )
- Pc_Reg(
+ Pc_Reg_inst(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (inst),
