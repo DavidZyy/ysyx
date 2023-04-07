@@ -30,9 +30,9 @@ rom inst_rom (
   .inst (inst)
 );
 
-IF_ID u_IF_ID (
-
-);
+// IF_ID u_IF_ID (
+// 
+// );
 
 /* ram */
 memory u_memory(
