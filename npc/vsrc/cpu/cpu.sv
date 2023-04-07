@@ -32,6 +32,7 @@ rom inst_rom (
 
 
 wire [`Vec(`ImmWidth)] IF_ID_pc;
+/* verilator lint_off UNUSEDSIGNAL */
 wire [`Vec(`InstWidth)]	IF_ID_inst;
 
 IF_ID u_IF_ID (
