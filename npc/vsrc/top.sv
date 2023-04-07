@@ -1,8 +1,8 @@
 /* code style: the name of variable use snake style, 
   the name of macro use camel style. */
 
-import "DPI-C" function void exit_code();
-import "DPI-C" function void not_ipl_exception();
+// import "DPI-C" function void exit_code();
+// import "DPI-C" function void not_ipl_exception();
 
 `include "./include/defines.v"
 
@@ -22,12 +22,14 @@ wire [`Vec(`AddrWidth)] waddr = alu_result;
 wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
 wire [`Vec(`RegWidth)] mem_rdata;
 
+/* rom */
 rom inst_rom(
   .pc (current_pc), 
 
   .inst (inst)
 );
 
+/* ram */
 memory u_memory(
 	//ports
 	.clk  		  ( clk  		),
@@ -114,7 +116,8 @@ decoder u_decoder(
 always @(posedge clk) begin
 // always @(*) begin
   if (inst_not_ipl) begin
-    not_ipl_exception();
+    // not_ipl_exception();
+    $display("instructions not implemented!");
     ;
   end
   else begin
@@ -125,13 +128,18 @@ end
 always @(posedge clk) begin
 // always @(*) begin
   if (is_ebreak) begin
-    exit_code();
+    // exit_code();
+    $display("exit code");
     // assign rd = 2;
     // assign reg_wdata = 64'h80009008;
   end
   else begin
     ;
   end
+end
+
+always @(*) begin
+    $display("inst: %x", inst);
 end
 
 /* execute stage */

@@ -20,18 +20,19 @@ static void reset(int n) {
 }
 
 int main(int argc, char *argv[]) {
-  // load_img(argv[1]);
-  load_init_img();
+  printf("%s\n", argv[1]);
+  load_img(argv[1]);
+  // load_init_img();
 
   nvboard_bind_all_pins(&dut);
   nvboard_init();
 
-  reset(10);
+  reset(2);
 
   while(1) {
     nvboard_update();
     /* to have time see the display on seg */
-    sleep(100);
+    sleep(1);
     single_cycle();
   }
 }
