@@ -15,8 +15,8 @@ module top(
   output [7:0]	seg7
 );
 
-wire [`Vec(`ImmWidth)]	current_pc;
-wire [`Vec(`ImmWidth)]	next_pc;
+// wire [`Vec(`ImmWidth)]	current_pc;
+// wire [`Vec(`ImmWidth)]	next_pc;
 wire [`Vec(`InstWidth)]	inst;
 
 cpu u_cpu(
