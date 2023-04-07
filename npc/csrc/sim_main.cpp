@@ -19,7 +19,7 @@
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
-static Vtop* top;
+Vtop* top;
 
 CPU_state cpu;
 // uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
