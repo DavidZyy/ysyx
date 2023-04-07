@@ -12,6 +12,13 @@
 #include "Vtop__Dpi.h"
 #include "verilated_dpi.h"
 
+#include "mem.h"
+
+#include <stdint.h>
+#include <assert.h>
+
+#include "utils.h"
+
 /* ebreak means success! */
 int terminal = 0;
 void exit_code(){
