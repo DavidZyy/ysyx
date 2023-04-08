@@ -1,5 +1,6 @@
 // also use DPI-C machenism, may be use ip-core when vivado?
 
+// NOTE !!, the read addr is aligned o 8 bit, do not forget this point.
 `include "./include/defines.v"
 
 module rom (
