@@ -45,7 +45,6 @@ assign din_inst = flush ? inst : `NOP;
 IF_ID u_IF_ID (
   .clk (clk),
   .rst (rst),
-  .flush (flush),
   .current_pc (current_pc),
   .din_inst (din_inst),
 
