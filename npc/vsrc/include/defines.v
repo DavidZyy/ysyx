@@ -4,6 +4,7 @@
 
 `define InstWidth   32
 `define PcRst 64'h80000000
+// `define PcRst 64'h80000010
 
 
   `define AddrWidth       64
