@@ -34,7 +34,8 @@ module memory (
     always @(*) begin
       if(mem_ren)
         pmem_read(mem_raddr, width_64_out);
-      // else
+      else
+      ;
         // mem_rdata <= 0;
     end
 
