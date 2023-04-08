@@ -38,7 +38,7 @@ rom inst_rom (
 // wire [`Vec(`ImmWidth)] IF_ID_pc;
 wire [`Vec(`InstWidth)]	IF_ID_inst;
 
-assign flush = is_jal ? 1 : 0;
+assign flush = (is_jal | is_jalr)? 1 : 0;
 
 IF_ID u_IF_ID (
   .clk (clk),
