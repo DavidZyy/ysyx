@@ -139,8 +139,7 @@ int main(int argc, char *argv[]) {
     single_cycle(0);
     get_cpu();
     
-    if(i != 0)
-      difftest_step();
+    difftest_step();
     // dump_gpr();
     if(terminal)
       break;

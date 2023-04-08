@@ -24,7 +24,6 @@
     "map.h": "c",
     "string.h": "c",
     "inttypes.h": "c",
-    "stdbool.h": "c",
-    "debug.h": "c"
+    "stdbool.h": "c"
   }
 }
