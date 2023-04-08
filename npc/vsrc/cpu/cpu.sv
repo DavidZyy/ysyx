@@ -37,15 +37,17 @@ rom inst_rom (
 /* verilator lint_off UNUSEDSIGNAL */
 // wire [`Vec(`ImmWidth)] IF_ID_pc;
 wire [`Vec(`InstWidth)]	IF_ID_inst;
+wire [`Vec(`InstWidth)]	din_inst; 
 
 assign flush = (is_jal | is_jalr)? 1 : 0;
+assign din_inst = flush ? inst : `NOP;
 
 IF_ID u_IF_ID (
   .clk (clk),
   .rst (rst),
   .flush (flush),
   .current_pc (current_pc),
-  .inst (inst),
+  .inst (din_inst),
 
   .IF_ID_pc (IF_ID_pc),
   .IF_ID_inst (IF_ID_inst)

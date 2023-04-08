@@ -4,15 +4,11 @@ module IF_ID (
     input clk,
     input rst,
     input [`Vec(`ImmWidth)] current_pc,
-    input [`Vec(`InstWidth)]	inst,
-    input flush,
+    input [`Vec(`InstWidth)]	din_inst,
 
     output [`Vec(`ImmWidth)] IF_ID_pc,
     output [`Vec(`InstWidth)]	IF_ID_inst
 );
-
-
-wire [`Vec(`InstWidth)]	din_inst = flush ? `NOP : inst;
 
  Reg 
  #(
