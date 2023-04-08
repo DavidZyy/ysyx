@@ -205,8 +205,8 @@ Alu u_Alu(
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
-// assign next_pc_temp = (is_branch && (alu_result == 1)) ? (current_pc + imm) : (current_pc + 4);
-assign next_pc_temp = (is_branch && (alu_result == 1)) ? (IF_ID_pc + imm) : (IF_ID_pc + 4);
+assign next_pc_temp = (is_branch && (alu_result == 1)) ? (current_pc + imm) : (current_pc + 4);
+// assign next_pc_temp = (is_branch && (alu_result == 1)) ? (IF_ID_pc + imm) : (IF_ID_pc + 4);
 assign next_pc = (is_jal | is_jalr) ? (alu_result & ~1) : next_pc_temp;
 
 /* current instruction pc */
