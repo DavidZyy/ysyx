@@ -133,13 +133,18 @@ int main(int argc, char *argv[]) {
 
   uint64_t i;
   uint64_t times = -1;
+
+  // int nemu_not_run = 1;
+
   for(i = 0; i < times; i++){
-    single_cycle(0);
+    single_cycle(0); 
     get_cpu();
+    if(top->flush) {
+      /* run nop inst */
+      single_cycle();
+    } 
     
-    // if(i != 0 && !top->flush)
-    if(i != 0)
-      difftest_step();
+    if(i) difftest_step();
     // dump_gpr();
     if(terminal)
       break;
