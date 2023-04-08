@@ -112,7 +112,7 @@ void get_cpu() {
     cpu.gpr[i] = cpu_gpr[i];
   }
   // cpu.pc = top->current_pc;
-  cpu.pc = top->IF_DI_pc;
+  cpu.pc = top->IF_ID_pc;
 }
 // 当nemu的pc和npc的current_pc为xxxx时，说明这个地址的指令还没有执行。
 /**
