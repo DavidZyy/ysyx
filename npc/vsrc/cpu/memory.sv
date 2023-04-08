@@ -35,8 +35,7 @@ module memory (
       if(mem_ren)
         pmem_read(mem_raddr, width_64_out);
       else
-      ;
-        // mem_rdata <= 0;
+        mem_rdata <= 0;
     end
 
     wire [7:0] wmask;
