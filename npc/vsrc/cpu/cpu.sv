@@ -40,7 +40,7 @@ wire [`Vec(`InstWidth)]	IF_ID_inst;
 wire [`Vec(`InstWidth)]	din_inst; 
 
 assign flush = (is_jal | is_jalr)? 1 : 0;
-assign din_inst = flush ? inst : `NOP;
+assign din_inst = flush ? `NOP : inst;
 
 IF_ID u_IF_ID (
   .clk (clk),
