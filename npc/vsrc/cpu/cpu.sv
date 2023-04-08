@@ -34,10 +34,14 @@ rom inst_rom (
 /* verilator lint_off UNUSEDSIGNAL */
 wire [`Vec(`ImmWidth)] IF_ID_pc;
 wire [`Vec(`InstWidth)]	IF_ID_inst;
+wire flush;
+
+assign flush = is_jal ? 1 : 0;
 
 IF_ID u_IF_ID (
   .clk (clk),
   .rst (rst),
+  .flush (flush),
   .current_pc (current_pc),
   .inst (inst),
 

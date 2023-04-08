@@ -1,14 +1,18 @@
-`include "./include/defines.v"
+`include "../include/defines.v"
 /* regs between instrction fetch and instruction decode */
 module IF_ID (
     input clk,
     input rst,
     input [`Vec(`ImmWidth)] current_pc,
     input [`Vec(`InstWidth)]	inst,
+    input flush,
 
     output [`Vec(`ImmWidth)] IF_ID_pc,
     output [`Vec(`InstWidth)]	IF_ID_inst
 );
+
+
+    wire [`Vec(`InstWidth)]	din_inst = flush ? inst : NOP;
 
  Reg 
  #(
@@ -32,7 +36,7 @@ module IF_ID (
  Pc_Reg_inst(
   .clk  (clk  ),
   .rst  (rst  ),
-  .din  (inst),
+  .din  (din_inst),
   .wen  (1'b1),
 
   .dout (IF_ID_inst)
