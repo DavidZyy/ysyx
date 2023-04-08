@@ -24,25 +24,10 @@ wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
 wire [`Vec(`RegWidth)] mem_rdata;
 
 /* rom */
-rom inst_rom (
-  .pc (current_pc),
+rom inst_rom(
+  .pc (current_pc), 
 
   .inst (inst)
-);
-
-
-/* verilator lint_off UNUSEDSIGNAL */
-wire [`Vec(`ImmWidth)] IF_ID_pc;
-wire [`Vec(`InstWidth)]	IF_ID_inst;
-
-IF_ID u_IF_ID (
-  .clk (clk),
-  .rst (rst),
-  .current_pc (current_pc),
-  .inst (inst),
-
-  .IF_ID_pc (IF_ID_pc),
-  .IF_ID_inst (IF_ID_inst)
 );
 
 /* ram */
@@ -98,7 +83,7 @@ wire is_unsigned;
 
 decoder u_decoder(
 	//ports
-	.inst     		    ( IF_ID_inst ),
+	.inst     		    ( inst     		),
 
 	.rd       		    ( rd       		),
 	.rs1      		    ( rs1      		),
@@ -159,8 +144,7 @@ end
 // end
 
 /* execute stage */
-// wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : (is_load ? extended_data: alu_result);
-wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (IF_ID_pc + 4) : (is_load ? extended_data: alu_result);
+wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : (is_load ? extended_data: alu_result);
 // wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (cur_inst_pc + 4) : alu_result;
 
 wire [`Vec(`ImmWidth)]	rdata_1;
@@ -185,8 +169,7 @@ u_RegisterFile(
 );
 
   /* input */
-// wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | is_jal) ? current_pc: rdata_1;
-wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | is_jal) ? IF_ID_pc: rdata_1;
+wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | is_jal) ? current_pc: rdata_1;
 // wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
 wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
   /* output */
@@ -205,8 +188,7 @@ Alu u_Alu(
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
-// assign next_pc_temp = (is_branch && (alu_result == 1)) ? (current_pc + imm) : (current_pc + 4);
-assign next_pc_temp = (is_branch && (alu_result == 1)) ? (IF_ID_pc + imm) : (IF_ID_pc + 4);
+assign next_pc_temp = (is_branch && (alu_result == 1)) ? (current_pc + imm) : (current_pc + 4);
 assign next_pc = (is_jal | is_jalr) ? (alu_result & ~1) : next_pc_temp;
 
 /* current instruction pc */
