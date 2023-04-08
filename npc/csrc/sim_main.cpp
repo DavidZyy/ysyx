@@ -60,7 +60,8 @@ int terminal = 0;
 void exit_code(){
   terminal = 1;
   printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
-        (void *)top->current_pc);
+        (void *)top->IF_ID_pc);
+        // (void *)top->current_pc);
 }
 
 /**
@@ -111,13 +112,11 @@ void get_cpu() {
   for(int i = 0; i < 32; i++){
     cpu.gpr[i] = cpu_gpr[i];
   }
-  cpu.pc = top->current_pc;
+  // cpu.pc = top->current_pc;
+  cpu.pc = top->IF_ID_pc;
 }
 // 当nemu的pc和npc的current_pc为xxxx时，说明这个地址的指令还没有执行。
-/**
- * The single cycle time series design refers:
- * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9
- */
+/** * The single cycle time series design refers: * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9 */
 int main(int argc, char *argv[]) {
   // get_cpu();
   cpu.pc = RESET_VECTOR;
@@ -135,11 +134,18 @@ int main(int argc, char *argv[]) {
 
   uint64_t i;
   uint64_t times = -1;
+
+  // int nemu_not_run = 1;
+
   for(i = 0; i < times; i++){
-    single_cycle(0);
+    single_cycle(0); 
     get_cpu();
+    if(top->flush) {
+      /* run nop inst */
+      single_cycle(0);
+    } 
     
-    difftest_step();
+    if(i) difftest_step();
     // dump_gpr();
     if(terminal)
       break;

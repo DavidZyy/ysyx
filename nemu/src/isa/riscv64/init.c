@@ -16,6 +16,8 @@
 #include <isa.h>
 #include <memory/paddr.h>
 
+#include "debug.h"
+
 // this is not consistent with uint8_t
 // but it is ok since we do not access the array directly
 static const uint32_t img [] = {
@@ -29,6 +31,8 @@ static const uint32_t img [] = {
 static void restart() {
   /* Set the initial program counter. */
   cpu.pc = RESET_VECTOR;
+  // cpu.pc = RESET_VECTOR + 10;
+  // Log("pc is not at RESET_VECTOR! ");
 
   /* The zero register is always 0. */
   cpu.gpr[0] = 0;

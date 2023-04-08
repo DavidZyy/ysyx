@@ -4,6 +4,7 @@
 
 `define InstWidth   32
 `define PcRst 64'h80000000
+// `define PcRst 64'h80000010
 
 
   `define AddrWidth       64
@@ -61,6 +62,8 @@
   `define OP_32       7'b0111011
   /* define more here ... */
 
+  // `define NOP       32'h00000013
+  `define NOP       32'h00000000
 
   /* the format of `define IsOp(opcode)  (`OPCODE(inst) == `opcode) 
     is worse than below. The abbreviation means if the opcode is ... */

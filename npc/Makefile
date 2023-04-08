@@ -63,7 +63,6 @@ sim:
 	$(SIM_CPP_FILE) $(COMMON_CPP_FILE)
 	obj_dir/Vtop $(IMG) $(SO)
 	# gtkwave dump.vcd
-	# gtkwave dump1.vcd
 
 wv:
 	gtkwave dump.vcd
