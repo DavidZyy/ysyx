@@ -1,4 +1,4 @@
-`include "../include/defines.v"
+`include "./include/defines.v"
 /* regs between instrction fetch and instruction decode */
 module IF_ID (
     input clk,
