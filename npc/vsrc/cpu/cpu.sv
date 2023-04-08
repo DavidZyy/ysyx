@@ -47,7 +47,7 @@ IF_ID u_IF_ID (
   .rst (rst),
   .flush (flush),
   .current_pc (current_pc),
-  .inst (din_inst),
+  .din_inst (din_inst),
 
   .IF_ID_pc (IF_ID_pc),
   .IF_ID_inst (IF_ID_inst)
