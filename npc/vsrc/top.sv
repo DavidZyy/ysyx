@@ -12,7 +12,8 @@ module top(
   output [7:0]	seg4,
   output [7:0]	seg5,
   output [7:0]	seg6,
-  output [7:0]	seg7
+  output [7:0]	seg7,
+	output flush
 );
 
 // wire [`Vec(`ImmWidth)]	current_pc;
@@ -26,7 +27,8 @@ cpu u_cpu(
 
 	.current_pc 		( current_pc 		),
 	.next_pc    		( next_pc    		),
-  .inst           (inst )
+  .inst           (inst ),
+	.flush					(flush)
 );
 
 // wire [7:0]	seg0;
