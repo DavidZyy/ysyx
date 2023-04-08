@@ -14,7 +14,9 @@ module cpu(
   output [`Vec(`ImmWidth)] current_pc,
   output [`Vec(`ImmWidth)] next_pc,
   output [`Vec(`InstWidth)]	inst,
-  output flush
+  output flush,
+
+  output [`Vec(`ImmWidth)] IF_ID_pc
 );
 
 
@@ -33,7 +35,7 @@ rom inst_rom (
 
 
 /* verilator lint_off UNUSEDSIGNAL */
-wire [`Vec(`ImmWidth)] IF_ID_pc;
+// wire [`Vec(`ImmWidth)] IF_ID_pc;
 wire [`Vec(`InstWidth)]	IF_ID_inst;
 
 assign flush = is_jal ? 1 : 0;
