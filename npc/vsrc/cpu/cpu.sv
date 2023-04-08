@@ -26,7 +26,7 @@ wire [`Vec(`AddrWidth)] waddr = alu_result;
 wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
 wire [`Vec(`RegWidth)] mem_rdata;
 
-/* rom */
+/* IF, instructions fetch stage, rom. */
 rom inst_rom (
   .pc (current_pc),
 
@@ -42,6 +42,7 @@ wire [`Vec(`InstWidth)]	din_inst;
 assign flush = (is_jal | is_jalr | (is_branch && (alu_result == 1)))? 1 : 0;
 assign din_inst = flush ? `NOP : inst;
 
+/* registers between if and id stage */
 IF_ID u_IF_ID (
   .clk (clk),
   .rst (rst),
