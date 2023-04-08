@@ -12,7 +12,7 @@ module IF_ID (
 );
 
 
-wire [`Vec(`InstWidth)]	din_inst = flush ? inst : `NOP;
+wire [`Vec(`InstWidth)]	din_inst = flush ? `NOP : inst;
 
  Reg 
  #(
