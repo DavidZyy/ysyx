@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
     get_cpu();
     if(top->flush) {
       /* run nop inst */
-      single_cycle();
+      single_cycle(0);
     } 
     
     if(i) difftest_step();
