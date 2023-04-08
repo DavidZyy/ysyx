@@ -9,6 +9,7 @@
 */
 `include "./include/defines.v"
 
+/* The way of naming signals: begin with SIG_ end with it's stage, such as _ID */
 
 module decoder (
   input [`Vec(`InstWidth)] inst,
@@ -17,7 +18,7 @@ module decoder (
   output [`Vec(`RegIdWidth)] rs1,
   output [`Vec(`RegIdWidth)] rs2,
   output [`Vec(`ImmWidth)] imm,
-  output need_imm,
+  output SIG_need_imm_ID,
   /* verilator lint_off UNDRIVEN */
   output [`Vec(`AluopWidth)] alu_op,
   output is_ebreak,
@@ -232,7 +233,7 @@ module decoder (
   assign alu_op[`AluopRemuw ]   = remuw ;  
 
   /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
+  assign SIG_need_imm_ID = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
 
 
   /* special instruction signals */

@@ -88,7 +88,7 @@ wire [`Vec(`RegIdWidth)]	rs1;
 wire [`Vec(`RegIdWidth)]	rs2;
 wire [`Vec(`ImmWidth)]	imm;
 /* signals */
-wire 	need_imm;
+wire 	SIG_need_imm_ID;
 wire  [`Vec(`AluopWidth)] alu_op;
 wire  is_ebreak;
 wire  is_auipc;
@@ -112,7 +112,7 @@ decoder u_decoder(
 	.rs1      		    ( rs1      		),
 	.rs2      		    ( rs2      		),
 	.imm      		    ( imm      		),
-	.need_imm 		    ( need_imm 		),
+	.SIG_need_imm_ID 		    ( SIG_need_imm_ID 		),
   .alu_op           ( alu_op      ),
   .is_ebreak        ( is_ebreak   ),
   .is_auipc         ( is_auipc    ),
@@ -196,7 +196,7 @@ u_RegisterFile(
 // wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | is_jal) ? current_pc: rdata_1;
 wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | is_jal) ? IF_ID_pc: rdata_1;
 // wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
-wire [`Vec(`ImmWidth)]	operator_2 = need_imm ? imm : rdata_2;
+wire [`Vec(`ImmWidth)]	operator_2 = SIG_need_imm_ID ? imm : rdata_2;
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result;
 
