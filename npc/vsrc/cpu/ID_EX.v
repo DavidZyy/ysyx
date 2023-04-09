@@ -22,5 +22,117 @@ module ID_EX (
     output      [`Vec(`ImmWidth)]    pc_EX,
     output      [`Vec(`InstWidth)]   inst_EX
 );
+
+ Reg 
+ #(
+  .WIDTH     (`AluopWidth),
+  .RESET_VAL (0)
+ )
+ alu_op_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (alu_op_ID),
+  .wen  (1'b1),
+
+  .dout (alu_op_EX)
+ );
     
+ Reg 
+ #(
+  .WIDTH     (`WdtTypeCnt),
+  .RESET_VAL (0)
+ )
+ alu_op_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (wdt_op_ID),
+  .wen  (1'b1),
+
+  .dout (wdt_op_EX)
+ );
+
+ Reg 
+ #(
+  .WIDTH     (`SigOpWidth),
+  .RESET_VAL (0)
+ )
+ alu_op_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (sig_op_ID),
+  .wen  (1'b1),
+
+  .dout (sig_op_EX)
+ );
+ 
+ Reg 
+ #(
+  .WIDTH     (`ImmWidth),
+  .RESET_VAL (0)
+ )
+ alu_op_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (imm_ID),
+  .wen  (1'b1),
+
+  .dout (imm_EX)
+ );
+
+ Reg 
+ #(
+  .WIDTH     (`ImmWidth),
+  .RESET_VAL (0)
+ )
+ alu_op_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (rdata_1_ID),
+  .wen  (1'b1),
+
+  .dout (rdata_1_EX)
+ );
+ 
+ Reg 
+ #(
+  .WIDTH     (`ImmWidth),
+  .RESET_VAL (0)
+ )
+ alu_op_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (rdata_2_ID),
+  .wen  (1'b1),
+
+  .dout (rdata_2_EX)
+ );
+ 
+ Reg 
+ #(
+  .WIDTH     (`ImmWidth),
+  .RESET_VAL (0)
+ )
+ alu_op_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (pc_ID),
+  .wen  (1'b1),
+
+  .dout (pc_EX)
+ );
+ 
+ Reg 
+ #(
+  .WIDTH     (`InstWidth),
+  .RESET_VAL (0)
+ )
+ alu_op_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (inst_ID),
+  .wen  (1'b1),
+
+  .dout (inst_EX)
+ );
+ 
 endmodule //ID_EX

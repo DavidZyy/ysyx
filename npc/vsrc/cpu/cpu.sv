@@ -101,6 +101,37 @@ u_RegisterFile(
 );
 
 
+wire [`Vec(`AluopWidth)]	alu_op_EX;
+wire [`Vec(`WdtTypeCnt)]	wdt_op_EX;
+wire [`Vec(`SigOpWidth)]	sig_op_EX;
+wire [`Vec(`ImmWidth)]	imm_EX;
+wire [`Vec(`ImmWidth)]	rdata_1_EX;
+wire [`Vec(`ImmWidth)]	rdata_2_EX;
+wire [`Vec(`ImmWidth)]	pc_EX;
+wire [`Vec(`InstWidth)]	inst_EX;
+
+ID_EX u_ID_EX(
+	//ports
+	.clk        		( clk        		),
+	.rst        		( rst        		),
+	.alu_op_ID  		( alu_op_ID  		),
+	.wdt_op_ID  		( wdt_op_ID  		),
+	.sig_op_ID  		( sig_op_ID  		),
+	.imm_ID     		( imm_ID     		),
+	.rdata_1_ID 		( rdata_1_ID 		),
+	.rdata_2_ID 		( rdata_2_ID 		),
+	.pc_ID      		( pc_ID      		),
+	.inst_ID    		( inst_ID    		),
+
+	.alu_op_EX  		( alu_op_EX  		),
+	.wdt_op_EX  		( wdt_op_EX  		),
+	.sig_op_EX  		( sig_op_EX  		),
+	.imm_EX     		( imm_EX     		),
+	.rdata_1_EX 		( rdata_1_EX 		),
+	.rdata_2_EX 		( rdata_2_EX 		),
+	.pc_EX      		( pc_EX      		),
+	.inst_EX    		( inst_EX    		)
+);
 
 wire [`Vec(`AddrWidth)] waddr     = alu_result;
 wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_ID;
