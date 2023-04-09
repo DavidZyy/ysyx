@@ -241,7 +241,7 @@ module decoder (
 
   /* a instruction needs immediate has no rs2 */
   // assign SIG_need_imm_ID = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
-  assign sig_op_ID[`SIG_OP_need_imm] =  op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
+  assign sig_op_ID[`SIG_OP_need_imm] = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
 
   /* special instruction signals */
   assign sig_op_ID[`SIG_OP_is_ebreak    ] = ebreak;
