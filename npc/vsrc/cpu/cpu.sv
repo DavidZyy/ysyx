@@ -41,7 +41,7 @@ wire [`Vec(`InstWidth)]	din_inst;
 
 assign flush = (sig_op_ID[`SIG_OP_is_jal]  | 
                 sig_op_ID[`SIG_OP_is_jalr] | 
-                (sig_op_ID_[`SIG_OP_is_branch] && (alu_result == 1))) ? 
+                (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1))) ? 
                 1 : 0;
 
 assign din_inst = flush ? `NOP : inst;
