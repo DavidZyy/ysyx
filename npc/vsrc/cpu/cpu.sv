@@ -133,6 +133,24 @@ ID_EX u_ID_EX(
 	.inst_EX    		( inst_EX    		)
 );
 
+  /* input */
+wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
+                                      pc_ID : rdata_1_ID;
+
+wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? 
+                                      imm_ID : rdata_2_ID;
+  /* output */
+wire [`Vec(`ImmWidth)]	alu_result;
+
+Alu u_Alu(
+	.operator_1 		( operator_1    ),
+	.operator_2 		( operator_2 		),
+	.alu_op_ID    	( alu_op_ID    		),
+
+	.alu_result     ( alu_result   	)
+);
+
+
 wire [`Vec(`AddrWidth)] waddr     = alu_result;
 wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_ID;
 wire [`Vec(`RegWidth)]  mem_rdata;
@@ -198,23 +216,6 @@ end
 // end
 
 
-
-  /* input */
-wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
-                                      pc_ID : rdata_1_ID;
-
-wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? 
-                                      imm_ID : rdata_2_ID;
-  /* output */
-wire [`Vec(`ImmWidth)]	alu_result;
-
-Alu u_Alu(
-	.operator_1 		( operator_1    ),
-	.operator_2 		( operator_2 		),
-	.alu_op_ID    	( alu_op_ID    		),
-
-	.alu_result     ( alu_result   	)
-);
 
 
 /* only jalr should clean the least-significant bit, but clean jal
