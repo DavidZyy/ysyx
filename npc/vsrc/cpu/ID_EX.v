@@ -158,7 +158,7 @@ module ID_EX (
   .WIDTH     (`RegIdWidth),
   .RESET_VAL (0)
  )
- flush_EX_reg(
+ rd_EX_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (rd_ID),
