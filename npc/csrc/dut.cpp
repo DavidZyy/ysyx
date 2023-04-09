@@ -81,7 +81,7 @@ void isa_reg_display(CPU_state *ref){
   printf("nemu: pc = 0x%lx", ref->pc);
   printf("\t");
   // printf("npc: pc = 0x%lx\n", cpu.pc);
-  printf("npc: IF_ID_pc = 0x%lx\n", cpu.pc);
+  printf("npc: pc_ID = 0x%lx\n", cpu.pc);
 }
 
 static void checkregs(CPU_state *ref, vaddr_t pc){

@@ -4,10 +4,10 @@ module IF_ID (
     input clk,
     input rst,
     input [`Vec(`ImmWidth)] pc_IF,
-    input [`Vec(`InstWidth)]	din_inst,
+    input [`Vec(`InstWidth)]	inst_IF,
 
-    output [`Vec(`ImmWidth)] IF_ID_pc,
-    output [`Vec(`InstWidth)]	IF_ID_inst
+    output [`Vec(`ImmWidth)] pc_ID,
+    output [`Vec(`InstWidth)]	inst_ID
 );
 
  Reg 
@@ -21,7 +21,7 @@ module IF_ID (
   .din  (pc_IF),
   .wen  (1'b1),
 
-  .dout (IF_ID_pc)
+  .dout (pc_ID)
  );
 
  Reg 
@@ -32,10 +32,10 @@ module IF_ID (
  Pc_Reg_inst(
   .clk  (clk  ),
   .rst  (rst  ),
-  .din  (din_inst),
+  .din  (inst_IF),
   .wen  (1'b1),
 
-  .dout (IF_ID_inst)
+  .dout (inst_ID)
  );
 
 

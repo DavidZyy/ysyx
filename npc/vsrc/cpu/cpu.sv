@@ -16,7 +16,7 @@ module cpu(
   output [`Vec(`InstWidth)]	inst,
   output flush,
 
-  output [`Vec(`ImmWidth)] IF_ID_pc
+  output [`Vec(`ImmWidth)] pc_ID
 );
 
 
@@ -33,25 +33,25 @@ rom inst_rom (
 
 
 /* verilator lint_off UNUSEDSIGNAL */
-wire [`Vec(`InstWidth)]	IF_ID_inst;
-wire [`Vec(`InstWidth)]	din_inst; 
+wire [`Vec(`InstWidth)]	inst_ID;
+wire [`Vec(`InstWidth)]	inst_IF; 
 
 assign flush = (sig_op_ID[`SIG_OP_is_jal]  | 
                 sig_op_ID[`SIG_OP_is_jalr] | 
                 (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1))) ? 
                 1 : 0;
 
-assign din_inst = flush ? `NOP : inst;
+assign inst_IF = flush ? `NOP : inst;
 
 /* registers between if and id stage */
 IF_ID u_IF_ID (
   .clk (clk),
   .rst (rst),
   .pc_IF (pc_IF),
-  .din_inst (din_inst),
+  .inst_IF (inst_IF),
 
-  .IF_ID_pc (IF_ID_pc),
-  .IF_ID_inst (IF_ID_inst)
+  .pc_ID (pc_ID),
+  .inst_ID (inst_ID)
 );
 
 /* decode instructionn stage */
@@ -67,7 +67,7 @@ wire  [`Vec(`SigOpWidth)] sig_op_ID;
 
 decoder u_decoder(
 	//ports
-	.inst     		    ( IF_ID_inst ),
+	.inst     		    ( inst_ID ),
 
 	.rd       		    ( rd       		),
 	.rs1      		    ( rs1      		),
@@ -81,7 +81,7 @@ decoder u_decoder(
 
 /* execute stage */
 wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
-                                    (IF_ID_pc + 4) : 
+                                    (pc_ID + 4) : 
                                     (sig_op_ID[`SIG_OP_is_load] ? extended_data : alu_result);
 
 wire [`Vec(`ImmWidth)]	rdata_1;
@@ -170,7 +170,7 @@ end
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
-                                      IF_ID_pc: rdata_1;
+                                      pc_ID: rdata_1;
 
 wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? 
                                       imm : rdata_2;
@@ -190,7 +190,7 @@ Alu u_Alu(
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
 assign next_pc_temp = (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1)) ? 
-                      (IF_ID_pc + imm) : (pc_IF + 4);
+                      (pc_ID + imm) : (pc_IF + 4);
 
 assign next_pc = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
                   (alu_result & ~1) : next_pc_temp;
