@@ -36,8 +36,8 @@ assign flush_ID = (sig_op_ID[`SIG_OP_is_jal]  |
                    (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1))) ? 
                    1 : 0;
 
-// assign inst_IF = (flush_ID | flush_EX) ? `NOP : inst;
-assign inst_IF = (flush_ID) ? `NOP : inst;
+assign inst_IF = (flush_ID | flush_EX) ? `NOP : inst;
+// assign inst_IF = (flush_ID) ? `NOP : inst;
 
 /* registers between if and id stage */
 IF_ID u_IF_ID (
@@ -217,9 +217,6 @@ end
 // always @(*) begin
     // $display("pc: %x inst: %x", pc_IF, inst);
 // end
-
-
-
 
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
