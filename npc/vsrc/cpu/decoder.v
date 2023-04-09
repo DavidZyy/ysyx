@@ -19,7 +19,6 @@ module decoder (
   output [`Vec(`RegIdWidth)] rs2,
   output [`Vec(`ImmWidth)] imm,
   // output SIG_need_imm_ID,
-  // /* verilator lint_off UNDRIVEN */
   // output is_ebreak,
   // output is_auipc,
   // output is_jal,
@@ -30,8 +29,10 @@ module decoder (
   // output reg_wen,
   // output mem_wen,
   // output is_unsigned,
+  /* verilator lint_off UNDRIVEN */
   output [`Vec(`AluopWidth)] alu_op,
   output [`Vec(`WdtTypeCnt)] wdt_op,
+  /* verilator lint_off UNDRIVEN */
   output [`Vec(`SigOpWidth)] sig_op_ID
 );
 
