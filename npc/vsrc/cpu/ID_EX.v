@@ -13,6 +13,7 @@ module ID_EX (
     input      [`Vec(`ImmWidth)]   pc_ID,
     input      [`Vec(`InstWidth)]  inst_ID,
     input      flush_ID,
+    input      [`Vec(`RegIdWidth)] rd_ID,
     
     output      [`Vec(`AluopWidth)]  alu_op_EX,
     output      [`Vec(`WdtTypeCnt)]  wdt_op_EX,
@@ -22,7 +23,8 @@ module ID_EX (
     output      [`Vec(`ImmWidth)]	   rdata_2_EX,
     output      [`Vec(`ImmWidth)]    pc_EX,
     output      [`Vec(`InstWidth)]   inst_EX,
-    output      flush_EX
+    output      flush_EX,
+    output      [`Vec(`RegIdWidth)]  rd_EX
 );
 
  Reg 
@@ -150,5 +152,20 @@ module ID_EX (
 
   .dout (flush_EX)
  );
+
+ Reg 
+ #(
+  .WIDTH     (`RegIdWidth),
+  .RESET_VAL (0)
+ )
+ flush_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (rd_ID),
+  .wen  (1'b1),
+
+  .dout (rd_EX)
+ );
+
 
 endmodule //ID_EX

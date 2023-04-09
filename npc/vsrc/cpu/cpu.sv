@@ -110,6 +110,7 @@ wire [`Vec(`ImmWidth)]	rdata_1_EX;
 wire [`Vec(`ImmWidth)]	rdata_2_EX;
 wire [`Vec(`ImmWidth)]	pc_EX;
 wire [`Vec(`InstWidth)]	inst_EX;
+wire [`Vec(`RegIdWidth)]	rd_EX;
 
 ID_EX u_ID_EX(
 	//ports
@@ -124,6 +125,7 @@ ID_EX u_ID_EX(
 	.pc_ID      		( pc_ID      		),
 	.inst_ID    		( inst_ID    		),
   .flush_ID       ( flush_ID      ),
+  .rd_ID          ( rd_ID      ),
 
 	.alu_op_EX  		( alu_op_EX  		),
 	.wdt_op_EX  		( wdt_op_EX  		),
@@ -133,7 +135,8 @@ ID_EX u_ID_EX(
 	.rdata_2_EX 		( rdata_2_EX 		),
 	.pc_EX      		( pc_EX      		),
 	.inst_EX    		( inst_EX    		),
-  .flush_EX       ( flush_EX      )
+  .flush_EX       ( flush_EX      ),
+  .rd_EX          ( rd_EX         )
 );
 
   /* input */
