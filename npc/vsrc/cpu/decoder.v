@@ -18,17 +18,6 @@ module decoder (
   output [`Vec(`RegIdWidth)] rs1,
   output [`Vec(`RegIdWidth)] rs2,
   output [`Vec(`ImmWidth)] imm,
-  // output SIG_need_imm_ID,
-  // output is_ebreak,
-  // output is_auipc,
-  // output is_jal,
-  // output is_jalr,
-  // output is_load,
-  // output is_branch,
-  // output inst_not_ipl,
-  // output reg_wen,
-  // output mem_wen,
-  // output is_unsigned,
   /* verilator lint_off UNDRIVEN */
   output [`Vec(`AluopWidth)] alu_op,
   output [`Vec(`WdtTypeCnt)] wdt_op,
@@ -240,7 +229,6 @@ module decoder (
 
 
   /* a instruction needs immediate has no rs2 */
-  // assign SIG_need_imm_ID = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
   assign sig_op_ID[`SIG_OP_need_imm] = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
 
   /* special instruction signals */
@@ -259,8 +247,5 @@ module decoder (
   /* write enable signals */
   assign sig_op_ID[`SIG_OP_reg_wen      ]= op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | op_load;
   assign sig_op_ID[`SIG_OP_mem_wen      ]= op_store;
-
-
-
 
 endmodule

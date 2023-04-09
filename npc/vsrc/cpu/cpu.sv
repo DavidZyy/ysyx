@@ -20,8 +20,6 @@ module cpu(
 );
 
 
-/* verilator lint_off UNOPTFLAT */
-// wire [`Vec(`InstWidth)]	inst;
 wire [`Vec(`AddrWidth)] waddr = alu_result;
 wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
 wire [`Vec(`RegWidth)] mem_rdata;
@@ -202,11 +200,11 @@ u_RegisterFile(
 );
 
   /* input */
-// wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | sig_op_ID[`SIG_OP_is_jal]) ? current_pc: rdata_1;
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
                                       IF_ID_pc: rdata_1;
-// wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
-wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? imm : rdata_2;
+
+wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? 
+                                      imm : rdata_2;
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result;
 
