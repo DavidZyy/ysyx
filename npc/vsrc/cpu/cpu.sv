@@ -33,7 +33,6 @@ rom inst_rom (
 
 
 /* verilator lint_off UNUSEDSIGNAL */
-// wire [`Vec(`ImmWidth)] IF_ID_pc;
 wire [`Vec(`InstWidth)]	IF_ID_inst;
 wire [`Vec(`InstWidth)]	din_inst; 
 
@@ -59,16 +58,13 @@ IF_ID u_IF_ID (
 memory u_memory (
 	//ports
 	.clk  		  ( clk  		),
-	// .pc   		  ( current_pc ),
   .mem_raddr  ( alu_result),
   .waddr      ( waddr ),
   .mem_wdata  ( mem_wdata),
-  // .wmask      ( wmask),
   .mem_wen    ( sig_op_ID[`SIG_OP_mem_wen]),
   .mem_ren    ( sig_op_ID[`SIG_OP_is_load]),
   .wdt_op     ( wdt_op),
 
-	// .inst       ( inst 		),
   .mem_rdata  ( mem_rdata)
 );
 
@@ -89,22 +85,10 @@ wire [`Vec(`RegIdWidth)]	rd;
 wire [`Vec(`RegIdWidth)]	rs1;
 wire [`Vec(`RegIdWidth)]	rs2;
 wire [`Vec(`ImmWidth)]	imm;
+
 /* signals */
-// wire 	SIG_need_imm_ID;
 wire  [`Vec(`AluopWidth)] alu_op;
-// wire  is_ebreak;
-// wire  is_auipc;
-// wire  inst_not_ipl;
-// wire  sig_op_ID[`SIG_OP_is_jal];
-// wire  sig_op_ID[`SIG_OP_is_jalr];
-// wire  reg_wen;
-// wire  mem_wen;
-// wire  [7:0] wmask;
-// wire  sig_op_ID[`SIG_OP_is_load];
-// wire  sig_op_ID_[`SIG_OP_is_branch];
-// wire  mem_ren;
 wire [`Vec(`WdtTypeCnt)] wdt_op;
-// wire is_unsigned;
 wire [`Vec(`SigOpWidth)] sig_op_ID;
 
 decoder u_decoder(
@@ -115,22 +99,9 @@ decoder u_decoder(
 	.rs1      		    ( rs1      		),
 	.rs2      		    ( rs2      		),
 	.imm      		    ( imm      		),
-	// .SIG_need_imm_ID 		    ( SIG_need_imm_ID 		),
   .alu_op           ( alu_op      ),
-  // .is_ebreak        ( is_ebreak   ),
-  // .is_auipc         ( is_auipc    ),
-  // .inst_not_ipl     ( inst_not_ipl),
-  // .sig_op_ID[`SIG_OP_is_jal]           ( sig_op_ID[`SIG_OP_is_jal] ),
-  // .sig_op_ID[`SIG_OP_is_jalr]          ( sig_op_ID[`SIG_OP_is_jalr] ),
-  // .reg_wen          ( reg_wen),
-  // .mem_wen          ( mem_wen),
-  // .wmask            ( wmask),
-  // .sig_op_ID[`SIG_OP_is_load]          ( sig_op_ID[`SIG_OP_is_load]),
-  // .sig_op_ID_[`SIG_OP_is_branch]        ( sig_op_ID_[`SIG_OP_is_branch]),
   .wdt_op           ( wdt_op),
-  // .is_unsigned      ( is_unsigned)
-  // .mem_ren          ( mem_ren)
-  .sig_op_ID        (sig_op_ID )
+  .sig_op_ID        ( sig_op_ID )
 
 );
 
@@ -142,8 +113,6 @@ decoder u_decoder(
   in the middle of the cycle, the inst_not_ipl signal
   is been updated. */
 always @(posedge clk) begin
-// always @(*) begin
-  // if (inst_not_ipl) begin
   if (sig_op_ID[`SIG_OP_inst_not_ipl]) begin
     not_ipl_exception();
     // $display("instructions not implemented!");
@@ -155,12 +124,9 @@ always @(posedge clk) begin
 end
 
 always @(posedge clk) begin
-// always @(*) begin
   if (sig_op_ID[`SIG_OP_is_ebreak]) begin
     exit_code();
     // $display("exit code");
-    // assign rd = 2;
-    // assign reg_wdata = 64'h80009008;
   end
   else begin
     ;
@@ -172,8 +138,6 @@ end
 // end
 
 /* execute stage */
-// wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? (current_pc + 4) : (sig_op_ID[`SIG_OP_is_load] ? extended_data: alu_result);
-// wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? (IF_ID_pc + 4) : (sig_op_ID[`SIG_OP_is_load] ? extended_data: alu_result);
 wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
                                     (IF_ID_pc + 4) : 
                                     (sig_op_ID[`SIG_OP_is_load] ? extended_data : alu_result);
@@ -217,7 +181,6 @@ Alu u_Alu(
 );
 
 
-// assign next_pc = sig_op_ID[`SIG_OP_is_jal] ? (current_pc + imm) : (sig_op_ID[`SIG_OP_is_jalr] ? alu_result : current_pc + 4);
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
