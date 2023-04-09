@@ -145,7 +145,7 @@ wire [`Vec(`ImmWidth)]	alu_result;
 Alu u_Alu(
 	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
-	.alu_op_ID    	( alu_op_ID    		),
+	.alu_op_ID    	( alu_op_ID    	),
 
 	.alu_result     ( alu_result   	)
 );
