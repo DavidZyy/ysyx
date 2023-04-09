@@ -81,7 +81,7 @@ load_extend u_load_extend (
 	//ports
 	.mem_rdata 		    ( mem_rdata 		),
 	.wdt_op        		( wdt_op        		),
-	.is_unsigned   		( is_unsigned   		),
+	.is_unsigned   		( sig_op_ID[`SIG_OP_is_unsigned]   		),
 
 	.extended_data 		( extended_data 		)
 );
@@ -203,7 +203,8 @@ u_RegisterFile(
 
   /* input */
 // wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | sig_op_ID[`SIG_OP_is_jal]) ? current_pc: rdata_1;
-wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | sig_op_ID[`SIG_OP_is_jal]) ? IF_ID_pc: rdata_1;
+wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
+                                      IF_ID_pc: rdata_1;
 // wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
 wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? imm : rdata_2;
   /* output */
