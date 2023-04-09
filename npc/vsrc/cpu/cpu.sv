@@ -11,7 +11,7 @@ module cpu(
   input clk,
   input rst,
 
-  output [`Vec(`ImmWidth)] current_pc,
+  output [`Vec(`ImmWidth)] pc_IF,
   output [`Vec(`ImmWidth)] next_pc,
   output [`Vec(`InstWidth)]	inst,
   output flush,
@@ -26,7 +26,7 @@ wire [`Vec(`RegWidth)] mem_rdata;
 
 /* IF, instructions fetch stage, rom. */
 rom inst_rom (
-  .pc (current_pc),
+  .pc (pc_IF),
 
   .inst (inst)
 );
@@ -47,7 +47,7 @@ assign din_inst = flush ? `NOP : inst;
 IF_ID u_IF_ID (
   .clk (clk),
   .rst (rst),
-  .current_pc (current_pc),
+  .pc_IF (pc_IF),
   .din_inst (din_inst),
 
   .IF_ID_pc (IF_ID_pc),
@@ -163,7 +163,7 @@ always @(posedge clk) begin
 end
 
 // always @(*) begin
-    // $display("pc: %x inst: %x", current_pc, inst);
+    // $display("pc: %x inst: %x", pc_IF, inst);
 // end
 
 
@@ -190,7 +190,7 @@ Alu u_Alu(
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
 assign next_pc_temp = (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1)) ? 
-                      (IF_ID_pc + imm) : (current_pc + 4);
+                      (IF_ID_pc + imm) : (pc_IF + 4);
 
 assign next_pc = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
                   (alu_result & ~1) : next_pc_temp;
@@ -207,7 +207,7 @@ assign next_pc = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ?
   .din  (next_pc),
   .wen  (1'b1),
 
-  .dout (current_pc)
+  .dout (pc_IF)
  );
 
 

@@ -3,7 +3,7 @@ module top(
   input clk,
   input rst,
 
-  output [`Vec(`ImmWidth)] current_pc,
+  output [`Vec(`ImmWidth)] pc_IF,
   output [`Vec(`ImmWidth)] next_pc,
   output [7:0]	seg0,
   output [7:0]	seg1,
@@ -17,7 +17,7 @@ module top(
   output [`Vec(`ImmWidth)] IF_ID_pc
 );
 
-// wire [`Vec(`ImmWidth)]	current_pc;
+// wire [`Vec(`ImmWidth)]	pc_IF;
 // wire [`Vec(`ImmWidth)]	next_pc;
 wire [`Vec(`InstWidth)]	inst;
 
@@ -26,7 +26,7 @@ cpu u_cpu(
 	.clk        		( clk        		),
 	.rst        		( rst        		),
 
-	.current_pc 		( current_pc 		),
+	.pc_IF 		( pc_IF 		),
 	.next_pc    		( next_pc    		),
   .inst           (inst ),
 	.flush					(flush),
@@ -38,14 +38,14 @@ cpu u_cpu(
 
 // seg u_seg(
 // 	//ports
-// 	.display_data 		( current_pc[31:0] 		),
+// 	.display_data 		( pc_IF[31:0] 		),
 // 
 // 	.seg0         		( seg0         		),
 // 	.seg1         		( seg1         		)
 // );
 seg u_seg(
 	//ports
-	// .display_data 		( current_pc[31:0]),
+	// .display_data 		( pc_IF[31:0]),
 	.display_data 		( inst ),
 
 	.seg0         		( seg0         		),

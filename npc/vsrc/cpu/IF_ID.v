@@ -3,7 +3,7 @@
 module IF_ID (
     input clk,
     input rst,
-    input [`Vec(`ImmWidth)] current_pc,
+    input [`Vec(`ImmWidth)] pc_IF,
     input [`Vec(`InstWidth)]	din_inst,
 
     output [`Vec(`ImmWidth)] IF_ID_pc,
@@ -18,7 +18,7 @@ module IF_ID (
  Pc_Reg_pc(
   .clk  (clk  ),
   .rst  (rst  ),
-  .din  (current_pc),
+  .din  (pc_IF),
   .wen  (1'b1),
 
   .dout (IF_ID_pc)
