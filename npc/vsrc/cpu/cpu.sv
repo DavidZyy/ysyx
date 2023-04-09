@@ -62,8 +62,8 @@ wire [`Vec(`ImmWidth)]	imm;
 
 /* signals */
 wire  [`Vec(`AluopWidth)] alu_op;
-wire [`Vec(`WdtTypeCnt)] wdt_op;
-wire [`Vec(`SigOpWidth)] sig_op_ID;
+wire  [`Vec(`WdtTypeCnt)] wdt_op;
+wire  [`Vec(`SigOpWidth)] sig_op_ID;
 
 decoder u_decoder(
 	//ports
