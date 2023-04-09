@@ -60,8 +60,8 @@ int terminal = 0;
 void exit_code(){
   terminal = 1;
   printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
-        (void *)top->IF_ID_pc);
-        // (void *)top->current_pc);
+        (void *)top->pc_ID);
+        // (void *)top->pc_IF);
 }
 
 /**
@@ -71,11 +71,11 @@ void exit_code(){
  * I add the condition "top->pc > 0".
  */
 void not_ipl_exception(){
-  if(top->current_pc){
+  if(top->pc_IF){
   terminal = 1;
   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
   printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
-    (void *)top->current_pc, *((uint32_t *)(&pmem[top->current_pc - 0x80000000])));
+    (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
     // (void *)top->pc, top->inst);
   // printf(ANSI_FMT(""))
   }
@@ -112,10 +112,10 @@ void get_cpu() {
   for(int i = 0; i < 32; i++){
     cpu.gpr[i] = cpu_gpr[i];
   }
-  // cpu.pc = top->current_pc;
-  cpu.pc = top->IF_ID_pc;
+  // cpu.pc = top->pc_IF;
+  cpu.pc = top->pc_ID;
 }
-// 当nemu的pc和npc的current_pc为xxxx时，说明这个地址的指令还没有执行。
+// 当nemu的pc和npc的pc_IF为xxxx时，说明这个地址的指令还没有执行。
 /** * The single cycle time series design refers: * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9 */
 int main(int argc, char *argv[]) {
   // get_cpu();
