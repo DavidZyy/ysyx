@@ -234,5 +234,6 @@
 
   /* signal options */
   `define SIG_OP_need_imm    0
+  `define SIG_OP_is_ebreak      //specia instructions
 
   `define SIG_need_imm       `Signal_Width'h00000001
