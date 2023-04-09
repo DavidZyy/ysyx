@@ -7,6 +7,7 @@ module Reg #(parameter WIDTH = 1, parameter RESET_VAL = 0) (
 
   output reg [WIDTH-1:0] dout
 );
+
   /* Trigger at negedge */
   always @(negedge clk) begin
     if (rst) dout <= RESET_VAL;
