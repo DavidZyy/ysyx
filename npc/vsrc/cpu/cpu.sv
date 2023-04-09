@@ -61,8 +61,8 @@ wire [`Vec(`RegIdWidth)]	rs2;
 wire [`Vec(`ImmWidth)]	imm;
 
 /* signals */
-wire  [`Vec(`AluopWidth)] alu_op;
-wire  [`Vec(`WdtTypeCnt)] wdt_op;
+wire  [`Vec(`AluopWidth)] alu_op_ID;
+wire  [`Vec(`WdtTypeCnt)] wdt_op_ID;
 wire  [`Vec(`SigOpWidth)] sig_op_ID;
 
 decoder u_decoder(
@@ -73,8 +73,8 @@ decoder u_decoder(
 	.rs1      		    ( rs1      		),
 	.rs2      		    ( rs2      		),
 	.imm      		    ( imm      		),
-  .alu_op           ( alu_op      ),
-  .wdt_op           ( wdt_op),
+  .alu_op_ID           ( alu_op_ID      ),
+  .wdt_op_ID           ( wdt_op_ID),
   .sig_op_ID        ( sig_op_ID )
 
 );
@@ -115,7 +115,7 @@ memory u_memory (
   .mem_wdata  ( mem_wdata),
   .mem_wen    ( sig_op_ID[`SIG_OP_mem_wen]),
   .mem_ren    ( sig_op_ID[`SIG_OP_is_load]),
-  .wdt_op     ( wdt_op),
+  .wdt_op_ID     ( wdt_op_ID),
 
   .mem_rdata  ( mem_rdata)
 );
@@ -126,7 +126,7 @@ wire [`Vec(`ImmWidth)] extended_data;
 load_extend u_load_extend (
 	//ports
 	.mem_rdata 		    ( mem_rdata 		),
-	.wdt_op        		( wdt_op        		),
+	.wdt_op_ID        		( wdt_op_ID        		),
 	.is_unsigned   		( sig_op_ID[`SIG_OP_is_unsigned]   		),
 
 	.extended_data 		( extended_data 		)
@@ -180,7 +180,7 @@ wire [`Vec(`ImmWidth)]	alu_result;
 Alu u_Alu(
 	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
-	.alu_op    		  ( alu_op    		),
+	.alu_op_ID    		  ( alu_op_ID    		),
 
 	.alu_result     ( alu_result   	)
 );
