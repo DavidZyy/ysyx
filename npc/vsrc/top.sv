@@ -30,6 +30,7 @@ cpu u_cpu(
 	.next_pc    		( next_pc    		),
   .inst           (inst ),
 	.flush_ID					(flush_ID),
+	.flush_EX					(flush_EX),
 	.pc_ID	(pc_ID)
 );
 
