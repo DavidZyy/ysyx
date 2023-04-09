@@ -29,9 +29,9 @@ module decoder (
   output inst_not_ipl,
   output reg_wen,
   output mem_wen,
+  output is_unsigned,
   output [`Vec(`WdtTypeCnt)] wdt_op,
-  output [`Vec(`AluopWidth)] alu_op,
-  output is_unsigned
+  output [`Vec(`AluopWidth)] alu_op
 );
 
 /* decode infos */
