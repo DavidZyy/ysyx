@@ -73,8 +73,8 @@ decoder u_decoder(
 	.rs1      		    ( rs1      		),
 	.rs2      		    ( rs2      		),
 	.imm      		    ( imm      		),
-  .alu_op_ID           ( alu_op_ID      ),
-  .wdt_op_ID           ( wdt_op_ID),
+  .alu_op_ID        ( alu_op_ID      ),
+  .wdt_op_ID        ( wdt_op_ID),
   .sig_op_ID        ( sig_op_ID )
 
 );
