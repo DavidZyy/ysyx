@@ -3,10 +3,10 @@
 module IF_ID (
     input clk,
     input rst,
-    input [`Vec(`ImmWidth)] pc_IF,
+    input [`Vec(`ImmWidth)]     pc_IF,
     input [`Vec(`InstWidth)]	inst_IF,
 
-    output [`Vec(`ImmWidth)] pc_ID,
+    output [`Vec(`ImmWidth)]    pc_ID,
     output [`Vec(`InstWidth)]	inst_ID
 );
 

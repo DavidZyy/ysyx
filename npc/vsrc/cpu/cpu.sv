@@ -58,7 +58,7 @@ IF_ID u_IF_ID (
 wire [`Vec(`RegIdWidth)]	rd;
 wire [`Vec(`RegIdWidth)]	rs1;
 wire [`Vec(`RegIdWidth)]	rs2;
-wire [`Vec(`ImmWidth)]	  imm;
+wire [`Vec(`ImmWidth)]	  imm_ID;
 
 /* signals */
 wire  [`Vec(`AluopWidth)] alu_op_ID;
@@ -72,7 +72,7 @@ decoder u_decoder(
 	.rd       		    ( rd       		),
 	.rs1      		    ( rs1      		),
 	.rs2      		    ( rs2      		),
-	.imm      		    ( imm      		),
+	.imm_ID      		    ( imm_ID      		),
   .alu_op_ID        ( alu_op_ID      ),
   .wdt_op_ID        ( wdt_op_ID),
   .sig_op_ID        ( sig_op_ID )
@@ -173,7 +173,7 @@ wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`S
                                       pc_ID: rdata_1;
 
 wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? 
-                                      imm : rdata_2;
+                                      imm_ID : rdata_2;
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result;
 
@@ -190,7 +190,7 @@ Alu u_Alu(
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
 assign next_pc_temp = (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1)) ? 
-                      (pc_ID + imm) : (pc_IF + 4);
+                      (pc_ID + imm_ID) : (pc_IF + 4);
 
 assign next_pc = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
                   (alu_result & ~1) : next_pc_temp;
