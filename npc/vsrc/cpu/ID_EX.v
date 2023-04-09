@@ -7,7 +7,7 @@
 //     input      [`Vec(`AluopWidth)] alu_op_ID,
 //     input      [`Vec(`WdtTypeCnt)] wdt_op_ID,
 //     input      [`Vec(`SigOpWidth)] sig_op_ID,
-//     input      [`Vec(`ImmWidth)]	 imm,
+//     input      [`Vec(`ImmWidth)]	 imm_ID,
 //     
 // );
 //     

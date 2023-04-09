@@ -19,11 +19,6 @@ module cpu(
   output [`Vec(`ImmWidth)]  pc_ID
 );
 
-
-wire [`Vec(`AddrWidth)] waddr = alu_result;
-wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
-wire [`Vec(`RegWidth)] mem_rdata;
-
 /* IF, instructions fetch stage, rom. */
 rom inst_rom (
   .pc (pc_IF),
@@ -58,7 +53,7 @@ IF_ID u_IF_ID (
 wire [`Vec(`RegIdWidth)]	rd;
 wire [`Vec(`RegIdWidth)]	rs1;
 wire [`Vec(`RegIdWidth)]	rs2;
-wire [`Vec(`ImmWidth)]	  imm;
+wire [`Vec(`ImmWidth)]	  imm_ID;
 
 /* signals */
 wire  [`Vec(`AluopWidth)] alu_op_ID;
@@ -72,7 +67,7 @@ decoder u_decoder(
 	.rd       		    ( rd       		),
 	.rs1      		    ( rs1      		),
 	.rs2      		    ( rs2      		),
-	.imm      		    ( imm      		),
+	.imm_ID      		    ( imm_ID      		),
   .alu_op_ID        ( alu_op_ID      ),
   .wdt_op_ID        ( wdt_op_ID),
   .sig_op_ID        ( sig_op_ID )
@@ -84,8 +79,8 @@ wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_O
                                     (pc_ID + 4) : 
                                     (sig_op_ID[`SIG_OP_is_load] ? extended_data : alu_result);
 
-wire [`Vec(`ImmWidth)]	rdata_1;
-wire [`Vec(`ImmWidth)]	rdata_2;
+wire [`Vec(`ImmWidth)]	rdata_1_ID;
+wire [`Vec(`ImmWidth)]	rdata_2_ID;
 
   /* in execute state, read register, in WB state, write back registers */
 RegisterFile 
@@ -101,10 +96,15 @@ u_RegisterFile(
   .rs1        ( rs1 ),
   .rs2        ( rs2 ),
 
-  .rdata_1    ( rdata_1 ),
-  .rdata_2    ( rdata_2 )
+  .rdata_1    ( rdata_1_ID ),
+  .rdata_2    ( rdata_2_ID )
 );
 
+
+
+wire [`Vec(`AddrWidth)] waddr     = alu_result;
+wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_ID;
+wire [`Vec(`RegWidth)]  mem_rdata;
 
 /* ram */
 memory u_memory (
@@ -170,10 +170,10 @@ end
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
-                                      pc_ID: rdata_1;
+                                      pc_ID : rdata_1_ID;
 
 wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? 
-                                      imm : rdata_2;
+                                      imm_ID : rdata_2_ID;
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result;
 
@@ -190,7 +190,7 @@ Alu u_Alu(
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
 assign next_pc_temp = (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1)) ? 
-                      (pc_ID + imm) : (pc_IF + 4);
+                      (pc_ID + imm_ID) : (pc_IF + 4);
 
 assign next_pc = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
                   (alu_result & ~1) : next_pc_temp;

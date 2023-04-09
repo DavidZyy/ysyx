@@ -17,7 +17,7 @@ module decoder (
   output [`Vec(`RegIdWidth)] rd,
   output [`Vec(`RegIdWidth)] rs1,
   output [`Vec(`RegIdWidth)] rs2,
-  output [`Vec(`ImmWidth)] imm,
+  output [`Vec(`ImmWidth)] imm_ID,
   /* verilator lint_off UNDRIVEN */
   output [`Vec(`AluopWidth)] alu_op_ID,
   output [`Vec(`WdtTypeCnt)] wdt_op_ID,
@@ -172,7 +172,7 @@ module decoder (
   wire [`Vec(`ImmWidth)] B_imm = `immB(inst);
 
 
-  assign imm =  ({`ImmWidth{I_type}} & I_imm) |
+  assign imm_ID =  ({`ImmWidth{I_type}} & I_imm) |
                 ({`ImmWidth{U_type}} & U_imm) |
                 ({`ImmWidth{J_type}} & J_imm) |
                 ({`ImmWidth{S_type}} & S_imm) |
