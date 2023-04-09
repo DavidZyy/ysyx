@@ -16,7 +16,6 @@ module cpu(
   output [`Vec(`InstWidth)]	inst,
   output flush_ID,
   output flush_EX,
-
   output [`Vec(`ImmWidth)]  pc_ID
 );
 
