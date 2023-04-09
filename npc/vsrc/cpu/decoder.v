@@ -20,19 +20,17 @@ module decoder (
   output [`Vec(`ImmWidth)] imm,
   output SIG_need_imm_ID,
   /* verilator lint_off UNDRIVEN */
-  output [`Vec(`AluopWidth)] alu_op,
   output is_ebreak,
   output is_auipc,
-  output inst_not_ipl,
   output is_jal,
   output is_jalr,
-  output reg_wen,
-  output mem_wen,
-  // output [7:0] wmask,
   output is_load,
   output is_branch,
-  // output mem_ren
+  output inst_not_ipl,
+  output reg_wen,
+  output mem_wen,
   output [`Vec(`WdtTypeCnt)] wdt_op,
+  output [`Vec(`AluopWidth)] alu_op,
   output is_unsigned
 );
 

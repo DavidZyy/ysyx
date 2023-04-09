@@ -233,7 +233,15 @@
   `define Signal_Width    32
 
   /* signal options */
-  `define SIG_OP_need_imm    0
-  `define SIG_OP_is_ebreak      //specia instructions
+  `define SIG_OP_need_imm       0
+  `define SIG_OP_is_ebreak      `SIG_OP_need_imm      +   1       //specia instructions
+  `define SIG_OP_is_auipc       `SIG_OP_is_ebreak     +   1
+  `define SIG_OP_is_jal         `SIG_OP_is_auipc
+  `define SIG_OP_is_jalr        `SIG_OP_is_jal
+  `define SIG_OP_is_load        `SIG_OP_is_jalr 
+  `define SIG_OP_reg_wen        `SIG_OP_is_load
+  `define SIG_OP_mem_wen        `SIG_OP_reg_wen
+  `define SIG_OP_is_unsigned    `SIG_OP_mem_wen
+  `define SIG_OP_inst_not_ipl   `SIG_OP_is_auipc      +   1
 
   `define SIG_need_imm       `Signal_Width'h00000001
