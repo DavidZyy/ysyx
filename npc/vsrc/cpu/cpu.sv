@@ -19,11 +19,6 @@ module cpu(
   output [`Vec(`ImmWidth)]  pc_ID
 );
 
-
-wire [`Vec(`AddrWidth)] waddr = alu_result;
-wire [`Vec(`RegWidth)] mem_wdata = rdata_2;
-wire [`Vec(`RegWidth)] mem_rdata;
-
 /* IF, instructions fetch stage, rom. */
 rom inst_rom (
   .pc (pc_IF),
@@ -84,8 +79,8 @@ wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_O
                                     (pc_ID + 4) : 
                                     (sig_op_ID[`SIG_OP_is_load] ? extended_data : alu_result);
 
-wire [`Vec(`ImmWidth)]	rdata_1;
-wire [`Vec(`ImmWidth)]	rdata_2;
+wire [`Vec(`ImmWidth)]	rdata_1_ID;
+wire [`Vec(`ImmWidth)]	rdata_2_ID;
 
   /* in execute state, read register, in WB state, write back registers */
 RegisterFile 
@@ -101,10 +96,15 @@ u_RegisterFile(
   .rs1        ( rs1 ),
   .rs2        ( rs2 ),
 
-  .rdata_1    ( rdata_1 ),
-  .rdata_2    ( rdata_2 )
+  .rdata_1    ( rdata_1_ID ),
+  .rdata_2    ( rdata_2_ID )
 );
 
+
+
+wire [`Vec(`AddrWidth)] waddr     = alu_result;
+wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_ID;
+wire [`Vec(`RegWidth)]  mem_rdata;
 
 /* ram */
 memory u_memory (
@@ -170,10 +170,10 @@ end
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
-                                      pc_ID: rdata_1;
+                                      pc_ID : rdata_1_ID;
 
 wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? 
-                                      imm_ID : rdata_2;
+                                      imm_ID : rdata_2_ID;
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result;
 
