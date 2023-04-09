@@ -34,13 +34,7 @@ wire [`Vec(`InstWidth)]	inst_IF;
 assign flush_ID = (sig_op_ID[`SIG_OP_is_jal]  | 
                    sig_op_ID[`SIG_OP_is_jalr] | 
                    (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1))) ? 
-                1 : 0;
-
-assign flush_EX = (sig_op_EX[`SIG_OP_is_jal]  | 
-                   sig_op_EX[`SIG_OP_is_jalr] | 
-                   (sig_op_EX[`SIG_OP_is_branch] && (alu_result == 1))) ? 
-                1 : 0;
-
+                   1 : 0;
 
 assign inst_IF = (flush_ID | flush_EX) ? `NOP : inst;
 
