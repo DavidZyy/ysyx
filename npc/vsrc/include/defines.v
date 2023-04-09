@@ -243,7 +243,7 @@
   `define SIG_OP_is_unsigned    `SIG_OP_is_branch       +   1    
   `define SIG_OP_inst_not_ipl   `SIG_OP_is_unsigned     +   1
   `define SIG_OP_reg_wen        `SIG_OP_inst_not_ipl    +   1      
-  `define SIG_OP_mem_wen        `SIG_OP_reg_wen         +   1    
+  `define SIG_OP_mem_wen        `SIG_OP_reg_wen         +   0   
 
   `define SIG_need_imm          `SigOpWidth'h00000001
   `define SIG_is_ebreak         `SIG_need_imm        <<   1       //specia instructions
