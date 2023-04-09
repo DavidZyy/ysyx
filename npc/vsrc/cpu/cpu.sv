@@ -4,7 +4,7 @@
 import "DPI-C" function void exit_code();
 import "DPI-C" function void not_ipl_exception();
 
-`include "./include/defines.v"
+`include "../include/defines.v"
 
 /* assemble all cpu moudules into top moudule */
 module cpu(
@@ -39,7 +39,11 @@ rom inst_rom (
 wire [`Vec(`InstWidth)]	IF_ID_inst;
 wire [`Vec(`InstWidth)]	din_inst; 
 
-assign flush = (is_jal | is_jalr | (is_branch && (alu_result == 1)))? 1 : 0;
+assign flush = (sig_op_ID[`SIG_OP_is_jal]  | 
+                sig_op_ID[`SIG_OP_is_jalr] | 
+                (sig_op_ID_[`SIG_OP_is_branch] && (alu_result == 1))) ? 
+                1 : 0;
+
 assign din_inst = flush ? `NOP : inst;
 
 /* registers between if and id stage */
@@ -62,8 +66,8 @@ memory u_memory (
   .waddr      ( waddr ),
   .mem_wdata  ( mem_wdata),
   // .wmask      ( wmask),
-  .mem_wen    ( mem_wen),
-  .mem_ren    ( is_load),
+  .mem_wen    ( sig_op_ID[`SIG_OP_mem_wen]),
+  .mem_ren    ( sig_op_ID[`SIG_OP_is_load]),
   .wdt_op     ( wdt_op),
 
 	// .inst       ( inst 		),
@@ -88,21 +92,22 @@ wire [`Vec(`RegIdWidth)]	rs1;
 wire [`Vec(`RegIdWidth)]	rs2;
 wire [`Vec(`ImmWidth)]	imm;
 /* signals */
-wire 	SIG_need_imm_ID;
+// wire 	SIG_need_imm_ID;
 wire  [`Vec(`AluopWidth)] alu_op;
-wire  is_ebreak;
-wire  is_auipc;
-wire  inst_not_ipl;
-wire  is_jal;
-wire  is_jalr;
-wire  reg_wen;
-wire  mem_wen;
+// wire  is_ebreak;
+// wire  is_auipc;
+// wire  inst_not_ipl;
+// wire  sig_op_ID[`SIG_OP_is_jal];
+// wire  sig_op_ID[`SIG_OP_is_jalr];
+// wire  reg_wen;
+// wire  mem_wen;
 // wire  [7:0] wmask;
-wire  is_load;
-wire  is_branch;
+// wire  sig_op_ID[`SIG_OP_is_load];
+// wire  sig_op_ID_[`SIG_OP_is_branch];
 // wire  mem_ren;
 wire [`Vec(`WdtTypeCnt)] wdt_op;
-wire is_unsigned;
+// wire is_unsigned;
+wire [`Vec(`SigOpWidth)] sig_op_ID;
 
 decoder u_decoder(
 	//ports
@@ -112,21 +117,22 @@ decoder u_decoder(
 	.rs1      		    ( rs1      		),
 	.rs2      		    ( rs2      		),
 	.imm      		    ( imm      		),
-	.SIG_need_imm_ID 		    ( SIG_need_imm_ID 		),
+	// .SIG_need_imm_ID 		    ( SIG_need_imm_ID 		),
   .alu_op           ( alu_op      ),
-  .is_ebreak        ( is_ebreak   ),
-  .is_auipc         ( is_auipc    ),
-  .inst_not_ipl     ( inst_not_ipl),
-  .is_jal           ( is_jal ),
-  .is_jalr          ( is_jalr ),
-  .reg_wen          ( reg_wen),
-  .mem_wen          ( mem_wen),
+  // .is_ebreak        ( is_ebreak   ),
+  // .is_auipc         ( is_auipc    ),
+  // .inst_not_ipl     ( inst_not_ipl),
+  // .sig_op_ID[`SIG_OP_is_jal]           ( sig_op_ID[`SIG_OP_is_jal] ),
+  // .sig_op_ID[`SIG_OP_is_jalr]          ( sig_op_ID[`SIG_OP_is_jalr] ),
+  // .reg_wen          ( reg_wen),
+  // .mem_wen          ( mem_wen),
   // .wmask            ( wmask),
-  .is_load          ( is_load),
-  .is_branch        ( is_branch),
+  // .sig_op_ID[`SIG_OP_is_load]          ( sig_op_ID[`SIG_OP_is_load]),
+  // .sig_op_ID_[`SIG_OP_is_branch]        ( sig_op_ID_[`SIG_OP_is_branch]),
   .wdt_op           ( wdt_op),
-  .is_unsigned      ( is_unsigned)
+  // .is_unsigned      ( is_unsigned)
   // .mem_ren          ( mem_ren)
+  .sig_op_ID        (sig_op_ID )
 
 );
 
@@ -139,7 +145,8 @@ decoder u_decoder(
   is been updated. */
 always @(posedge clk) begin
 // always @(*) begin
-  if (inst_not_ipl) begin
+  // if (inst_not_ipl) begin
+  if (sig_op_ID[`SIG_OP_inst_not_ipl]) begin
     not_ipl_exception();
     // $display("instructions not implemented!");
     ;
@@ -151,7 +158,7 @@ end
 
 always @(posedge clk) begin
 // always @(*) begin
-  if (is_ebreak) begin
+  if (sig_op_ID[`SIG_OP_is_ebreak]) begin
     exit_code();
     // $display("exit code");
     // assign rd = 2;
@@ -167,9 +174,11 @@ end
 // end
 
 /* execute stage */
-// wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (current_pc + 4) : (is_load ? extended_data: alu_result);
-wire [`Vec(`ImmWidth)]	reg_wdata = (is_jal | is_jalr) ? (IF_ID_pc + 4) : (is_load ? extended_data: alu_result);
-// wire [`Vec(`ImmWidth)]	reg_wdata = is_jal ? (cur_inst_pc + 4) : alu_result;
+// wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? (current_pc + 4) : (sig_op_ID[`SIG_OP_is_load] ? extended_data: alu_result);
+// wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? (IF_ID_pc + 4) : (sig_op_ID[`SIG_OP_is_load] ? extended_data: alu_result);
+wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
+                                    (IF_ID_pc + 4) : 
+                                    (sig_op_ID[`SIG_OP_is_load] ? extended_data : alu_result);
 
 wire [`Vec(`ImmWidth)]	rdata_1;
 wire [`Vec(`ImmWidth)]	rdata_2;
@@ -184,7 +193,7 @@ u_RegisterFile(
   .clk        ( clk     ),
   .reg_wdata  ( reg_wdata   ),
   .rd         ( rd      ),
-  .reg_wen    ( reg_wen     ),
+  .reg_wen    ( sig_op_ID[`SIG_OP_reg_wen]     ),
   .rs1        ( rs1 ),
   .rs2        ( rs2 ),
 
@@ -193,10 +202,10 @@ u_RegisterFile(
 );
 
   /* input */
-// wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | is_jal) ? current_pc: rdata_1;
-wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | is_jal) ? IF_ID_pc: rdata_1;
+// wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | sig_op_ID[`SIG_OP_is_jal]) ? current_pc: rdata_1;
+wire [`Vec(`ImmWidth)]  operator_1 = (is_auipc | sig_op_ID[`SIG_OP_is_jal]) ? IF_ID_pc: rdata_1;
 // wire [`Vec(`ImmWidth)]  operator_1 = is_auipc ? cur_inst_pc : rdata_1;
-wire [`Vec(`ImmWidth)]	operator_2 = SIG_need_imm_ID ? imm : rdata_2;
+wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? imm : rdata_2;
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result;
 
@@ -209,12 +218,15 @@ Alu u_Alu(
 );
 
 
-// assign next_pc = is_jal ? (current_pc + imm) : (is_jalr ? alu_result : current_pc + 4);
+// assign next_pc = sig_op_ID[`SIG_OP_is_jal] ? (current_pc + imm) : (sig_op_ID[`SIG_OP_is_jalr] ? alu_result : current_pc + 4);
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
-assign next_pc_temp = (is_branch && (alu_result == 1)) ? (IF_ID_pc + imm) : (current_pc + 4);
-assign next_pc = (is_jal | is_jalr) ? (alu_result & ~1) : next_pc_temp;
+assign next_pc_temp = (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1)) ? 
+                      (IF_ID_pc + imm) : (current_pc + 4);
+
+assign next_pc = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
+                  (alu_result & ~1) : next_pc_temp;
 
 /* current instruction pc */
  Reg 
