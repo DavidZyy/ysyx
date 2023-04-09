@@ -239,6 +239,7 @@
   `define SIG_OP_is_jal         `SIG_OP_is_auipc
   `define SIG_OP_is_jalr        `SIG_OP_is_jal
   `define SIG_OP_is_load        `SIG_OP_is_jalr 
+  `define SIG_OP_is_branch
   `define SIG_OP_reg_wen        `SIG_OP_is_load
   `define SIG_OP_mem_wen        `SIG_OP_reg_wen
   `define SIG_OP_is_unsigned    `SIG_OP_mem_wen
