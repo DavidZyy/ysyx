@@ -54,6 +54,58 @@ IF_ID u_IF_ID (
   .IF_ID_inst (IF_ID_inst)
 );
 
+/* decode instructionn stage */
+wire [`Vec(`RegIdWidth)]	rd;
+wire [`Vec(`RegIdWidth)]	rs1;
+wire [`Vec(`RegIdWidth)]	rs2;
+wire [`Vec(`ImmWidth)]	imm;
+
+/* signals */
+wire  [`Vec(`AluopWidth)] alu_op_ID;
+wire  [`Vec(`WdtTypeCnt)] wdt_op_ID;
+wire  [`Vec(`SigOpWidth)] sig_op_ID;
+
+decoder u_decoder(
+	//ports
+	.inst     		    ( IF_ID_inst ),
+
+	.rd       		    ( rd       		),
+	.rs1      		    ( rs1      		),
+	.rs2      		    ( rs2      		),
+	.imm      		    ( imm      		),
+  .alu_op_ID           ( alu_op_ID      ),
+  .wdt_op_ID           ( wdt_op_ID),
+  .sig_op_ID        ( sig_op_ID )
+
+);
+
+/* execute stage */
+wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
+                                    (IF_ID_pc + 4) : 
+                                    (sig_op_ID[`SIG_OP_is_load] ? extended_data : alu_result);
+
+wire [`Vec(`ImmWidth)]	rdata_1;
+wire [`Vec(`ImmWidth)]	rdata_2;
+
+  /* in execute state, read register, in WB state, write back registers */
+RegisterFile 
+#(
+  .ADDR_WIDTH (`RegIdWidth),
+  .DATA_WIDTH (`RegWidth)
+)
+u_RegisterFile(
+  .clk        ( clk     ),
+  .reg_wdata  ( reg_wdata   ),
+  .rd         ( rd      ),
+  .reg_wen    ( sig_op_ID[`SIG_OP_reg_wen]     ),
+  .rs1        ( rs1 ),
+  .rs2        ( rs2 ),
+
+  .rdata_1    ( rdata_1 ),
+  .rdata_2    ( rdata_2 )
+);
+
+
 /* ram */
 memory u_memory (
 	//ports
@@ -63,7 +115,7 @@ memory u_memory (
   .mem_wdata  ( mem_wdata),
   .mem_wen    ( sig_op_ID[`SIG_OP_mem_wen]),
   .mem_ren    ( sig_op_ID[`SIG_OP_is_load]),
-  .wdt_op     ( wdt_op),
+  .wdt_op_ID     ( wdt_op_ID),
 
   .mem_rdata  ( mem_rdata)
 );
@@ -74,36 +126,13 @@ wire [`Vec(`ImmWidth)] extended_data;
 load_extend u_load_extend (
 	//ports
 	.mem_rdata 		    ( mem_rdata 		),
-	.wdt_op        		( wdt_op        		),
+	.wdt_op_ID        		( wdt_op_ID        		),
 	.is_unsigned   		( sig_op_ID[`SIG_OP_is_unsigned]   		),
 
 	.extended_data 		( extended_data 		)
 );
 
-/* decode instructionn stage */
-wire [`Vec(`RegIdWidth)]	rd;
-wire [`Vec(`RegIdWidth)]	rs1;
-wire [`Vec(`RegIdWidth)]	rs2;
-wire [`Vec(`ImmWidth)]	imm;
 
-/* signals */
-wire  [`Vec(`AluopWidth)] alu_op;
-wire [`Vec(`WdtTypeCnt)] wdt_op;
-wire [`Vec(`SigOpWidth)] sig_op_ID;
-
-decoder u_decoder(
-	//ports
-	.inst     		    ( IF_ID_inst ),
-
-	.rd       		    ( rd       		),
-	.rs1      		    ( rs1      		),
-	.rs2      		    ( rs2      		),
-	.imm      		    ( imm      		),
-  .alu_op           ( alu_op      ),
-  .wdt_op           ( wdt_op),
-  .sig_op_ID        ( sig_op_ID )
-
-);
 
 /*suppose one cycle is begin with the negtive cycle. 
   can not use negedge, because when in the edge of 
@@ -137,31 +166,7 @@ end
     // $display("pc: %x inst: %x", current_pc, inst);
 // end
 
-/* execute stage */
-wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
-                                    (IF_ID_pc + 4) : 
-                                    (sig_op_ID[`SIG_OP_is_load] ? extended_data : alu_result);
 
-wire [`Vec(`ImmWidth)]	rdata_1;
-wire [`Vec(`ImmWidth)]	rdata_2;
-
-  /* in execute state, read register, in WB state, write back registers */
-RegisterFile 
-#(
-  .ADDR_WIDTH (`RegIdWidth),
-  .DATA_WIDTH (`RegWidth)
-)
-u_RegisterFile(
-  .clk        ( clk     ),
-  .reg_wdata  ( reg_wdata   ),
-  .rd         ( rd      ),
-  .reg_wen    ( sig_op_ID[`SIG_OP_reg_wen]     ),
-  .rs1        ( rs1 ),
-  .rs2        ( rs2 ),
-
-  .rdata_1    ( rdata_1 ),
-  .rdata_2    ( rdata_2 )
-);
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
@@ -175,7 +180,7 @@ wire [`Vec(`ImmWidth)]	alu_result;
 Alu u_Alu(
 	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
-	.alu_op    		  ( alu_op    		),
+	.alu_op_ID    		  ( alu_op_ID    		),
 
 	.alu_result     ( alu_result   	)
 );

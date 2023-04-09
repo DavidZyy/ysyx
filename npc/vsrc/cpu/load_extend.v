@@ -2,7 +2,7 @@
 
 module load_extend (
   input [`Vec(`ImmWidth)]   mem_rdata,
-  input [`Vec(`WdtTypeCnt)] wdt_op,
+  input [`Vec(`WdtTypeCnt)] wdt_op_ID,
   input is_unsigned,
 
   output [`Vec(`ImmWidth)] extended_data
@@ -23,7 +23,7 @@ module load_extend (
   )
   signed_mux(
     .out(signed_out),
-    .key(wdt_op),
+    .key(wdt_op_ID),
     .lut({
     `Wdt8,   `SEXT(slice_7_0, 8),
     `Wdt16,  `SEXT(slice_15_0, 16),
@@ -40,7 +40,7 @@ module load_extend (
   )
   unsigned_mux(
     .out(unsigned_out),
-    .key(wdt_op),
+    .key(wdt_op_ID),
     .lut({
     `Wdt8,   `ZEXT(slice_7_0, 8),
     `Wdt16,  `ZEXT(slice_15_0, 16),

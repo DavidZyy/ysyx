@@ -19,8 +19,8 @@ module decoder (
   output [`Vec(`RegIdWidth)] rs2,
   output [`Vec(`ImmWidth)] imm,
   /* verilator lint_off UNDRIVEN */
-  output [`Vec(`AluopWidth)] alu_op,
-  output [`Vec(`WdtTypeCnt)] wdt_op,
+  output [`Vec(`AluopWidth)] alu_op_ID,
+  output [`Vec(`WdtTypeCnt)] wdt_op_ID,
   /* verilator lint_off UNDRIVEN */
   output [`Vec(`SigOpWidth)] sig_op_ID
 );
@@ -187,45 +187,45 @@ module decoder (
 
 /* Control Signals */
   /* alu signals */
-  assign alu_op[`AluopAdd]      = addi  | auipc | op_store | jal | jalr | add | op_load;
-  assign alu_op[`AluopSub]      = sub;
-  assign alu_op[`AluopLt]       = slti  | slt   | blt;
-  assign alu_op[`AluopLtu]      = sltiu | sltu  | bltu;
-  assign alu_op[`AluopAnd]      = andi  | and_inst;
-  assign alu_op[`AluopOr]       = ori   | or_inst;
-  assign alu_op[`AluopXor]      = xori  | xor_inst;
-  assign alu_op[`AluopSll]      = slli  | sll;
-  assign alu_op[`AluopSrl]      = srli  | srl;
-  assign alu_op[`AluopSra]      = srai  | sra;
-  assign alu_op[`AluopOutImm]   = lui;
-  assign alu_op[`AluopEq]       = beq;
-  assign alu_op[`AluopNe]       = bne;
-  assign alu_op[`AluopGe]       = bge;
-  assign alu_op[`AluopGeu]      = bgeu;
-  assign alu_op[`AluopAddw]     = addiw | addw;
-  assign alu_op[`AluopSllw]     = slliw | sllw;
-  assign alu_op[`AluopSrlw]     = srliw | srlw;
-  assign alu_op[`AluopSraw]     = sraiw | sraw;
-  assign alu_op[`AluopSubw]     = subw;
-  assign alu_op[`AluopMul]      = mul;
-  assign alu_op[`AluopMulh  ]   = mulh  ;  
-  assign alu_op[`AluopMulhsu]   = mulhsu;  
-  assign alu_op[`AluopMulhu ]   = mulhu ;  
-  assign alu_op[`AluopMulw  ]   = mulw  ;  
-  assign alu_op[`AluopDiv   ]   = div   ;  
-  assign alu_op[`AluopDivu  ]   = divu  ;  
-  assign alu_op[`AluopRem   ]   = rem   ;  
-  assign alu_op[`AluopRemu  ]   = remu  ;  
-  assign alu_op[`AluopDivw  ]   = divw  ;  
-  assign alu_op[`AluopDivuw ]   = divuw ;  
-  assign alu_op[`AluopRemw  ]   = remw  ;  
-  assign alu_op[`AluopRemuw ]   = remuw ;  
+  assign alu_op_ID[`AluopAdd]      = addi  | auipc | op_store | jal | jalr | add | op_load;
+  assign alu_op_ID[`AluopSub]      = sub;
+  assign alu_op_ID[`AluopLt]       = slti  | slt   | blt;
+  assign alu_op_ID[`AluopLtu]      = sltiu | sltu  | bltu;
+  assign alu_op_ID[`AluopAnd]      = andi  | and_inst;
+  assign alu_op_ID[`AluopOr]       = ori   | or_inst;
+  assign alu_op_ID[`AluopXor]      = xori  | xor_inst;
+  assign alu_op_ID[`AluopSll]      = slli  | sll;
+  assign alu_op_ID[`AluopSrl]      = srli  | srl;
+  assign alu_op_ID[`AluopSra]      = srai  | sra;
+  assign alu_op_ID[`AluopOutImm]   = lui;
+  assign alu_op_ID[`AluopEq]       = beq;
+  assign alu_op_ID[`AluopNe]       = bne;
+  assign alu_op_ID[`AluopGe]       = bge;
+  assign alu_op_ID[`AluopGeu]      = bgeu;
+  assign alu_op_ID[`AluopAddw]     = addiw | addw;
+  assign alu_op_ID[`AluopSllw]     = slliw | sllw;
+  assign alu_op_ID[`AluopSrlw]     = srliw | srlw;
+  assign alu_op_ID[`AluopSraw]     = sraiw | sraw;
+  assign alu_op_ID[`AluopSubw]     = subw;
+  assign alu_op_ID[`AluopMul]      = mul;
+  assign alu_op_ID[`AluopMulh  ]   = mulh  ;  
+  assign alu_op_ID[`AluopMulhsu]   = mulhsu;  
+  assign alu_op_ID[`AluopMulhu ]   = mulhu ;  
+  assign alu_op_ID[`AluopMulw  ]   = mulw  ;  
+  assign alu_op_ID[`AluopDiv   ]   = div   ;  
+  assign alu_op_ID[`AluopDivu  ]   = divu  ;  
+  assign alu_op_ID[`AluopRem   ]   = rem   ;  
+  assign alu_op_ID[`AluopRemu  ]   = remu  ;  
+  assign alu_op_ID[`AluopDivw  ]   = divw  ;  
+  assign alu_op_ID[`AluopDivuw ]   = divuw ;  
+  assign alu_op_ID[`AluopRemw  ]   = remw  ;  
+  assign alu_op_ID[`AluopRemuw ]   = remuw ;  
 
 
-  assign wdt_op[`Wdtop8]  = lb | lbu | sb;
-  assign wdt_op[`Wdtop16] = lh | lhu | sh;
-  assign wdt_op[`Wdtop32] = lw | lwu | sw;
-  assign wdt_op[`Wdtop64] = ld | sd;
+  assign wdt_op_ID[`Wdtop8]  = lb | lbu | sb;
+  assign wdt_op_ID[`Wdtop16] = lh | lhu | sh;
+  assign wdt_op_ID[`Wdtop32] = lw | lwu | sw;
+  assign wdt_op_ID[`Wdtop64] = ld | sd;
 
 
   /* a instruction needs immediate has no rs2 */

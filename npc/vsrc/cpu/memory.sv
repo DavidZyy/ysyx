@@ -15,7 +15,7 @@ module memory (
     // input [7:0] wmask,
     input mem_wen,
     input mem_ren,
-    input [`Vec(`WdtTypeCnt)] wdt_op,
+    input [`Vec(`WdtTypeCnt)] wdt_op_ID,
 
     // output [`Vec(`InstWidth)] inst,
     output [`Vec(`ImmWidth)] mem_rdata
@@ -48,7 +48,7 @@ module memory (
     )
     wmask_mux(
       .out(wmask),
-      .key(wdt_op),
+      .key(wdt_op_ID),
       .lut({
         `Wdt8,   8'h01,
         `Wdt16,  8'h03,
@@ -153,7 +153,7 @@ module memory (
     )
     rdata_mux(
       .out(mem_rdata),
-      .key(wdt_op),
+      .key(wdt_op_ID),
       .lut({
         `Wdt8,   width_8_out,
         `Wdt16,  width_16_out,
