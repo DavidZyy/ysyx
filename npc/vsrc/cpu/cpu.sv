@@ -51,7 +51,7 @@ IF_ID u_IF_ID (
 );
 
 /* decode instructionn stage */
-wire [`Vec(`RegIdWidth)]	rd;
+wire [`Vec(`RegIdWidth)]	rd_ID;
 wire [`Vec(`RegIdWidth)]	rs1;
 wire [`Vec(`RegIdWidth)]	rs2;
 wire [`Vec(`ImmWidth)]	  imm_ID;
@@ -65,7 +65,7 @@ decoder u_decoder(
 	//ports
 	.inst     		    ( inst_ID ),
 
-	.rd       		    ( rd       		),
+	.rd       		    ( rd_ID       		),
 	.rs1      		    ( rs1      		),
 	.rs2      		    ( rs2      		),
 	.imm_ID      		  ( imm_ID     	),
@@ -92,7 +92,7 @@ RegisterFile
 u_RegisterFile(
   .clk        ( clk     ),
   .reg_wdata  ( reg_wdata   ),
-  .rd         ( rd      ),
+  .rd         ( rd_ID      ),
   .reg_wen    ( sig_op_ID[`SIG_OP_reg_wen]     ),
   .rs1        ( rs1 ),
   .rs2        ( rs2 ),
