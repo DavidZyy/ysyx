@@ -7,7 +7,7 @@
   script to generate verilog codes automaticallly when add new
   instruction
 */
-`include "../include/defines.v"
+`include "./include/defines.v"
 
 /* The way of naming signals: begin with SIG_ end with it's stage, such as _ID */
 

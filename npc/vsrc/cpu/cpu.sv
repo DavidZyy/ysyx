@@ -4,7 +4,7 @@
 import "DPI-C" function void exit_code();
 import "DPI-C" function void not_ipl_exception();
 
-`include "../include/defines.v"
+`include "./include/defines.v"
 
 /* assemble all cpu moudules into top moudule */
 module cpu(
