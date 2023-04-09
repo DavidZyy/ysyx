@@ -11,12 +11,12 @@ module cpu(
   input clk,
   input rst,
 
-  output [`Vec(`ImmWidth)] pc_IF,
-  output [`Vec(`ImmWidth)] next_pc,
+  output [`Vec(`ImmWidth)]  pc_IF,
+  output [`Vec(`ImmWidth)]  next_pc,
   output [`Vec(`InstWidth)]	inst,
   output flush,
 
-  output [`Vec(`ImmWidth)] pc_ID
+  output [`Vec(`ImmWidth)]  pc_ID
 );
 
 
@@ -45,20 +45,20 @@ assign inst_IF = flush ? `NOP : inst;
 
 /* registers between if and id stage */
 IF_ID u_IF_ID (
-  .clk (clk),
-  .rst (rst),
-  .pc_IF (pc_IF),
-  .inst_IF (inst_IF),
+  .clk      ( clk),
+  .rst      ( rst),
+  .pc_IF    ( pc_IF),
+  .inst_IF  ( inst_IF),
 
-  .pc_ID (pc_ID),
-  .inst_ID (inst_ID)
+  .pc_ID    ( pc_ID),
+  .inst_ID  ( inst_ID)
 );
 
 /* decode instructionn stage */
 wire [`Vec(`RegIdWidth)]	rd;
 wire [`Vec(`RegIdWidth)]	rs1;
 wire [`Vec(`RegIdWidth)]	rs2;
-wire [`Vec(`ImmWidth)]	imm;
+wire [`Vec(`ImmWidth)]	  imm;
 
 /* signals */
 wire  [`Vec(`AluopWidth)] alu_op_ID;
@@ -115,7 +115,7 @@ memory u_memory (
   .mem_wdata  ( mem_wdata),
   .mem_wen    ( sig_op_ID[`SIG_OP_mem_wen]),
   .mem_ren    ( sig_op_ID[`SIG_OP_is_load]),
-  .wdt_op_ID     ( wdt_op_ID),
+  .wdt_op_ID  ( wdt_op_ID),
 
   .mem_rdata  ( mem_rdata)
 );
@@ -126,7 +126,7 @@ wire [`Vec(`ImmWidth)] extended_data;
 load_extend u_load_extend (
 	//ports
 	.mem_rdata 		    ( mem_rdata 		),
-	.wdt_op_ID        		( wdt_op_ID        		),
+	.wdt_op_ID        ( wdt_op_ID        		),
 	.is_unsigned   		( sig_op_ID[`SIG_OP_is_unsigned]   		),
 
 	.extended_data 		( extended_data 		)
@@ -180,7 +180,7 @@ wire [`Vec(`ImmWidth)]	alu_result;
 Alu u_Alu(
 	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
-	.alu_op_ID    		  ( alu_op_ID    		),
+	.alu_op_ID    	( alu_op_ID    		),
 
 	.alu_result     ( alu_result   	)
 );
