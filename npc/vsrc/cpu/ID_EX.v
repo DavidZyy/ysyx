@@ -42,7 +42,7 @@ module ID_EX (
   .WIDTH     (`WdtTypeCnt),
   .RESET_VAL (0)
  )
- alu_op_EX_reg(
+ wdt_op_EX_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (wdt_op_ID),
@@ -56,7 +56,7 @@ module ID_EX (
   .WIDTH     (`SigOpWidth),
   .RESET_VAL (0)
  )
- alu_op_EX_reg(
+ sig_op_EX_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (sig_op_ID),
@@ -70,7 +70,7 @@ module ID_EX (
   .WIDTH     (`ImmWidth),
   .RESET_VAL (0)
  )
- alu_op_EX_reg(
+ imm_EX_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (imm_ID),
@@ -84,7 +84,7 @@ module ID_EX (
   .WIDTH     (`ImmWidth),
   .RESET_VAL (0)
  )
- alu_op_EX_reg(
+ rdata_1_EX_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (rdata_1_ID),
@@ -98,7 +98,7 @@ module ID_EX (
   .WIDTH     (`ImmWidth),
   .RESET_VAL (0)
  )
- alu_op_EX_reg(
+ rdata_2_EX_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (rdata_2_ID),
@@ -112,7 +112,7 @@ module ID_EX (
   .WIDTH     (`ImmWidth),
   .RESET_VAL (0)
  )
- alu_op_EX_reg(
+ pc_EX_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (pc_ID),
@@ -126,7 +126,7 @@ module ID_EX (
   .WIDTH     (`InstWidth),
   .RESET_VAL (0)
  )
- alu_op_EX_reg(
+ inst_EX_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (inst_ID),
