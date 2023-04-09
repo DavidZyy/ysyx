@@ -12,6 +12,7 @@ module ID_EX (
     input      [`Vec(`ImmWidth)]	 rdata_2_ID,
     input      [`Vec(`ImmWidth)]   pc_ID,
     input      [`Vec(`InstWidth)]  inst_ID,
+    input      flush_ID,
     
     output      [`Vec(`AluopWidth)]  alu_op_EX,
     output      [`Vec(`WdtTypeCnt)]  wdt_op_EX,
@@ -20,7 +21,8 @@ module ID_EX (
     output      [`Vec(`ImmWidth)]	   rdata_1_EX,
     output      [`Vec(`ImmWidth)]	   rdata_2_EX,
     output      [`Vec(`ImmWidth)]    pc_EX,
-    output      [`Vec(`InstWidth)]   inst_EX
+    output      [`Vec(`InstWidth)]   inst_EX,
+    output      flush_EX
 );
 
  Reg 

@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
   for(i = 0; i < times; i++){
     single_cycle(0); 
     get_cpu();
-    if(top->flush) {
+    if(top->flush_ID) {
       /* run nop inst */
       single_cycle(0);
     } 
