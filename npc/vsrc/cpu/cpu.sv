@@ -105,11 +105,11 @@ u_RegisterFile(
 wire [`Vec(`AluopWidth)]	alu_op_EX;
 wire [`Vec(`WdtTypeCnt)]	wdt_op_EX;
 wire [`Vec(`SigOpWidth)]	sig_op_EX;
-wire [`Vec(`ImmWidth)]	imm_EX;
-wire [`Vec(`ImmWidth)]	rdata_1_EX;
-wire [`Vec(`ImmWidth)]	rdata_2_EX;
-wire [`Vec(`ImmWidth)]	pc_EX;
-wire [`Vec(`InstWidth)]	inst_EX;
+wire [`Vec(`ImmWidth)]	  imm_EX;
+wire [`Vec(`ImmWidth)]	  rdata_1_EX;
+wire [`Vec(`ImmWidth)]	  rdata_2_EX;
+wire [`Vec(`ImmWidth)]	  pc_EX;
+wire [`Vec(`InstWidth)]  	inst_EX;
 wire [`Vec(`RegIdWidth)]	rd_EX;
 
 ID_EX u_ID_EX(
