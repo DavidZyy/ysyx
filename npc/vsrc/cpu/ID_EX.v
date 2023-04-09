@@ -137,4 +137,18 @@ module ID_EX (
   .dout (inst_EX)
  );
  
+ Reg 
+ #(
+  .WIDTH     (1),
+  .RESET_VAL (0)
+ )
+ flush_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (flush_ID),
+  .wen  (1'b1),
+
+  .dout (flush_EX)
+ );
+
 endmodule //ID_EX
