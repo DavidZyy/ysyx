@@ -9,6 +9,7 @@
 */
 `include "./include/defines.v"
 
+/* The way of naming signals: begin with SIG_ end with it's stage, such as _ID */
 
 module decoder (
   input [`Vec(`InstWidth)] inst,
@@ -17,22 +18,11 @@ module decoder (
   output [`Vec(`RegIdWidth)] rs1,
   output [`Vec(`RegIdWidth)] rs2,
   output [`Vec(`ImmWidth)] imm,
-  output need_imm,
   /* verilator lint_off UNDRIVEN */
   output [`Vec(`AluopWidth)] alu_op,
-  output is_ebreak,
-  output is_auipc,
-  output inst_not_ipl,
-  output is_jal,
-  output is_jalr,
-  output reg_wen,
-  output mem_wen,
-  // output [7:0] wmask,
-  output is_load,
-  output is_branch,
-  // output mem_ren
   output [`Vec(`WdtTypeCnt)] wdt_op,
-  output is_unsigned
+  /* verilator lint_off UNDRIVEN */
+  output [`Vec(`SigOpWidth)] sig_op_ID
 );
 
 /* decode infos */
@@ -231,36 +221,31 @@ module decoder (
   assign alu_op[`AluopRemw  ]   = remw  ;  
   assign alu_op[`AluopRemuw ]   = remuw ;  
 
-  /* a instruction needs immediate has no rs2 */
-  assign need_imm = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
-
-
-  /* special instruction signals */
-  assign is_ebreak  = ebreak;
-  assign is_auipc   = auipc;
-  assign is_jal     = jal;
-  assign is_jalr    = jalr;
-  assign is_load    = op_load;
-  assign is_branch  = op_branch;
-
-  /* write enable */
-  assign reg_wen = op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | op_load;
-  assign mem_wen = op_store;
-
-  // assign wmask = sd ?  8'hff : 0;
 
   assign wdt_op[`Wdtop8]  = lb | lbu | sb;
   assign wdt_op[`Wdtop16] = lh | lhu | sh;
   assign wdt_op[`Wdtop32] = lw | lwu | sw;
   assign wdt_op[`Wdtop64] = ld | sd;
 
-  assign is_unsigned = lbu | lhu | lwu;
+
+  /* a instruction needs immediate has no rs2 */
+  assign sig_op_ID[`SIG_OP_need_imm] = op_imm | op_imm_32 | lui | auipc | op_store | jal | jalr | op_load;
+
+  /* special instruction signals */
+  assign sig_op_ID[`SIG_OP_is_ebreak    ] = ebreak;
+  assign sig_op_ID[`SIG_OP_is_auipc     ] = auipc;
+  assign sig_op_ID[`SIG_OP_is_jal       ] = jal;
+  assign sig_op_ID[`SIG_OP_is_jalr      ] = jalr;
+  assign sig_op_ID[`SIG_OP_is_load      ] = op_load;
+  assign sig_op_ID[`SIG_OP_is_branch    ] = op_branch;
+  assign sig_op_ID[`SIG_OP_is_unsigned  ] = lbu | lhu | lwu;
 
   /* exception signals */
-  /* this signal seems silly, but it is useful, 
-    according to the principle "implement first, and than 
-    perfect it", we just use it. */
-  assign inst_not_ipl = ~(ebreak | auipc | lui | jal | jalr | op_store
+  assign sig_op_ID[`SIG_OP_inst_not_ipl ] = ~(ebreak | auipc | lui | jal | jalr | op_store
   | op_load | op_imm | op_op | op_branch | op_imm_32 | op_32 | ( inst == 0));
+
+  /* write enable signals */
+  assign sig_op_ID[`SIG_OP_reg_wen      ]= op_imm | op_imm_32 | lui | auipc | op_op | op_32 |  jal | jalr | op_load;
+  assign sig_op_ID[`SIG_OP_mem_wen      ]= op_store;
 
 endmodule

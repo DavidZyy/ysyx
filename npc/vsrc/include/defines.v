@@ -228,3 +228,33 @@
   `define Wdt16   `WdtTypeCnt'h2
   `define Wdt32   `WdtTypeCnt'h4    
   `define Wdt64   `WdtTypeCnt'h8
+
+  /* signals, for the elegant of codes, I write it in this way */
+  `define SigOpWidth    32
+
+  /* signal options */
+  `define SIG_OP_need_imm       0
+  `define SIG_OP_is_ebreak      `SIG_OP_need_imm        +   1       //specia instructions
+  `define SIG_OP_is_auipc       `SIG_OP_is_ebreak       +   1
+  `define SIG_OP_is_jal         `SIG_OP_is_auipc        +   1      
+  `define SIG_OP_is_jalr        `SIG_OP_is_jal          +   1    
+  `define SIG_OP_is_load        `SIG_OP_is_jalr         +   1      
+  `define SIG_OP_is_branch      `SIG_OP_is_load         +   1    
+  `define SIG_OP_is_unsigned    `SIG_OP_is_branch       +   1    
+  `define SIG_OP_inst_not_ipl   `SIG_OP_is_unsigned     +   1
+  `define SIG_OP_reg_wen        `SIG_OP_inst_not_ipl    +   1      
+  `define SIG_OP_mem_wen        `SIG_OP_reg_wen         +   1   
+
+  `define SIG_need_imm          `SigOpWidth'h00000001
+  `define SIG_is_ebreak         `SIG_need_imm        <<   1       //specia instructions
+  `define SIG_is_auipc          `SIG_is_ebreak       <<   1
+  `define SIG_is_jal            `SIG_is_auipc        <<   1      
+  `define SIG_is_jalr           `SIG_is_jal          <<   1    
+  `define SIG_is_load           `SIG_is_jalr         <<   1      
+  `define SIG_is_branch         `SIG_is_load         <<   1    
+  `define SIG_is_unsigned       `SIG_is_branch       <<   1    
+  `define SIG_inst_not_ipl      `SIG_is_unsigned     <<   1
+  `define SIG_reg_wen           `SIG_inst_not_ipl    <<   1      
+  `define SIG_mem_wen           `SIG_reg_wen         <<   1    
+
+ 
