@@ -23,7 +23,7 @@ module load_extend (
   )
   signed_mux(
     .out(signed_out),
-    .key(wdt_op_ID),
+    .key(wdt_op),
     .lut({
     `Wdt8,   `SEXT(slice_7_0, 8),
     `Wdt16,  `SEXT(slice_15_0, 16),
@@ -40,7 +40,7 @@ module load_extend (
   )
   unsigned_mux(
     .out(unsigned_out),
-    .key(wdt_op_ID),
+    .key(wdt_op),
     .lut({
     `Wdt8,   `ZEXT(slice_7_0, 8),
     `Wdt16,  `ZEXT(slice_15_0, 16),
