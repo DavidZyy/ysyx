@@ -228,8 +228,6 @@ load_extend u_load_extend (
 	.extended_data 		( extended_data 		)
 );
 
-
-
 /*suppose one cycle is begin with the negtive cycle. 
   can not use negedge, because when in the edge of 
   neg, the pc and instructions update, but the update

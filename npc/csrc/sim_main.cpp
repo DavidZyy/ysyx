@@ -142,8 +142,8 @@ int main(int argc, char *argv[]) {
     get_cpu();
 
     /* run nop inst */
-    // if(top->flush_ID)
-    while (top->flush)
+    if(top->flush)
+    // while (top->flush)
       single_cycle(0);
     
     
