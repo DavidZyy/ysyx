@@ -38,9 +38,10 @@ wire flush;
 assign flush = flush_ID | flush_EX;
 
 assign flush_ID = (sig_op_ID[`SIG_OP_is_jal]  | 
-                   sig_op_ID[`SIG_OP_is_jalr] | 
-                   (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1))) ? 
+                   sig_op_ID[`SIG_OP_is_jalr]) ?
                    1 : 0;
+                  //  (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1))) ? 
+                  //  1 : 0;
 
 assign inst_IF = flush ? `NOP : inst;
 // assign inst_IF = (flush_ID) ? `NOP : inst;
@@ -166,6 +167,9 @@ ID_EX u_ID_EX(
   .flush_EX       ( flush_EX      ),
   .rd_EX          ( rd_EX         )
 );
+
+/* alu_result will get on EX stage */
+wire flush_EX_temp = flush_EX | (sig_op_EX[`SIG_OP_is_branch] && (alu_result == 1));
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`SIG_OP_is_jal]) ? 
