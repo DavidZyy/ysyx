@@ -171,7 +171,8 @@ ID_EX u_ID_EX(
   .rd_EX          ( rd_EX         )
 );
 
-/* alu_result will get on EX stage */
+/* alu_result which will be used by branch will get on EX stage, 
+  we can also add an extra alu in decode stage to get the result of branch */
 assign flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result == 1));
 
   /* input */
