@@ -145,6 +145,7 @@ int main(int argc, char *argv[]) {
     /* run nop inst */
     if(top->flush){
       single_cycle(0);
+      difftest_step();
       single_cycle(0);
     }
     // while (top->flush)
