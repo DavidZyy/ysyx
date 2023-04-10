@@ -16,7 +16,7 @@ module cpu(
   output [`Vec(`InstWidth)]	inst,
   output flush_ID,
   output flush_EX,
-  output [`Vec(`ImmWidth)]  pc_ID
+  output [`Vec(`ImmWidth)]  pc_EX
 );
 
 /* IF, instructions fetch stage, rom. */
@@ -30,6 +30,7 @@ rom inst_rom (
 /* verilator lint_off UNUSEDSIGNAL */
 wire [`Vec(`InstWidth)]	inst_ID;
 wire [`Vec(`InstWidth)]	inst_IF;
+wire [`Vec(`ImmWidth)]  pc_ID;
 
 assign flush_ID = (sig_op_ID[`SIG_OP_is_jal]  | 
                    sig_op_ID[`SIG_OP_is_jalr] | 
