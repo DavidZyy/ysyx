@@ -60,7 +60,7 @@ int terminal = 0;
 void exit_code(){
   terminal = 1;
   printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
-        (void *)top->pc_ID);
+        (void *)top->pc_EX);
         // (void *)top->pc_IF);
 }
 
@@ -113,7 +113,7 @@ void get_cpu() {
     cpu.gpr[i] = cpu_gpr[i];
   }
   // cpu.pc = top->pc_IF;
-  cpu.pc = top->pc_ID;
+  cpu.pc = top->pc_EX;
 }
 // 当nemu的pc和npc的pc_IF为xxxx时，说明这个地址的指令还没有执行。
 /** * The single cycle time series design refers: * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9 */
