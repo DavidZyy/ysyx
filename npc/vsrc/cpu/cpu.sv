@@ -144,7 +144,7 @@ wire [`Vec(`ImmWidth)]	rdata_2_ID = rdata_2_forward ? alu_result : rdata_2;
 ID_EX u_ID_EX(
 	//ports
 	.clk        		( clk        		),
-	.rst        		( rst        		),
+	.rst        		( rst | flush_EX       		),
 	.alu_op_ID  		( alu_op_ID  		),
 	.wdt_op_ID  		( wdt_op_ID  		),
 	.sig_op_ID  		( sig_op_ID  		),
