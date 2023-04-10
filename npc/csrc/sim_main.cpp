@@ -145,6 +145,7 @@ int main(int argc, char *argv[]) {
     if(top->flush){
       single_cycle(0);
       single_cycle(0);
+      single_cycle(0);
 
     }
     // while (top->flush)
