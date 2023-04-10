@@ -29,7 +29,7 @@ rom inst_rom (
 
 /* verilator lint_off UNUSEDSIGNAL */
 wire [`Vec(`InstWidth)]	inst_ID;
-wire [`Vec(`InstWidth)]	inst_IF; 
+wire [`Vec(`InstWidth)]	inst_IF;
 
 assign flush_ID = (sig_op_ID[`SIG_OP_is_jal]  | 
                    sig_op_ID[`SIG_OP_is_jalr] | 
