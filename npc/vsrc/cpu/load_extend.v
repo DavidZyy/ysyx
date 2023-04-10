@@ -1,8 +1,8 @@
-`include "./include/defines.v"
+`include "./include/definesls.v"
 
 module load_extend (
   input [`Vec(`ImmWidth)]   mem_rdata,
-  input [`Vec(`WdtTypeCnt)] wdt_op_ID,
+  input [`Vec(`WdtTypeCnt)] wdt_op,
   input is_unsigned,
 
   output [`Vec(`ImmWidth)] extended_data

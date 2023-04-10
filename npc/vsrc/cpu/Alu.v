@@ -3,7 +3,7 @@
 module Alu (
     input  [`Vec(`ImmWidth)]    operator_1,
     input  [`Vec(`ImmWidth)]    operator_2,
-    input  [`Vec(`AluopWidth)]  alu_op_ID,
+    input  [`Vec(`AluopWidth)]  alu_op,
 
     output [`Vec(`ImmWidth)]    alu_result
 );
