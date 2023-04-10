@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
       single_cycle(0);
     } 
     
-    if(i) difftest_step();
+    if( i > 1) difftest_step();
     // dump_gpr();
     if(terminal)
       break;
