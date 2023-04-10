@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
       // single_cycle(0);
     // }
     // while (top->flush)
-    if(top->flush)
+    if(top->flush_EX)
       begin = 1;
     
     
