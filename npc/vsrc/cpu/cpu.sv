@@ -27,7 +27,6 @@ rom inst_rom (
   .inst (inst)
 );
 
-
 /* verilator lint_off UNUSEDSIGNAL */
 wire [`Vec(`InstWidth)]	inst_ID;
 wire [`Vec(`InstWidth)]	inst_IF;
@@ -125,8 +124,6 @@ forwarding u_forwarding(
 	.rdata_2_forward 		( rdata_2_forward 		)
 );
 
-
-
 wire [`Vec(`AluopWidth)]	alu_op_EX;
 wire [`Vec(`WdtTypeCnt)]	wdt_op_EX;
 wire [`Vec(`SigOpWidth)]	sig_op_EX;
@@ -138,8 +135,13 @@ wire [`Vec(`InstWidth)]  	inst_EX;
 wire [`Vec(`RegIdWidth)]	rd_EX;
 wire flush_EX_temp;
 
-wire [`Vec(`ImmWidth)]	rdata_1_ID = rdata_1_forward ? alu_result : rdata_1;
-wire [`Vec(`ImmWidth)]	rdata_2_ID = rdata_2_forward ? alu_result : rdata_2;
+wire [`Vec(`ImmWidth)]	rdata_1_ID = (~rdata_1_forward) ? 
+                                      rdata_1 : 
+                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata : alu_result);
+
+wire [`Vec(`ImmWidth)]	rdata_2_ID = (~rdata_2_forward) ? 
+                                      rdata_2 : 
+                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata : alu_result);
 
 ID_EX u_ID_EX(
 	//ports
