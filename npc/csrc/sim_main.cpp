@@ -141,17 +141,15 @@ int main(int argc, char *argv[]) {
     single_cycle(0); 
     get_cpu();
 
+    if( i > 1) difftest_step();
     /* run nop inst */
     if(top->flush){
       single_cycle(0);
       single_cycle(0);
-      single_cycle(0);
-
     }
     // while (top->flush)
     
     
-    if( i > 1) difftest_step();
     // dump_gpr();
     if(terminal)
       break;
