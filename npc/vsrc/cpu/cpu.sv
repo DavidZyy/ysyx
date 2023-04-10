@@ -136,7 +136,7 @@ wire [`Vec(`ImmWidth)]	  rdata_2_EX;
 // wire [`Vec(`ImmWidth)]	  pc_EX;
 wire [`Vec(`InstWidth)]  	inst_EX;
 wire [`Vec(`RegIdWidth)]	rd_EX;
-// wire flush_EX;
+wire flush_EX_temp;
 
 wire [`Vec(`ImmWidth)]	rdata_1_ID = rdata_1_forward ? alu_result : rdata_1;
 wire [`Vec(`ImmWidth)]	rdata_2_ID = rdata_2_forward ? alu_result : rdata_2;
@@ -164,12 +164,12 @@ ID_EX u_ID_EX(
 	.rdata_2_EX 		( rdata_2_EX 		),
 	.pc_EX      		( pc_EX      		),
 	.inst_EX    		( inst_EX    		),
-  .flush_EX       ( flush_EX      ),
+  .flush_EX       ( flush_EX_temp      ),
   .rd_EX          ( rd_EX         )
 );
 
 /* alu_result will get on EX stage */
-wire flush_EX_temp = flush_EX | (sig_op_EX[`SIG_OP_is_branch] && (alu_result == 1));
+wire flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result == 1));
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`SIG_OP_is_jal]) ? 
