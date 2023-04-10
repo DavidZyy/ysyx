@@ -89,8 +89,8 @@ wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_EX[`SIG_OP_is_jal] | sig_op_EX[`SIG_O
                                     (pc_EX + 4) : 
                                     (sig_op_EX[`SIG_OP_is_load] ? extended_data : alu_result);
 
-wire [`Vec(`ImmWidth)]	rdata_1_ID;
-wire [`Vec(`ImmWidth)]	rdata_2_ID;
+wire [`Vec(`ImmWidth)]	rdata_1;
+wire [`Vec(`ImmWidth)]	rdata_2;
 
   /* in execute state, read register, in WB state, write back registers */
 RegisterFile 
@@ -101,14 +101,28 @@ RegisterFile
 u_RegisterFile(
   .clk        ( clk     ),
   .reg_wdata  ( reg_wdata   ),
-  .rd         ( rd_ID      ),
+  .rd         ( rd_EX      ),
   .reg_wen    ( sig_op_EX[`SIG_OP_reg_wen] ),
   .rs1        ( rs1 ),
   .rs2        ( rs2 ),
 
-  .rdata_1    ( rdata_1_ID ),
-  .rdata_2    ( rdata_2_ID )
+  .rdata_1    ( rdata_1 ),
+  .rdata_2    ( rdata_2 )
 );
+
+wire 	rdata_1_forward;
+wire 	rdata_2_forward;
+
+forwarding u_forwarding(
+	//ports
+	.rs1             		( rs1             		),
+	.rs2             		( rs2             		),
+	.rd_EX           		( rd_EX           		),
+
+	.rdata_1_forward 		( rdata_1_forward 		),
+	.rdata_2_forward 		( rdata_2_forward 		)
+);
+
 
 
 wire [`Vec(`AluopWidth)]	alu_op_EX;
@@ -121,6 +135,9 @@ wire [`Vec(`ImmWidth)]	  rdata_2_EX;
 wire [`Vec(`InstWidth)]  	inst_EX;
 wire [`Vec(`RegIdWidth)]	rd_EX;
 wire flush_EX;
+
+wire [`Vec(`ImmWidth)]	rdata_1_ID = rdata_1_forward ? alu_result : rdata_1;
+wire [`Vec(`ImmWidth)]	rdata_2_ID = rdata_2_forward ? alu_result : rdata_2;
 
 ID_EX u_ID_EX(
 	//ports
@@ -158,7 +175,7 @@ wire [`Vec(`ImmWidth)]	operator_2 = sig_op_EX[`SIG_OP_need_imm] ?
 
 // wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
 //                                       pc_ID : rdata_1_ID;
-// 
+
 // wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? 
 //                                       imm_ID : rdata_2_ID;
 

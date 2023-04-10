@@ -6,6 +6,7 @@
   Add a new instructions is not convenient, I plan to write a 
   script to generate verilog codes automaticallly when add new
   instruction
+  control unit
 */
 `include "./include/defines.v"
 
