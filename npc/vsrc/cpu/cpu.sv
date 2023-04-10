@@ -32,6 +32,7 @@ rom inst_rom (
 wire [`Vec(`InstWidth)]	inst_ID;
 wire [`Vec(`InstWidth)]	inst_IF;
 wire [`Vec(`ImmWidth)]  pc_ID;
+wire flush_ID;
 
 assign flush = flush_ID | flush_EX;
 
@@ -115,6 +116,7 @@ wire [`Vec(`ImmWidth)]	  rdata_2_EX;
 // wire [`Vec(`ImmWidth)]	  pc_EX;
 wire [`Vec(`InstWidth)]  	inst_EX;
 wire [`Vec(`RegIdWidth)]	rd_EX;
+wire flush_EX;
 
 ID_EX u_ID_EX(
 	//ports
