@@ -14,8 +14,9 @@ module cpu(
   output [`Vec(`ImmWidth)]  pc_IF,
   output [`Vec(`ImmWidth)]  next_pc,
   output [`Vec(`InstWidth)]	inst,
-  output flush_ID,
-  output flush_EX,
+  // output flush_ID,
+  // output flush_EX,
+  output flush,
   output [`Vec(`ImmWidth)]  pc_EX
 );
 
@@ -32,13 +33,15 @@ wire [`Vec(`InstWidth)]	inst_ID;
 wire [`Vec(`InstWidth)]	inst_IF;
 wire [`Vec(`ImmWidth)]  pc_ID;
 
+assign flush = flush_ID | flush_EX;
+
 assign flush_ID = (sig_op_ID[`SIG_OP_is_jal]  | 
                    sig_op_ID[`SIG_OP_is_jalr] | 
                    (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1))) ? 
                    1 : 0;
 
-// assign inst_IF = (flush_ID | flush_EX) ? `NOP : inst;
-assign inst_IF = (flush_ID) ? `NOP : inst;
+assign inst_IF = (flush_ID | flush_EX) ? `NOP : inst;
+// assign inst_IF = (flush_ID) ? `NOP : inst;
 
 /* registers between if and id stage */
 IF_ID u_IF_ID (

@@ -140,10 +140,12 @@ int main(int argc, char *argv[]) {
   for(i = 0; i < times; i++){
     single_cycle(0); 
     get_cpu();
-    if(top->flush_ID) {
-      /* run nop inst */
+
+    /* run nop inst */
+    // if(top->flush_ID)
+    while (top->flush)
       single_cycle(0);
-    } 
+    
     
     if( i > 1) difftest_step();
     // dump_gpr();
