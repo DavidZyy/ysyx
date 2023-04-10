@@ -135,11 +135,12 @@ wire [`Vec(`InstWidth)]  	inst_EX;
 wire [`Vec(`RegIdWidth)]	rd_EX;
 wire flush_EX_temp;
 
-wire [`Vec(`ImmWidth)]	rdata_1_ID = (~rdata_1_forward) ? 
+/* branch not write rd */
+wire [`Vec(`ImmWidth)]	rdata_1_ID = ((~rdata_1_forward) | sig_op_EX[`SIG_OP_is_branch]) ? 
                                       rdata_1 : 
                                       (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
 
-wire [`Vec(`ImmWidth)]	rdata_2_ID = (~rdata_2_forward) ? 
+wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward) | sig_op_EX[`SIG_OP_is_branch]) ? 
                                       rdata_2 : 
                                       (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
 
