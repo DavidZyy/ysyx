@@ -84,11 +84,11 @@ decoder u_decoder(
 /* execute stage */
 // wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
                                     // (pc_ID + 4) : 
-                                    // (sig_op_ID[`SIG_OP_is_load] ? extended_data : alu_result);
+                                    // (sig_op_ID[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
 
 wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_EX[`SIG_OP_is_jal] | sig_op_EX[`SIG_OP_is_jalr]) ? 
                                     (pc_EX + 4) : 
-                                    (sig_op_EX[`SIG_OP_is_load] ? extended_data : alu_result);
+                                    (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
 
 wire [`Vec(`ImmWidth)]	rdata_1;
 wire [`Vec(`ImmWidth)]	rdata_2;
@@ -137,11 +137,11 @@ wire flush_EX_temp;
 
 wire [`Vec(`ImmWidth)]	rdata_1_ID = (~rdata_1_forward) ? 
                                       rdata_1 : 
-                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata : alu_result);
+                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
 
 wire [`Vec(`ImmWidth)]	rdata_2_ID = (~rdata_2_forward) ? 
                                       rdata_2 : 
-                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata : alu_result);
+                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
 
 ID_EX u_ID_EX(
 	//ports
@@ -222,7 +222,7 @@ memory u_memory (
 );
 
 
-wire [`Vec(`ImmWidth)] extended_data;
+wire [`Vec(`ImmWidth)] mem_rdata_extended;
 
 load_extend u_load_extend (
 	//ports
@@ -232,7 +232,7 @@ load_extend u_load_extend (
 	.is_unsigned   		( sig_op_EX[`SIG_OP_is_unsigned]   		),
 	// .is_unsigned   		( sig_op_ID[`SIG_OP_is_unsigned]   		),
 
-	.extended_data 		( extended_data )
+	.mem_rdata_extended 		( mem_rdata_extended )
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
