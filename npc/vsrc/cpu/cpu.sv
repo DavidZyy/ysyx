@@ -81,9 +81,13 @@ decoder u_decoder(
 );
 
 /* execute stage */
-wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
-                                    (pc_ID + 4) : 
-                                    (sig_op_ID[`SIG_OP_is_load] ? extended_data : alu_result);
+// wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
+                                    // (pc_ID + 4) : 
+                                    // (sig_op_ID[`SIG_OP_is_load] ? extended_data : alu_result);
+
+wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_EX[`SIG_OP_is_jal] | sig_op_EX[`SIG_OP_is_jalr]) ? 
+                                    (pc_EX + 4) : 
+                                    (sig_op_EX[`SIG_OP_is_load] ? extended_data : alu_result);
 
 wire [`Vec(`ImmWidth)]	rdata_1_ID;
 wire [`Vec(`ImmWidth)]	rdata_2_ID;
@@ -98,7 +102,7 @@ u_RegisterFile(
   .clk        ( clk     ),
   .reg_wdata  ( reg_wdata   ),
   .rd         ( rd_ID      ),
-  .reg_wen    ( sig_op_ID[`SIG_OP_reg_wen]     ),
+  .reg_wen    ( sig_op_EX[`SIG_OP_reg_wen] ),
   .rs1        ( rs1 ),
   .rs2        ( rs2 ),
 
