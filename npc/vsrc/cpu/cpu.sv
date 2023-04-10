@@ -135,7 +135,7 @@ wire [`Vec(`ImmWidth)]	  rdata_2_EX;
 // wire [`Vec(`ImmWidth)]	  pc_EX;
 wire [`Vec(`InstWidth)]  	inst_EX;
 wire [`Vec(`RegIdWidth)]	rd_EX;
-wire flush_EX;
+// wire flush_EX;
 
 wire [`Vec(`ImmWidth)]	rdata_1_ID = rdata_1_forward ? alu_result : rdata_1;
 wire [`Vec(`ImmWidth)]	rdata_2_ID = rdata_2_forward ? alu_result : rdata_2;
