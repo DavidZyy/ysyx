@@ -140,11 +140,18 @@ ID_EX u_ID_EX(
 );
 
   /* input */
-wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`SIG_OP_is_jal]) ? 
-                                      pc_EX : rdata_1_EX;
+// wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`SIG_OP_is_jal]) ? 
+//                                       pc_EX : rdata_1_EX;
+// 
+// wire [`Vec(`ImmWidth)]	operator_2 = sig_op_EX[`SIG_OP_need_imm] ? 
+//                                       imm_EX : rdata_2_EX;
 
-wire [`Vec(`ImmWidth)]	operator_2 = sig_op_EX[`SIG_OP_need_imm] ? 
-                                      imm_EX : rdata_2_EX;
+wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
+                                      pc_ID : rdata_1_ID;
+
+wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? 
+                                      imm_ID : rdata_2_ID;
+
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result;
 
