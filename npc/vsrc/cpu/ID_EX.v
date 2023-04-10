@@ -1,4 +1,5 @@
 
+/* use rst to clear the regs */
 `include "./include/defines.v"
 
 module ID_EX (

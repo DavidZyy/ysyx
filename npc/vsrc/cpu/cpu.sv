@@ -69,15 +69,15 @@ wire  [`Vec(`SigOpWidth)] sig_op_ID;
 
 decoder u_decoder(
 	//ports
-	.inst     		    ( inst_ID ),
+	.inst     		    ( inst_ID     ),
 
-	.rd       		    ( rd_ID       		),
+	.rd       		    ( rd_ID     	),
 	.rs1      		    ( rs1      		),
 	.rs2      		    ( rs2      		),
 	.imm_ID      		  ( imm_ID     	),
   .alu_op_ID        ( alu_op_ID   ),
-  .wdt_op_ID        ( wdt_op_ID),
-  .sig_op_ID        ( sig_op_ID )
+  .wdt_op_ID        ( wdt_op_ID   ),
+  .sig_op_ID        ( sig_op_ID   )
 
 );
 
@@ -221,12 +221,12 @@ wire [`Vec(`ImmWidth)] extended_data;
 load_extend u_load_extend (
 	//ports
 	.mem_rdata 		    ( mem_rdata 		),
-	.wdt_op           ( wdt_op_EX        		),
+	.wdt_op           ( wdt_op_EX   	),
 	// .wdt_op           ( wdt_op_ID        		),
 	.is_unsigned   		( sig_op_EX[`SIG_OP_is_unsigned]   		),
 	// .is_unsigned   		( sig_op_ID[`SIG_OP_is_unsigned]   		),
 
-	.extended_data 		( extended_data 		)
+	.extended_data 		( extended_data )
 );
 
 /*suppose one cycle is begin with the negtive cycle. 
