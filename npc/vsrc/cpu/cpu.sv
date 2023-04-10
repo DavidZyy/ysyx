@@ -140,7 +140,8 @@ wire [`Vec(`ImmWidth)]	rdata_1_ID = ((~rdata_1_forward) | sig_op_EX[`SIG_OP_is_b
                                       rdata_1 : 
                                       (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
 
-wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward) | sig_op_EX[`SIG_OP_is_branch]) ? 
+// wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward) | sig_op_EX[`SIG_OP_is_branch]) ? 
+wire [`Vec(`ImmWidth)]	rdata_2_ID = (~rdata_2_forward) ?
                                       rdata_2 : 
                                       (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
 
