@@ -146,14 +146,17 @@ int main(int argc, char *argv[]) {
   uint64_t times = -1;
 
   // int nemu_not_run = 1;
-  int begin = 0;
+  int begin = 1;
 
   for(i = 0; i < times; i++){
-    npc_exec_once();
 
     if(begin){
       begin = 0;
       npc_exec_once();
+      npc_exec_once();
+      npc_exec_once();
+    }
+    else {
       npc_exec_once();
     }
 
