@@ -1,4 +1,4 @@
-`include "./include/definesls.v"
+`include "./include/define.v"
 
 module load_extend (
   input [`Vec(`ImmWidth)]   mem_rdata,
