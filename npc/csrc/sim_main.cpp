@@ -142,9 +142,12 @@ int main(int argc, char *argv[]) {
     get_cpu();
 
     /* run nop inst */
-    if(top->flush)
-    // while (top->flush)
+    if(top->flush){
       single_cycle(0);
+      single_cycle(0);
+
+    }
+    // while (top->flush)
     
     
     if( i > 1) difftest_step();
