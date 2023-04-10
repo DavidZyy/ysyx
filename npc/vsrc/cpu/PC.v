@@ -22,7 +22,7 @@ module PC (
   .WIDTH     (`RegWidth),
   .RESET_VAL (`PcRst)
  )
- Pc_Reg(
+ pc_IF_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (next_pc),

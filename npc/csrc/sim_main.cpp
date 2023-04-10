@@ -60,7 +60,7 @@ int terminal = 0;
 void exit_code(){
   terminal = 1;
   printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
-        (void *)top->pc_ID);
+        (void *)top->pc_EX);
         // (void *)top->pc_IF);
 }
 
@@ -113,8 +113,18 @@ void get_cpu() {
     cpu.gpr[i] = cpu_gpr[i];
   }
   // cpu.pc = top->pc_IF;
-  cpu.pc = top->pc_ID;
+  cpu.pc = top->pc_EX;
 }
+
+void npc_exec_once() {
+    single_cycle(0); 
+    get_cpu();
+}
+
+void nemu_exec_once() {
+  difftest_step();
+}
+
 // 当nemu的pc和npc的pc_IF为xxxx时，说明这个地址的指令还没有执行。
 /** * The single cycle time series design refers: * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9 */
 int main(int argc, char *argv[]) {
@@ -136,16 +146,34 @@ int main(int argc, char *argv[]) {
   uint64_t times = -1;
 
   // int nemu_not_run = 1;
+  int begin = 1;
 
   for(i = 0; i < times; i++){
-    single_cycle(0); 
-    get_cpu();
-    if(top->flush) {
-      /* run nop inst */
-      single_cycle(0);
-    } 
+
+    if(begin){
+      begin = 0;
+      npc_exec_once(); // execute jmp / branch
+      npc_exec_once(); // execute nop
+      npc_exec_once(); // execute nop
+    }
+    else {
+      npc_exec_once();
+    }
+
+    nemu_exec_once(); // execute jmp / branch
+
+    // if( i > 1) difftest_step();
+    /* run nop inst */
+    // if(top->flush){
+      // single_cycle(0);
+      // difftest_step();
+      // single_cycle(0);
+    // }
+    // while (top->flush)
+    if(top->flush_EX)
+      begin = 1;
     
-    if(i) difftest_step();
+    
     // dump_gpr();
     if(terminal)
       break;

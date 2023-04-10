@@ -3,7 +3,7 @@
 module Alu (
     input  [`Vec(`ImmWidth)]    operator_1,
     input  [`Vec(`ImmWidth)]    operator_2,
-    input  [`Vec(`AluopWidth)]  alu_op_ID,
+    input  [`Vec(`AluopWidth)]  alu_op,
 
     output [`Vec(`ImmWidth)]    alu_result
 );
@@ -54,7 +54,7 @@ module Alu (
     )
     alu_mux(
         .out(alu_result),
-        .key(alu_op_ID),
+        .key(alu_op),
         .lut({
         `AluAdd,    operator_1 + operator_2,
         `AluSub,    operator_1 - operator_2,
