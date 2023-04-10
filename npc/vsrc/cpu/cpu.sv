@@ -125,7 +125,7 @@ ID_EX u_ID_EX(
 	.pc_ID      		( pc_ID      		),
 	.inst_ID    		( inst_ID    		),
   .flush_ID       ( flush_ID      ),
-  .rd_ID          ( rd_ID      ),
+  .rd_ID          ( rd_ID         ),
 
 	.alu_op_EX  		( alu_op_EX  		),
 	.wdt_op_EX  		( wdt_op_EX  		),
