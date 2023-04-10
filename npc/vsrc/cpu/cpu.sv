@@ -169,7 +169,7 @@ ID_EX u_ID_EX(
 );
 
 /* alu_result will get on EX stage */
-wire flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result == 1));
+assign flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result == 1));
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`SIG_OP_is_jal]) ? 
