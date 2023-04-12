@@ -147,7 +147,7 @@ wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward) | ~sig_op_EX[`SIG_OP_reg
 ID_EX u_ID_EX(
 	//ports
 	.clk        		( clk        		),
-	.rst        		( rst | flush_EX       		),
+	.rst        		( rst | flush_EX),
 	.alu_op_ID  		( alu_op_ID  		),
 	.wdt_op_ID  		( wdt_op_ID  		),
 	.sig_op_ID  		( sig_op_ID  		),
@@ -167,7 +167,7 @@ ID_EX u_ID_EX(
 	.rdata_2_EX 		( rdata_2_EX 		),
 	.pc_EX      		( pc_EX      		),
 	.inst_EX    		( inst_EX    		),
-  .flush_EX       ( flush_EX_temp      ),
+  .flush_EX       ( flush_EX_temp ),
   .rd_EX          ( rd_EX         )
 );
 
