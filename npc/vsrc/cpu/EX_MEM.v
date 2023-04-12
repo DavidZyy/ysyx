@@ -5,7 +5,7 @@ module EX_MEM (
   input clk,
   input rst,
   input flush_EX,
-  input rd_EX,
+  input [`Vec(`RegIdWidth)] rd_EX,
   input [`Vec(`SigOpWidth)]	sig_op_EX,
   input [`Vec(`WdtTypeCnt)]	wdt_op_EX,
   input [`Vec(`ImmWidth)]	  alu_result_EX,
