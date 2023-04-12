@@ -13,7 +13,7 @@ module EX_MEM (
   input [`Vec(`InstWidth)]  inst_EX,
 
   output flush_MEM,
-  output rd_MEM,
+  output [`Vec(`RegIdWidth)]  rd_MEM,
   output [`Vec(`SigOpWidth)]	sig_op_MEM,
   output [`Vec(`WdtTypeCnt)]	wdt_op_MEM,
   output [`Vec(`ImmWidth)]	  alu_result_MEM,
