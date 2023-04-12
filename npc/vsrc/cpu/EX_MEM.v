@@ -14,7 +14,7 @@ module EX_MEM (
   output rd_MEM,
   output [`Vec(`SigOpWidth)]	sig_op_MEM,
   output [`Vec(`WdtTypeCnt)]	wdt_op_MEM,
-  output [`Vec(`ImmWidth)]	  alu_result_MEM
+  output [`Vec(`ImmWidth)]	  alu_result_MEM,
   output [`Vec(`ImmWidth)]    pc_MEM,
   output [`Vec(`InstWidth)]   inst_MEM,
 );
