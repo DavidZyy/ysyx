@@ -52,7 +52,7 @@ module EX_MEM (
 
   Reg
   #(
-    .WIDTH     (`SigOpWidth),
+    .WIDTH     (`ImmWidth),
     .RESET_VAL (0)
   )
   alu_result_MEM_reg(
