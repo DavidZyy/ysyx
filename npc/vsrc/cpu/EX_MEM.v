@@ -9,6 +9,7 @@ module EX_MEM (
   input [`Vec(`SigOpWidth)]	sig_op_EX,
   input [`Vec(`WdtTypeCnt)]	wdt_op_EX,
   input [`Vec(`ImmWidth)]	  alu_result_EX,
+  input [`Vec(`ImmWidth)]	  rdata_2_EX,
   input [`Vec(`ImmWidth)]   pc_EX,
   input [`Vec(`InstWidth)]  inst_EX,
 
@@ -17,6 +18,7 @@ module EX_MEM (
   output [`Vec(`SigOpWidth)]	sig_op_MEM,
   output [`Vec(`WdtTypeCnt)]	wdt_op_MEM,
   output [`Vec(`ImmWidth)]	  alu_result_MEM,
+  output [`Vec(`ImmWidth)]	  rdata_2_MEM,
   output [`Vec(`ImmWidth)]    pc_MEM,
   output [`Vec(`InstWidth)]   inst_MEM
 );
@@ -121,4 +123,20 @@ module EX_MEM (
 
   .dout (inst_MEM)
  );
+
+ 
+ Reg 
+ #(
+  .WIDTH     (`ImmWidth),
+  .RESET_VAL (0)
+ )
+ rdata_2_EX_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (rdata_2_EX),
+  .wen  (1'b1),
+
+  .dout (rdata_2_MEM)
+ );
+ 
 endmodule //EX_MEM
