@@ -81,7 +81,7 @@ module EX_MEM (
   .WIDTH     (`RegIdWidth),
   .RESET_VAL (0)
  )
- rd_EX_reg(
+ rd_MEM_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (rd_EX),
@@ -97,13 +97,13 @@ module EX_MEM (
   .WIDTH     (`ImmWidth),
   .RESET_VAL (0)
  )
- pc_EX_reg(
+ pc_MEM_reg(
   .clk  (clk  ),
   .rst  (rst  ),
-  .din  (pc_ID),
+  .din  (pc_EX),
   .wen  (1'b1),
 
-  .dout (pc_EX)
+  .dout (pc_MEM)
  );
  
  Reg 
@@ -111,12 +111,12 @@ module EX_MEM (
   .WIDTH     (`InstWidth),
   .RESET_VAL (0)
  )
- inst_EX_reg(
+ inst_MEM_reg(
   .clk  (clk  ),
   .rst  (rst  ),
-  .din  (inst_ID),
+  .din  (inst_EX),
   .wen  (1'b1),
 
-  .dout (inst_EX)
+  .dout (inst_MEM)
  );
 endmodule //EX_MEM
