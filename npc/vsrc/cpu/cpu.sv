@@ -195,7 +195,7 @@ EX_MEM u_EX_MEM(
 	.rd_EX          		( rd_EX          		),
 	.sig_op_EX      		( sig_op_EX      		),
 	.wdt_op_EX      		( wdt_op_EX      		),
-	.alu_result_EX  		( alu_result_EX  		),
+	.alu_result_EX  		( alu_result    		),
 	.pc_EX          		( pc_EX          		),
 	.inst_EX        		( inst_EX        		),
 
