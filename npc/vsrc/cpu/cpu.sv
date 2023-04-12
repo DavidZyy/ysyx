@@ -215,8 +215,8 @@ EX_MEM u_EX_MEM(
 	.inst_MEM       		( inst_MEM       		)
 );
 
-// wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_EX;
-wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_MEM;
+wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_EX;
+// wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_MEM;
 wire [`Vec(`RegWidth)]  mem_rdata;
 
 /* ram */
