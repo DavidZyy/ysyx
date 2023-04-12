@@ -191,6 +191,8 @@ wire  [`Vec(`ImmWidth)]	  alu_result_MEM;
 
 EX_MEM u_EX_MEM(
 	//ports
+  .clk                ( clk ),
+  .rst                ( rst ),
 	.flush_EX       		( flush_EX       		),
 	.rd_EX          		( rd_EX          		),
 	.sig_op_EX      		( sig_op_EX      		),

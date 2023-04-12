@@ -2,6 +2,8 @@
 `include "./include/defines.v"
 
 module EX_MEM (
+  input clk,
+  input rst,
   input flush_EX,
   input rd_EX,
   input [`Vec(`SigOpWidth)]	sig_op_EX,
