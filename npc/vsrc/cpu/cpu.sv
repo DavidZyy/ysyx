@@ -183,29 +183,29 @@ Alu u_Alu(
 	.alu_result     ( alu_result   	)
 );
 
-// wire 	flush_MEM;
-// wire 	rd_MEM;
-// wire [`Vec(`SigOpWidth)]	sig_op_MEM;
-// wire [`Vec(`WdtTypeCnt)]	wdt_op_MEM;
-// wire [`Vec(`ImmWidth)]	alu_result_MEM;
-// 
-// EX_MEM u_EX_MEM(
-// 	//ports
-// 	.flush_EX       		( flush_EX       		),
-// 	.rd_EX          		( rd_EX          		),
-// 	.sig_op_EX      		( sig_op_EX      		),
-// 	.wdt_op_EX      		( wdt_op_EX      		),
-// 	.alu_result_EX  		( alu_result_EX  		),
-// 	.pc_EX          		( pc_EX          		),
-// 	.inst_EX        		( inst_EX        		),
-// 
-// 	.flush_MEM      		( flush_MEM      		),
-// 	.rd_MEM         		( rd_MEM         		),
-// 	.sig_op_MEM     		( sig_op_MEM     		),
-// 	.wdt_op_MEM     		( wdt_op_MEM     		),
-// 	.alu_result_MEM 		( alu_result_MEM 		)
-// );
-// 
+wire 	flush_MEM;
+wire 	rd_MEM;
+wire  [`Vec(`SigOpWidth)]	sig_op_MEM;
+wire  [`Vec(`WdtTypeCnt)]	wdt_op_MEM;
+wire  [`Vec(`ImmWidth)]	  alu_result_MEM;
+
+EX_MEM u_EX_MEM(
+	//ports
+	.flush_EX       		( flush_EX       		),
+	.rd_EX          		( rd_EX          		),
+	.sig_op_EX      		( sig_op_EX      		),
+	.wdt_op_EX      		( wdt_op_EX      		),
+	.alu_result_EX  		( alu_result_EX  		),
+	.pc_EX          		( pc_EX          		),
+	.inst_EX        		( inst_EX        		),
+
+	.flush_MEM      		( flush_MEM      		),
+	.rd_MEM         		( rd_MEM         		),
+	.sig_op_MEM     		( sig_op_MEM     		),
+	.wdt_op_MEM     		( wdt_op_MEM     		),
+	.alu_result_MEM 		( alu_result_MEM 		)
+);
+
 
 // wire [`Vec(`AddrWidth)] waddr     = alu_result;
 wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_EX;
