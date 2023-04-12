@@ -184,12 +184,12 @@ Alu u_Alu(
 );
 
 wire 	flush_MEM;
-wire 	rd_MEM;
+wire [`Vec(`RegIdWidth)]  rd_MEM;
 wire [`Vec(`SigOpWidth)]	sig_op_MEM;
 wire [`Vec(`WdtTypeCnt)]	wdt_op_MEM;
-wire [`Vec(`ImmWidth)]	alu_result_MEM;
-wire [`Vec(`ImmWidth)]	pc_MEM;
-wire [`Vec(`InstWidth)]	inst_MEM;
+wire [`Vec(`ImmWidth)]	  alu_result_MEM;
+wire [`Vec(`ImmWidth)]	  pc_MEM;
+wire [`Vec(`InstWidth)]	  inst_MEM;
 
 EX_MEM u_EX_MEM(
 	//ports
