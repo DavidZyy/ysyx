@@ -198,7 +198,7 @@ memory u_memory (
   .mem_wdata  ( mem_wdata),
   .mem_wen    ( sig_op_EX[`SIG_OP_mem_wen]),
   .mem_ren    ( sig_op_EX[`SIG_OP_is_load]),
-  .wdt_op_ID  ( wdt_op_EX),
+  .wdt_op     ( wdt_op_EX),
 
   .mem_rdata  ( mem_rdata)
 );
