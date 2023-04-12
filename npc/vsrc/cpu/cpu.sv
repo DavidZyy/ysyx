@@ -183,7 +183,7 @@ Alu u_Alu(
 	.alu_result     ( alu_result   	)
 );
 
-wire 	flush_MEM;
+wire flush_MEM;
 wire [`Vec(`RegIdWidth)]  rd_MEM;
 wire [`Vec(`SigOpWidth)]	sig_op_MEM;
 wire [`Vec(`WdtTypeCnt)]	wdt_op_MEM;
@@ -212,7 +212,6 @@ EX_MEM u_EX_MEM(
 	.inst_MEM       		( inst_MEM       		)
 );
 
-// wire [`Vec(`AddrWidth)] waddr     = alu_result;
 wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_EX;
 wire [`Vec(`RegWidth)]  mem_rdata;
 

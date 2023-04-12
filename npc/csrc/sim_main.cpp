@@ -171,6 +171,7 @@ int main(int argc, char *argv[]) {
     // }
     // while (top->flush)
     if(top->flush_EX)
+    // if(top->flush_MEM)
       begin = 1;
     
     
