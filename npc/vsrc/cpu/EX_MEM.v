@@ -60,7 +60,7 @@ module EX_MEM (
     .wen  (1'b1),
 
     .dout (alu_result_MEM)
-  )
+  );
 
  Reg 
  #(
