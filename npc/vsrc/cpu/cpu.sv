@@ -14,9 +14,7 @@ module cpu(
   output [`Vec(`ImmWidth)]  pc_IF,
   output [`Vec(`ImmWidth)]  next_pc,
   output [`Vec(`InstWidth)]	inst,
-  // output flush_ID,
   output flush_EX,
-  // output flush,
   output [`Vec(`ImmWidth)]  pc_EX
 );
 
@@ -39,11 +37,8 @@ assign flush = flush_ID | flush_EX;
 assign flush_ID = (sig_op_ID[`SIG_OP_is_jal]  | 
                    sig_op_ID[`SIG_OP_is_jalr]) ?
                    1 : 0;
-                  //  (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1))) ? 
-                  //  1 : 0;
 
 assign inst_IF = flush ? `NOP : inst;
-// assign inst_IF = (flush_ID) ? `NOP : inst;
 
 /* registers between if and id stage */
 IF_ID u_IF_ID (
@@ -82,10 +77,6 @@ decoder u_decoder(
 );
 
 /* execute stage */
-// wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
-                                    // (pc_ID + 4) : 
-                                    // (sig_op_ID[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
-
 wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_EX[`SIG_OP_is_jal] | sig_op_EX[`SIG_OP_is_jalr]) ? 
                                     (pc_EX + 4) : 
                                     (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
@@ -130,7 +121,6 @@ wire [`Vec(`SigOpWidth)]	sig_op_EX;
 wire [`Vec(`ImmWidth)]	  imm_EX;
 wire [`Vec(`ImmWidth)]	  rdata_1_EX;
 wire [`Vec(`ImmWidth)]	  rdata_2_EX;
-// wire [`Vec(`ImmWidth)]	  pc_EX;
 wire [`Vec(`InstWidth)]  	inst_EX;
 wire [`Vec(`RegIdWidth)]	rd_EX;
 wire flush_EX_temp;
@@ -182,12 +172,6 @@ wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`S
 wire [`Vec(`ImmWidth)]	operator_2 = sig_op_EX[`SIG_OP_need_imm] ? 
                                       imm_EX : rdata_2_EX;
 
-// wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_ID[`SIG_OP_is_auipc] | sig_op_ID[`SIG_OP_is_jal]) ? 
-//                                       pc_ID : rdata_1_ID;
-
-// wire [`Vec(`ImmWidth)]	operator_2 = sig_op_ID[`SIG_OP_need_imm] ? 
-//                                       imm_ID : rdata_2_ID;
-
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result;
 
@@ -195,15 +179,14 @@ Alu u_Alu(
 	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
 	.alu_op        	( alu_op_EX    	),
-	// .alu_op_ID    	( alu_op_ID    	),
 
 	.alu_result     ( alu_result   	)
 );
 
 
+
 wire [`Vec(`AddrWidth)] waddr     = alu_result;
 wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_EX;
-// wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_ID;
 wire [`Vec(`RegWidth)]  mem_rdata;
 
 /* ram */
@@ -216,9 +199,6 @@ memory u_memory (
   .mem_wen    ( sig_op_EX[`SIG_OP_mem_wen]),
   .mem_ren    ( sig_op_EX[`SIG_OP_is_load]),
   .wdt_op_ID  ( wdt_op_EX),
-  // .mem_wen    ( sig_op_ID[`SIG_OP_mem_wen]),
-  // .mem_ren    ( sig_op_ID[`SIG_OP_is_load]),
-  // .wdt_op_ID  ( wdt_op_ID),
 
   .mem_rdata  ( mem_rdata)
 );
@@ -230,9 +210,7 @@ load_extend u_load_extend (
 	//ports
 	.mem_rdata 		    ( mem_rdata 		),
 	.wdt_op           ( wdt_op_EX   	),
-	// .wdt_op           ( wdt_op_ID        		),
 	.is_unsigned   		( sig_op_EX[`SIG_OP_is_unsigned]   		),
-	// .is_unsigned   		( sig_op_ID[`SIG_OP_is_unsigned]   		),
 
 	.mem_rdata_extended 		( mem_rdata_extended )
 );
@@ -274,13 +252,9 @@ end
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
-// assign next_pc_temp = (sig_op_ID[`SIG_OP_is_branch] && (alu_result == 1)) ? 
-                      // (pc_ID + imm_ID) : (pc_IF + 4);
 assign next_pc_temp = (sig_op_EX[`SIG_OP_is_branch] && (alu_result == 1)) ? 
                       (pc_EX + imm_EX) : (pc_IF + 4);
 
-// assign next_pc = (sig_op_ID[`SIG_OP_is_jal] | sig_op_ID[`SIG_OP_is_jalr]) ? 
-                  // (alu_result & ~1) : next_pc_temp;
 assign next_pc = (sig_op_EX[`SIG_OP_is_jal] | sig_op_EX[`SIG_OP_is_jalr]) ? 
                   (alu_result & ~1) : next_pc_temp;
 
