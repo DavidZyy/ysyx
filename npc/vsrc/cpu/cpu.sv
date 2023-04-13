@@ -14,7 +14,7 @@ module cpu (
   output [`Vec(`ImmWidth)]  pc_IF,
   output [`Vec(`ImmWidth)]  next_pc,
   output [`Vec(`InstWidth)]	inst,
-  output flush_MEM,
+  output flush_WB,
   // output [`Vec(`ImmWidth)]  pc_EX
   output [`Vec(`ImmWidth)]  pc_WB
 );
@@ -33,7 +33,7 @@ wire [`Vec(`ImmWidth)]  pc_ID;
 wire flush_ID;
 wire flush;
 
-assign flush = flush_ID | flush_EX | flush_MEM;
+assign flush = flush_ID | flush_EX | flush_MEM | flush_WB;
 
 assign flush_ID = (sig_op_ID[`SIG_OP_is_jal]  | 
                    sig_op_ID[`SIG_OP_is_jalr]) ?
