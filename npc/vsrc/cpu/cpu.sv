@@ -105,15 +105,20 @@ u_RegisterFile(
 
 wire 	rdata_1_forward_EX;
 wire 	rdata_2_forward_EX;
+wire 	rdata_1_forward_MEM;
+wire 	rdata_2_forward_MEM;
 
 forwarding u_forwarding(
 	//ports
 	.rs1             		( rs1             		),
 	.rs2             		( rs2             		),
 	.rd_EX           		( rd_EX           		),
+	.rd_MEM           	( rd_MEM           		),
 
 	.rdata_1_forward_EX 		( rdata_1_forward_EX 		),
 	.rdata_2_forward_EX 		( rdata_2_forward_EX 		)
+	.rdata_1_forward_MEM 		( rdata_1_forward_MEM 		),
+	.rdata_2_forward_MEM 		( rdata_2_forward_MEM 		)
 );
 
 wire [`Vec(`AluopWidth)]	alu_op_EX;
