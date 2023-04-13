@@ -358,8 +358,11 @@ end
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
-assign next_pc_temp = (sig_op_WB[`SIG_OP_is_branch] && (alu_result_WB == 1)) ? 
-                      (pc_WB + imm_WB) : (pc_IF + 4);
+// assign next_pc_temp = (sig_op_WB[`SIG_OP_is_branch] && (alu_result_WB == 1)) ? 
+//                       (pc_WB + imm_WB) : (pc_IF + 4);
+
+assign next_pc_temp = (sig_op_MEM[`SIG_OP_is_branch] && (alu_result_MEM == 1)) ? 
+                      (pc_MEM + imm_MEM) : (pc_IF + 4);
 
 assign next_pc = (sig_op_MEM[`SIG_OP_is_jal] | sig_op_MEM[`SIG_OP_is_jalr]) ? 
                   (alu_result_MEM & ~1) : next_pc_temp;
