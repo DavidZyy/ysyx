@@ -294,8 +294,8 @@ load_extend u_load_extend (
 	.mem_rdata_ex_MEM 		( mem_rdata_ex_MEM )
 );
 
-
 wire 	flush_WB;
+wire [`Vec(`RegIdWidth)]	rd_WB;
 wire [`Vec(`ImmWidth)]	mem_rdata_ex_WB;
 wire [`Vec(`ImmWidth)]	alu_result_WB;
 wire [`Vec(`ImmWidth)]	imm_WB;
@@ -308,6 +308,7 @@ MEM_WB u_MEM_WB(
 	.clk              		( clk              		),
 	.rst              		( rst              		),
 	.flush_MEM        		( flush_MEM        		),
+	.rd_MEM           		( rd_MEM           		),
 	.mem_rdata_ex_MEM 		( mem_rdata_ex_MEM 		),
 	.alu_result_MEM   		( alu_result_MEM   		),
 	.imm_MEM          		( imm_MEM          		),
@@ -316,6 +317,7 @@ MEM_WB u_MEM_WB(
 	.inst_MEM         		( inst_MEM         		),
 
 	.flush_WB         		( flush_WB         		),
+	.rd_WB            		( rd_WB            		),
 	.mem_rdata_ex_WB  		( mem_rdata_ex_WB  		),
 	.alu_result_WB    		( alu_result_WB    		),
 	.imm_WB           		( imm_WB           		),
@@ -323,8 +325,6 @@ MEM_WB u_MEM_WB(
 	.pc_WB            		( pc_WB            		),
 	.inst_WB          		( inst_WB          		)
 );
-
-
 
 /*suppose one cycle is begin with the negtive cycle. 
   can not use negedge, because when in the edge of 
