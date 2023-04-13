@@ -155,6 +155,7 @@ int main(int argc, char *argv[]) {
       npc_exec_once(); // execute jmp / branch
       npc_exec_once(); // execute nop
       npc_exec_once(); // execute nop
+      npc_exec_once(); // execute nop
     }
     else {
       npc_exec_once();
