@@ -153,6 +153,8 @@ wire [`Vec(`ImmWidth)]	rdata_2_ID = (rdata_2_forward_ID_EX && sig_op_EX[`SIG_OP_
                                       ((rdata_2_forward_ID_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
                                         ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_extended : alu_result_MEM) : 
                                         rdata_2);
+wire rdata_1_forward_EX_MEM;
+wire rdata_2_forward_EX_MEM;
 
 ID_EX u_ID_EX(
 	//ports
