@@ -60,7 +60,7 @@ int terminal = 0;
 void exit_code(){
   terminal = 1;
   printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
-        (void *)top->pc_EX);
+        (void *)top->pc_MEM);
         // (void *)top->pc_IF);
 }
 
@@ -113,7 +113,7 @@ void get_cpu() {
     cpu.gpr[i] = cpu_gpr[i];
   }
   // cpu.pc = top->pc_IF;
-  cpu.pc = top->pc_EX;
+  cpu.pc = top->pc_MEM;
 }
 
 void npc_exec_once() {
@@ -155,6 +155,7 @@ int main(int argc, char *argv[]) {
       npc_exec_once(); // execute jmp / branch
       npc_exec_once(); // execute nop
       npc_exec_once(); // execute nop
+      npc_exec_once(); // execute nop
     }
     else {
       npc_exec_once();
@@ -170,7 +171,8 @@ int main(int argc, char *argv[]) {
       // single_cycle(0);
     // }
     // while (top->flush)
-    if(top->flush_EX)
+    // if(top->flush_EX)
+    if(top->flush_MEM)
       begin = 1;
     
     

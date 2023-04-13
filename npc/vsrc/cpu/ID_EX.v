@@ -15,17 +15,21 @@ module ID_EX (
     input      [`Vec(`InstWidth)]  inst_ID,
     input      flush_ID,
     input      [`Vec(`RegIdWidth)] rd_ID,
+    input 	   rdata_1_forward_ID_EX,
+    input 	   rdata_2_forward_ID_EX,
     
-    output      [`Vec(`AluopWidth)]  alu_op_EX,
-    output      [`Vec(`WdtTypeCnt)]  wdt_op_EX,
-    output      [`Vec(`SigOpWidth)]  sig_op_EX,
-    output      [`Vec(`ImmWidth)]	   imm_EX,
-    output      [`Vec(`ImmWidth)]	   rdata_1_EX,
-    output      [`Vec(`ImmWidth)]	   rdata_2_EX,
-    output      [`Vec(`ImmWidth)]    pc_EX,
-    output      [`Vec(`InstWidth)]   inst_EX,
-    output      flush_EX,
-    output      [`Vec(`RegIdWidth)]  rd_EX
+    output     [`Vec(`AluopWidth)]  alu_op_EX,
+    output     [`Vec(`WdtTypeCnt)]  wdt_op_EX,
+    output     [`Vec(`SigOpWidth)]  sig_op_EX,
+    output     [`Vec(`ImmWidth)]	   imm_EX,
+    output     [`Vec(`ImmWidth)]	   rdata_1_EX,
+    output     [`Vec(`ImmWidth)]	   rdata_2_EX,
+    output     [`Vec(`ImmWidth)]    pc_EX,
+    output     [`Vec(`InstWidth)]   inst_EX,
+    output     flush_EX,
+    output     [`Vec(`RegIdWidth)]  rd_EX,
+    output 	   rdata_1_forward_EX_MEM,
+    output 	   rdata_2_forward_EX_MEM
 );
 
  Reg 
@@ -168,5 +172,32 @@ module ID_EX (
   .dout (rd_EX)
  );
 
+ Reg 
+ #(
+  .WIDTH     (1),
+  .RESET_VAL (0)
+ )
+ rdata_1_forward_EX_MEM_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (rdata_1_forward_ID_EX),
+  .wen  (1'b1),
+
+  .dout (rdata_1_forward_EX_MEM)
+ );
+
+ Reg 
+ #(
+  .WIDTH     (1),
+  .RESET_VAL (0)
+ )
+ rdata_2_forward_EX_MEM_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (rdata_2_forward_ID_EX),
+  .wen  (1'b1),
+
+  .dout (rdata_2_forward_EX_MEM)
+ );
 
 endmodule //ID_EX

@@ -4,21 +4,21 @@
 import "DPI-C" function void pmem_read(
   input longint mem_raddr, output longint rinst);
 import "DPI-C" function void pmem_write(
-  input longint waddr, input longint wdata, input byte wmask);
+  input longint mem_waddr, input longint wdata, input byte wmask);
 
 module memory (
     input   clk,
     // input [`Vec(`RegWidth)] pc,
-    input [`Vec(`RegWidth)] mem_raddr,
-    input [`Vec(`AddrWidth)] waddr,
-    input [`Vec(`RegWidth)] mem_wdata,
+    input [`Vec(`RegWidth)]  mem_raddr,
+    input [`Vec(`AddrWidth)] mem_waddr,
+    input [`Vec(`RegWidth)]  mem_wdata,
     // input [7:0] wmask,
     input mem_wen,
     input mem_ren,
-    input [`Vec(`WdtTypeCnt)] wdt_op_ID,
+    input [`Vec(`WdtTypeCnt)] wdt_op,
 
     // output [`Vec(`InstWidth)] inst,
-    output [`Vec(`ImmWidth)] mem_rdata
+    output [`Vec(`ImmWidth)]  mem_rdata
 );
 //     localparam mask = 64'h7;
 // 
@@ -48,7 +48,7 @@ module memory (
     )
     wmask_mux(
       .out(wmask),
-      .key(wdt_op_ID),
+      .key(wdt_op),
       .lut({
         `Wdt8,   8'h01,
         `Wdt16,  8'h03,
@@ -59,7 +59,7 @@ module memory (
 
     always @(negedge clk) begin
       if(mem_wen)
-        pmem_write(waddr, mem_wdata, wmask);
+        pmem_write(mem_waddr, mem_wdata, wmask);
       else
         ;
     end
@@ -153,7 +153,7 @@ module memory (
     )
     rdata_mux(
       .out(mem_rdata),
-      .key(wdt_op_ID),
+      .key(wdt_op),
       .lut({
         `Wdt8,   width_8_out,
         `Wdt16,  width_16_out,
