@@ -103,9 +103,9 @@ u_RegisterFile(
   .rdata_2    ( rdata_2 )
 );
 
-wire 	rdata_1_forward_ID_EX;
+wire 	rdata_1_forward_ID_EX;  // ID stage has hazard with EX stage, and should use forwarding
 wire 	rdata_2_forward_ID_EX;
-wire 	rdata_1_forward_ID_MEM;
+wire 	rdata_1_forward_ID_MEM; // ID stage has hazard with MEM stage, and should use forwarding
 wire 	rdata_2_forward_ID_MEM;
 
 /* test the hazard between ID and EX, or ID and MEM */
@@ -116,8 +116,8 @@ forwarding u_forwarding(
 	.rd_EX           		( rd_EX           		),
 	.rd_MEM           	( rd_MEM           		),
 
-	.rdata_1_forward_ID_EX 		( rdata_1_forward_ID_EX 		),
-	.rdata_2_forward_ID_EX 		( rdata_2_forward_ID_EX 		),
+	.rdata_1_forward_ID_EX 		  ( rdata_1_forward_ID_EX 		),
+	.rdata_2_forward_ID_EX 		  ( rdata_2_forward_ID_EX 		),
 	.rdata_1_forward_ID_MEM 		( rdata_1_forward_ID_MEM 		),
 	.rdata_2_forward_ID_MEM 		( rdata_2_forward_ID_MEM 		)
 );
@@ -168,6 +168,8 @@ ID_EX u_ID_EX(
 	.inst_ID    		( inst_ID    		),
   .flush_ID       ( flush_ID      ),
   .rd_ID          ( rd_ID         ),
+  .rdata_1_forward_ID_EX (rdata_1_forward_ID_EX),
+  .rdata_2_forward_ID_EX (rdata_2_forward_ID_EX),
 
 	.alu_op_EX  		( alu_op_EX  		),
 	.wdt_op_EX  		( wdt_op_EX  		),
@@ -178,7 +180,10 @@ ID_EX u_ID_EX(
 	.pc_EX      		( pc_EX      		),
 	.inst_EX    		( inst_EX    		),
   .flush_EX       ( flush_EX_temp ),
-  .rd_EX          ( rd_EX         )
+  .rd_EX          ( rd_EX         ),
+  .rdata_1_forward_EX_MEM (rdata_1_forward_EX_MEM),
+  .rdata_2_forward_EX_MEM (rdata_2_forward_EX_MEM)
+
 );
 
 /* alu_result_EX which will be used by branch will get on EX stage, 
@@ -187,10 +192,18 @@ wire flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result_EX 
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`SIG_OP_is_jal]) ? 
-                                      pc_EX : rdata_1_EX;
+                                      pc_EX : 
+                                      ((rdata_1_forward_EX_MEM && sig_op_MEM[`SIG_OP_is_load]) ?
+                                        mem_rdata_extended : rdata_1_EX);
+
+                                      // (rdata_1_EX);
 
 wire [`Vec(`ImmWidth)]	operator_2 = sig_op_EX[`SIG_OP_need_imm] ? 
-                                      imm_EX : rdata_2_EX;
+                                      imm_EX : 
+                                      ((rdata_2_forward_EX_MEM && sig_op_MEM[`SIG_OP_is_load]) ?
+                                        mem_rdata_extended : rdata_2_EX);
+                                      
+                                      // rdata_2_EX;
 
   /* output */
 wire [`Vec(`ImmWidth)]	alu_result_EX;
