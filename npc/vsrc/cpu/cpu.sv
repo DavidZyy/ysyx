@@ -77,9 +77,9 @@ decoder u_decoder(
 );
 
 /* execute stage */
-wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_EX[`SIG_OP_is_jal] | sig_op_EX[`SIG_OP_is_jalr]) ? 
+wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_MEM[`SIG_OP_is_jal] | sig_op_MEM[`SIG_OP_is_jalr]) ? 
                                     (pc_EX + 4) : 
-                                    (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
+                                    (sig_op_MEM[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_MEM);
 
 wire [`Vec(`ImmWidth)]	rdata_1;
 wire [`Vec(`ImmWidth)]	rdata_2;
@@ -94,7 +94,7 @@ u_RegisterFile(
   .clk        ( clk     ),
   .reg_wdata  ( reg_wdata   ),
   .rd         ( rd_EX      ),
-  .reg_wen    ( sig_op_EX[`SIG_OP_reg_wen] ),
+  .reg_wen    ( sig_op_MEM[`SIG_OP_reg_wen] ),
   .rs1        ( rs1 ),
   .rs2        ( rs2 ),
 
@@ -128,11 +128,11 @@ wire flush_EX_temp;
 /* branch not write rd */
 wire [`Vec(`ImmWidth)]	rdata_1_ID = ((~rdata_1_forward) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
                                       rdata_1 : 
-                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
+                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
 
 wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
                                       rdata_2 : 
-                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result);
+                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
 
 ID_EX u_ID_EX(
 	//ports
@@ -161,9 +161,9 @@ ID_EX u_ID_EX(
   .rd_EX          ( rd_EX         )
 );
 
-/* alu_result which will be used by branch will get on EX stage, 
+/* alu_result_EX which will be used by branch will get on EX stage, 
   we can also add an extra alu in decode stage to get the result of branch */
-assign flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result == 1));
+assign flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result_EX == 1));
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`SIG_OP_is_jal]) ? 
@@ -173,14 +173,14 @@ wire [`Vec(`ImmWidth)]	operator_2 = sig_op_EX[`SIG_OP_need_imm] ?
                                       imm_EX : rdata_2_EX;
 
   /* output */
-wire [`Vec(`ImmWidth)]	alu_result;
+wire [`Vec(`ImmWidth)]	alu_result_EX;
 
 Alu u_Alu(
 	.operator_1 		( operator_1    ),
 	.operator_2 		( operator_2 		),
 	.alu_op        	( alu_op_EX    	),
 
-	.alu_result     ( alu_result   	)
+	.alu_result     ( alu_result_EX   	)
 );
 
 wire flush_MEM;
@@ -201,7 +201,7 @@ EX_MEM u_EX_MEM(
 	.rd_EX          		( rd_EX          		),
 	.sig_op_EX      		( sig_op_EX      		),
 	.wdt_op_EX      		( wdt_op_EX      		),
-	.alu_result_EX  		( alu_result    		),
+	.alu_result_EX  		( alu_result_EX    		),
   .rdata_2_EX         ( rdata_2_EX        ),
   .imm_EX             ( imm_EX            ),
 	.pc_EX          		( pc_EX          		),
@@ -287,11 +287,11 @@ end
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
-assign next_pc_temp = (sig_op_MEM[`SIG_OP_is_branch] && (alu_result == 1)) ? 
+assign next_pc_temp = (sig_op_MEM[`SIG_OP_is_branch] && (alu_result_MEM == 1)) ? 
                       (pc_MEM + imm_MEM) : (pc_IF + 4);
 
 assign next_pc = (sig_op_MEM[`SIG_OP_is_jal] | sig_op_MEM[`SIG_OP_is_jalr]) ? 
-                  (alu_result & ~1) : next_pc_temp;
+                  (alu_result_MEM & ~1) : next_pc_temp;
 
 /* current instruction pc */
  Reg 
