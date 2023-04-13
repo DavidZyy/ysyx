@@ -16,7 +16,7 @@ module top(
 	// output flush_ID,
 	output flush_EX,
 	// output flush,
-  output [`Vec(`ImmWidth)] pc_EX
+  output [`Vec(`ImmWidth)] pc_MEM
 );
 
 // wire [`Vec(`ImmWidth)]	pc_IF;
@@ -34,7 +34,7 @@ cpu u_cpu(
 	// .flush_ID					(flush_ID),
 	.flush_EX					(flush_EX),
 	// .flush	(flush),
-	.pc_EX	(pc_EX)
+	.pc_MEM	(pc_MEM)
 );
 
 // wire [7:0]	seg0;

@@ -7,15 +7,16 @@ import "DPI-C" function void not_ipl_exception();
 `include "./include/defines.v"
 
 /* assemble all cpu moudules into top moudule */
-module cpu(
+module cpu (
   input clk,
   input rst,
 
   output [`Vec(`ImmWidth)]  pc_IF,
   output [`Vec(`ImmWidth)]  next_pc,
   output [`Vec(`InstWidth)]	inst,
-  output flush_EX,
-  output [`Vec(`ImmWidth)]  pc_EX
+  output flush_MEM,
+  // output [`Vec(`ImmWidth)]  pc_EX
+  output [`Vec(`ImmWidth)]  pc_MEM
 );
 
 /* IF, instructions fetch stage, rom. */
@@ -78,7 +79,7 @@ decoder u_decoder(
 
 /* execute stage */
 wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_MEM[`SIG_OP_is_jal] | sig_op_MEM[`SIG_OP_is_jalr]) ? 
-                                    (pc_EX + 4) : 
+                                    (pc_MEM + 4) : 
                                     (sig_op_MEM[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_MEM);
 
 wire [`Vec(`ImmWidth)]	rdata_1;
@@ -121,6 +122,7 @@ wire [`Vec(`SigOpWidth)]	sig_op_EX;
 wire [`Vec(`ImmWidth)]	  imm_EX;
 wire [`Vec(`ImmWidth)]	  rdata_1_EX;
 wire [`Vec(`ImmWidth)]	  rdata_2_EX;
+wire [`Vec(`ImmWidth)]	  pc_EX;
 wire [`Vec(`InstWidth)]  	inst_EX;
 wire [`Vec(`RegIdWidth)]	rd_EX;
 wire flush_EX_temp;
@@ -163,7 +165,7 @@ ID_EX u_ID_EX(
 
 /* alu_result_EX which will be used by branch will get on EX stage, 
   we can also add an extra alu in decode stage to get the result of branch */
-assign flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result_EX == 1));
+wire flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result_EX == 1));
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`SIG_OP_is_jal]) ? 
@@ -190,7 +192,7 @@ wire [`Vec(`WdtTypeCnt)]	wdt_op_MEM;
 wire [`Vec(`ImmWidth)]	  alu_result_MEM;
 wire [`Vec(`ImmWidth)]	  rdata_2_MEM;
 wire [`Vec(`ImmWidth)]	  imm_MEM;
-wire [`Vec(`ImmWidth)]	  pc_MEM;
+// wire [`Vec(`ImmWidth)]	  pc_MEM;
 wire [`Vec(`InstWidth)]	  inst_MEM;
 
 EX_MEM u_EX_MEM(
