@@ -8,7 +8,7 @@ module MEM_WB (
     input [`Vec(`InstWidth)]  inst_MEM,
 
     output [`Vec(`ImmWidth)]   pc_WB,
-    output [`Vec(`InstWidth)]  inst_WB,
+    output [`Vec(`InstWidth)]  inst_WB
 );
     
 endmodule //MEM_WB
