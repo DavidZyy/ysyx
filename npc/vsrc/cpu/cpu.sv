@@ -221,7 +221,7 @@ Alu u_Alu(
 	.alu_result     ( alu_result_EX   	)
 );
 
-// wire flush_MEM;
+wire flush_MEM;
 wire [`Vec(`RegIdWidth)]  rd_MEM;
 wire [`Vec(`SigOpWidth)]	sig_op_MEM;
 wire [`Vec(`WdtTypeCnt)]	wdt_op_MEM;
@@ -294,7 +294,7 @@ load_extend u_load_extend (
 	.mem_rdata_ex_MEM 		( mem_rdata_ex_MEM )
 );
 
-wire 	flush_WB;
+// wire 	flush_WB;
 wire [`Vec(`RegIdWidth)]	rd_WB;
 wire [`Vec(`ImmWidth)]	mem_rdata_ex_WB;
 wire [`Vec(`ImmWidth)]	alu_result_WB;
