@@ -116,7 +116,7 @@ forwarding u_forwarding(
 	.rd_MEM           	( rd_MEM           		),
 
 	.rdata_1_forward_EX 		( rdata_1_forward_EX 		),
-	.rdata_2_forward_EX 		( rdata_2_forward_EX 		)
+	.rdata_2_forward_EX 		( rdata_2_forward_EX 		),
 	.rdata_1_forward_MEM 		( rdata_1_forward_MEM 		),
 	.rdata_2_forward_MEM 		( rdata_2_forward_MEM 		)
 );
