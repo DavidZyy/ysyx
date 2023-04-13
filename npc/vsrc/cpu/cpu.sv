@@ -74,7 +74,6 @@ decoder u_decoder(
   .alu_op_ID        ( alu_op_ID   ),
   .wdt_op_ID        ( wdt_op_ID   ),
   .sig_op_ID        ( sig_op_ID   )
-
 );
 
 /* execute stage */
