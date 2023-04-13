@@ -109,6 +109,8 @@ wire 	rdata_1_forward_ID_EX;  // ID stage has hazard with EX stage, and should u
 wire 	rdata_2_forward_ID_EX;
 wire 	rdata_1_forward_ID_MEM; // ID stage has hazard with MEM stage, and should use forwarding
 wire 	rdata_2_forward_ID_MEM;
+wire 	rdata_1_forward_ID_WB; // ID stage has hazard with MEM stage, and should use forwarding
+wire 	rdata_2_forward_ID_WB;
 
 /* test the hazard between ID and EX, or ID and MEM */
 forwarding u_forwarding(
