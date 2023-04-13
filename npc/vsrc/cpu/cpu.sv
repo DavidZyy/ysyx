@@ -150,7 +150,7 @@ wire [`Vec(`ImmWidth)]	rdata_1_ID = (rdata_1_forward_ID_EX && sig_op_EX[`SIG_OP_
                                       ((rdata_1_forward_ID_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
                                         ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_ex_MEM : alu_result_MEM) : 
                                         ((rdata_1_forward_ID_WB && sig_op_WB[`SIG_OP_reg_wen]) ?
-                                        alu_result_WB : 
+                                        reg_wdata : 
                                         rdata_1));
 
 // wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward_ID_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
@@ -162,7 +162,7 @@ wire [`Vec(`ImmWidth)]	rdata_2_ID = (rdata_2_forward_ID_EX && sig_op_EX[`SIG_OP_
                                       ((rdata_2_forward_ID_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
                                         ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_ex_MEM : alu_result_MEM) : 
                                         ((rdata_2_forward_ID_WB && sig_op_WB[`SIG_OP_reg_wen]) ?
-                                        alu_result_WB :
+                                        reg_wdata :
                                         rdata_2));
 wire rdata_1_forward_EX_MEM;
 wire rdata_2_forward_EX_MEM;
@@ -251,7 +251,7 @@ EX_MEM u_EX_MEM(
 	.sig_op_EX      		( sig_op_EX      		),
 	.wdt_op_EX      		( wdt_op_EX      		),
 	.alu_result_EX  		( alu_result_EX    	),
-  .rdata_2_EX         ( rdata_2_EX_hazard        ),
+  .rdata_2_EX         ( rdata_2_EX_hazard ),
   .imm_EX             ( imm_EX            ),
 	.pc_EX          		( pc_EX          		),
 	.inst_EX        		( inst_EX        		),
