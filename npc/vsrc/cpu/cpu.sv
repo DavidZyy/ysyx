@@ -291,6 +291,34 @@ load_extend u_load_extend (
 	.mem_rdata_ex_MEM 		( mem_rdata_ex_MEM )
 );
 
+
+wire 	flush_WB;
+wire [`Vec(`ImmWidth)]	mem_rdata_ex_WB;
+wire [`Vec(`ImmWidth)]	alu_result_WB;
+wire [`Vec(`SigOpWidth)]	sig_op_WB;
+wire [`Vec(`ImmWidth)]	pc_WB;
+wire [`Vec(`InstWidth)]	inst_WB;
+
+MEM_WB u_MEM_WB(
+	//ports
+	.clk              		( clk              		),
+	.rst              		( rst              		),
+	.flush_MEM        		( flush_MEM        		),
+	.mem_rdata_ex_MEM 		( mem_rdata_ex_MEM 		),
+	.alu_result_MEM   		( alu_result_MEM   		),
+	.sig_op_MEM       		( sig_op_MEM       		),
+	.pc_MEM           		( pc_MEM           		),
+	.inst_MEM         		( inst_MEM         		),
+
+	.flush_WB         		( flush_WB         		),
+	.mem_rdata_ex_WB  		( mem_rdata_ex_WB  		),
+	.alu_result_WB    		( alu_result_WB    		),
+	.sig_op_WB        		( sig_op_WB        		),
+	.pc_WB            		( pc_WB            		),
+	.inst_WB          		( inst_WB          		)
+);
+
+
 /*suppose one cycle is begin with the negtive cycle. 
   can not use negedge, because when in the edge of 
   neg, the pc and instructions update, but the update
