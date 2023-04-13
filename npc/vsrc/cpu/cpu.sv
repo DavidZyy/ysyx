@@ -133,13 +133,13 @@ wire [`Vec(`RegIdWidth)]	rd_EX;
 wire flush_EX_temp;
 
 /* branch not write rd */
-// wire [`Vec(`ImmWidth)]	rdata_1_ID = ((~rdata_1_forward_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
-//                                       rdata_1 : 
-//                                       (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
+wire [`Vec(`ImmWidth)]	rdata_1_ID = ((~rdata_1_forward_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
+                                      rdata_1 : 
+                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
 
-wire [`Vec(`ImmWidth)]	rdata_1_ID = (rdata_1_forward_EX && sig_op_EX[`SIG_OP_reg_wen])?
-                                      alu_result_EX :
-                                      ()
+// wire [`Vec(`ImmWidth)]	rdata_1_ID = (rdata_1_forward_EX && sig_op_EX[`SIG_OP_reg_wen])?
+                                      // alu_result_EX :
+                                      // ()
 
 wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
                                       rdata_2 : 
