@@ -156,6 +156,7 @@ int main(int argc, char *argv[]) {
       npc_exec_once(); // execute nop
       npc_exec_once(); // execute nop
       npc_exec_once(); // execute nop
+      npc_exec_once();
     }
     else {
       npc_exec_once();
