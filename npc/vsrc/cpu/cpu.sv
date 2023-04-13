@@ -103,8 +103,8 @@ u_RegisterFile(
   .rdata_2    ( rdata_2 )
 );
 
-wire 	rdata_1_forward;
-wire 	rdata_2_forward;
+wire 	rdata_1_forward_EX;
+wire 	rdata_2_forward_EX;
 
 forwarding u_forwarding(
 	//ports
@@ -112,8 +112,8 @@ forwarding u_forwarding(
 	.rs2             		( rs2             		),
 	.rd_EX           		( rd_EX           		),
 
-	.rdata_1_forward 		( rdata_1_forward 		),
-	.rdata_2_forward 		( rdata_2_forward 		)
+	.rdata_1_forward_EX 		( rdata_1_forward_EX 		),
+	.rdata_2_forward_EX 		( rdata_2_forward_EX 		)
 );
 
 wire [`Vec(`AluopWidth)]	alu_op_EX;
@@ -128,11 +128,11 @@ wire [`Vec(`RegIdWidth)]	rd_EX;
 wire flush_EX_temp;
 
 /* branch not write rd */
-wire [`Vec(`ImmWidth)]	rdata_1_ID = ((~rdata_1_forward) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
+wire [`Vec(`ImmWidth)]	rdata_1_ID = ((~rdata_1_forward_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
                                       rdata_1 : 
                                       (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
 
-wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
+wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
                                       rdata_2 : 
                                       (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
 
