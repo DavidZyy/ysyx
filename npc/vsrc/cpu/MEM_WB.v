@@ -38,7 +38,7 @@ module MEM_WB (
     .WIDTH     (`ImmWidth),
     .RESET_VAL (0)
   )
-  alu_result_MEM_reg(
+  mem_rdata_ex_WB_reg(
     .clk  (clk  ),
     .rst  (rst  ),
     .din  (mem_rdata_ex_MEM),
@@ -52,7 +52,7 @@ module MEM_WB (
     .WIDTH     (`ImmWidth),
     .RESET_VAL (0)
   )
-  alu_result_MEM_reg(
+  alu_result_WB_reg(
     .clk  (clk  ),
     .rst  (rst  ),
     .din  (alu_result_MEM),
@@ -67,7 +67,7 @@ module MEM_WB (
   .WIDTH     (`SigOpWidth),
   .RESET_VAL (0)
  )
- sig_op_MEM_reg(
+ sig_op_WB_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (sig_op_MEM),
@@ -81,7 +81,7 @@ module MEM_WB (
   .WIDTH     (`ImmWidth),
   .RESET_VAL (0)
  )
- pc_MEM_reg(
+ pc_WB_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (pc_MEM),
@@ -95,7 +95,7 @@ module MEM_WB (
   .WIDTH     (`InstWidth),
   .RESET_VAL (0)
  )
- inst_MEM_reg(
+ inst_WB_reg(
   .clk  (clk  ),
   .rst  (rst  ),
   .din  (inst_MEM),
