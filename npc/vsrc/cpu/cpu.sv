@@ -215,8 +215,10 @@ EX_MEM u_EX_MEM(
 	.inst_MEM       		( inst_MEM       		)
 );
 
-// wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_EX;
-wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_MEM;
+wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_EX;
+wire [`Vec(`ImmWidth)]  mem_raddr   = alu_result_MEM;
+wire [`Vec(`ImmWidth)]  mem_waddr   = alu_result_MEM;
+// wire [`Vec(`RegWidth)]  mem_wdata   = rdata_2_MEM;
 wire [`Vec(`RegWidth)]  mem_rdata;
 
 /* ram */
@@ -224,7 +226,7 @@ memory u_memory (
 	//ports
 	.clk  		  ( clk  		),
   .mem_raddr  ( alu_result),
-  .waddr      ( alu_result),
+  .mem_waddr  ( alu_result),
   .mem_wdata  ( mem_wdata),
   .mem_wen    ( sig_op_EX[`SIG_OP_mem_wen]),
   .mem_ren    ( sig_op_EX[`SIG_OP_is_load]),
