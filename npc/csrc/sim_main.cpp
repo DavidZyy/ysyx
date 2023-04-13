@@ -150,13 +150,14 @@ int main(int argc, char *argv[]) {
 
   for(i = 0; i < times; i++){
 
+    /* if control branch failed */
     if(begin){
       begin = 0;
       npc_exec_once(); // execute jmp / branch
       npc_exec_once(); // execute nop
       npc_exec_once(); // execute nop
       npc_exec_once(); // execute nop
-      npc_exec_once();
+      npc_exec_once(); // execute nop
     }
     else {
       npc_exec_once();
