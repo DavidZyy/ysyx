@@ -228,7 +228,7 @@ wire [`Vec(`WdtTypeCnt)]	wdt_op_MEM;
 wire [`Vec(`ImmWidth)]	  alu_result_MEM;
 wire [`Vec(`ImmWidth)]	  rdata_2_MEM;
 wire [`Vec(`ImmWidth)]	  imm_MEM;
-// wire [`Vec(`ImmWidth)]	  pc_MEM;
+wire [`Vec(`ImmWidth)]	  pc_MEM;
 wire [`Vec(`InstWidth)]	  inst_MEM;
 
 wire [`Vec(`ImmWidth)]	  rdata_2_EX_hazard = (rdata_2_forward_EX_MEM && sig_op_MEM[`SIG_OP_is_load]) ?
@@ -300,7 +300,7 @@ wire [`Vec(`ImmWidth)]	mem_rdata_ex_WB;
 wire [`Vec(`ImmWidth)]	alu_result_WB;
 wire [`Vec(`ImmWidth)]	imm_WB;
 wire [`Vec(`SigOpWidth)]	sig_op_WB;
-wire [`Vec(`ImmWidth)]	pc_WB;
+// wire [`Vec(`ImmWidth)]	pc_WB;
 wire [`Vec(`InstWidth)]	inst_WB;
 
 MEM_WB u_MEM_WB(
