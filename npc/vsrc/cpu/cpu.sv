@@ -117,11 +117,14 @@ forwarding u_forwarding(
 	.rs2             		( rs2             		),
 	.rd_EX           		( rd_EX           		),
 	.rd_MEM           	( rd_MEM           		),
+  .rd_WB              ( rd_WB               ),
 
 	.rdata_1_forward_ID_EX 		  ( rdata_1_forward_ID_EX 		),
 	.rdata_2_forward_ID_EX 		  ( rdata_2_forward_ID_EX 		),
 	.rdata_1_forward_ID_MEM 		( rdata_1_forward_ID_MEM 		),
-	.rdata_2_forward_ID_MEM 		( rdata_2_forward_ID_MEM 		)
+	.rdata_2_forward_ID_MEM 		( rdata_2_forward_ID_MEM 		),
+	.rdata_1_forward_ID_WB 		  ( rdata_1_forward_ID_WB		  ),
+	.rdata_2_forward_ID_WB 		  ( rdata_2_forward_ID_WB 		)
 );
 
 wire [`Vec(`AluopWidth)]	alu_op_EX;
@@ -144,7 +147,9 @@ wire [`Vec(`ImmWidth)]	rdata_1_ID = (rdata_1_forward_ID_EX && sig_op_EX[`SIG_OP_
                                       alu_result_EX :
                                       ((rdata_1_forward_ID_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
                                         ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_ex_MEM : alu_result_MEM) : 
-                                        rdata_1);
+                                        ((rdata_1_forward_ID_WB && sig_op_WB[`SIG_OP_reg_wen]) ?
+                                        alu_result_WB : 
+                                        rdata_1));
 
 // wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward_ID_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
                                       // rdata_2 : 
@@ -154,7 +159,9 @@ wire [`Vec(`ImmWidth)]	rdata_2_ID = (rdata_2_forward_ID_EX && sig_op_EX[`SIG_OP_
                                       alu_result_EX :
                                       ((rdata_2_forward_ID_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
                                         ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_ex_MEM : alu_result_MEM) : 
-                                        rdata_2);
+                                        ((rdata_2_forward_ID_WB && sig_op_WB[`SIG_OP_reg_wen]) ?
+                                        alu_result_WB :
+                                        rdata_2));
 wire rdata_1_forward_EX_MEM;
 wire rdata_2_forward_EX_MEM;
 
