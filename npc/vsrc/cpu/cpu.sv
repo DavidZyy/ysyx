@@ -295,6 +295,7 @@ load_extend u_load_extend (
 wire 	flush_WB;
 wire [`Vec(`ImmWidth)]	mem_rdata_ex_WB;
 wire [`Vec(`ImmWidth)]	alu_result_WB;
+wire [`Vec(`ImmWidth)]	imm_WB;
 wire [`Vec(`SigOpWidth)]	sig_op_WB;
 wire [`Vec(`ImmWidth)]	pc_WB;
 wire [`Vec(`InstWidth)]	inst_WB;
@@ -306,6 +307,7 @@ MEM_WB u_MEM_WB(
 	.flush_MEM        		( flush_MEM        		),
 	.mem_rdata_ex_MEM 		( mem_rdata_ex_MEM 		),
 	.alu_result_MEM   		( alu_result_MEM   		),
+	.imm_MEM          		( imm_MEM          		),
 	.sig_op_MEM       		( sig_op_MEM       		),
 	.pc_MEM           		( pc_MEM           		),
 	.inst_MEM         		( inst_MEM         		),
@@ -313,10 +315,12 @@ MEM_WB u_MEM_WB(
 	.flush_WB         		( flush_WB         		),
 	.mem_rdata_ex_WB  		( mem_rdata_ex_WB  		),
 	.alu_result_WB    		( alu_result_WB    		),
+	.imm_WB           		( imm_WB           		),
 	.sig_op_WB        		( sig_op_WB        		),
 	.pc_WB            		( pc_WB            		),
 	.inst_WB          		( inst_WB          		)
 );
+
 
 
 /*suppose one cycle is begin with the negtive cycle. 
@@ -327,8 +331,7 @@ MEM_WB u_MEM_WB(
   in the middle of the cycle, the inst_not_ipl signal
   is been updated. */
 always @(posedge clk) begin
-  if (sig_op_MEM[`SIG_OP_inst_not_ipl]) begin
-  // if (sig_op_ID[`SIG_OP_inst_not_ipl]) begin
+  if (sig_op_WB[`SIG_OP_inst_not_ipl]) begin
     not_ipl_exception();
     // $display("instructions not implemented!");
     ;
@@ -339,8 +342,7 @@ always @(posedge clk) begin
 end
 
 always @(posedge clk) begin
-  if (sig_op_MEM[`SIG_OP_is_ebreak]) begin
-  // if (sig_op_ID[`SIG_OP_is_ebreak]) begin
+  if (sig_op_WB[`SIG_OP_is_ebreak]) begin
     exit_code();
     // $display("exit code");
   end
@@ -356,8 +358,8 @@ end
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
-assign next_pc_temp = (sig_op_MEM[`SIG_OP_is_branch] && (alu_result_MEM == 1)) ? 
-                      (pc_MEM + imm_MEM) : (pc_IF + 4);
+assign next_pc_temp = (sig_op_WB[`SIG_OP_is_branch] && (alu_result_WB == 1)) ? 
+                      (pc_WB + imm_WB) : (pc_IF + 4);
 
 assign next_pc = (sig_op_MEM[`SIG_OP_is_jal] | sig_op_MEM[`SIG_OP_is_jalr]) ? 
                   (alu_result_MEM & ~1) : next_pc_temp;
