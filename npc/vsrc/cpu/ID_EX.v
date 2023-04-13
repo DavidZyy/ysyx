@@ -28,8 +28,8 @@ module ID_EX (
     output     [`Vec(`InstWidth)]   inst_EX,
     output     flush_EX,
     output     [`Vec(`RegIdWidth)]  rd_EX,
-    input 	   rdata_1_forward_EX_MEM,
-    input 	   rdata_2_forward_EX_MEM
+    output 	   rdata_1_forward_EX_MEM,
+    output 	   rdata_2_forward_EX_MEM
 );
 
  Reg 
