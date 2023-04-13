@@ -103,11 +103,12 @@ u_RegisterFile(
   .rdata_2    ( rdata_2 )
 );
 
-wire 	rdata_1_forward_EX;
-wire 	rdata_2_forward_EX;
-wire 	rdata_1_forward_MEM;
-wire 	rdata_2_forward_MEM;
+wire 	rdata_1_forward_ID_EX;
+wire 	rdata_2_forward_ID_EX;
+wire 	rdata_1_forward_ID_MEM;
+wire 	rdata_2_forward_ID_MEM;
 
+/* test the hazard between ID and EX, or ID and MEM */
 forwarding u_forwarding(
 	//ports
 	.rs1             		( rs1             		),
@@ -115,10 +116,10 @@ forwarding u_forwarding(
 	.rd_EX           		( rd_EX           		),
 	.rd_MEM           	( rd_MEM           		),
 
-	.rdata_1_forward_EX 		( rdata_1_forward_EX 		),
-	.rdata_2_forward_EX 		( rdata_2_forward_EX 		),
-	.rdata_1_forward_MEM 		( rdata_1_forward_MEM 		),
-	.rdata_2_forward_MEM 		( rdata_2_forward_MEM 		)
+	.rdata_1_forward_ID_EX 		( rdata_1_forward_ID_EX 		),
+	.rdata_2_forward_ID_EX 		( rdata_2_forward_ID_EX 		),
+	.rdata_1_forward_ID_MEM 		( rdata_1_forward_ID_MEM 		),
+	.rdata_2_forward_ID_MEM 		( rdata_2_forward_ID_MEM 		)
 );
 
 wire [`Vec(`AluopWidth)]	alu_op_EX;
@@ -133,23 +134,23 @@ wire [`Vec(`RegIdWidth)]	rd_EX;
 wire flush_EX_temp;
 
 /* branch not write rd */
-// wire [`Vec(`ImmWidth)]	rdata_1_ID = ((~rdata_1_forward_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
+// wire [`Vec(`ImmWidth)]	rdata_1_ID = ((~rdata_1_forward_ID_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
                                       // rdata_1 : 
                                       // (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
 
-wire [`Vec(`ImmWidth)]	rdata_1_ID = (rdata_1_forward_EX && sig_op_EX[`SIG_OP_reg_wen]) ?
+wire [`Vec(`ImmWidth)]	rdata_1_ID = (rdata_1_forward_ID_EX && sig_op_EX[`SIG_OP_reg_wen]) ?
                                       alu_result_EX :
-                                      ((rdata_1_forward_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
+                                      ((rdata_1_forward_ID_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
                                         ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_extended : alu_result_MEM) : 
                                         rdata_1);
 
-// wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
+// wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward_ID_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
                                       // rdata_2 : 
                                       // (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
 
-wire [`Vec(`ImmWidth)]	rdata_2_ID = (rdata_2_forward_EX && sig_op_EX[`SIG_OP_reg_wen]) ?
+wire [`Vec(`ImmWidth)]	rdata_2_ID = (rdata_2_forward_ID_EX && sig_op_EX[`SIG_OP_reg_wen]) ?
                                       alu_result_EX :
-                                      ((rdata_2_forward_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
+                                      ((rdata_2_forward_ID_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
                                         ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_extended : alu_result_MEM) : 
                                         rdata_2);
 
