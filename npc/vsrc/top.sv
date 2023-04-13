@@ -14,7 +14,7 @@ module top(
   output [7:0]	seg6,
   output [7:0]	seg7,
 	// output flush_ID,
-	output flush_EX,
+	output flush_MEM,
 	// output flush,
   output [`Vec(`ImmWidth)] pc_MEM
 );
@@ -32,7 +32,7 @@ cpu u_cpu(
 	.next_pc    		( next_pc    		),
   .inst           (inst ),
 	// .flush_ID					(flush_ID),
-	.flush_EX					(flush_EX),
+	.flush_MEM					(flush_MEM),
 	// .flush	(flush),
 	.pc_MEM	(pc_MEM)
 );

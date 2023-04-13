@@ -33,7 +33,7 @@ wire [`Vec(`ImmWidth)]  pc_ID;
 wire flush_ID;
 wire flush;
 
-assign flush = flush_ID | flush_EX;
+assign flush = flush_ID | flush_EX | flush_MEM;
 
 assign flush_ID = (sig_op_ID[`SIG_OP_is_jal]  | 
                    sig_op_ID[`SIG_OP_is_jalr]) ?
