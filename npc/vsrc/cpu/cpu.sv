@@ -185,7 +185,7 @@ Alu u_Alu(
 	.alu_result     ( alu_result_EX   	)
 );
 
-wire flush_MEM;
+// wire flush_MEM;
 wire [`Vec(`RegIdWidth)]  rd_MEM;
 wire [`Vec(`SigOpWidth)]	sig_op_MEM;
 wire [`Vec(`WdtTypeCnt)]	wdt_op_MEM;
