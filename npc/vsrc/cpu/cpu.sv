@@ -16,7 +16,7 @@ module cpu (
   output [`Vec(`InstWidth)]	inst,
   output flush_MEM,
   // output [`Vec(`ImmWidth)]  pc_EX
-  output [`Vec(`ImmWidth)]  pc_MEM
+  output [`Vec(`ImmWidth)]  pc_WB
 );
 
 /* IF, instructions fetch stage, rom. */
