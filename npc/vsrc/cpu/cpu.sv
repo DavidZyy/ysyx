@@ -97,7 +97,7 @@ RegisterFile
 u_RegisterFile(
   .clk        ( clk     ),
   .reg_wdata  ( reg_wdata   ),
-  .rd         ( rd_MEM      ),
+  .rd         ( rd_WB      ),
   .reg_wen    ( sig_op_MEM[`SIG_OP_reg_wen] ),
   .rs1        ( rs1 ),
   .rs2        ( rs2 ),
