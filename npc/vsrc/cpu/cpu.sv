@@ -81,7 +81,7 @@ decoder u_decoder(
 //                                     (pc_MEM + 4) : 
 //                                     (sig_op_MEM[`SIG_OP_is_load] ? mem_rdata_ex_MEM : alu_result_MEM);
 
-wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_EX[`SIG_OP_is_jal] | sig_op_WB[`SIG_OP_is_jalr]) ? 
+wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_WB[`SIG_OP_is_jal] | sig_op_WB[`SIG_OP_is_jalr]) ? 
                                     (pc_WB + 4) : 
                                     (sig_op_WB[`SIG_OP_is_load] ? mem_rdata_ex_WB : alu_result_WB);
 wire [`Vec(`ImmWidth)]	rdata_1;
