@@ -80,7 +80,7 @@ decoder u_decoder(
 /* execute stage */
 wire [`Vec(`ImmWidth)]	reg_wdata = (sig_op_MEM[`SIG_OP_is_jal] | sig_op_MEM[`SIG_OP_is_jalr]) ? 
                                     (pc_MEM + 4) : 
-                                    (sig_op_MEM[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_MEM);
+                                    (sig_op_MEM[`SIG_OP_is_load] ? mem_rdata_ex : alu_result_MEM);
 
 wire [`Vec(`ImmWidth)]	rdata_1;
 wire [`Vec(`ImmWidth)]	rdata_2;
@@ -136,22 +136,22 @@ wire flush_EX_temp;
 /* branch not write rd */
 // wire [`Vec(`ImmWidth)]	rdata_1_ID = ((~rdata_1_forward_ID_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
                                       // rdata_1 : 
-                                      // (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
+                                      // (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_ex : alu_result_EX);
 
 wire [`Vec(`ImmWidth)]	rdata_1_ID = (rdata_1_forward_ID_EX && sig_op_EX[`SIG_OP_reg_wen]) ?
                                       alu_result_EX :
                                       ((rdata_1_forward_ID_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
-                                        ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_extended : alu_result_MEM) : 
+                                        ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_ex : alu_result_MEM) : 
                                         rdata_1);
 
 // wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward_ID_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
                                       // rdata_2 : 
-                                      // (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
+                                      // (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_ex : alu_result_EX);
 
 wire [`Vec(`ImmWidth)]	rdata_2_ID = (rdata_2_forward_ID_EX && sig_op_EX[`SIG_OP_reg_wen]) ?
                                       alu_result_EX :
                                       ((rdata_2_forward_ID_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
-                                        ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_extended : alu_result_MEM) : 
+                                        ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_ex : alu_result_MEM) : 
                                         rdata_2);
 wire rdata_1_forward_EX_MEM;
 wire rdata_2_forward_EX_MEM;
@@ -196,14 +196,14 @@ wire flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result_EX 
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`SIG_OP_is_jal]) ? 
                                       pc_EX : 
                                       ((rdata_1_forward_EX_MEM && sig_op_MEM[`SIG_OP_is_load]) ?
-                                        mem_rdata_extended : rdata_1_EX);
+                                        mem_rdata_ex : rdata_1_EX);
 
                                       // (rdata_1_EX);
 
 wire [`Vec(`ImmWidth)]	operator_2 = sig_op_EX[`SIG_OP_need_imm] ? 
                                       imm_EX : 
                                       ((rdata_2_forward_EX_MEM && sig_op_MEM[`SIG_OP_is_load]) ?
-                                        mem_rdata_extended : rdata_2_EX);
+                                        mem_rdata_ex : rdata_2_EX);
                                       
                                       // rdata_2_EX;
 
@@ -229,7 +229,7 @@ wire [`Vec(`ImmWidth)]	  imm_MEM;
 wire [`Vec(`InstWidth)]	  inst_MEM;
 
 wire [`Vec(`ImmWidth)]	  rdata_2_EX_hazard = (rdata_2_forward_EX_MEM && sig_op_MEM[`SIG_OP_is_load]) ?
-                                                mem_rdata_extended : rdata_2_EX;
+                                                mem_rdata_ex : rdata_2_EX;
 
 EX_MEM u_EX_MEM(
 	//ports
@@ -280,7 +280,7 @@ memory u_memory (
 );
 
 
-wire [`Vec(`ImmWidth)] mem_rdata_extended;
+wire [`Vec(`ImmWidth)] mem_rdata_ex;
 
 load_extend u_load_extend (
 	//ports
@@ -288,7 +288,7 @@ load_extend u_load_extend (
 	.wdt_op           ( wdt_op_MEM   	),
 	.is_unsigned   		( sig_op_MEM[`SIG_OP_is_unsigned]   		),
 
-	.mem_rdata_extended 		( mem_rdata_extended )
+	.mem_rdata_ex 		( mem_rdata_ex )
 );
 
 /*suppose one cycle is begin with the negtive cycle. 

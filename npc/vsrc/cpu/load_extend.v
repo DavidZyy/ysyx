@@ -5,7 +5,7 @@ module load_extend (
   input [`Vec(`WdtTypeCnt)] wdt_op,
   input is_unsigned,
 
-  output [`Vec(`ImmWidth)] mem_rdata_extended
+  output [`Vec(`ImmWidth)] mem_rdata_ex
 );
 
   wire [`Vec(`ImmWidth)] signed_out;
@@ -49,5 +49,5 @@ module load_extend (
     })
   );
 
-  assign mem_rdata_extended = is_unsigned ? unsigned_out : signed_out;
+  assign mem_rdata_ex = is_unsigned ? unsigned_out : signed_out;
 endmodule //load_extend
