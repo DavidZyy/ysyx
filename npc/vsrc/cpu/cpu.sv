@@ -143,9 +143,15 @@ wire [`Vec(`ImmWidth)]	rdata_1_ID = (rdata_1_forward_EX && sig_op_EX[`SIG_OP_reg
                                         ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_extended : alu_result_MEM) : 
                                         rdata_1);
 
-wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
-                                      rdata_2 : 
-                                      (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
+// wire [`Vec(`ImmWidth)]	rdata_2_ID = ((~rdata_2_forward_EX) | ~sig_op_EX[`SIG_OP_reg_wen]) ? 
+                                      // rdata_2 : 
+                                      // (sig_op_EX[`SIG_OP_is_load] ? mem_rdata_extended : alu_result_EX);
+
+wire [`Vec(`ImmWidth)]	rdata_2_ID = (rdata_2_forward_EX && sig_op_EX[`SIG_OP_reg_wen]) ?
+                                      alu_result_EX :
+                                      ((rdata_2_forward_MEM && sig_op_MEM[`SIG_OP_reg_wen]) ?
+                                        ((sig_op_MEM[`SIG_OP_is_load]) ? mem_rdata_extended : alu_result_MEM) : 
+                                        rdata_2);
 
 ID_EX u_ID_EX(
 	//ports
