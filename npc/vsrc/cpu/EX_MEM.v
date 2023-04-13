@@ -140,5 +140,20 @@ module EX_MEM (
 
   .dout (rdata_2_MEM)
  );
- 
+
+ Reg 
+ #(
+  .WIDTH     (`ImmWidth),
+  .RESET_VAL (0)
+ )
+ imm_MEM_reg(
+  .clk  (clk  ),
+  .rst  (rst  ),
+  .din  (imm_EX),
+  .wen  (1'b1),
+
+  .dout (imm_MEM)
+ );
+
+
 endmodule //EX_MEM
