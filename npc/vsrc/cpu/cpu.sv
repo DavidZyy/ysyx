@@ -228,6 +228,9 @@ wire [`Vec(`ImmWidth)]	  imm_MEM;
 // wire [`Vec(`ImmWidth)]	  pc_MEM;
 wire [`Vec(`InstWidth)]	  inst_MEM;
 
+wire [`Vec(`ImmWidth)]	  rdata_2_EX_hazard = (rdata_2_forward_EX_MEM && sig_op_MEM[`SIG_OP_is_load]) ?
+                                                mem_rdata_extended : rdata_2_EX;
+
 EX_MEM u_EX_MEM(
 	//ports
 	.clk            		( clk            		),
@@ -237,7 +240,7 @@ EX_MEM u_EX_MEM(
 	.sig_op_EX      		( sig_op_EX      		),
 	.wdt_op_EX      		( wdt_op_EX      		),
 	.alu_result_EX  		( alu_result_EX    	),
-  .rdata_2_EX         ( rdata_2_EX        ),
+  .rdata_2_EX         ( rdata_2_EX_hazard        ),
   .imm_EX             ( imm_EX            ),
 	.pc_EX          		( pc_EX          		),
 	.inst_EX        		( inst_EX        		),
@@ -253,16 +256,19 @@ EX_MEM u_EX_MEM(
 	.inst_MEM       		( inst_MEM       		)
 );
 
+
 // wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_EX;
 wire [`Vec(`ImmWidth)]  mem_raddr   = alu_result_MEM;
 wire [`Vec(`ImmWidth)]  mem_waddr   = alu_result_MEM;
+
+// for ld -> sd hazard
 wire [`Vec(`RegWidth)]  mem_wdata   = rdata_2_MEM;
 wire [`Vec(`RegWidth)]  mem_rdata;
 
 /* ram */
 memory u_memory (
 	//ports
-	.clk  		  ( clk  		),
+	.clk  		  ( clk  		 ),
   .mem_raddr  ( mem_raddr),
   .mem_waddr  ( mem_waddr),
   .mem_wdata  ( mem_wdata),
