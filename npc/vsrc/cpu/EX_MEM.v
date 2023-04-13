@@ -10,6 +10,7 @@ module EX_MEM (
   input [`Vec(`WdtTypeCnt)]	wdt_op_EX,
   input [`Vec(`ImmWidth)]	  alu_result_EX,
   input [`Vec(`ImmWidth)]	  rdata_2_EX,
+  input [`Vec(`ImmWidth)]	  imm_EX,
   input [`Vec(`ImmWidth)]   pc_EX,
   input [`Vec(`InstWidth)]  inst_EX,
 
@@ -19,6 +20,7 @@ module EX_MEM (
   output [`Vec(`WdtTypeCnt)]	wdt_op_MEM,
   output [`Vec(`ImmWidth)]	  alu_result_MEM,
   output [`Vec(`ImmWidth)]	  rdata_2_MEM,
+  output [`Vec(`ImmWidth)]	  imm_MEM,
   output [`Vec(`ImmWidth)]    pc_MEM,
   output [`Vec(`InstWidth)]   inst_MEM
 );

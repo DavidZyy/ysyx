@@ -189,6 +189,7 @@ wire [`Vec(`SigOpWidth)]	sig_op_MEM;
 wire [`Vec(`WdtTypeCnt)]	wdt_op_MEM;
 wire [`Vec(`ImmWidth)]	  alu_result_MEM;
 wire [`Vec(`ImmWidth)]	  rdata_2_MEM;
+wire [`Vec(`ImmWidth)]	  imm_MEM;
 wire [`Vec(`ImmWidth)]	  pc_MEM;
 wire [`Vec(`InstWidth)]	  inst_MEM;
 
@@ -202,6 +203,7 @@ EX_MEM u_EX_MEM(
 	.wdt_op_EX      		( wdt_op_EX      		),
 	.alu_result_EX  		( alu_result    		),
   .rdata_2_EX         ( rdata_2_EX        ),
+  .imm_EX             ( imm_EX            ),
 	.pc_EX          		( pc_EX          		),
 	.inst_EX        		( inst_EX        		),
 
@@ -211,26 +213,27 @@ EX_MEM u_EX_MEM(
 	.wdt_op_MEM     		( wdt_op_MEM     		),
 	.alu_result_MEM 		( alu_result_MEM 		),
   .rdata_2_MEM        ( rdata_2_MEM       ),
+  .imm_MEM            ( imm_MEM           ),
 	.pc_MEM         		( pc_MEM         		),
 	.inst_MEM       		( inst_MEM       		)
 );
 
-wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_EX;
+// wire [`Vec(`RegWidth)]  mem_wdata = rdata_2_EX;
 wire [`Vec(`ImmWidth)]  mem_raddr   = alu_result_MEM;
 wire [`Vec(`ImmWidth)]  mem_waddr   = alu_result_MEM;
-// wire [`Vec(`RegWidth)]  mem_wdata   = rdata_2_MEM;
+wire [`Vec(`RegWidth)]  mem_wdata   = rdata_2_MEM;
 wire [`Vec(`RegWidth)]  mem_rdata;
 
 /* ram */
 memory u_memory (
 	//ports
 	.clk  		  ( clk  		),
-  .mem_raddr  ( alu_result),
-  .mem_waddr  ( alu_result),
+  .mem_raddr  ( mem_raddr),
+  .mem_waddr  ( mem_waddr),
   .mem_wdata  ( mem_wdata),
-  .mem_wen    ( sig_op_EX[`SIG_OP_mem_wen]),
-  .mem_ren    ( sig_op_EX[`SIG_OP_is_load]),
-  .wdt_op     ( wdt_op_EX),
+  .mem_wen    ( sig_op_MEM[`SIG_OP_mem_wen]),
+  .mem_ren    ( sig_op_MEM[`SIG_OP_is_load]),
+  .wdt_op     ( wdt_op_MEM),
 
   .mem_rdata  ( mem_rdata)
 );
@@ -241,8 +244,8 @@ wire [`Vec(`ImmWidth)] mem_rdata_extended;
 load_extend u_load_extend (
 	//ports
 	.mem_rdata 		    ( mem_rdata 		),
-	.wdt_op           ( wdt_op_EX   	),
-	.is_unsigned   		( sig_op_EX[`SIG_OP_is_unsigned]   		),
+	.wdt_op           ( wdt_op_MEM   	),
+	.is_unsigned   		( sig_op_MEM[`SIG_OP_is_unsigned]   		),
 
 	.mem_rdata_extended 		( mem_rdata_extended )
 );
@@ -255,7 +258,7 @@ load_extend u_load_extend (
   in the middle of the cycle, the inst_not_ipl signal
   is been updated. */
 always @(posedge clk) begin
-  if (sig_op_EX[`SIG_OP_inst_not_ipl]) begin
+  if (sig_op_MEM[`SIG_OP_inst_not_ipl]) begin
   // if (sig_op_ID[`SIG_OP_inst_not_ipl]) begin
     not_ipl_exception();
     // $display("instructions not implemented!");
@@ -267,7 +270,7 @@ always @(posedge clk) begin
 end
 
 always @(posedge clk) begin
-  if (sig_op_EX[`SIG_OP_is_ebreak]) begin
+  if (sig_op_MEM[`SIG_OP_is_ebreak]) begin
   // if (sig_op_ID[`SIG_OP_is_ebreak]) begin
     exit_code();
     // $display("exit code");
@@ -284,10 +287,10 @@ end
 /* only jalr should clean the least-significant bit, but clean jal
   have no incluence, for code simplicity, we clean it as well. */
 wire [`Vec(`ImmWidth)] next_pc_temp;
-assign next_pc_temp = (sig_op_EX[`SIG_OP_is_branch] && (alu_result == 1)) ? 
-                      (pc_EX + imm_EX) : (pc_IF + 4);
+assign next_pc_temp = (sig_op_MEM[`SIG_OP_is_branch] && (alu_result == 1)) ? 
+                      (pc_MEM + imm_MEM) : (pc_IF + 4);
 
-assign next_pc = (sig_op_EX[`SIG_OP_is_jal] | sig_op_EX[`SIG_OP_is_jalr]) ? 
+assign next_pc = (sig_op_MEM[`SIG_OP_is_jal] | sig_op_MEM[`SIG_OP_is_jalr]) ? 
                   (alu_result & ~1) : next_pc_temp;
 
 /* current instruction pc */
