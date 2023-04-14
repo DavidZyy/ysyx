@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
   while(1) {
     nvboard_update();
     /* to have time see the display on seg */
-    sleep(1);
+    sleep(10);
     single_cycle();
   }
 }
