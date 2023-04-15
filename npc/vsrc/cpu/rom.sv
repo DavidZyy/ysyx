@@ -28,6 +28,7 @@ module rom (
     end
     
 
+    /* verilator lint_off UNUSEDSIGNAL */
     wire [`Vec(`RegWidth)] shift_pc = pc >> 3;
     assign rinst = rom_mem[shift_pc[12:0]][63:0];
 endmodule //rom
