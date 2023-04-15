@@ -354,8 +354,8 @@ end
 
 always @(posedge clk) begin
   if (sig_op_WB[`SIG_OP_is_ebreak]) begin
-    // exit_code();
-    $display("exit code");
+    exit_code();
+    // $display("exit code");
   end
   else begin
     ;
