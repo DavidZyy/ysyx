@@ -18,7 +18,7 @@ module memory (
     output [`Vec(`ImmWidth)]  mem_rdata
 );
 
-    
+
 
     always @(posedge clk) begin
     // always @(*) begin
@@ -46,13 +46,6 @@ module memory (
         `Wdt64,  8'hff
       })
     );
-
-    always @(negedge clk) begin
-      if(mem_wen)
-        pmem_write(mem_waddr, mem_wdata, wmask);
-      else
-        ;
-    end
 
 
     /* we need to deal with mem_rdata, because it's 8 bits aligned */
@@ -151,6 +144,14 @@ module memory (
         `Wdt64,  width_64_out
       })
     );
+
+
+    always @(negedge clk) begin
+      if(mem_wen)
+        pmem_write(mem_waddr, mem_wdata, wmask);
+      else
+        ;
+    end
 
 
 endmodule //memory
