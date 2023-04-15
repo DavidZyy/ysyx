@@ -2,7 +2,7 @@
   the name of macro use camel style. */
 
 import "DPI-C" function void exit_code();
-// import "DPI-C" function void not_ipl_exception();
+import "DPI-C" function void not_ipl_exception();
 
 `include "./include/defines.v"
 
@@ -343,8 +343,8 @@ MEM_WB u_MEM_WB(
   is been updated. */
 always @(posedge clk) begin
   if (sig_op_WB[`SIG_OP_inst_not_ipl]) begin
-    // not_ipl_exception();
-    $display("instructions not implemented!");
+    not_ipl_exception();
+    // $display("instructions not implemented!");
     ;
   end
   else begin
