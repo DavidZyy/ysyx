@@ -28,13 +28,13 @@ cpu u_cpu(
 	.clk        		( clk        		),
 	.rst        		( rst        		),
 
-	.pc_IF 		( pc_IF 		),
+	.pc_IF 					( pc_IF 		),
 	.next_pc    		( next_pc    		),
-  .inst           (inst ),
+  .inst           ( inst ),
 	// .flush_ID					(flush_ID),
-	.flush_WB					(flush_WB),
+	.flush_WB				( flush_WB),
 	// .flush	(flush),
-	.pc_WB	(pc_WB)
+	.pc_WB					( pc_WB)
 );
 
 // wire [7:0]	seg0;
