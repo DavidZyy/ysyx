@@ -16,19 +16,20 @@ module rom (
 
 
     /* We should read instructions immediately when pc changes. */
-    always @(*) begin
-      pmem_read(pc, rinst);
-    end
-
-
-//     reg [63:0] rom_mem[8192-1:0]; 
-//     
-//     initial begin
-//       $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/hello.hex", rom_mem);
+//     always @(*) begin
+//       pmem_read(pc, rinst);
 //     end
-//     
 // 
-//     /* verilator lint_off UNUSEDSIGNAL */
-//     wire [`Vec(`RegWidth)] shift_pc = pc >> 3;
-//     assign rinst = rom_mem[shift_pc[12:0]][63:0];
+
+    reg [63:0] rom_mem[8192-1:0]; 
+    
+    initial begin
+      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/hello.hex", rom_mem);
+    end
+    
+
+    /* verilator lint_off UNUSEDSIGNAL */
+    wire [`Vec(`RegWidth)] sub_pc = pc - `PcRst;
+    wire [`Vec(`RegWidth)] shift_pc = sub_pc >> 3;
+    assign rinst = rom_mem[shift_pc[12:0]][63:0];
 endmodule //rom
