@@ -117,7 +117,7 @@ void get_cpu() {
 }
 
 void npc_exec_once() {
-    single_cycle(0); 
+    single_cycle(0);
     get_cpu();
 }
 
