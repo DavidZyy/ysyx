@@ -24,7 +24,7 @@ module rom (
     reg [63:0] rom_mem[8192-1:0]; 
     
     initial begin
-      $readmemh("/home/zhuyangyang/project/ysyx-workbench/npc/vsrc/cpu/hello.hex", rom_mem);
+      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/hello.hex", rom_mem);
     end
     
 
