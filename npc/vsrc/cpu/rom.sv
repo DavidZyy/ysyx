@@ -33,7 +33,7 @@ module rom (
     
 
     /* verilator lint_off UNUSEDSIGNAL */
-    wire [`Vec(`RegWidth)] sub_pc = pc - `PcRst;
+    wire [`Vec(`RegWidth)] sub_pc   = pc - `PcRst;
     wire [`Vec(`RegWidth)] shift_pc = sub_pc >> 2;
     assign inst = rom_mem[shift_pc[addr_width-1:0]][31:0];
 endmodule //rom

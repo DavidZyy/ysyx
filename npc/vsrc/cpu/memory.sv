@@ -18,9 +18,13 @@ module memory (
     output [`Vec(`ImmWidth)]  mem_rdata
 );
 
-    // reg [31:0]  ram_mem[8192]
+    localparam  addr_width = 13;
+    localparam  mem_size   = (2**addr_width);
+    reg [31:0]  ram_mem[mem_size-1:0];
 
 /* read data */
+    wire [`Vec(`RegWidth)] sub_addr   = mem_raddr - `RamAddr;
+    wire [`Vec(`RegWidth)] shift_addr = sub_addr >> 2;
 
     always @(posedge clk) begin
     // always @(*) begin
