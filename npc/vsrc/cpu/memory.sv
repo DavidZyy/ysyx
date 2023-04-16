@@ -18,7 +18,7 @@ module memory (
     output [`Vec(`ImmWidth)]  mem_rdata
 );
 
-
+/* read data */
 
     always @(posedge clk) begin
     // always @(*) begin
@@ -145,6 +145,8 @@ module memory (
       })
     );
 
+
+/* write data */
 
     always @(negedge clk) begin
       if(mem_wen)
