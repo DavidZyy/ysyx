@@ -8,27 +8,17 @@ import "DPI-C" function void pmem_write(
 
 module memory (
     input   clk,
-    // input [`Vec(`RegWidth)] pc,
     input [`Vec(`RegWidth)]  mem_raddr,
     input [`Vec(`AddrWidth)] mem_waddr,
     input [`Vec(`RegWidth)]  mem_wdata,
-    // input [7:0] wmask,
     input mem_wen,
     input mem_ren,
     input [`Vec(`WdtTypeCnt)] wdt_op,
 
-    // output [`Vec(`InstWidth)] inst,
     output [`Vec(`ImmWidth)]  mem_rdata
 );
-//     localparam mask = 64'h7;
-// 
-//     wire [`Vec(`RegWidth)] rinst;
-//     assign inst = (pc & mask) == 0 ? rinst[`Vec(`InstWidth)] : rinst[63:32];
-// 
-//     /* We should read instructions immediately when pc changes. */
-//     always @(*) begin
-//       pmem_read(pc, rinst);
-//     end
+
+/* read data */
 
     always @(posedge clk) begin
     // always @(*) begin
@@ -56,13 +46,6 @@ module memory (
         `Wdt64,  8'hff
       })
     );
-
-    always @(negedge clk) begin
-      if(mem_wen)
-        pmem_write(mem_waddr, mem_wdata, wmask);
-      else
-        ;
-    end
 
 
     /* we need to deal with mem_rdata, because it's 8 bits aligned */
@@ -161,6 +144,16 @@ module memory (
         `Wdt64,  width_64_out
       })
     );
+
+
+/* write data */
+
+    always @(negedge clk) begin
+      if(mem_wen)
+        pmem_write(mem_waddr, mem_wdata, wmask);
+      else
+        ;
+    end
 
 
 endmodule //memory
