@@ -19,7 +19,7 @@ SECTIONS {
   _etext = .;
   .rodata : {
     *(.rodata*)
-  } > ram
+  } > rom
   .data : {
     *(.data)
   } > ram
