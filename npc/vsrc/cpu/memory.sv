@@ -18,6 +18,8 @@ module memory (
     output [`Vec(`ImmWidth)]  mem_rdata
 );
 
+    // reg [31:0]  ram_mem[8192]
+
 /* read data */
 
     always @(posedge clk) begin
