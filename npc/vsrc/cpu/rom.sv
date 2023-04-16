@@ -23,6 +23,7 @@ module rom (
 
     reg [63:0] rom_mem[8192-1:0]; 
     
+    /* reg应该是31:0，怀疑是readmemh的锅*/
     initial begin
       $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/hello.hex", rom_mem);
     end
