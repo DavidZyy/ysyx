@@ -19,16 +19,49 @@ module memory (
     output [`Vec(`ImmWidth)]  mem_rdata
 );
 
+    /* check  if aligned */
+    always @(posedge clk) begin
+      if(mem_ren) begin
+          if( wdt_op == `Wdt16 ) begin
+            if(mem_raddr[0]) begin
+              $display("-----------------Not aligned 2  bytes-----------------");
+              $display("%x", mem_raddr);
+            end
+          end
+
+          if( wdt_op == `Wdt32 ) begin
+            if(mem_raddr % 4 != 0) begin
+              $display("-----------------Not aligned 4  bytes-----------------");
+              $display("%x", mem_raddr);
+            end
+          end
+          
+          if( wdt_op == `Wdt64 ) begin
+            if(mem_raddr % 8 != 0) begin
+              $display("-----------------Not aligned 8  bytes-----------------");
+              $display("%x", mem_raddr);
+            end
+          end
+      end
+    end
+
+
     localparam  addr_width = 13;
     localparam  mem_size   = (2**addr_width);
     /* verilator lint_off UNDRIVEN */
     reg [31:0]  ram_mem[mem_size-1:0];
 
+    initial begin
+        $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/hello-str-riscv64-npc.ram.hex", ram_mem);
+        // $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/test_store_load-riscv64-npc.ram.hex", ram_mem);
+    end
 /********************************** read data ****************************************/
     wire [`Vec(`RegWidth)] sub_raddr   = mem_raddr - `RamAddr;
+    /* align to 4 bytes */
     wire [`Vec(`RegWidth)] shift_raddr = sub_raddr >> 2;
 
     localparam mask = 64'h1;
+    /* align to 8 bytes */
     /* verilator lint_off UNUSEDSIGNAL */
     wire [`Vec(`RegWidth)] ram_raddr = shift_raddr & ~mask;
 
@@ -176,10 +209,22 @@ module memory (
     always @(negedge clk) begin
       if(mem_wen) begin
         if(wdt_op == `Wdt8) begin
+          /* 11, 10, 01, 00*/
+          if(mem_waddr[1] & mem_waddr[0])
+            ram_mem[shift_waddr[addr_width-1:0]][31:24] <= mem_wdata[7:0];
+          else if(mem_waddr[1])
+            ram_mem[shift_waddr[addr_width-1:0]][23:16] <= mem_wdata[7:0];
+          else if(mem_waddr[0])
+            ram_mem[shift_waddr[addr_width-1:0]][15:8] <= mem_wdata[7:0];
+          else 
             ram_mem[shift_waddr[addr_width-1:0]][7:0] <= mem_wdata[7:0];
         end
 
         if(wdt_op == `Wdt16) begin
+          /* 10, 00*/
+          if(mem_waddr[1])
+            ram_mem[shift_waddr[addr_width-1:0]][31:16] <= mem_wdata[15:0];
+          else
             ram_mem[shift_waddr[addr_width-1:0]][15:0] <= mem_wdata[15:0];
         end
 
