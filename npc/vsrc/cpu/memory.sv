@@ -27,6 +27,8 @@ module memory (
     wire [`Vec(`RegWidth)] shift_addr = sub_addr >> 2;
 
     localparam mask = 64'h1;
+    wire [`Vec(`RegWidth)] ram_addr = shift_addr[addr_width-1:0] & ~mask;
+
 
     always @(posedge clk) begin
     // always @(*) begin
@@ -35,7 +37,7 @@ module memory (
       // else
         // mem_rdata = 0;
         if(mem_ren){
-          width_64_out[31:0]  <= ram_mem[shift_addr[addr_width-1:0] & ~mask][31:0];
+          width_64_out[31:0]  <= ram_mem[ram_addr][31:0];
           width_64_out[63:32] <= ram_mem[(shift_addr[addr_width-1:0] & ~mask) + 1][31:0];
         }
     end
