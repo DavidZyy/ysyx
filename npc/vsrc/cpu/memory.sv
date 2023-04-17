@@ -170,8 +170,10 @@ module memory (
       //   pmem_write(mem_waddr, mem_wdata, wmask);
       // else
       //   ;
-      if( wdt_op == `Wdt8) begin
-          ram_mem[shift_waddr][7:0] <= mem_wdata[7:0];
+      if(mem_wen) begin
+        if(wdt_op == `Wdt8) begin
+            ram_mem[shift_waddr[addr_width-1:0]][7:0] <= mem_wdata[7:0];
+        end
       end
     end
 
