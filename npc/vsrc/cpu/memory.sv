@@ -29,9 +29,11 @@ module memory (
     end
 /********************************** read data ****************************************/
     wire [`Vec(`RegWidth)] sub_raddr   = mem_raddr - `RamAddr;
+    /* align to 4 bytes */
     wire [`Vec(`RegWidth)] shift_raddr = sub_raddr >> 2;
 
     localparam mask = 64'h1;
+    /* align to 8 bytes */
     /* verilator lint_off UNUSEDSIGNAL */
     wire [`Vec(`RegWidth)] ram_raddr = shift_raddr & ~mask;
 
