@@ -7,9 +7,10 @@ import "DPI-C" function void pmem_write(
   input longint mem_waddr, input longint wdata, input byte wmask);
 
 module memory (
-    input   clk,
+    input clk,
     input [`Vec(`RegWidth)]  mem_raddr,
     input [`Vec(`AddrWidth)] mem_waddr,
+    /* verilator lint_off UNUSEDSIGNAL */
     input [`Vec(`RegWidth)]  mem_wdata,
     input mem_wen,
     input mem_ren,
@@ -18,14 +19,30 @@ module memory (
     output [`Vec(`ImmWidth)]  mem_rdata
 );
 
-/* read data */
+    localparam  addr_width = 13;
+    localparam  mem_size   = (2**addr_width);
+    /* verilator lint_off UNDRIVEN */
+    reg [31:0]  ram_mem[mem_size-1:0];
+
+/********************************** read data ****************************************/
+    wire [`Vec(`RegWidth)] sub_raddr   = mem_raddr - `RamAddr;
+    wire [`Vec(`RegWidth)] shift_raddr = sub_raddr >> 2;
+
+    localparam mask = 64'h1;
+    /* verilator lint_off UNUSEDSIGNAL */
+    wire [`Vec(`RegWidth)] ram_raddr = shift_raddr & ~mask;
+
 
     always @(posedge clk) begin
     // always @(*) begin
-      if(mem_ren)
-        pmem_read(mem_raddr, width_64_out);
+      // if(mem_ren)
+        // pmem_read(mem_raddr, width_64_out);
       // else
         // mem_rdata = 0;
+        if(mem_ren) begin
+          width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
+          width_64_out[63:32] <= ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
+        end
     end
 
     wire [7:0] wmask;
@@ -145,15 +162,36 @@ module memory (
       })
     );
 
+/************************************ write data ***************************************/
+    wire [`Vec(`RegWidth)] sub_waddr   = mem_waddr - `RamAddr;
+    wire [`Vec(`RegWidth)] shift_waddr = sub_waddr >> 2;
 
-/* write data */
+    // always @(negedge clk) begin
+    //   if(mem_wen)
+    //     pmem_write(mem_waddr, mem_wdata, wmask);
+    //   else
+    //     ;
+    // end
 
     always @(negedge clk) begin
-      if(mem_wen)
-        pmem_write(mem_waddr, mem_wdata, wmask);
-      else
-        ;
-    end
+      if(mem_wen) begin
+        if(wdt_op == `Wdt8) begin
+            ram_mem[shift_waddr[addr_width-1:0]][7:0] <= mem_wdata[7:0];
+        end
 
+        if(wdt_op == `Wdt16) begin
+            ram_mem[shift_waddr[addr_width-1:0]][15:0] <= mem_wdata[15:0];
+        end
+
+        if(wdt_op == `Wdt32) begin
+            ram_mem[shift_waddr[addr_width-1:0]][31:0] <= mem_wdata[31:0];
+        end
+
+        if(wdt_op == `Wdt64) begin
+            ram_mem[shift_waddr[addr_width-1:0]][31:0] <= mem_wdata[31:0];
+            ram_mem[shift_waddr[addr_width-1:0] + 1][31:0] <= mem_wdata[63:32];
+        end
+      end
+    end
 
 endmodule //memory

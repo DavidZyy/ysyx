@@ -131,9 +131,9 @@ int main(int argc, char *argv[]) {
   // get_cpu();
   cpu.pc = RESET_VECTOR;
   // print_arg(argc, argv);
-  long size = load_img(argv[1]);
+  // long size = load_img(argv[1]);
   // long size = load_init_img();
-  init_difftest(argv[2], size, 0);
+  // init_difftest(argv[2], size, 0);
 
   sim_init();
 
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
       npc_exec_once();
     }
 
-    nemu_exec_once(); // execute jmp / branch
+    // nemu_exec_once(); // execute jmp / branch
 
     // if( i > 1) difftest_step();
     /* run nop inst */

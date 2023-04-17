@@ -1,11 +1,13 @@
 
+
 /* using for define a vector for 0 to Width-1 */
 `define Vec(Width) Width-1:0
 
 `define InstWidth   32
-`define PcRst 64'h80000000
-// `define PcRst 64'h00000000
+// `define PcRst 64'h80000000
+`define PcRst 64'h00000000
 
+`define RamAddr 64'h20000000
 
   `define AddrWidth       64
 

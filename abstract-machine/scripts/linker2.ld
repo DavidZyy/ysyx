@@ -4,14 +4,16 @@ RAM_SIZE = 0x2000;
 /* STACK_SIZE = 0x1000; */
 MEMORY {
   rom (rx) : ORIGIN = 0x00000000, LENGTH = ROM_SIZE 
+  /* rom (rx) : ORIGIN = 0x80000000, LENGTH = ROM_SIZE  */
   ram (rwx) : ORIGIN = 0x20000000, LENGTH = RAM_SIZE 
+  /* ram (rwx) : ORIGIN = 0x80001790, LENGTH = RAM_SIZE  */
 }
 
 SECTIONS {
   /* _pmem_start and _entry_offset are defined in LDFLAGS */
-  /* . = _pmem_start + _entry_offset; */
-  . = 0;
-  .my_text : {
+  . = _pmem_start + _entry_offset;
+  /* . = 0; */
+  .mytext : {
     *(entry)
     *(.text*)
   } > rom
@@ -19,7 +21,7 @@ SECTIONS {
   _etext = .;
   .rodata : {
     *(.rodata*)
-  } > rom
+  } > ram
   .data : {
     *(.data)
   } > ram
