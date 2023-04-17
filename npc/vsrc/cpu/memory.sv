@@ -10,6 +10,7 @@ module memory (
     input clk,
     input [`Vec(`RegWidth)]  mem_raddr,
     input [`Vec(`AddrWidth)] mem_waddr,
+    /* verilator lint_off UNUSEDSIGNAL */
     input [`Vec(`RegWidth)]  mem_wdata,
     input mem_wen,
     input mem_ren,
