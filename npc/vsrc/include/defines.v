@@ -7,7 +7,8 @@
 `define PcRst 64'h80000000
 // `define PcRst 64'h00000000
 
-`define RamAddr 64'h20000000
+// `define RamAddr 64'h20000000
+`define RamAddr 64'h80001790
 
   `define AddrWidth       64
 
