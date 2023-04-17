@@ -19,6 +19,24 @@ module memory (
     output [`Vec(`ImmWidth)]  mem_rdata
 );
 
+    /* check  if aligned */
+    always @(posedge clk) begin
+      if(mem_ren) begin
+          if( wdt_op == `Wdt16 ) begin
+            if(mem_raddr & 64'h1) $display("Not aligned 2  bytes");
+          end
+
+          if( wdt_op == `Wdt32 ) begin
+            if(mem_raddr & 64'h11) $display("Not aligned 2  bytes");
+          end
+          
+          if( wdt_op == `Wdt64 ) begin
+            if(mem_raddr & 64'h111) $display("Not aligned 2  bytes");
+          end
+      end
+    end
+
+
     localparam  addr_width = 13;
     localparam  mem_size   = (2**addr_width);
     /* verilator lint_off UNDRIVEN */
