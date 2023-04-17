@@ -27,11 +27,11 @@ module memory (
           end
 
           if( wdt_op == `Wdt32 ) begin
-            if(mem_raddr[1:0]) $display("Not aligned 4  bytes");
+            if(mem_raddr % 4 != 0) $display("Not aligned 4  bytes");
           end
           
           if( wdt_op == `Wdt64 ) begin
-            if(mem_raddr[2:0]) $display("Not aligned 8  bytes");
+            if(mem_raddr % 8 != 0) $display("Not aligned 8  bytes");
           end
       end
     end
