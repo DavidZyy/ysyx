@@ -166,32 +166,32 @@ module memory (
     wire [`Vec(`RegWidth)] sub_waddr   = mem_waddr - `RamAddr;
     wire [`Vec(`RegWidth)] shift_waddr = sub_waddr >> 2;
 
-//     always @(negedge clk) begin
-//       if(mem_wen)
-//         pmem_write(mem_waddr, mem_wdata, wmask);
-//       else
-//         ;
-//     end
-
     always @(negedge clk) begin
-      if(mem_wen) begin
-        if(wdt_op == `Wdt8) begin
-            ram_mem[shift_waddr[addr_width-1:0]][7:0] <= mem_wdata[7:0];
-        end
-
-        if(wdt_op == `Wdt16) begin
-            ram_mem[shift_waddr[addr_width-1:0]][15:0] <= mem_wdata[15:0];
-        end
-
-        if(wdt_op == `Wdt32) begin
-            ram_mem[shift_waddr[addr_width-1:0]][31:0] <= mem_wdata[31:0];
-        end
-
-        if(wdt_op == `Wdt64) begin
-            ram_mem[shift_waddr[addr_width-1:0]][31:0] <= mem_wdata[31:0];
-            ram_mem[shift_waddr[addr_width-1:0] + 1][31:0] <= mem_wdata[63:32];
-        end
-      end
+      if(mem_wen)
+        pmem_write(mem_waddr, mem_wdata, wmask);
+      else
+        ;
     end
+
+//     always @(negedge clk) begin
+//       if(mem_wen) begin
+//         if(wdt_op == `Wdt8) begin
+//             ram_mem[shift_waddr[addr_width-1:0]][7:0] <= mem_wdata[7:0];
+//         end
+// 
+//         if(wdt_op == `Wdt16) begin
+//             ram_mem[shift_waddr[addr_width-1:0]][15:0] <= mem_wdata[15:0];
+//         end
+// 
+//         if(wdt_op == `Wdt32) begin
+//             ram_mem[shift_waddr[addr_width-1:0]][31:0] <= mem_wdata[31:0];
+//         end
+// 
+//         if(wdt_op == `Wdt64) begin
+//             ram_mem[shift_waddr[addr_width-1:0]][31:0] <= mem_wdata[31:0];
+//             ram_mem[shift_waddr[addr_width-1:0] + 1][31:0] <= mem_wdata[63:32];
+//         end
+//       end
+//     end
 
 endmodule //memory
