@@ -28,6 +28,7 @@ module memory (
     wire [`Vec(`RegWidth)] shift_addr = sub_addr >> 2;
 
     localparam mask = 64'h1;
+    /* verilator lint_off UNUSEDSIGNAL */
     wire [`Vec(`RegWidth)] ram_addr = shift_addr & ~mask;
 
 
