@@ -38,7 +38,7 @@ module memory (
         // mem_rdata = 0;
         if(mem_ren){
           width_64_out[31:0]  <= ram_mem[ram_addr][31:0];
-          width_64_out[63:32] <= ram_mem[(shift_addr[addr_width-1:0] & ~mask) + 1][31:0];
+          width_64_out[63:32] <= ram_mem[ram_addr + 1][31:0];
         }
     end
 
