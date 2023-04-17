@@ -213,10 +213,10 @@ module memory (
         end
 
         if(wdt_op == `Wdt16) begin
-          // if(mem_waddr[2])
+          if(mem_waddr[1])
             ram_mem[shift_waddr[addr_width-1:0]][31:16] <= mem_wdata[15:0];
-          // else
-            // ram_mem[shift_waddr[addr_width-1:0]][15:0] <= mem_wdata[15:0];
+          else
+            ram_mem[shift_waddr[addr_width-1:0]][15:0] <= mem_wdata[15:0];
         end
 
         if(wdt_op == `Wdt32) begin
