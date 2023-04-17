@@ -24,14 +24,17 @@ module memory (
       if(mem_ren) begin
           if( wdt_op == `Wdt16 ) begin
             if(mem_raddr[0]) $display("-----------------Not aligned 2  bytes-----------------");
+            $display("%x", mem_raddr);
           end
 
           if( wdt_op == `Wdt32 ) begin
             if(mem_raddr % 4 != 0) $display("-----------------Not aligned 4  bytes-----------------");
+            $display("%x", mem_raddr);
           end
           
           if( wdt_op == `Wdt64 ) begin
             if(mem_raddr % 8 != 0) $display("-----------------Not aligned 8  bytes-----------------");
+            $display("%x", mem_raddr);
           end
       end
     end
