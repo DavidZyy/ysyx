@@ -23,15 +23,15 @@ module memory (
     always @(posedge clk) begin
       if(mem_ren) begin
           if( wdt_op == `Wdt16 ) begin
-            if(mem_raddr & 64'h1) $display("Not aligned 2  bytes");
+            if(mem_raddr[0]) $display("Not aligned 2  bytes");
           end
 
           if( wdt_op == `Wdt32 ) begin
-            if(mem_raddr & 64'h11) $display("Not aligned 4  bytes");
+            if(mem_raddr[1:0]) $display("Not aligned 4  bytes");
           end
           
           if( wdt_op == `Wdt64 ) begin
-            if(mem_raddr & 64'h111) $display("Not aligned 8  bytes");
+            if(mem_raddr[2:0]) $display("Not aligned 8  bytes");
           end
       end
     end
