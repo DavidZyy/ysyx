@@ -36,10 +36,10 @@ module memory (
         // pmem_read(mem_raddr, width_64_out);
       // else
         // mem_rdata = 0;
-        if(mem_ren){
+        if(mem_ren) begin
           width_64_out[31:0]  <= ram_mem[ram_addr][31:0];
           width_64_out[63:32] <= ram_mem[ram_addr + 1][31:0];
-        }
+        end
     end
 
     wire [7:0] wmask;
