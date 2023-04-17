@@ -7,7 +7,7 @@ import "DPI-C" function void pmem_write(
   input longint mem_waddr, input longint wdata, input byte wmask);
 
 module memory (
-    input   clk,
+    input clk,
     input [`Vec(`RegWidth)]  mem_raddr,
     input [`Vec(`AddrWidth)] mem_waddr,
     input [`Vec(`RegWidth)]  mem_wdata,
@@ -18,20 +18,26 @@ module memory (
     output [`Vec(`ImmWidth)]  mem_rdata
 );
 
-//     localparam  addr_width = 13;
-//     localparam  mem_size   = (2**addr_width);
-//     reg [31:0]  ram_mem[mem_size-1:0];
-// 
-// /* read data */
-//     wire [`Vec(`RegWidth)] sub_addr   = mem_raddr - `RamAddr;
-//     wire [`Vec(`RegWidth)] shift_addr = sub_addr >> 2;
+    localparam  addr_width = 13;
+    localparam  mem_size   = (2**addr_width);
+    reg [31:0]  ram_mem[mem_size-1:0];
+
+/********************************** read data ****************************************/
+    wire [`Vec(`RegWidth)] sub_addr   = mem_raddr - `RamAddr;
+    wire [`Vec(`RegWidth)] shift_addr = sub_addr >> 2;
+
+    localparam mask = 64'h1;
 
     always @(posedge clk) begin
     // always @(*) begin
-      if(mem_ren)
-        pmem_read(mem_raddr, width_64_out);
+      // if(mem_ren)
+        // pmem_read(mem_raddr, width_64_out);
       // else
         // mem_rdata = 0;
+        if(mem_ren){
+          width_64_out[31:0]  <= ram_mem[shift_addr[addr_width-1:0] & ~mask][31:0];
+          width_64_out[63:32] <= ram_mem[(shift_addr[addr_width-1:0] & ~mask) + 1][31:0];
+        }
     end
 
     wire [7:0] wmask;
@@ -152,7 +158,7 @@ module memory (
     );
 
 
-/* write data */
+/************************************ write data ***************************************/
 
     always @(negedge clk) begin
       if(mem_wen)
@@ -160,6 +166,5 @@ module memory (
       else
         ;
     end
-
 
 endmodule //memory
