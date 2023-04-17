@@ -24,7 +24,7 @@ CFLAGS += -DMAINARGS=\"$(mainargs)\"
 # 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
 
 image: $(IMAGE).elf
-	@$(OBJDUMP) -s $(IMAGE).elf > $(IMAGE).txt
+	@$(OBJDUMP) -d $(IMAGE).elf > $(IMAGE).txt
 	@echo + OBJCOPY "->" $(IMAGE_REL).bin
 	@$(OBJCOPY) $(IMAGE).elf --dump-section .mytext="$(IMAGE).rom.bin" --dump-section .rodata="$(IMAGE).ram.bin"
 	@od -w4 -An --endian little -v -t x4 "$(IMAGE).rom.bin" > "$(IMAGE).rom.hex"
