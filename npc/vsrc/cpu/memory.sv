@@ -24,6 +24,9 @@ module memory (
     /* verilator lint_off UNDRIVEN */
     reg [31:0]  ram_mem[mem_size-1:0];
 
+    initial begin
+        $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/hello-str-riscv64-npc.ram.hex", ram_mem);
+    end
 /********************************** read data ****************************************/
     wire [`Vec(`RegWidth)] sub_raddr   = mem_raddr - `RamAddr;
     wire [`Vec(`RegWidth)] shift_raddr = sub_raddr >> 2;
