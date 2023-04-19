@@ -1,23 +1,28 @@
 /* code style: the name of variable use snake style, 
   the name of macro use camel style. */
 
-import "DPI-C" function void exit_code();
-import "DPI-C" function void not_ipl_exception();
+// import "DPI-C" function void exit_code();
+// import "DPI-C" function void not_ipl_exception();
 
-`include "./include/defines.v"
+`include "../include/defines.v"
 
 /* assemble all cpu moudules into top moudule */
 module cpu (
   input clk,
   input rst,
 
-  output [`Vec(`ImmWidth)]  pc_IF,
-  output [`Vec(`ImmWidth)]  next_pc,
-  output [`Vec(`InstWidth)]	inst,
-  output flush_WB,
+  // output [`Vec(`ImmWidth)]  pc_IF,
+  // output [`Vec(`ImmWidth)]  next_pc,
+  // output [`Vec(`InstWidth)]	inst,
+  // output flush_WB,
   // output [`Vec(`ImmWidth)]  pc_EX
   output [`Vec(`ImmWidth)]  pc_WB
 );
+
+wire [`Vec(`ImmWidth)]  pc_IF;
+wire [`Vec(`ImmWidth)]  next_pc;
+wire [`Vec(`InstWidth)]	inst;
+wire flush_WB;
 
 /* IF, instructions fetch stage, rom. */
 rom inst_rom (
@@ -343,8 +348,8 @@ MEM_WB u_MEM_WB(
   is been updated. */
 always @(posedge clk) begin
   if (sig_op_WB[`SIG_OP_inst_not_ipl]) begin
-    not_ipl_exception();
-    // $display("instructions not implemented!");
+    // not_ipl_exception();
+    $display("instructions not implemented!");
     ;
   end
   else begin
@@ -354,8 +359,8 @@ end
 
 always @(posedge clk) begin
   if (sig_op_WB[`SIG_OP_is_ebreak]) begin
-    exit_code();
-    // $display("exit code");
+    // exit_code();
+    $display("exit code");
   end
   else begin
     ;

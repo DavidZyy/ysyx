@@ -1,5 +1,5 @@
 /* move instructions to rom, this module act like ram */
-`include "./include/defines.v"
+`include "../include/defines.v"
 
 // import "DPI-C" function void pmem_read(
 //   input longint mem_raddr, output longint rinst);
@@ -46,7 +46,7 @@ module memory (
     end
 
 
-    localparam  addr_width = 13;
+    localparam  addr_width = 8;
     localparam  mem_size   = (2**addr_width);
     /* verilator lint_off UNDRIVEN */
     reg [31:0]  ram_mem[mem_size-1:0];
@@ -121,7 +121,8 @@ module memory (
     wire [`Vec(`ImmWidth)] width_8_out;
     wire [`Vec(`ImmWidth)] width_16_out;
     wire [`Vec(`ImmWidth)] width_32_out;
-    wire [`Vec(`ImmWidth)] width_64_out;
+    // wire [`Vec(`ImmWidth)] width_64_out;
+    reg  [`Vec(`ImmWidth)] width_64_out;
 
     MuxKey
     #(

@@ -1,7 +1,7 @@
 // also use DPI-C machenism, may be use ip-core when vivado?
 
 // NOTE !!, the read addr is aligned o 8 bit, do not forget this point.
-`include "./include/defines.v"
+`include "../include/defines.v"
 
 module rom (
     input [`Vec(`RegWidth)] pc,
@@ -20,7 +20,7 @@ module rom (
 //     end
 // 
 
-    localparam addr_width = 13;
+    localparam addr_width = 8;
     localparam mem_size   = (2**addr_width); 
 
     reg [31:0] rom_mem[mem_size-1:0];

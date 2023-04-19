@@ -1,6 +1,6 @@
 /* general registers */
 
-`include "./include/defines.v"
+`include "../include/defines.v"
 import "DPI-C" function void set_gpr_ptr(input logic [63:0] a []);
 
 module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
@@ -17,7 +17,7 @@ module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
 
   reg [DATA_WIDTH-1:0] rf [`RegCnt-1:0];
 
-  initial set_gpr_ptr(rf);  // rf为通用寄存器的二维数组变量
+  // initial set_gpr_ptr(rf);  // rf为通用寄存器的二维数组变量
 
   // always @(posedge clk) begin
   always @(negedge clk) begin

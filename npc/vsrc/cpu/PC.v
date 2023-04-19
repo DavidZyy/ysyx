@@ -1,4 +1,4 @@
-`include "./include/defines.v"
+`include "../include/defines.v"
 
 module PC (
     input      clk,
