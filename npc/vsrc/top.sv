@@ -45,7 +45,7 @@ IBUFDS  inst_clk(
 cpu u_cpu(
 	//ports
 	.clk        		( clkdiv[27]		), // 200 0000 / (2^27)
-	.rst        		( rstn        		),
+	.rst        		( rst        		),
 
   	// .inst           ( inst ),
 
