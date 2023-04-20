@@ -6,6 +6,7 @@ module    SEG7P2S(input wire clk,						//parallel to serial
 						output wire s_clk,
 						output wire s_clrn,
 						output wire sout,
+                        /* verilator lint_off BLKSEQ */
 						output reg  EN
 						);
 						
@@ -21,6 +22,7 @@ localparam
 wire S1,S0,SL,SR;
 reg [DATA_BITS:0] Q;
 reg sh_clk;
+/* verilator lint_off BLKSEQ */
 reg [1:0]Go = 00, S = 00, state = 00;	
 
 
