@@ -11,6 +11,7 @@ module    SEG7P2S(input wire clk,						//parallel to serial
 						
 parameter
 	DATA_BITS = 16,  											// data length
+    /* verilator lint_off UNUSEDPARAM */
 	DATA_COUNT_BITS = 4,										// data shift bits
 	DIR = 0;														// Shift direction
 localparam
