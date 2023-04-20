@@ -20,7 +20,7 @@ module rom (
 //     end
 // 
 
-    localparam addr_width = 8;
+    localparam addr_width = 10;
     localparam mem_size   = (2**addr_width); 
 
     reg [31:0] rom_mem[mem_size-1:0];
