@@ -14,28 +14,28 @@ module top(
 //   output [7:0]	seg6,
 //   output [7:0]	seg7,
 //   output flush_WB,
-//   output [`Vec(`ImmWidth)] pc_WB
-	input	sysclk_p,
+	input	clk,
 	input	sysclk_n,
-	input 	rstn,
+	input 	rst,
 
 	output  SEGCLK,
     output  SEGCLR,
     /* DT = data ? */
     output  SEGDT,
     output  SEGEN
+	output [`Vec(`ImmWidth)] pc_WB
 );
 
 wire    clk200m;
 /* verilator lint_off UNUSEDSIGNAL */
-wire	[`Vec(`ImmWidth)] pc_WB;
+// wire	[`Vec(`ImmWidth)] pc_WB;
 
 reg [31:0]  clkdiv;
 always@(posedge clk200m)
     clkdiv<=clkdiv+1;
 
 IBUFDS  inst_clk(
-	.I(sysclk_p),
+	.I(clk),
 	.IB(sysclk_n),
 
 	.O(clk200m)
