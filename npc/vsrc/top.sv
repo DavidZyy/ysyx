@@ -27,6 +27,7 @@ module top(
 );
 
 wire    clk200m;
+/* verilator lint_off UNUSEDSIGNAL */
 wire	[`Vec(`ImmWidth)] pc_WB;
 
 reg [31:0]  clkdiv;
