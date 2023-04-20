@@ -4,15 +4,19 @@ module top(
 	input	sysclk_n,
 	input 	rst,
 
+	// output [`Vec(`ImmWidth)] pc_WB,
+	// output [`Vec(`ImmWidth)] pc_IF,
+  	// output flush_WB,
 	output  SEGCLK,
     output  SEGCLR,
     /* DT = data ? */
     output  SEGDT,
-    output  SEGEN,
-	output [`Vec(`ImmWidth)] pc_WB,
-	output [`Vec(`ImmWidth)] pc_IF,
-  	output flush_WB
+    output  SEGEN
 );
+
+wire [`Vec(`ImmWidth)] pc_WB;
+wire [`Vec(`ImmWidth)] pc_IF;
+wire flush_WB;
 
 wire    clk200m;
 /* verilator lint_off UNUSEDSIGNAL */
@@ -32,13 +36,13 @@ IBUFDS  inst_clk(
 // wire [`Vec(`InstWidth)]	inst;
 cpu u_cpu(
 	//ports
-	.clk        		( clkdiv[0]		), // 200 0000 / (2^27)
+	.clk        		( clkdiv[27]		), // 200 0000 / (2^27)
 	.rst        		( rst        		),
 
   	// .inst           ( inst ),
 
 	.pc_IF				( pc_IF				),
-	.flush_WB			(flush_WB),
+	.flush_WB			( flush_WB			),
 	.pc_WB				( pc_WB				)
 );
 
