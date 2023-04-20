@@ -2,7 +2,8 @@ TOPNAME = top
 NXDC_FILES = constr/top.nxdc
 INC_PATH = $(abspath ./csrc)/include
 
-INCLUDE = $(abspath ./vsrc)
+INCLUDE = $(abspath ./vsrc/include)
+INCLUDE2 =  $(abspath ./vsrc)
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
@@ -56,7 +57,7 @@ SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv64-nemu-interprete
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	verilator --top-module $(TOPNAME) -I$(INCLUDE) \
+	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \

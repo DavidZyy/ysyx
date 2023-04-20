@@ -29,7 +29,7 @@ module top(
 wire    clk200m;
 wire	[`Vec(`ImmWidth)] pc_WB;
 
-reg [19:0]  clkdiv;
+reg [31:0]  clkdiv;
 always@(posedge clk200m)
     clkdiv<=clkdiv+1;
 
@@ -41,56 +41,31 @@ IBUFDS  inst_clk(
 );
 
 // wire [`Vec(`InstWidth)]	inst;
-// 
 cpu u_cpu(
 	//ports
-	.clk        		( clkdiv[1]			),
+	.clk        		( clkdiv[27]		), // 200 0000 / (2^27)
 	.rst        		( rstn        		),
 
-	// .pc_IF 					( pc_IF 		),
-	// .next_pc    		( next_pc    		),
   	// .inst           ( inst ),
-	// // .flush_ID					(flush_ID),
-	// .flush_WB				( flush_WB),
-	// .flush	(flush),
-	.pc_WB					( pc_WB)
+
+	.pc_WB				( pc_WB				)
 );
 
-// wire [7:0]	seg0;
-// wire [7:0]	seg1;
+wire [31:0] num	=	pc_WB[31:0];
+ 
+wire [7:0] dot;
+assign  dot=8'b0;
+wire [63:0] seg;
 
-// seg u_seg(
-// 	//ports
-// 	.display_data 		( pc_IF[31:0] 		),
-// 
-// 	.seg0         		( seg0         		),
-// 	.seg1         		( seg1         		)
-// );
+hex2seg inst_7seg7(num[31:28],dot[7],seg[63:56]);
+hex2seg inst_7seg6(num[27:24],dot[6],seg[55:48]);
+hex2seg inst_7seg5(num[23:20],dot[5],seg[47:40]);
+hex2seg inst_7seg4(num[19:16],dot[4],seg[39:32]);
 
-wire [7:0]	seg0;
-wire [7:0]	seg1;
-wire [7:0]	seg2;
-wire [7:0]	seg3;
-wire [7:0]	seg4;
-wire [7:0]	seg5;
-wire [7:0]	seg6;
-wire [7:0]	seg7;
-
-wire [63:0]	seg = {seg0, seg1, seg2, seg3, seg4, seg5, seg6, seg7 };
-
-seg u_seg(
-	//ports
-	.display_data 		( pc_WB[31:0]		),
-
-	.seg0         		( seg0         		),
-	.seg1         		( seg1         		),
-	.seg2         		( seg2         		),
-	.seg3         		( seg3         		),
-	.seg4         		( seg4         		),
-	.seg5         		( seg5         		),
-	.seg6         		( seg6         		),
-	.seg7         		( seg7         		)
-);
+hex2seg inst_7seg3(num[15:12],dot[3],seg[31:24]);
+hex2seg inst_7seg2(num[11:8],dot[2],seg[23:16]);
+hex2seg inst_7seg1(num[7:4],dot[1],seg[15:8]);
+hex2seg inst_7seg0(num[3:0],dot[0],seg[7:0]);
 
 SEG7P2S #(
 	.DATA_BITS(64),//data length
@@ -110,3 +85,4 @@ inst_7seg(
 );
 
 endmodule //top
+   
