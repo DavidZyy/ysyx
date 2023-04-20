@@ -1,7 +1,7 @@
 /* code style: the name of variable use snake style, 
   the name of macro use camel style. */
 
-// import "DPI-C" function void exit_code();
+import "DPI-C" function void exit_code();
 // import "DPI-C" function void not_ipl_exception();
 
 `include "../include/defines.v"
@@ -359,7 +359,7 @@ end
 
 always @(posedge clk) begin
   if (sig_op_WB[`SIG_OP_is_ebreak]) begin
-    // exit_code();
+    exit_code();
     $display("exit code");
   end
   else begin
