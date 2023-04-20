@@ -11,18 +11,18 @@ module cpu (
   input clk,
   input rst,
 
-  // output [`Vec(`ImmWidth)]  pc_IF,
+  output [`Vec(`ImmWidth)]  pc_IF,
   // output [`Vec(`ImmWidth)]  next_pc,
   // output [`Vec(`InstWidth)]	inst,
-  // output flush_WB,
+  output flush_WB,
   // output [`Vec(`ImmWidth)]  pc_EX
   output [`Vec(`ImmWidth)]  pc_WB
 );
 
-wire [`Vec(`ImmWidth)]  pc_IF;
+// wire [`Vec(`ImmWidth)]  pc_IF;
 wire [`Vec(`ImmWidth)]  next_pc;
 wire [`Vec(`InstWidth)]	inst;
-wire flush_WB;
+// wire flush_WB;
 
 /* IF, instructions fetch stage, rom. */
 rom inst_rom (

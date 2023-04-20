@@ -1,19 +1,5 @@
 // soc(system on chip)
 module top(
-//   input clk,
-//   input rst,
-// 
-//   output [`Vec(`ImmWidth)] pc_IF,
-//   output [`Vec(`ImmWidth)] next_pc,
-//   output [7:0]	seg0,
-//   output [7:0]	seg1,
-//   output [7:0]	seg2,
-//   output [7:0]	seg3,
-//   output [7:0]	seg4,
-//   output [7:0]	seg5,
-//   output [7:0]	seg6,
-//   output [7:0]	seg7,
-//   output flush_WB,
 	input	clk,
 	input	sysclk_n,
 	input 	rst,
@@ -23,7 +9,9 @@ module top(
     /* DT = data ? */
     output  SEGDT,
     output  SEGEN,
-	output [`Vec(`ImmWidth)] pc_WB
+	output [`Vec(`ImmWidth)] pc_WB,
+	output [`Vec(`ImmWidth)] pc_IF,
+  	output flush_WB
 );
 
 wire    clk200m;
