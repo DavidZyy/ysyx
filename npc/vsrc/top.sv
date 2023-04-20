@@ -22,7 +22,7 @@ module top(
     output  SEGCLR,
     /* DT = data ? */
     output  SEGDT,
-    output  SEGEN
+    output  SEGEN,
 	output [`Vec(`ImmWidth)] pc_WB
 );
 
