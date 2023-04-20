@@ -123,7 +123,7 @@ module ID_EX (
  )
  pc_EX_reg(
   .clk  (clk  ),
-  .rst  (rst  ),
+  .rst  (1'b0 ),
   .din  (pc_ID),
   .wen  (1'b1),
 
