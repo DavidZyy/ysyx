@@ -37,6 +37,8 @@ cpu u_cpu(
 
   	// .inst           ( inst ),
 
+	.pc_IF				( pc_IF				),
+	.flush_WB			(flush_WB),
 	.pc_WB				( pc_WB				)
 );
 
