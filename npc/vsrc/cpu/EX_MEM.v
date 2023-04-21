@@ -1,5 +1,5 @@
 
-`include "./include/defines.v"
+`include "../include/defines.v"
 
 module EX_MEM (
   input clk,

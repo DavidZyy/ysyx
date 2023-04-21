@@ -73,77 +73,8 @@
   `define OpIs(opcode)  (`OPCODE(inst) == opcode)
 
   /* alu_op decode information */
-  // `define AluopWidth  32
-  `define AluopWidth  48
-
-//   `define AluopAdd      0
-//   `define AluopSub      1
-//   `define AluopLt       2 // less than, signed, use for slti
-//   `define AluopLtu      3 // less than, unsigned, use for sltiu
-//   `define AluopAnd      4
-//   `define AluopOr       5
-//   `define AluopXor      6
-//   `define AluopSll      7 // shift left logically
-//   `define AluopSrl      8 // shift right logically
-//   `define AluopSra      9 // shift right arithmetically
-//   `define AluopOutImm   10 // output immediate (operator2) directly
-//   `define AluopEq       11
-//   `define AluopNe       12
-//   `define AluopGe       13
-//   `define AluopGeu      14
-//   `define AluopAddw     15
-//   `define AluopSllw     16
-//   `define AluopSrlw     17
-//   `define AluopSraw     18
-//   `define AluopSubw     19
-//   `define AluopMul      20
-//   `define AluopMulh     21
-//   `define AluopMulhsu   22
-//   `define AluopMulhu    23
-//   `define AluopMulw     24
-//   `define AluopDiv      25
-//   `define AluopDivu     26
-//   `define AluopRem      27
-//   `define AluopRemu     28
-//   `define AluopDivw     29
-//   `define AluopDivuw    30
-//   `define AluopRemw     31
-//   `define Aluopremuw    32
-// 
-//   /* AluAdd equals to 1<<`AluopAdd, and so on */
-//   `define AluAdd        `AluopWidth'h000000000001
-//   `define AluSub        `AluopWidth'h000000000002
-//   `define AluLt         `AluopWidth'h000000000004
-//   `define AluLtu        `AluopWidth'h000000000008
-//   `define AluAnd        `AluopWidth'h000000000010
-//   `define AluOr         `AluopWidth'h000000000020
-//   `define AluXor        `AluopWidth'h000000000040
-//   `define AluSll        `AluopWidth'h000000000080
-//   `define AluSrl        `AluopWidth'h000000000100
-//   `define AluSra        `AluopWidth'h000000000200
-//   `define AluOutImm     `AluopWidth'h000000000400
-//   `define AluEq         `AluopWidth'h000000000800
-//   `define AluNe         `AluopWidth'h000000001000
-//   `define AluGe         `AluopWidth'h000000002000
-//   `define AluGeu        `AluopWidth'h000000004000
-//   `define AluAddw       `AluopWidth'h000000008000
-//   `define AluSllw       `AluopWidth'h000000010000
-//   `define AluSrlw       `AluopWidth'h000000020000
-//   `define AluSraw       `AluopWidth'h000000040000
-//   `define AluSubw       `AluopWidth'h000000080000
-//   `define AluMul        `AluopWidth'h000000100000
-//   `define AluMulh       `AluopWidth'h000000200000
-//   `define AluMulhsu     `AluopWidth'h000000400000
-//   `define AluMulhu      `AluopWidth'h000000800000
-//   `define AluMulw       `AluopWidth'h000001000000   
-//   `define Aludiv        `AluopWidth'h000002000000
-//   `define Aludivu       `AluopWidth'h000004000000
-//   `define Alurem        `AluopWidth'h000008000000
-//   `define Aluremu       `AluopWidth'h000010000000
-//   `define Aludivw       `AluopWidth'h000020000000
-//   `define Aludivuw      `AluopWidth'h000040000000
-//   `define Aluremw       `AluopWidth'h000080000000
-//   `define Aluremuw      `AluopWidth'h000100000000
+  /* for unused bit, we will get z in vivado sim */
+  `define AluopWidth  33
 
   `define AluopAdd      0
   `define AluopSub      `AluopAdd    +  1
@@ -233,7 +164,7 @@
   `define Wdt64   `WdtTypeCnt'h8
 
   /* signals, for the elegant of codes, I write it in this way */
-  `define SigOpWidth    32
+  `define SigOpWidth    11
 
   /* signal options */
   `define SIG_OP_need_imm       0

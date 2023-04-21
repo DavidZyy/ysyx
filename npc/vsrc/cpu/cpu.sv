@@ -1,10 +1,10 @@
 /* code style: the name of variable use snake style, 
   the name of macro use camel style. */
 
-// import "DPI-C" function void exit_code();
+import "DPI-C" function void exit_code();
 // import "DPI-C" function void not_ipl_exception();
 
-`include "./include/defines.v"
+`include "../include/defines.v"
 
 /* assemble all cpu moudules into top moudule */
 module cpu (
@@ -12,12 +12,21 @@ module cpu (
   input rst,
 
   output [`Vec(`ImmWidth)]  pc_IF,
-  output [`Vec(`ImmWidth)]  next_pc,
-  output [`Vec(`InstWidth)]	inst,
+  // output [`Vec(`ImmWidth)]  next_pc,
+  // output [`Vec(`InstWidth)]	inst,
   output flush_WB,
   // output [`Vec(`ImmWidth)]  pc_EX
   output [`Vec(`ImmWidth)]  pc_WB
 );
+
+// wire [`Vec(`ImmWidth)]  pc_IF;
+wire [`Vec(`ImmWidth)]  next_pc;
+wire [`Vec(`InstWidth)]	inst;
+// wire flush_WB;
+
+wire [`Vec(`RegIdWidth)]	rd_EX;
+wire [`Vec(`RegIdWidth)]  rd_MEM;
+wire [`Vec(`RegIdWidth)]	rd_WB;
 
 /* IF, instructions fetch stage, rom. */
 rom inst_rom (
@@ -31,6 +40,7 @@ wire [`Vec(`InstWidth)]	inst_ID;
 wire [`Vec(`InstWidth)]	inst_IF;
 wire [`Vec(`ImmWidth)]  pc_ID;
 wire flush_ID;
+wire flush_EX;
 wire flush;
 
 assign flush = flush_ID | flush_EX | flush_MEM | flush_WB;
@@ -95,6 +105,7 @@ RegisterFile
 )
 u_RegisterFile(
   .clk        ( clk     ),
+  .rst        ( rst     ),
   .reg_wdata  ( reg_wdata   ),
   .rd         ( rd_WB      ),
   .reg_wen    ( sig_op_WB[`SIG_OP_reg_wen] ),
@@ -137,7 +148,6 @@ wire [`Vec(`ImmWidth)]	  rdata_1_EX;
 wire [`Vec(`ImmWidth)]	  rdata_2_EX;
 wire [`Vec(`ImmWidth)]	  pc_EX;
 wire [`Vec(`InstWidth)]  	inst_EX;
-wire [`Vec(`RegIdWidth)]	rd_EX;
 wire flush_EX_temp;
 
 /* branch not write rd */
@@ -201,7 +211,7 @@ ID_EX u_ID_EX(
 
 /* alu_result_EX which will be used by branch will get on EX stage, 
   we can also add an extra alu in decode stage to get the result of branch */
-wire flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result_EX == 1));
+assign flush_EX = flush_EX_temp | (sig_op_EX[`SIG_OP_is_branch] && (alu_result_EX == 1));
 
   /* input */
 wire [`Vec(`ImmWidth)]  operator_1 = (sig_op_EX[`SIG_OP_is_auipc] | sig_op_EX[`SIG_OP_is_jal]) ? 
@@ -230,7 +240,6 @@ Alu u_Alu(
 );
 
 wire flush_MEM;
-wire [`Vec(`RegIdWidth)]  rd_MEM;
 wire [`Vec(`SigOpWidth)]	sig_op_MEM;
 wire [`Vec(`WdtTypeCnt)]	wdt_op_MEM;
 wire [`Vec(`ImmWidth)]	  alu_result_MEM;
@@ -303,7 +312,6 @@ load_extend u_load_extend (
 );
 
 // wire 	flush_WB;
-wire [`Vec(`RegIdWidth)]	rd_WB;
 wire [`Vec(`ImmWidth)]	mem_rdata_ex_WB;
 wire [`Vec(`ImmWidth)]	alu_result_WB;
 wire [`Vec(`ImmWidth)]	imm_WB;
@@ -354,7 +362,7 @@ end
 
 always @(posedge clk) begin
   if (sig_op_WB[`SIG_OP_is_ebreak]) begin
-    // exit_code();
+    exit_code();
     $display("exit code");
   end
   else begin

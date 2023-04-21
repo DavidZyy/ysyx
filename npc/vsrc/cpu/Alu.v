@@ -1,4 +1,4 @@
-`include "./include/defines.v"
+`include "../include/defines.v"
 
 module Alu (
     input  [`Vec(`ImmWidth)]    operator_1,

@@ -1,5 +1,5 @@
 
-`include "./include/defines.v"
+`include "../include/defines.v"
 
 module forwarding (
   input [`Vec(`RegIdWidth)]	rs1,

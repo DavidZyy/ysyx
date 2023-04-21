@@ -118,7 +118,7 @@ void get_cpu() {
 
 void npc_exec_once() {
     single_cycle(0);
-    get_cpu();
+    // get_cpu();
 }
 
 void nemu_exec_once() {
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
       npc_exec_once();
     }
 
-    nemu_exec_once(); // execute jmp / branch
+    // nemu_exec_once(); // execute jmp / branch
 
     // if( i > 1) difftest_step();
     /* run nop inst */
