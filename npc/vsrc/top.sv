@@ -23,6 +23,7 @@ wire    clk200m;
 /* verilator lint_off UNUSEDSIGNAL */
 // wire	[`Vec(`ImmWidth)] pc_WB;
 
+/* verilator lint_off INITIALDLY */
 reg [31:0]  clkdiv;
 
 	initial begin
