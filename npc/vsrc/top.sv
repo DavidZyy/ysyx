@@ -14,6 +14,7 @@ module top(
     output  SEGEN
 );
 
+/* verilator lint_off UNUSEDSIGNAL */
 wire [`Vec(`ImmWidth)] pc_WB;
 wire [`Vec(`ImmWidth)] pc_IF;
 wire flush_WB;
