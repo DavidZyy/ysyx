@@ -43,7 +43,8 @@ IBUFDS  inst_clk(
 // wire [`Vec(`InstWidth)]	inst;
 cpu u_cpu(
 	//ports
-	.clk        		( clkdiv[3]		), // 200 0000 / (2^27)
+	// .clk        		( clkdiv[3]		), // 200 0000 / (2^27)
+	.clk        		( clk200m		), // 200 0000 / (2^27)
 	// .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
 	.rst        		( rst        		),
 
