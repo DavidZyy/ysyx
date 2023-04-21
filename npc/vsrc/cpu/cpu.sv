@@ -105,6 +105,7 @@ RegisterFile
 )
 u_RegisterFile(
   .clk        ( clk     ),
+  .rst        ( rst     ),
   .reg_wdata  ( reg_wdata   ),
   .rd         ( rd_WB      ),
   .reg_wen    ( sig_op_WB[`SIG_OP_reg_wen] ),

@@ -25,13 +25,18 @@ wire    clk200m;
 
 /* verilator lint_off INITIALDLY */
 reg [31:0]  clkdiv;
+// 
+// 	initial begin
+//         clkdiv <= 0;
+//     end
 
-	initial begin
-        clkdiv <= 0;
-    end
-
-always@(posedge clk200m)
-    clkdiv<=clkdiv+1;
+always@(posedge clk200m or posedge rst)
+	if(rst) begin
+		clkdiv <= 0;
+	end
+	else begin
+    	clkdiv <= clkdiv+1;
+	end
 
 IBUFDS  inst_clk(
 	.I(clk),
@@ -78,7 +83,7 @@ SEG7P2S #(
 )
 inst_7seg(
 	.clk(clkdiv[1]),//parallel to serial
-	.rst(1'b0),
+	.rst(rst),
 	.Start(clkdiv[3]),
 	// .Start(clkdiv[16]),
 	.PData(seg),

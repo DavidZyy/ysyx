@@ -39,6 +39,8 @@ top u_top(
   end
 
   initial begin
+    // rst = 0;
+    // #10;
     rst  = 1;
     #100;
     rst = 0;

@@ -123,7 +123,8 @@ module ID_EX (
  )
  pc_EX_reg(
   .clk  (clk  ),
-  .rst  (1'b0 ),
+  /* if not rst, it will get xxxx in vivado sim */
+  .rst  (1'b0),
   .din  (pc_ID),
   .wen  (1'b1),
 
