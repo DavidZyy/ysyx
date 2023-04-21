@@ -4,9 +4,9 @@ module top(
 	input	sysclk_n,
 	input 	rst,
 
-	// output [`Vec(`ImmWidth)] pc_WB,
-	// output [`Vec(`ImmWidth)] pc_IF,
-  	// output flush_WB,
+	output [`Vec(`ImmWidth)] pc_WB,
+	output [`Vec(`ImmWidth)] pc_IF,
+  	output flush_WB,
 	output  SEGCLK,
     output  SEGCLR,
     /* DT = data ? */
@@ -15,9 +15,9 @@ module top(
 );
 
 /* verilator lint_off UNUSEDSIGNAL */
-wire [`Vec(`ImmWidth)] pc_WB;
-wire [`Vec(`ImmWidth)] pc_IF;
-wire flush_WB;
+// wire [`Vec(`ImmWidth)] pc_WB;
+// wire [`Vec(`ImmWidth)] pc_IF;
+// wire flush_WB;
 
 wire    clk200m;
 /* verilator lint_off UNUSEDSIGNAL */
