@@ -2,6 +2,7 @@
 module top(
 	input	clk,
 	input	sysclk_n,
+	/* verilator lint_off SYNCASYNCNET */
 	input 	rst,
 
 	output [`Vec(`ImmWidth)] pc_WB,
