@@ -1,5 +1,5 @@
 /* verilator lint_off TIMESCALEMOD */
-`timescale 1us/1ns
+// `timescale 1us/1ns
 
 module test (
 );
