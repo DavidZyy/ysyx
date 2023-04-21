@@ -15,7 +15,7 @@ module RegisterFile #(ADDR_WIDTH = `RegIdWidth, DATA_WIDTH = `RegWidth) (
   output [DATA_WIDTH-1:0] rdata_1,
   output [DATA_WIDTH-1:0] rdata_2
 );
-
+/* verilator lint_off MULTIDRIVEN */
   reg [DATA_WIDTH-1:0] rf [`RegCnt-1:0];
 
   // initial set_gpr_ptr(rf);  // rf为通用寄存器的二维数组变量
