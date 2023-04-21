@@ -30,7 +30,7 @@ reg [31:0]  clkdiv;
 //         clkdiv <= 0;
 //     end
 
-always@(posedge clk200m or posedge rst)
+always@(posedge clk200m)
 	if(rst) begin
 		clkdiv <= 0;
 	end
