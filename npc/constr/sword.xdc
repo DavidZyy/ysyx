@@ -17,5 +17,7 @@ set_property IOSTANDARD LVCMOS33 [get_ports SEGEN]
 
 set_property PACKAGE_PIN AC18 [get_ports clk]
 set_property IOSTANDARD LVDS [get_ports clk]
+set_property PACKAGE_PIN AD18 [get_ports sysclk_n]
+set_property IOSTANDARD LVDS [get_ports sysclk_n]
 set_property PACKAGE_PIN W13 [get_ports rst]
 set_property IOSTANDARD LVCMOS18 [get_ports rst]

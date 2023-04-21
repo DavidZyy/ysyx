@@ -5,9 +5,9 @@ module top(
 	/* verilator lint_off SYNCASYNCNET */
 	input 	rst,
 
-	output [`Vec(`ImmWidth)] pc_WB,
-	output [`Vec(`ImmWidth)] pc_IF,
-  	output flush_WB,
+	// output [`Vec(`ImmWidth)] pc_WB,
+	// output [`Vec(`ImmWidth)] pc_IF,
+  	// output flush_WB,
 	output  SEGCLK,
     output  SEGCLR,
     /* DT = data ? */
@@ -16,9 +16,9 @@ module top(
 );
 
 /* verilator lint_off UNUSEDSIGNAL */
-// wire [`Vec(`ImmWidth)] pc_WB;
-// wire [`Vec(`ImmWidth)] pc_IF;
-// wire flush_WB;
+wire [`Vec(`ImmWidth)] pc_WB;
+wire [`Vec(`ImmWidth)] pc_IF;
+wire flush_WB;
 
 wire    clk200m;
 /* verilator lint_off UNUSEDSIGNAL */
@@ -50,8 +50,8 @@ IBUFDS  inst_clk(
 cpu u_cpu(
 	//ports
 	// .clk        		( clkdiv[3]		), // 200 0000 / (2^27)
-	.clk        		( clk200m		), // 200 0000 / (2^27)
-	// .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
+	// .clk        		( clk200m		), // 200 0000 / (2^27)
+	.clk        		( clkdiv[27]		), // 200 0000 / (2^27)
 	.rst        		( rst        		),
 
   	// .inst           ( inst ),
@@ -85,8 +85,8 @@ SEG7P2S #(
 inst_7seg(
 	.clk(clkdiv[1]),//parallel to serial
 	.rst(rst),
-	.Start(clkdiv[3]),
-	// .Start(clkdiv[16]),
+	// .Start(clkdiv[3]),
+	.Start(clkdiv[16]),
 	.PData(seg),
 
 	.s_clk(SEGCLK),
