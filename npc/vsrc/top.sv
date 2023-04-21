@@ -23,6 +23,11 @@ wire    clk200m;
 // wire	[`Vec(`ImmWidth)] pc_WB;
 
 reg [31:0]  clkdiv;
+
+	initial begin
+        clkdiv <= 0;
+    end
+
 always@(posedge clk200m)
     clkdiv<=clkdiv+1;
 
@@ -36,7 +41,8 @@ IBUFDS  inst_clk(
 // wire [`Vec(`InstWidth)]	inst;
 cpu u_cpu(
 	//ports
-	.clk        		( clkdiv[27]		), // 200 0000 / (2^27)
+	.clk        		( clkdiv[3]		), // 200 0000 / (2^27)
+	// .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
 	.rst        		( rst        		),
 
   	// .inst           ( inst ),
@@ -70,7 +76,8 @@ SEG7P2S #(
 inst_7seg(
 	.clk(clkdiv[1]),//parallel to serial
 	.rst(1'b0),
-	.Start(clkdiv[16]),
+	.Start(clkdiv[3]),
+	// .Start(clkdiv[16]),
 	.PData(seg),
 
 	.s_clk(SEGCLK),
