@@ -252,6 +252,8 @@ module memory (
           width_64_out_1[31:0]  = ram_mem[ram_raddr[addr_width-1:0]][31:0];
           width_64_out_1[63:32] = ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
           pmem_read(mem_raddr, width_64_out_2);
+          if(width_64_out_1 != width_64_out_2)
+            exit_code();
         end
     end
 endmodule //memory
