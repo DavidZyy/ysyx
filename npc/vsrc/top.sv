@@ -48,13 +48,11 @@ IBUFDS  inst_clk(
 cpu u_cpu(
 	//ports
 	// .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
-	.clk        		( clk200m		), // 200 0000 / (2^27)
-	// .clk        		( btn_clk		), // 200 0000 / (2^27)
+	.clk        		( clk200m			), // 200 0000 / (2^27)
+	// .clk        		( btn_clk			), // 200 0000 / (2^27)
 	/* use switch as reset? */
 	.rst        		( rst        		),
-
-  	.inst           ( inst ),
-
+  	.inst           	( inst 				),
 	.pc_IF				( pc_IF				),
 	.flush_WB			( flush_WB			),
 	.pc_WB				( pc_WB				)
