@@ -202,15 +202,15 @@ module memory (
     wire [`Vec(`RegWidth)] shift_waddr = sub_waddr >> 2;
 
     // always @(negedge clk) begin
-    // // always @(posedge clk) begin
-    //   if(mem_wen)
-    //     pmem_write(mem_waddr, mem_wdata, wmask);
-    //   else
-    //     ;
-    // end
+    always @(posedge clk) begin
+      if(mem_wen)
+        pmem_write(mem_waddr, mem_wdata, wmask);
+      else
+        ;
+    end
 
-    always @(negedge clk) begin
-    // always @(posedge clk) begin
+    // always @(negedge clk) begin
+    always @(posedge clk) begin
       if(mem_wen) begin
         if(wdt_op == `Wdt8) begin
           /* 11, 10, 01, 00*/
@@ -248,7 +248,7 @@ module memory (
     wire [`Vec(`RegWidth)] ram_waddr = shift_waddr & ~mask;
 
     /* check if write correct */
-    always @(negedge clk or posedge clk) begin
+    always @(negedge clk) begin
         if(mem_wen) begin
           width_64_out_1[31:0]  <= ram_mem[ram_waddr[addr_width-1:0]][31:0];
           width_64_out_1[63:32] <= ram_mem[ram_waddr[addr_width-1:0] + 1][31:0];
