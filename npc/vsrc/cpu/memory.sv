@@ -199,12 +199,12 @@ module memory (
     wire [`Vec(`RegWidth)] sub_waddr   = mem_waddr - `RamAddr;
     wire [`Vec(`RegWidth)] shift_waddr = sub_waddr >> 2;
 
-    // always @(negedge clk) begin
-    //   if(mem_wen)
-    //     pmem_write(mem_waddr, mem_wdata, wmask);
-    //   else
-    //     ;
-    // end
+    always @(negedge clk) begin
+      if(mem_wen)
+        pmem_write(mem_waddr, mem_wdata, wmask);
+      else
+        ;
+    end
 
     always @(negedge clk) begin
       if(mem_wen) begin
