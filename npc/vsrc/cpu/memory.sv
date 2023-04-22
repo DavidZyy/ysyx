@@ -255,6 +255,7 @@ module memory (
           pmem_read(mem_waddr, width_64_out_2);
           if(width_64_out_1 != width_64_out_2)
             // exit_code();
+            ;
         end
     end
 
