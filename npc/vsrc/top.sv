@@ -60,9 +60,9 @@ cpu u_cpu(
 	.pc_WB				( pc_WB				)
 );
 
-	always@(posedge clk200m) begin
-		$display("%x", pc_WB);
-	end
+	// always@(posedge clk200m) begin
+	// 	$display("%x", pc_WB);
+	// end
 
 	assign leds[7] = btn_clk;
 	/* rst always true */
