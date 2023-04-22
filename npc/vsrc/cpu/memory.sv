@@ -66,15 +66,16 @@ module memory (
     wire [`Vec(`RegWidth)] ram_raddr = shift_raddr & ~mask;
 
 
+    // always @(posedge clk) begin
+    //   if(mem_ren)
+    //     pmem_read(mem_raddr, width_64_out);
+    // end
+
     always @(posedge clk) begin
-      if(mem_ren)
-        pmem_read(mem_raddr, width_64_out);
-      // else
-        // mem_rdata = 0;
-        // if(mem_ren) begin
-        //   width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
-        //   width_64_out[63:32] <= ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
-        // end
+        if(mem_ren) begin
+          width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
+          width_64_out[63:32] <= ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
+        end
     end
 
     wire [7:0] wmask;
@@ -199,13 +200,13 @@ module memory (
     wire [`Vec(`RegWidth)] sub_waddr   = mem_waddr - `RamAddr;
     wire [`Vec(`RegWidth)] shift_waddr = sub_waddr >> 2;
 
-    always @(negedge clk) begin
-      if(mem_wen)
-        pmem_write(mem_waddr, mem_wdata, wmask);
-      else
-        ;
-    end
-
+//     always @(negedge clk) begin
+//       if(mem_wen)
+//         pmem_write(mem_waddr, mem_wdata, wmask);
+//       else
+//         ;
+//     end
+// 
     always @(negedge clk) begin
       if(mem_wen) begin
         if(wdt_op == `Wdt8) begin
