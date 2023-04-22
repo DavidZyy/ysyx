@@ -245,8 +245,8 @@ module memory (
     /* check if write correct */
     always @(negedge clk) begin
         if(mem_wen) begin
-          width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
-          width_64_out[63:32] <= ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
+          width_64_out[31:0]  = ram_mem[ram_raddr[addr_width-1:0]][31:0];
+          width_64_out[63:32] = ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
         end
     end
 endmodule //memory
