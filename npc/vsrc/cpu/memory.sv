@@ -122,7 +122,6 @@ module memory (
     wire [`Vec(`ImmWidth)] width_16_out;
     wire [`Vec(`ImmWidth)] width_32_out;
     // wire [`Vec(`ImmWidth)] width_64_out;
-    /* verilator lint_off BLKSEQ */
     reg  [`Vec(`ImmWidth)] width_64_out;
 
     MuxKey
