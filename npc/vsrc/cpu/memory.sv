@@ -243,11 +243,15 @@ module memory (
       end
     end
 
+    reg  [`Vec(`ImmWidth)] width_64_out_1;
+    reg  [`Vec(`ImmWidth)] width_64_out_2;
+
     /* check if write correct */
     always @(negedge clk) begin
         if(mem_wen) begin
-          width_64_out[31:0]  = ram_mem[ram_raddr[addr_width-1:0]][31:0];
-          width_64_out[63:32] = ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
+          width_64_out_1[31:0]  = ram_mem[ram_raddr[addr_width-1:0]][31:0];
+          width_64_out_1[63:32] = ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
+          pmem_read(mem_raddr, width_64_out_2);
         end
     end
 endmodule //memory
