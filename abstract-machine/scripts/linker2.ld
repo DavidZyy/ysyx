@@ -2,6 +2,7 @@ ENTRY(_start)
 ROM_SIZE = 0x4000;
 RAM_SIZE = 0x2000;
 /* STACK_SIZE = 0x1000; */
+/* NOTE, instruction size should not exceed 0x1000000 */
 MEMORY {
   /* rom (rx) : ORIGIN = 0x00000000, LENGTH = ROM_SIZE  */
   rom (rx) : ORIGIN = 0x80000000, LENGTH = ROM_SIZE 
