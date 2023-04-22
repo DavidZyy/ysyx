@@ -24,6 +24,7 @@ SECTIONS {
     *(.rodata*)
     /* for srodata, rodata in this seg */
     *(.srodata*)
+    /* *(.data*) match .data.a */
     *(.data*)
   } > ram
   /* .data : {
