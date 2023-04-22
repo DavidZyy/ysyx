@@ -22,7 +22,7 @@ SECTIONS {
   .rodata : {
     *(.rodata*)
     /* for srodata */
-    /* *(.srodata*) */
+    *(.srodata*)
   } > ram
   .data : {
     *(.data)
