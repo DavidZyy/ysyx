@@ -26,7 +26,7 @@ static inline bool in_pmem(paddr_t addr) {
 void pmem_read(long long raddr, long long *rdata) {
   // printf(ANSI_FMT("pc_IF: %p\n", ANSI_FG_RED), (void *)top->pc_IF);
   // printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
-  printf(ANSI_FMT("raddr: %llx\n\n", ANSI_FG_RED), raddr);
+  // printf(ANSI_FMT("raddr: %llx\n\n", ANSI_FG_RED), raddr);
   if(raddr <= 0x40){
     *rdata = 0;
     return;
@@ -41,7 +41,7 @@ void pmem_read(long long raddr, long long *rdata) {
 }
 
 void pmem_write(long long waddr, long long wdata, char wmask) {
-  printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
+  // printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
   assert(in_pmem(waddr));
 
   // assert(!(waddr & 0x7));
