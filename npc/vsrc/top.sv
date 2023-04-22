@@ -6,9 +6,9 @@ module top	(
 	input 	rst,
 	input	btn_clk,
 
-	// output [`Vec(`ImmWidth)] pc_WB,
-	// output [`Vec(`ImmWidth)] pc_IF,
-  	// output flush_WB,
+	output [`Vec(`ImmWidth)] pc_WB,
+	output [`Vec(`ImmWidth)] pc_IF,
+  	output flush_WB,
 	output	[7:0] leds,
 	output  SEGCLK,
     output  SEGCLR,
@@ -18,9 +18,10 @@ module top	(
 );
 
 /* verilator lint_off UNUSEDSIGNAL */
-wire [`Vec(`ImmWidth)] pc_WB;
-wire [`Vec(`ImmWidth)] pc_IF;
-wire flush_WB;
+// wire [`Vec(`ImmWidth)] pc_WB;
+// wire [`Vec(`ImmWidth)] pc_IF;
+// wire flush_WB;
+wire [`Vec(`InstWidth)]	inst;
 
 wire    clk200m;
 reg [31:0]  clkdiv;
@@ -44,21 +45,22 @@ IBUFDS  inst_clk(
 //     	clkdiv <= clkdiv+1;
 // 	end
 
-// wire [`Vec(`InstWidth)]	inst;
 cpu u_cpu(
 	//ports
-	.clk        		( clkdiv[27]		), // 200 0000 / (2^27)
-	// .clk        		( clk200m		), // 200 0000 / (2^27)
-	// .clk        		( btn_clk		), // 200 0000 / (2^27)
+	// .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
+	.clk        		( clk200m			), // 200 0000 / (2^27)
+	// .clk        		( btn_clk			), // 200 0000 / (2^27)
 	/* use switch as reset? */
 	.rst        		( rst        		),
-
-  	// .inst           ( inst ),
-
+  	.inst           	( inst 				),
 	.pc_IF				( pc_IF				),
 	.flush_WB			( flush_WB			),
 	.pc_WB				( pc_WB				)
 );
+
+	// always@(posedge clk200m) begin
+	// 	$display("%x", pc_WB);
+	// end
 
 	assign leds[7] = btn_clk;
 	/* rst always true */
@@ -71,7 +73,7 @@ cpu u_cpu(
 
 // assign 
 
-wire [31:0] num	=	pc_IF[31:0];
+wire [31:0] num	=	inst[31:0];
  
 wire [7:0] dot;
 assign  dot=8'b0;

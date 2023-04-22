@@ -13,7 +13,7 @@ module cpu (
 
   output [`Vec(`ImmWidth)]  pc_IF,
   // output [`Vec(`ImmWidth)]  next_pc,
-  // output [`Vec(`InstWidth)]	inst,
+  output [`Vec(`InstWidth)]	inst,
   output flush_WB,
   // output [`Vec(`ImmWidth)]  pc_EX
   output [`Vec(`ImmWidth)]  pc_WB
@@ -21,7 +21,7 @@ module cpu (
 
 // wire [`Vec(`ImmWidth)]  pc_IF;
 wire [`Vec(`ImmWidth)]  next_pc;
-wire [`Vec(`InstWidth)]	inst;
+// wire [`Vec(`InstWidth)]	inst;
 // wire flush_WB;
 
 wire [`Vec(`RegIdWidth)]	rd_EX;

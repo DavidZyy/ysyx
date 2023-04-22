@@ -1,10 +1,10 @@
 /* move instructions to rom, this module act like ram */
 `include "../include/defines.v"
 
-// import "DPI-C" function void pmem_read(
-//   input longint mem_raddr, output longint rinst);
-// import "DPI-C" function void pmem_write(
-//   input longint mem_waddr, input longint wdata, input byte wmask);
+import "DPI-C" function void pmem_read(
+  input longint mem_raddr, output longint rinst);
+import "DPI-C" function void pmem_write(
+  input longint mem_waddr, input longint wdata, input byte wmask);
 
 module memory (
     input clk,
@@ -52,7 +52,7 @@ module memory (
     reg [31:0]  ram_mem[mem_size-1:0];
 
     initial begin
-        $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/hello-str-riscv64-npc.ram.hex", ram_mem);
+        $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/recursion-riscv64-npc.ram.hex", ram_mem);
         // $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/test_store_load-riscv64-npc.ram.hex", ram_mem);
     end
 /********************************** read data ****************************************/
@@ -66,12 +66,12 @@ module memory (
     wire [`Vec(`RegWidth)] ram_raddr = shift_raddr & ~mask;
 
 
+    // always @(posedge clk) begin
+    //   if(mem_ren)
+    //     pmem_read(mem_raddr, width_64_out);
+    // end
+
     always @(posedge clk) begin
-    // always @(*) begin
-      // if(mem_ren)
-        // pmem_read(mem_raddr, width_64_out);
-      // else
-        // mem_rdata = 0;
         if(mem_ren) begin
           width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
           width_64_out[63:32] <= ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
@@ -122,6 +122,7 @@ module memory (
     wire [`Vec(`ImmWidth)] width_16_out;
     wire [`Vec(`ImmWidth)] width_32_out;
     // wire [`Vec(`ImmWidth)] width_64_out;
+    /* verilator lint_off BLKSEQ */
     reg  [`Vec(`ImmWidth)] width_64_out;
 
     MuxKey
@@ -201,6 +202,7 @@ module memory (
     wire [`Vec(`RegWidth)] shift_waddr = sub_waddr >> 2;
 
     // always @(negedge clk) begin
+    // always @(posedge clk) begin
     //   if(mem_wen)
     //     pmem_write(mem_waddr, mem_wdata, wmask);
     //   else
@@ -208,6 +210,7 @@ module memory (
     // end
 
     always @(negedge clk) begin
+    // always @(posedge clk) begin
       if(mem_wen) begin
         if(wdt_op == `Wdt8) begin
           /* 11, 10, 01, 00*/
@@ -238,6 +241,22 @@ module memory (
             ram_mem[shift_waddr[addr_width-1:0] + 1][31:0] <= mem_wdata[63:32];
         end
       end
+    end
+
+    reg  [`Vec(`ImmWidth)] width_64_out_1;
+    reg  [`Vec(`ImmWidth)] width_64_out_2;
+    wire [`Vec(`RegWidth)] ram_waddr = shift_waddr & ~mask;
+
+    /* check if write correct */
+    always @(negedge clk) begin
+        if(mem_wen) begin
+          width_64_out_1[31:0]  <= ram_mem[ram_waddr[addr_width-1:0]][31:0];
+          width_64_out_1[63:32] <= ram_mem[ram_waddr[addr_width-1:0] + 1][31:0];
+          pmem_read(mem_waddr, width_64_out_2);
+          if(width_64_out_1 != width_64_out_2)
+            // exit_code()
+            ;
+        end
     end
 
 endmodule //memory
