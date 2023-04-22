@@ -21,6 +21,7 @@ module top	(
 // wire [`Vec(`ImmWidth)] pc_WB;
 // wire [`Vec(`ImmWidth)] pc_IF;
 // wire flush_WB;
+wire [`Vec(`InstWidth)]	inst;
 
 wire    clk200m;
 reg [31:0]  clkdiv;
@@ -44,7 +45,6 @@ IBUFDS  inst_clk(
 //     	clkdiv <= clkdiv+1;
 // 	end
 
-// wire [`Vec(`InstWidth)]	inst;
 cpu u_cpu(
 	//ports
 	// .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
@@ -53,7 +53,7 @@ cpu u_cpu(
 	/* use switch as reset? */
 	.rst        		( rst        		),
 
-  	// .inst           ( inst ),
+  	.inst           ( inst ),
 
 	.pc_IF				( pc_IF				),
 	.flush_WB			( flush_WB			),
@@ -75,7 +75,7 @@ cpu u_cpu(
 
 // assign 
 
-wire [31:0] num	=	pc_IF[31:0];
+wire [31:0] num	=	inst[31:0];
  
 wire [7:0] dot;
 assign  dot=8'b0;
