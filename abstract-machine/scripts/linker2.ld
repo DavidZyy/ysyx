@@ -20,14 +20,15 @@ SECTIONS {
   } > rom
   etext = .;
   _etext = .;
-  .rodata : {
+  .mydata : {
     *(.rodata*)
     /* for srodata, rodata in this seg */
     *(.srodata*)
-  } > ram
-  .data : {
     *(.data)
   } > ram
+  /* .data : {
+    *(.data)
+  } > ram */
   edata = .;
   _data = .;
   .bss : {
