@@ -202,15 +202,15 @@ module memory (
     wire [`Vec(`RegWidth)] shift_waddr = sub_waddr >> 2;
 
     // always @(negedge clk) begin
-    always @(posedge clk) begin
-      if(mem_wen)
-        pmem_write(mem_waddr, mem_wdata, wmask);
-      else
-        ;
-    end
+    // always @(posedge clk) begin
+    //   if(mem_wen)
+    //     pmem_write(mem_waddr, mem_wdata, wmask);
+    //   else
+    //     ;
+    // end
 
-    // always @(negedge clk) begin
-    always @(posedge clk) begin
+    always @(negedge clk) begin
+    // always @(posedge clk) begin
       if(mem_wen) begin
         if(wdt_op == `Wdt8) begin
           /* 11, 10, 01, 00*/
