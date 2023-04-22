@@ -245,13 +245,14 @@ module memory (
 
     reg  [`Vec(`ImmWidth)] width_64_out_1;
     reg  [`Vec(`ImmWidth)] width_64_out_2;
+    wire [`Vec(`RegWidth)] ram_waddr = shift_waddr & ~mask;
 
     /* check if write correct */
     always @(negedge clk) begin
         if(mem_wen) begin
-          width_64_out_1[31:0]  = ram_mem[ram_raddr[addr_width-1:0]][31:0];
-          width_64_out_1[63:32] = ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
-          pmem_read(mem_raddr, width_64_out_2);
+          width_64_out_1[31:0]  = ram_mem[ram_waddr[addr_width-1:0]][31:0];
+          width_64_out_1[63:32] = ram_mem[ram_waddr[addr_width-1:0] + 1][31:0];
+          pmem_read(mem_waddr, width_64_out_2);
           if(width_64_out_1 != width_64_out_2)
             exit_code();
         end
