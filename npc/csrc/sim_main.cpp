@@ -118,7 +118,7 @@ void get_cpu() {
 
 void npc_exec_once() {
     single_cycle(0);
-    // get_cpu();
+    get_cpu();
 }
 
 void nemu_exec_once() {
