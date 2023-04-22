@@ -21,7 +21,8 @@ SECTIONS {
   _etext = .;
   .rodata : {
     *(.rodata*)
-    *(.srodata*)
+    /* for srodata */
+    /* *(.srodata*) */
   } > ram
   .data : {
     *(.data)
