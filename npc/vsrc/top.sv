@@ -1,12 +1,15 @@
 // soc(system on chip)
-module top(
+module top	(
 	input	clk,
 	input	sysclk_n,
+	/* verilator lint_off SYNCASYNCNET */
 	input 	rst,
+	input	btn_clk,
 
-	output [`Vec(`ImmWidth)] pc_WB,
-	output [`Vec(`ImmWidth)] pc_IF,
-  	output flush_WB,
+	// output [`Vec(`ImmWidth)] pc_WB,
+	// output [`Vec(`ImmWidth)] pc_IF,
+  	// output flush_WB,
+	output	[7:0] leds,
 	output  SEGCLK,
     output  SEGCLR,
     /* DT = data ? */
@@ -15,28 +18,12 @@ module top(
 );
 
 /* verilator lint_off UNUSEDSIGNAL */
-// wire [`Vec(`ImmWidth)] pc_WB;
-// wire [`Vec(`ImmWidth)] pc_IF;
-// wire flush_WB;
+wire [`Vec(`ImmWidth)] pc_WB;
+wire [`Vec(`ImmWidth)] pc_IF;
+wire flush_WB;
 
 wire    clk200m;
-/* verilator lint_off UNUSEDSIGNAL */
-// wire	[`Vec(`ImmWidth)] pc_WB;
-
-/* verilator lint_off INITIALDLY */
 reg [31:0]  clkdiv;
-// 
-// 	initial begin
-//         clkdiv <= 0;
-//     end
-
-always@(posedge clk200m or posedge rst)
-	if(rst) begin
-		clkdiv <= 0;
-	end
-	else begin
-    	clkdiv <= clkdiv+1;
-	end
 
 IBUFDS  inst_clk(
 	.I(clk),
@@ -45,12 +32,25 @@ IBUFDS  inst_clk(
 	.O(clk200m)
 );
 
+ always@(posedge clk200m)
+        clkdiv <= clkdiv+1;
+
+/* seg no display, to see rst signal */
+// always@(posedge clk200m or posedge rst)
+// 	if(rst) begin
+// 		clkdiv <= 0;
+// 	end
+// 	else begin
+//     	clkdiv <= clkdiv+1;
+// 	end
+
 // wire [`Vec(`InstWidth)]	inst;
 cpu u_cpu(
 	//ports
-	// .clk        		( clkdiv[3]		), // 200 0000 / (2^27)
-	.clk        		( clk200m		), // 200 0000 / (2^27)
-	// .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
+	.clk        		( clkdiv[27]		), // 200 0000 / (2^27)
+	// .clk        		( clk200m		), // 200 0000 / (2^27)
+	// .clk        		( btn_clk		), // 200 0000 / (2^27)
+	/* use switch as reset? */
 	.rst        		( rst        		),
 
   	// .inst           ( inst ),
@@ -60,7 +60,18 @@ cpu u_cpu(
 	.pc_WB				( pc_WB				)
 );
 
-wire [31:0] num	=	pc_WB[31:0];
+	assign leds[7] = btn_clk;
+	/* rst always true */
+	assign leds[6] = rst;
+	assign leds[5] = flush_WB;
+	assign leds[4] = clk200m;
+
+	assign leds[3:0] = pc_IF[3:0];
+
+
+// assign 
+
+wire [31:0] num	=	pc_IF[31:0];
  
 wire [7:0] dot;
 assign  dot=8'b0;
@@ -83,9 +94,10 @@ SEG7P2S #(
 )
 inst_7seg(
 	.clk(clkdiv[1]),//parallel to serial
-	.rst(rst),
-	.Start(clkdiv[3]),
-	// .Start(clkdiv[16]),
+	// .rst(rst),
+	.rst(1'b0),
+	// .Start(clkdiv[3]),
+	.Start(clkdiv[16]),
 	.PData(seg),
 
 	.s_clk(SEGCLK),
