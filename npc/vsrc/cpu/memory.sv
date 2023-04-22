@@ -66,17 +66,17 @@ module memory (
     wire [`Vec(`RegWidth)] ram_raddr = shift_raddr & ~mask;
 
 
-    always @(posedge clk) begin
-      if(mem_ren)
-        pmem_read(mem_raddr, width_64_out);
-    end
-
     // always @(posedge clk) begin
-    //     if(mem_ren) begin
-    //       width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
-    //       width_64_out[63:32] <= ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
-    //     end
+    //   if(mem_ren)
+    //     pmem_read(mem_raddr, width_64_out);
     // end
+
+    always @(posedge clk) begin
+        if(mem_ren) begin
+          width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
+          width_64_out[63:32] <= ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
+        end
+    end
 
     wire [7:0] wmask;
 
