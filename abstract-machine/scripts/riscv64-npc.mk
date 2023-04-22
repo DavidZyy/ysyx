@@ -28,7 +28,7 @@ image: $(IMAGE).elf
 	@$(OBJDUMP) -s $(IMAGE).elf > $(IMAGE)2.txt
 	@echo + OBJCOPY "->" $(IMAGE_REL).bin
 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
-	@$(OBJCOPY) $(IMAGE).elf --dump-section .mytext="$(IMAGE).rom.bin" \
+	@$(OBJCOPY) $(IMAGE).elf --dump-section .mytext="$(IMAGE).rom.bin" 
 	--dump-section .rodata="$(IMAGE).ram.bin" \
 	--dump-section .srodata.mainargs="$(IMAGE).ram.bin" \ dfsa
 	# --dump-section .srodata.cst8="$(IMAGE).ram.bin"
