@@ -250,8 +250,8 @@ module memory (
     /* check if write correct */
     always @(negedge clk or posedge clk) begin
         if(mem_wen) begin
-          width_64_out_1[31:0]  = ram_mem[ram_waddr[addr_width-1:0]][31:0];
-          width_64_out_1[63:32] = ram_mem[ram_waddr[addr_width-1:0] + 1][31:0];
+          width_64_out_1[31:0]  <= ram_mem[ram_waddr[addr_width-1:0]][31:0];
+          width_64_out_1[63:32] <= ram_mem[ram_waddr[addr_width-1:0] + 1][31:0];
           pmem_read(mem_waddr, width_64_out_2);
           if(width_64_out_1 != width_64_out_2)
             // exit_code()
