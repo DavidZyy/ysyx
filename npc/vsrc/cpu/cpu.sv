@@ -286,7 +286,7 @@ wire [`Vec(`RegWidth)]  mem_wdata   = rdata_2_MEM;
 wire [`Vec(`RegWidth)]  mem_rdata;
 
 /* ram */
-memory u_memory (
+ram u_ram (
 	//ports
 	.clk  		  ( clk  		 ),
   .mem_raddr  ( mem_raddr),

@@ -6,7 +6,7 @@ import "DPI-C" function void pmem_read(
 import "DPI-C" function void pmem_write(
   input longint mem_waddr, input longint wdata, input byte wmask);
 
-module memory (
+module ram (
     input clk,
     input [`Vec(`RegWidth)]  mem_raddr,
     input [`Vec(`AddrWidth)] mem_waddr,
