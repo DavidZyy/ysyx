@@ -205,3 +205,4 @@
 
 
   `define SegWidth        32
+  `define ClkDivWidth        32

@@ -73,7 +73,7 @@ cpu u_cpu(
 
 seg u_seg(
 	//ports
-	.clk    		( clkdiv   		),
+	.clkdiv   		( clkdiv   		),
 	.num    		( inst),
 
 	.s_clk  		( SEGCLK),

@@ -2,7 +2,7 @@
 
 /* seg.v for sword */
 module seg (
-    input clk,
+    input clkdiv,
     input [`Vec(`SegWidth)]  num,
 
     output wire s_clk,
@@ -32,11 +32,11 @@ module seg (
     	.DIR(0)//Shift direction
     )
     inst_7seg(
-    	.clk(clk[1]),//parallel to serial
+    	.clk(clkdiv[1]),//parallel to serial
     	// .rst(rst),
     	.rst(1'b0),
     	// .Start(clkdiv[3]),
-    	.Start(clk[16]),
+    	.Start(clkdiv[16]),
     	.PData(seg),
 
     	.s_clk(s_clk),
