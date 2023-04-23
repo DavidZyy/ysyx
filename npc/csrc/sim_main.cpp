@@ -164,7 +164,7 @@ int main(int argc, char *argv[]) {
       npc_exec_once();
     }
 
-    nemu_exec_once(); // execute jmp / branch
+    // nemu_exec_once(); // execute jmp / branch
 
     // if( i > 1) difftest_step();
     /* run nop inst */
