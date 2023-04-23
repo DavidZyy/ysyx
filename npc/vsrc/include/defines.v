@@ -192,3 +192,7 @@
   `define SIG_mem_wen           `SIG_reg_wen         <<   1    
 
  
+  /* the address used for mmio peripheral */
+  `define ADDR_KB               64'ha0000000
+  `define ADDR_SEG              `ADDR_KB  + 64'h00000100
+  `define ADDR_VGA              `ADDR_SEG + 64'h00000100
