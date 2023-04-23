@@ -2,6 +2,7 @@
 
 /* seg.v for sword */
 module seg (
+    /* verilator lint_off UNUSEDSIGNAL */
     input [`Vec(`ClkDivWidth)] clkdiv,
     input [`Vec(`SegWidth)]  num,
 
