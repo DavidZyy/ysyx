@@ -71,41 +71,51 @@ cpu u_cpu(
 	assign leds[3:0] = pc_IF[3:0];
 
 
-// assign 
+seg u_seg(
+	//ports
+	.clk    		( clk    		),
+	.num    		( num    		),
 
-wire [31:0] num	=	inst[31:0];
- 
-wire [7:0] dot;
-assign  dot=8'b0;
-wire [63:0] seg;
-
-hex2seg inst_7seg7(num[31:28],dot[7],seg[63:56]);
-hex2seg inst_7seg6(num[27:24],dot[6],seg[55:48]);
-hex2seg inst_7seg5(num[23:20],dot[5],seg[47:40]);
-hex2seg inst_7seg4(num[19:16],dot[4],seg[39:32]);
-
-hex2seg inst_7seg3(num[15:12],dot[3],seg[31:24]);
-hex2seg inst_7seg2(num[11:8],dot[2],seg[23:16]);
-hex2seg inst_7seg1(num[7:4],dot[1],seg[15:8]);
-hex2seg inst_7seg0(num[3:0],dot[0],seg[7:0]);
-
-SEG7P2S #(
-	.DATA_BITS(64),//data length
-	.DATA_COUNT_BITS(6),//data shift bits
-	.DIR(0)//Shift direction
-)
-inst_7seg(
-	.clk(clkdiv[1]),//parallel to serial
-	// .rst(rst),
-	.rst(1'b0),
-	// .Start(clkdiv[3]),
-	.Start(clkdiv[16]),
-	.PData(seg),
-
-	.s_clk(SEGCLK),
-	.s_clrn(SEGCLR),
-	.sout(SEGDT),
-	.EN(SEGEN)
+	.s_clk  		( SEGCLK),
+	.s_clrn 		( SEGCLR),
+	.sout   		( SEGDT),
+	.EN     		( SEGEN)
 );
+
+
+// wire [31:0] num	=	inst[31:0];
+//  
+// wire [7:0] dot;
+// assign  dot=8'b0;
+// wire [63:0] seg;
+// 
+// hex2seg inst_7seg7(num[31:28],dot[7],seg[63:56]);
+// hex2seg inst_7seg6(num[27:24],dot[6],seg[55:48]);
+// hex2seg inst_7seg5(num[23:20],dot[5],seg[47:40]);
+// hex2seg inst_7seg4(num[19:16],dot[4],seg[39:32]);
+// 
+// hex2seg inst_7seg3(num[15:12],dot[3],seg[31:24]);
+// hex2seg inst_7seg2(num[11:8],dot[2],seg[23:16]);
+// hex2seg inst_7seg1(num[7:4],dot[1],seg[15:8]);
+// hex2seg inst_7seg0(num[3:0],dot[0],seg[7:0]);
+// 
+// SEG7P2S #(
+// 	.DATA_BITS(64),//data length
+// 	.DATA_COUNT_BITS(6),//data shift bits
+// 	.DIR(0)//Shift direction
+// )
+// inst_7seg(
+// 	.clk(clkdiv[1]),//parallel to serial
+// 	// .rst(rst),
+// 	.rst(1'b0),
+// 	// .Start(clkdiv[3]),
+// 	.Start(clkdiv[16]),
+// 	.PData(seg),
+// 
+// 	.s_clk(SEGCLK),
+// 	.s_clrn(SEGCLR),
+// 	.sout(SEGDT),
+// 	.EN(SEGEN)
+// );
 
 endmodule //top

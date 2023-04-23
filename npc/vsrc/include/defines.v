@@ -203,3 +203,5 @@
   `define ADDR_SEG              `ADDR_KB  + `PERI_LEN
   `define ADDR_VGA              `ADDR_SEG + `PERI_LEN
 
+
+  `define SegWidth        32
