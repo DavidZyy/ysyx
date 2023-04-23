@@ -1,4 +1,8 @@
-// `include "./include/defines.v"
+`include "./include/defines.v"
+
+/* seg.v for sword */
+
+
 // 
 // module seg (
 //   input [31:0] display_data,
