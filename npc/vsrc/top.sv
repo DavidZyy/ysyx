@@ -48,7 +48,7 @@ IBUFDS  inst_clk(
 //     	clkdiv <= clkdiv+1;
 // 	end
 
-cpu u_cpu(
+cpu u_cpu (
 	//ports
 	// .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
 	.clk        		( clk200m			), // 200 0000 / (2^27)
