@@ -52,7 +52,7 @@ module ram (
     reg [31:0]  ram_mem[mem_size-1:0];
 
     initial begin
-        $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/recursion-riscv64-npc.ram.hex", ram_mem);
+        $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/kb_test-riscv64-npc.ram.hex", ram_mem);
         // $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/test_store_load-riscv64-npc.ram.hex", ram_mem);
     end
 /********************************** read data ****************************************/
