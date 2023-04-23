@@ -2,7 +2,7 @@
 
 /* seg.v for sword */
 module seg (
-    input clkdiv,
+    input [`Vec(`ClkDivWidth)] clkdiv,
     input [`Vec(`SegWidth)]  num,
 
     output wire s_clk,

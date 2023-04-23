@@ -1,4 +1,7 @@
 // soc(system on chip)
+
+`include "./include/defines.v"
+
 module top	(
 	input	clk,
 	input	sysclk_n,
@@ -24,7 +27,7 @@ module top	(
 wire [`Vec(`InstWidth)]	inst;
 
 wire    clk200m;
-reg [31:0]  clkdiv;
+reg [`Vec(`ClkDivWidth)]  clkdiv;
 
 IBUFDS  inst_clk(
 	.I(clk),
