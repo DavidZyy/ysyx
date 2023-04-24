@@ -153,6 +153,8 @@ void kdb_sendcode() {
     single_cycle(0);
     single_cycle(0);
     top->PS2_clk = 0;
+    single_cycle(0);
+    single_cycle(0);
   }
 }
 
