@@ -60,7 +60,7 @@ module top	(
             /* use switch as reset? */
             .rst        		( rst        		),
             .kb_data     		( kb_data     		),
-            .kb_ready    		( kb_ready    		)
+            .kb_ready    		( kb_ready    		),
 
             .inst           	( inst 				),
             .pc_IF				( pc_IF				),
