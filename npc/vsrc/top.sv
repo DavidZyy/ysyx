@@ -7,6 +7,7 @@ module top	(
         input	sysclk_n,
         /* verilator lint_off SYNCASYNCNET */
         input 	rst,
+		/* verilator lint_off UNUSEDSIGNAL */
         input	btn_clk,
         input   PS2_clk,
         input   PS2_Data,
