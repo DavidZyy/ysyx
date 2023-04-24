@@ -40,6 +40,7 @@ module mmio (
     // always @(posedge clk) begin
     /* or ram use  always @(*) and here use always @(posedge clk) */
     always @(*) begin
+        mem_rdata =  0;
         if(mem_ren) begin
             // if(mem_raddr >= `ADDR_RAM && mem_raddr < `ADDR_RAM + `RAM_LEN) begin
             if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) begin
