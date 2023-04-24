@@ -51,13 +51,14 @@ module mmio (
                     sig_rd_kb   =  1;
                     mem_rdata =    `ZEXT(kb_data, `KbWidth);
                 end
-                // else
-                    // mem_rdata  =   mem_rdata;
+                else
+                    mem_rdata  =   mem_rdata;
             end
             else
                 $display("read address error!");
         end
-        else;
+        else
+            ;
     end
 
 /************************* write data *********************/
