@@ -55,10 +55,11 @@ module mmio (
                     mem_rdata  =   mem_rdata;
             end
             else
-                $display("read address error!");
+                mem_rdata  =   mem_rdata;
+                // $display("read address error!");
         end
         else
-            ;
+            mem_rdata  =   mem_rdata;
     end
 
 /************************* write data *********************/
