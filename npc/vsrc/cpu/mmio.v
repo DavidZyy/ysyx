@@ -43,16 +43,16 @@ module mmio (
         if(mem_ren) begin
             // if(mem_raddr >= `ADDR_RAM && mem_raddr < `ADDR_RAM + `RAM_LEN) begin
             if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) begin
-                mem_rdata <= ram_rdata;
+                mem_rdata = ram_rdata;
             end
             // else if (mem_raddr >= `ADDR_KB && mem_raddr < `ADDR_KB + `PERI_LEN) begin
             else if (`InMem(mem_raddr, `ADDR_KB, `PERI_LEN)) begin
                 if(kb_ready) begin
-                    sig_rd_kb   <=  1;
-                    mem_rdata <=    `ZEXT(kb_data, `KbWidth);
+                    sig_rd_kb   =  1;
+                    mem_rdata =    `ZEXT(kb_data, `KbWidth);
                 end
                 // else
-                    // mem_rdata  <=   mem_rdata;
+                    // mem_rdata  =   mem_rdata;
             end
             else
                 $display("read address error!");
@@ -67,7 +67,7 @@ module mmio (
     always @(negedge clk) begin
         if(mem_wen) begin
             if(`InMem(mem_waddr, `ADDR_SEG, `PERI_LEN)) begin
-                seg_wdata <= mem_wdata;            
+                seg_wdata = mem_wdata[31:0];            
             end
         end
     end

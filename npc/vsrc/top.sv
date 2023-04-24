@@ -103,8 +103,8 @@ module top	(
                 //ports
                 .clk      		( clk200m 		),
                 .clrn     		( rst			),
-                .ps2_clk  		( ps2_clk  		),
-                .ps2_data 		( ps2_data 		),
+                .ps2_clk  		( PS2_clk  		),
+                .ps2_data 		( PS2_Data 		),
                 .rdn      		( sig_rd_kb     		),
 
                 .data     		( kb_data     		),
