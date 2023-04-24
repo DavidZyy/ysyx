@@ -125,6 +125,37 @@ void nemu_exec_once() {
   difftest_step();
 }
 
+void kdb_sendcode() {
+  int send_buffer[11];
+  send_buffer[0]  = 0;
+
+  /* 1C */
+  send_buffer[1]  = 0;
+  send_buffer[2]  = 0;
+  send_buffer[3]  = 0;
+  send_buffer[4]  = 1;
+  send_buffer[5]  = 1;
+  send_buffer[6]  = 1;
+  send_buffer[7]  = 0;
+  send_buffer[8]  = 0;
+
+  send_buffer[9]  = send_buffer[1];
+  for(int i = 2; i <= 8; i++){
+    send_buffer[9] = send_buffer[9] ^ send_buffer[i];
+  }
+  send_buffer[9]  = ~send_buffer[9];
+
+  send_buffer[10] = 1;
+
+  for(int i = 0; i <= 10; i++){
+    top->PS2_clk = 1;
+    top->PS2_Data = send_buffer[i];
+    single_cycle(0);
+    single_cycle(0);
+    top->PS2_clk = 0;
+  }
+}
+
 // 当nemu的pc和npc的pc_IF为xxxx时，说明这个地址的指令还没有执行。
 /** * The single cycle time series design refers: * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9 */
 int main(int argc, char *argv[]) {
@@ -166,20 +197,12 @@ int main(int argc, char *argv[]) {
 
     // nemu_exec_once(); // execute jmp / branch
 
-    // if( i > 1) difftest_step();
-    /* run nop inst */
-    // if(top->flush){
-      // single_cycle(0);
-      // difftest_step();
-      // single_cycle(0);
-    // }
-    // while (top->flush)
-    // if(top->flush_EX)
+    if(i = 10)
+      kdb_sendcode();
+
     if(top->flush_WB)
       begin = 1;
     
-    
-    // dump_gpr();
     if(terminal)
       break;
   }

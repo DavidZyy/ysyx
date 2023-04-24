@@ -14,8 +14,8 @@ module mmio (
     input kb_ready,
 
     output reg [`Vec(`ImmWidth)]  mem_rdata,
-    output sig_rd_kb,
-    output [`Vec(`SegWidth)]  seg_wdata
+    output reg sig_rd_kb,
+    output reg [`Vec(`SegWidth)]  seg_wdata
 );
 
     wire [`Vec(`ImmWidth)]  ram_rdata;

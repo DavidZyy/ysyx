@@ -52,6 +52,9 @@ module top	(
     wire  sig_rd_kb;
     wire [`Vec(`SegWidth)]  seg_wdata;
 
+    wire [`Vec(`KbWidth)]	kb_data;
+    wire 		kb_ready;
+
     cpu u_cpu (
             //ports
             // .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
@@ -74,13 +77,15 @@ module top	(
     // 	$display("%x", pc_WB);
     // end
 
-    assign leds[7] = btn_clk;
-    /* rst always true */
-    assign leds[6] = rst;
-    assign leds[5] = flush_WB;
-    assign leds[4] = clk200m;
+//     assign leds[7] = btn_clk;
+//     /* rst always true */
+//     assign leds[6] = rst;
+//     assign leds[5] = flush_WB;
+//     assign leds[4] = clk200m;
+// 
+//     assign leds[3:0] = pc_IF[3:0];
 
-    assign leds[3:0] = pc_IF[3:0];
+	assign leds [7:0] = seg_wdata[7:0];
 
 
     seg u_seg(
@@ -93,11 +98,6 @@ module top	(
             .sout   		( SEGDT			),
             .EN     		( SEGEN		)
         );
-
-
-
-    wire [`Vec(`KbWidth)]	kb_data;
-    wire 		kb_ready;
 
     ps2_kbd u_ps2_kbd(
                 //ports
