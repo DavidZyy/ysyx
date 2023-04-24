@@ -18,7 +18,7 @@ reg [3:0] count;          							// count ps2_data bits
 reg [9:0] buffer;         							// ps2_data bits
 
 reg [2:0] ps2_clk_sync;   							// for detecting the falling-edge of a frame
-reg [1:0] clk_sample;
+// reg [1:0] clk_sample;
 	 
 always @ (posedge clk)
 begin 					  			// this is a common method to
