@@ -60,8 +60,8 @@ module mmio (
                 mem_rdata  =   mem_rdata;
                 // $display("read address error!");
         end
-        // else
-            // mem_rdata  =   mem_rdata;
+        else
+            mem_rdata  =   mem_rdata;
     end
 
 /************************* write data *********************/
