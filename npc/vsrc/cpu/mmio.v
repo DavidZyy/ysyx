@@ -13,7 +13,7 @@ module mmio (
     input [`Vec(`KbWidth)]  kb_data,   // read data from keyboard
     input kb_ready,
 
-    output [`Vec(`ImmWidth)]  mem_rdata,
+    output reg [`Vec(`ImmWidth)]  mem_rdata,
     output sig_rd_kb,
     output [`Vec(`SegWidth)]  seg_wdata
 );
