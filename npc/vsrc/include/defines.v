@@ -204,5 +204,9 @@
   `define ADDR_VGA              `ADDR_SEG + `PERI_LEN
 
 
-  `define SegWidth        32
-  `define ClkDivWidth        32
+  `define SegWidth              32
+  `define ClkDivWidth           32
+  `define KbWidth               8
+
+  `define InMem(addr, ADDR, LEN)  addr >= ADDR && addr < ADDR + LEN
+  

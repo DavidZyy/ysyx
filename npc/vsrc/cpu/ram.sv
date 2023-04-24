@@ -21,6 +21,7 @@ module ram (
 
     /* check  if aligned */
     always @(posedge clk) begin
+      if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) 
       if(mem_ren) begin
           if( wdt_op == `Wdt16 ) begin
             if(mem_raddr[0]) begin
@@ -72,6 +73,7 @@ module ram (
     // end
 
     always @(posedge clk) begin
+        if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN))
         if(mem_ren) begin
           width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
           width_64_out[63:32] <= ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
@@ -211,6 +213,7 @@ module ram (
 
     always @(negedge clk) begin
     // always @(posedge clk) begin
+      if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) 
       if(mem_wen) begin
         if(wdt_op == `Wdt8) begin
           /* 11, 10, 01, 00*/

@@ -31,6 +31,7 @@ set_property IOSTANDARD LVCMOS15 [get_ports btn_clk]
 # set_property IOSTANDARD LVCMOS15 [get_ports led_6]
 # set_property PACKAGE_PIN AB26 [get_ports led_6]
 
+# use for  leds
 set_property IOSTANDARD LVCMOS15 [get_ports {leds[7]}]
 set_property IOSTANDARD LVCMOS15 [get_ports {leds[6]}]
 set_property IOSTANDARD LVCMOS15 [get_ports {leds[5]}]
@@ -47,3 +48,11 @@ set_property PACKAGE_PIN Y23     [get_ports {leds[3]}]
 set_property PACKAGE_PIN Y22     [get_ports {leds[2]}]
 set_property PACKAGE_PIN AE21    [get_ports {leds[1]}]
 set_property PACKAGE_PIN AF24    [get_ports {leds[0]}]
+
+# use for keyboard
+set_property PACKAGE_PIN M19 [get_ports PS2_Data]
+set_property IOSTANDARD LVCMOS33 [get_ports PS2_Data]
+set_property PULLUP true [get_ports PS2_Data]
+set_property PACKAGE_PIN N18 [get_ports PS2_clk]
+set_property IOSTANDARD LVCMOS33 [get_ports PS2_clk]
+set_property PULLUP true [get_ports PS2_clk]

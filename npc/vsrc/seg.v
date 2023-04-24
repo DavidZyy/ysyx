@@ -10,7 +10,7 @@ module seg (
 	output wire s_clrn,
     output wire sout,
     /* verilator lint_off BLKSEQ */
-    output reg  EN
+    output EN
 );
     
     wire [7:0] dot;
