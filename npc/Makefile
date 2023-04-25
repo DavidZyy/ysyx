@@ -4,6 +4,7 @@ INC_PATH = $(abspath ./csrc)/include
 
 INCLUDE = $(abspath ./vsrc/include)
 INCLUDE2 =  $(abspath ./vsrc)
+INCLUDE3 =  $(abspath ./vsrc/peripheral/seg)
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
