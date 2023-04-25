@@ -387,7 +387,8 @@ always @(posedge clk) begin
   end
 end
 
-always @(posedge clk) begin
+// always @(posedge clk) begin
+always @(negedge clk) begin
   if (sig_op_WB[`SIG_OP_is_ebreak]) begin
     /* program end signal */
     seg_wdata <= 32'hffffffff;
