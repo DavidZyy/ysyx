@@ -58,7 +58,7 @@ SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv64-nemu-interprete
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) \
+	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
