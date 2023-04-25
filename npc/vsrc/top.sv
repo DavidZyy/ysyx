@@ -13,7 +13,6 @@ module top	(
         input   PS2_Data,
         input   [`Vec(8)]   swt,
 
-
         output [`Vec(`ImmWidth)] pc_WB,
         output [`Vec(`ImmWidth)] pc_IF,
         output flush_WB,
@@ -57,6 +56,8 @@ module top	(
 
     wire [`Vec(`KbWidth)]	kb_rdata;
     wire 		kb_ready;
+
+    wire [`Vec(`LedWidth)]	led_wdata;
 
     cpu u_cpu (
             //ports
