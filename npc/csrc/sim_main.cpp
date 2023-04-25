@@ -210,8 +210,11 @@ int main(int argc, char *argv[]) {
 
     // nemu_exec_once(); // execute jmp / branch
 
-    if(i = 10)
+    if(i == 10)
       kdb_sendcode();
+
+    if(i == 100)
+      top->swt  = 1;
 
     if(top->flush_WB)
       begin = 1;
