@@ -322,7 +322,7 @@ mmio u_mmio(
 
 	.mem_rdata 		( mem_rdata 		),
 	.sig_rd_kb 		( sig_rd_kb 		),
-	.seg_wdata 		( seg_wdata 		)
+	.seg_wdata 		( seg_wdata 		),
   .led_wdata    ( led_wdata         )
 );
 
