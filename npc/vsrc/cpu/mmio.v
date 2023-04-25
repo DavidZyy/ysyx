@@ -76,7 +76,7 @@ module mmio (
     always @(negedge clk) begin
         if(mem_wen) begin
             if(`InMem(mem_waddr, `ADDR_SEG, `PERI_LEN)) begin
-                seg_wdata <= mem_wdata[31:0];            
+                seg_wdata <= mem_wdata[31:0];
             end
             else if(`InMem(mem_waddr, `ADDR_LED, `PERI_LEN)) begin
                 led_wdata   <=  mem_wdata[`Vec(`LedWidth)];

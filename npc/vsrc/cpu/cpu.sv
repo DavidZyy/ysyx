@@ -20,7 +20,7 @@ module cpu (
   output [`Vec(`ImmWidth)]  pc_WB,
   output sig_rd_kb,
   output [`Vec(`SegWidth)]  seg_wdata,
-  output [`Vec(`LedWidth)]     led_wdata
+  output [`Vec(`LedWidth)]  led_wdata
 );
 
 // wire [`Vec(`ImmWidth)]  pc_IF;
@@ -315,15 +315,15 @@ mmio u_mmio(
 	.mem_wdata 		( mem_wdata 		),
   .mem_wen      ( sig_op_MEM[`SIG_OP_mem_wen]),
   .mem_ren      ( sig_op_MEM[`SIG_OP_is_load]),
-	.wdt_op    		( wdt_op_MEM    		),
+	.wdt_op    		( wdt_op_MEM    ),
 	.kb_rdata   	( kb_rdata   		),
 	.kb_ready  		( kb_ready  		),
-  .swt_rdata    ( swt_rdata         ),
+  .swt_rdata    ( swt_rdata     ),
 
 	.mem_rdata 		( mem_rdata 		),
 	.sig_rd_kb 		( sig_rd_kb 		),
 	.seg_wdata 		( seg_wdata 		),
-  .led_wdata    ( led_wdata         )
+  .led_wdata    ( led_wdata     )
 );
 
 
@@ -389,6 +389,9 @@ end
 
 always @(posedge clk) begin
   if (sig_op_WB[`SIG_OP_is_ebreak]) begin
+    /* program end signal */
+    seg_wdata <= 32'hffffffff;
+    led_wdata <=  8'hff;
     exit_code();
     $display("exit code");
   end
