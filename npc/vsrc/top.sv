@@ -12,9 +12,9 @@ module top	(
         input   PS2_clk,
         input   PS2_Data,
 
-        // output [`Vec(`ImmWidth)] pc_WB,
-        // output [`Vec(`ImmWidth)] pc_IF,
-        // output flush_WB,
+        output [`Vec(`ImmWidth)] pc_WB,
+        output [`Vec(`ImmWidth)] pc_IF,
+        output flush_WB,
         output	[7:0] leds,
         output  SEGCLK,
         output  SEGCLR,
@@ -23,9 +23,9 @@ module top	(
     );
 
     /* verilator lint_off UNUSEDSIGNAL */
-    wire [`Vec(`ImmWidth)] pc_WB;
-    wire [`Vec(`ImmWidth)] pc_IF;
-    wire flush_WB;
+    // wire [`Vec(`ImmWidth)] pc_WB;
+    // wire [`Vec(`ImmWidth)] pc_IF;
+    // wire flush_WB;
     wire [`Vec(`InstWidth)]	inst;
 
     wire    clk200m;
