@@ -8,9 +8,11 @@ module top	(
         /* verilator lint_off SYNCASYNCNET */
         input 	rst,
 		/* verilator lint_off UNUSEDSIGNAL */
-        input	btn_clk,
+        // input	btn_clk,
         input   PS2_clk,
         input   PS2_Data,
+        input   [`Vec(8)]   swt,
+
 
         output [`Vec(`ImmWidth)] pc_WB,
         output [`Vec(`ImmWidth)] pc_IF,
@@ -86,8 +88,16 @@ module top	(
 // 
 //     assign leds[3:0] = pc_IF[3:0];
 
-	assign leds [7:0] = seg_wdata[7:0];
+	// assign leds [7:0] = seg_wdata[7:0];
+    wire [`Vec(8)]	swt_rdata;
 
+swt u_swt(
+	//ports
+	.swt       		( swt       		),
+	.swt_rdata 		( swt_rdata 		)
+);
+
+    
 
     seg u_seg(
             //ports
