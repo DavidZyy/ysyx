@@ -214,8 +214,14 @@ int main(int argc, char *argv[]) {
       kdb_sendcode();
 
     if(i == 100)
-      top->swt  = 10;
+      top->swt  = 1;
 
+    if (i == 200)
+      top->swt  = 2;
+
+    if (i == 200)
+      top->swt  = 3;
+      
     if(top->flush_WB)
       begin = 1;
     
