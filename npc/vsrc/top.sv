@@ -88,7 +88,7 @@ module top	(
 // 
 //     assign leds[3:0] = pc_IF[3:0];
 
-	// assign leds [7:0] = seg_wdata[7:0];
+	assign leds [7:0] = seg_wdata[7:0];
     wire [`Vec(8)]	swt_rdata;
 
 swt u_swt(
