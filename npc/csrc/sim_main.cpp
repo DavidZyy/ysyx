@@ -214,7 +214,7 @@ int main(int argc, char *argv[]) {
       kdb_sendcode();
 
     if(i == 100)
-      to->s  = 10;
+      to->swt  = 10;
 
     if(top->flush_WB)
       begin = 1;
