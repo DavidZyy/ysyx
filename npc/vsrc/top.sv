@@ -94,6 +94,7 @@ module top	(
 swt u_swt(
 	//ports
 	.swt       		( swt       		),
+
 	.swt_rdata 		( swt_rdata 		)
 );
 
