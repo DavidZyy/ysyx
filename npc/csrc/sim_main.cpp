@@ -219,7 +219,7 @@ int main(int argc, char *argv[]) {
     if (i == 200)
       top->swt  = 2;
 
-    if (i == 200)
+    if (i == 300)
       top->swt  = 3;
       
     if(top->flush_WB)
