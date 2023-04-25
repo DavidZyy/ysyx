@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
   // int nemu_not_run = 1;
   int begin = 1;
 
-  for(i = 0; i < times; i++){
+  for(i = 0;  < times; i++){
 
     /* if control branch failed */
     if(begin){
@@ -213,8 +213,8 @@ int main(int argc, char *argv[]) {
     if(i == 10)
       kdb_sendcode();
 
-    if(i == 100)
-      to->s  = 10
+    // if(i == 100)
+    //   to->s  = 10
 
     if(top->flush_WB)
       begin = 1;
