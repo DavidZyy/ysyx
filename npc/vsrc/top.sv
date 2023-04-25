@@ -55,7 +55,7 @@ module top	(
     wire  sig_rd_kb;
     wire [`Vec(`SegWidth)]  seg_wdata;
 
-    wire [`Vec(`KbWidth)]	kb_data;
+    wire [`Vec(`KbWidth)]	kb_rdata;
     wire 		kb_ready;
 
     cpu u_cpu (
@@ -65,7 +65,7 @@ module top	(
             // .clk        		( btn_clk			), // 200 0000 / (2^27)
             /* use switch as reset? */
             .rst        		( rst        		),
-            .kb_data     		( kb_data     		),
+            .kb_rdata     		( kb_rdata     		),
             .kb_ready    		( kb_ready    		),
 
             .inst           	( inst 				),
@@ -118,7 +118,7 @@ swt u_swt(
                 .ps2_data 		( PS2_Data 		),
                 .rdn      		( sig_rd_kb     		),
 
-                .data     		( kb_data     		),
+                .data     		( kb_rdata     		),
                 .ready    		( kb_ready    		)
             );
 

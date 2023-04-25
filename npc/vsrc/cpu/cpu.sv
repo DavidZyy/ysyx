@@ -10,7 +10,7 @@ import "DPI-C" function void exit_code();
 module cpu (
   input clk,
   input rst,
-  input [`Vec(`KbWidth)] kb_data,
+  input [`Vec(`KbWidth)] kb_rdata,
   input kb_ready,
 
   output [`Vec(`InstWidth)]	inst,
@@ -314,7 +314,7 @@ mmio u_mmio(
   .mem_wen      ( sig_op_MEM[`SIG_OP_mem_wen]),
   .mem_ren      ( sig_op_MEM[`SIG_OP_is_load]),
 	.wdt_op    		( wdt_op_MEM    		),
-	.kb_data   		( kb_data   		),
+	.kb_rdata   		( kb_rdata   		),
 	.kb_ready  		( kb_ready  		),
 
 	.mem_rdata 		( mem_rdata 		),

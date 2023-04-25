@@ -10,7 +10,7 @@ module mmio (
     input mem_wen,
     input mem_ren,
     input [`Vec(`WdtTypeCnt)] wdt_op,
-    input [`Vec(`KbWidth)]  kb_data,   // read data from keyboard
+    input [`Vec(`KbWidth)]  kb_rdata,   // read data from keyboard
     input kb_ready,
 
     output reg [`Vec(`ImmWidth)]  mem_rdata,
@@ -19,7 +19,7 @@ module mmio (
 );
 
     wire [`Vec(`ImmWidth)]  ram_rdata;
-    // wire [`Vec(`ImmWidth)]  kb_data;   // read data from keyboard
+    // wire [`Vec(`ImmWidth)]  kb_rdata;   // read data from keyboard
 
     ram u_ram (
       //ports
@@ -51,7 +51,7 @@ module mmio (
             else if (`InMem(mem_raddr, `ADDR_KB, `PERI_LEN)) begin
                 if(kb_ready) begin
                     sig_rd_kb   =  1;
-                    mem_rdata =    `ZEXT(kb_data, `KbWidth);
+                    mem_rdata =    `ZEXT(kb_rdata, `KbWidth);
                 end
                 else
                     mem_rdata  =   mem_rdata;
