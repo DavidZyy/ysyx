@@ -127,24 +127,35 @@ void nemu_exec_once() {
 
 void kdb_sendcode() {
   int send_buffer[11];
-  send_buffer[0]  = 0;
-
-  /* 1C */
+//   send_buffer[0]  = 0;
+// 
+//   /* 1C */
+//   send_buffer[1]  = 0;
+//   send_buffer[2]  = 0;
+//   send_buffer[3]  = 0;
+//   send_buffer[4]  = 1;
+//   send_buffer[5]  = 1;
+//   send_buffer[6]  = 1;
+//   send_buffer[7]  = 0;
+//   send_buffer[8]  = 0;
+// 
+//   send_buffer[9]  = send_buffer[1];
+//   for(int i = 2; i <= 8; i++){
+//     send_buffer[9] = send_buffer[9] ^ send_buffer[i];
+//   }
+//   send_buffer[9]  = ~send_buffer[9];
+// 
+//   send_buffer[10] = 1;
+  send_buffer[0]  = 1;
   send_buffer[1]  = 0;
-  send_buffer[2]  = 0;
+  send_buffer[2]  = 1;
   send_buffer[3]  = 0;
   send_buffer[4]  = 1;
-  send_buffer[5]  = 1;
+  send_buffer[5]  = 0;
   send_buffer[6]  = 1;
   send_buffer[7]  = 0;
-  send_buffer[8]  = 0;
-
-  send_buffer[9]  = send_buffer[1];
-  for(int i = 2; i <= 8; i++){
-    send_buffer[9] = send_buffer[9] ^ send_buffer[i];
-  }
-  send_buffer[9]  = ~send_buffer[9];
-
+  send_buffer[8]  = 1;
+  send_buffer[9]  = 0;
   send_buffer[10] = 1;
 
   for(int i = 0; i <= 10; i++){
