@@ -13,9 +13,9 @@ module top	(
         input   PS2_Data,
         input   [`Vec(8)]   swt,
 
-        output [`Vec(`ImmWidth)] pc_WB,
-        output [`Vec(`ImmWidth)] pc_IF,
-        output flush_WB,
+        output  [`Vec(`ImmWidth)] pc_WB,
+        output  [`Vec(`ImmWidth)] pc_IF,
+        output  flush_WB,
         output	[7:0] leds,
         output  SEGCLK,
         output  SEGCLR,
