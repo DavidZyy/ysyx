@@ -91,14 +91,21 @@ module top	(
 	assign leds [7:0] = seg_wdata[7:0];
     wire [`Vec(8)]	swt_rdata;
 
-swt u_swt(
-	//ports
-	.swt       		( swt       		),
+    swt u_swt(
+    	//ports
+    	.swt       		( swt       		),
 
-	.swt_rdata 		( swt_rdata 		)
-);
+    	.swt_rdata 		( swt_rdata 		)
+    );
 
-    
+
+    led u_led(
+    	//ports
+    	.led_wdata 		( led_wdata 		),
+
+    	.led_out   		( leds)
+    );
+
 
     seg u_seg(
             //ports
