@@ -19,8 +19,8 @@ module cpu (
   output flush_WB,
   output [`Vec(`ImmWidth)]  pc_WB,
   output sig_rd_kb,
-  output [`Vec(`SegWidth)]  seg_wdata,
-  output [`Vec(`LedWidth)]  led_wdata
+  output reg [`Vec(`SegWidth)]  seg_wdata,
+  output reg [`Vec(`LedWidth)]  led_wdata
 );
 
 // wire [`Vec(`ImmWidth)]  pc_IF;
