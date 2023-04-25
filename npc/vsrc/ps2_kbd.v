@@ -27,7 +27,8 @@ end                                                 	// falling-edge
 
 wire sampling = ps2_clk_sync[2] & ~ps2_clk_sync[1]; 	// (start bit)
 
-always @ (posedge clk) begin
+// always @ (posedge clk) begin
+always @ (negedge clk) begin
     if (clrn == 0) begin
         count  <= 0;
         ready  <= 0;
