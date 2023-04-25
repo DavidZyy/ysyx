@@ -3,19 +3,21 @@
 
 module mmio (
     input clk,
-    input [`Vec(`RegWidth)]  mem_raddr,
-    input [`Vec(`AddrWidth)] mem_waddr,
+    input [`Vec(`RegWidth)]   mem_raddr,
+    input [`Vec(`AddrWidth)]  mem_waddr,
     /* verilator lint_off UNUSEDSIGNAL */
-    input [`Vec(`RegWidth)]  mem_wdata,
+    input [`Vec(`RegWidth)]   mem_wdata,
     input mem_wen,
     input mem_ren,
     input [`Vec(`WdtTypeCnt)] wdt_op,
-    input [`Vec(`KbWidth)]  kb_rdata,   // read data from keyboard
+    input [`Vec(`KbWidth)]    kb_rdata,   // read data from keyboard
     input kb_ready,
+    input [`Vec(8)]           swt_rdata,
 
     output reg [`Vec(`ImmWidth)]  mem_rdata,
     output reg sig_rd_kb,
-    output reg [`Vec(`SegWidth)]  seg_wdata
+    output reg [`Vec(`SegWidth)]  seg_wdata,
+    output reg [`Vec(`LedWidth)]  led_wdata
 );
 
     wire [`Vec(`ImmWidth)]  ram_rdata;
@@ -56,6 +58,9 @@ module mmio (
                 else
                     mem_rdata  =   mem_rdata;
             end
+            else if (`InMem(mem_raddr, `ADDR_SWT, `PERI_LEN)) begin
+                    mem_rdata =    `ZEXT(swt_rdata, 8);
+            end
             else
                 mem_rdata  =   mem_rdata;
                 // $display("read address error!");
@@ -72,6 +77,9 @@ module mmio (
         if(mem_wen) begin
             if(`InMem(mem_waddr, `ADDR_SEG, `PERI_LEN)) begin
                 seg_wdata <= mem_wdata[31:0];            
+            end
+            else if(`InMem(mem_waddr, `ADDR_LED, `PERI_LEN)) begin
+                led_wdata   <=  mem_wdata[`Vec(`LedWidth)];
             end
         end
     end

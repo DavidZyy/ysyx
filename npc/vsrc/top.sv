@@ -67,13 +67,15 @@ module top	(
             .rst        		( rst        		),
             .kb_rdata     		( kb_rdata     		),
             .kb_ready    		( kb_ready    		),
+            .swt_rdata          ( swt_rdata         ),
 
             .inst           	( inst 				),
             .pc_IF				( pc_IF				),
             .flush_WB			( flush_WB			),
             .pc_WB				( pc_WB				),
             .sig_rd_kb			( sig_rd_kb			),
-            .seg_wdata			( seg_wdata			)
+            .seg_wdata			( seg_wdata			),
+            .led_wdata          ( led_wdata         )
         );
 
     // always@(posedge clk200m) begin
@@ -88,7 +90,7 @@ module top	(
 // 
 //     assign leds[3:0] = pc_IF[3:0];
 
-	assign leds [7:0] = seg_wdata[7:0];
+	// assign leds [7:0] = seg_wdata[7:0];
     wire [`Vec(8)]	swt_rdata;
 
     swt u_swt(

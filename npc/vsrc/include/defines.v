@@ -209,6 +209,7 @@
   `define SegWidth              32
   `define ClkDivWidth           32
   `define KbWidth               8
+  `define LedWidth              8
 
   `define InMem(addr, ADDR, LEN)  addr >= ADDR && addr < ADDR + LEN
   
