@@ -171,7 +171,7 @@ void kdb_sendcode() {
 
 // 当nemu的pc和npc的pc_IF为xxxx时，说明这个地址的指令还没有执行。
 /** * The single cycle time series design refers: * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9 */
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) 
   // get_cpu();
   cpu.pc = RESET_VECTOR;
   // print_arg(argc, argv);
@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
   // int nemu_not_run = 1;
   int begin = 1;
 
-  for(i = 0;  < times; i++){
+  for(i = 0; i < times; i++){
 
     /* if control branch failed */
     if(begin){
