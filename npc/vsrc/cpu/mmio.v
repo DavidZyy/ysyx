@@ -40,7 +40,7 @@ module mmio (
     // always @(posedge clk) begin
     /* or ram use  always @(*) and here use always @(posedge clk) */
     always @(*) begin
-        mem_rdata   =  0;
+        mem_rdata   =  64'hffffaaaa;
         sig_rd_kb   =  0;
         if(mem_ren) begin
             // if(mem_raddr >= `ADDR_RAM && mem_raddr < `ADDR_RAM + `RAM_LEN) begin
