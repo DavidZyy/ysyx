@@ -192,3 +192,25 @@
   `define SIG_mem_wen           `SIG_reg_wen         <<   1    
 
  
+  /* the address used for mmio peripheral */
+  `define ROM_LEN               64'h01000000  //  the size of rom
+  `define RAM_LEN               64'h01000000  //  the size of ram
+  `define PERI_LEN              64'h00000100  //  the size of peripheral
+
+  `define ADDR_ROM              64'h80000000
+  `define ADDR_RAM              `ADDR_ROM  + `ROM_LEN
+  `define ADDR_KB               64'ha0000000
+  `define ADDR_SEG              `ADDR_KB  + `PERI_LEN
+  `define ADDR_VGA              `ADDR_SEG + `PERI_LEN
+  `define ADDR_LED              `ADDR_VGA + `PERI_LEN
+  `define ADDR_SWT              `ADDR_LED + `PERI_LEN
+
+
+  `define SegWidth              32
+  `define ClkDivWidth           32
+  `define KbWidth               8
+  `define LedWidth              8
+
+  `define InMem(addr, ADDR, LEN)  addr >= ADDR && addr < ADDR + LEN
+  
+

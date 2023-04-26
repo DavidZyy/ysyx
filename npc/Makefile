@@ -4,6 +4,7 @@ INC_PATH = $(abspath ./csrc)/include
 
 INCLUDE = $(abspath ./vsrc/include)
 INCLUDE2 =  $(abspath ./vsrc)
+INCLUDE3 =  $(abspath ./vsrc/peripheral/seg)
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
@@ -57,13 +58,13 @@ SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv64-nemu-interprete
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) \
+	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
 	$(SIM_CPP_FILE) $(COMMON_CPP_FILE)
 	obj_dir/Vtop $(IMG) $(SO)
-	# gtkwave dump.vcd
+	gtkwave dump.vcd
 
 wv:
 	gtkwave dump.vcd

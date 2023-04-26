@@ -6,7 +6,7 @@ import "DPI-C" function void pmem_read(
 import "DPI-C" function void pmem_write(
   input longint mem_waddr, input longint wdata, input byte wmask);
 
-module memory (
+module ram (
     input clk,
     input [`Vec(`RegWidth)]  mem_raddr,
     input [`Vec(`AddrWidth)] mem_waddr,
@@ -21,6 +21,7 @@ module memory (
 
     /* check  if aligned */
     always @(posedge clk) begin
+      if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) 
       if(mem_ren) begin
           if( wdt_op == `Wdt16 ) begin
             if(mem_raddr[0]) begin
@@ -52,7 +53,7 @@ module memory (
     reg [31:0]  ram_mem[mem_size-1:0];
 
     initial begin
-        $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/recursion-riscv64-npc.ram.hex", ram_mem);
+        $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/kb_test-riscv64-npc.ram.hex", ram_mem);
         // $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/test_store_load-riscv64-npc.ram.hex", ram_mem);
     end
 /********************************** read data ****************************************/
@@ -72,6 +73,7 @@ module memory (
     // end
 
     always @(posedge clk) begin
+        if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN))
         if(mem_ren) begin
           width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
           width_64_out[63:32] <= ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
@@ -211,6 +213,7 @@ module memory (
 
     always @(negedge clk) begin
     // always @(posedge clk) begin
+      if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) 
       if(mem_wen) begin
         if(wdt_op == `Wdt8) begin
           /* 11, 10, 01, 00*/
@@ -248,15 +251,15 @@ module memory (
     wire [`Vec(`RegWidth)] ram_waddr = shift_waddr & ~mask;
 
     /* check if write correct */
-    always @(negedge clk) begin
-        if(mem_wen) begin
-          width_64_out_1[31:0]  <= ram_mem[ram_waddr[addr_width-1:0]][31:0];
-          width_64_out_1[63:32] <= ram_mem[ram_waddr[addr_width-1:0] + 1][31:0];
-          pmem_read(mem_waddr, width_64_out_2);
-          if(width_64_out_1 != width_64_out_2)
-            // exit_code()
-            ;
-        end
-    end
+    // always @(negedge clk) begin
+    //     if(mem_wen) begin
+    //       width_64_out_1[31:0]  <= ram_mem[ram_waddr[addr_width-1:0]][31:0];
+    //       width_64_out_1[63:32] <= ram_mem[ram_waddr[addr_width-1:0] + 1][31:0];
+    //       pmem_read(mem_waddr, width_64_out_2);
+    //       if(width_64_out_1 != width_64_out_2)
+    //         // exit_code()
+    //         ;
+    //     end
+    // end
 
 endmodule //memory

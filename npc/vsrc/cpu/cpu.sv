@@ -10,13 +10,17 @@ import "DPI-C" function void exit_code();
 module cpu (
   input clk,
   input rst,
+  input [`Vec(`KbWidth)] kb_rdata,
+  input kb_ready,
+  input [`Vec(8)]   swt_rdata,
 
-  output [`Vec(`ImmWidth)]  pc_IF,
-  // output [`Vec(`ImmWidth)]  next_pc,
   output [`Vec(`InstWidth)]	inst,
+  output [`Vec(`ImmWidth)]  pc_IF,
   output flush_WB,
-  // output [`Vec(`ImmWidth)]  pc_EX
-  output [`Vec(`ImmWidth)]  pc_WB
+  output [`Vec(`ImmWidth)]  pc_WB,
+  output sig_rd_kb,
+  output reg [`Vec(`SegWidth)]  seg_wdata,
+  output reg [`Vec(`LedWidth)]  led_wdata
 );
 
 // wire [`Vec(`ImmWidth)]  pc_IF;
@@ -286,17 +290,40 @@ wire [`Vec(`RegWidth)]  mem_wdata   = rdata_2_MEM;
 wire [`Vec(`RegWidth)]  mem_rdata;
 
 /* ram */
-memory u_memory (
-	//ports
-	.clk  		  ( clk  		 ),
-  .mem_raddr  ( mem_raddr),
-  .mem_waddr  ( mem_waddr),
-  .mem_wdata  ( mem_wdata),
-  .mem_wen    ( sig_op_MEM[`SIG_OP_mem_wen]),
-  .mem_ren    ( sig_op_MEM[`SIG_OP_is_load]),
-  .wdt_op     ( wdt_op_MEM),
+// ram u_ram (
+// 	//ports
+// 	.clk  		  ( clk  		 ),
+//   .mem_raddr  ( mem_raddr),
+//   .mem_waddr  ( mem_waddr),
+//   .mem_wdata  ( mem_wdata),
+//   .mem_wen    ( sig_op_MEM[`SIG_OP_mem_wen]),
+//   .mem_ren    ( sig_op_MEM[`SIG_OP_is_load]),
+//   .wdt_op     ( wdt_op_MEM),
+// 
+//   .mem_rdata  ( mem_rdata)
+// );
 
-  .mem_rdata  ( mem_rdata)
+// wire [`Vec(`ImmWidth)]	mem_rdata;
+// wire 	sig_rd_kb;
+// wire [`Vec(`SegWidth)]	seg_wdata;
+
+mmio u_mmio(
+	//ports
+	.clk       		( clk       		),
+	.mem_raddr 		( mem_raddr 		),
+	.mem_waddr 		( mem_waddr 		),
+	.mem_wdata 		( mem_wdata 		),
+  .mem_wen      ( sig_op_MEM[`SIG_OP_mem_wen]),
+  .mem_ren      ( sig_op_MEM[`SIG_OP_is_load]),
+	.wdt_op    		( wdt_op_MEM    ),
+	.kb_rdata   	( kb_rdata   		),
+	.kb_ready  		( kb_ready  		),
+  .swt_rdata    ( swt_rdata     ),
+
+	.mem_rdata 		( mem_rdata 		),
+	.sig_rd_kb 		( sig_rd_kb 		),
+	.seg_wdata 		( seg_wdata 		),
+  .led_wdata    ( led_wdata     )
 );
 
 
@@ -360,8 +387,12 @@ always @(posedge clk) begin
   end
 end
 
-always @(posedge clk) begin
+// always @(posedge clk) begin
+always @(negedge clk) begin
   if (sig_op_WB[`SIG_OP_is_ebreak]) begin
+    /* program end signal */
+    // seg_wdata <= 32'haaaaaaaa;
+    // led_wdata <=  8'hff;
     exit_code();
     $display("exit code");
   end
