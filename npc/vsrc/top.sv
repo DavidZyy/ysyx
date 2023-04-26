@@ -39,31 +39,32 @@ module top	(
                 .O(clk200m)
             );
 
-    always@(posedge clk200m)
-        clkdiv <= clkdiv+1;
+    // always@(posedge clk200m)
+    //     clkdiv <= clkdiv+1;
 
     /* seg no display, to see rst signal */
-    // always@(posedge clk200m or posedge rst)
-    // 	if(rst) begin
-    // 		clkdiv <= 0;
-    // 	end
-    // 	else begin
-    //     	clkdiv <= clkdiv+1;
-    // 	end
+    always@(posedge clk200m or posedge rst)
+    	if(rst) begin
+    		clkdiv <= 0;
+    	end
+    	else begin
+        	clkdiv <= clkdiv+1;
+    	end
 
     wire  sig_rd_kb;
     wire [`Vec(`SegWidth)]  seg_wdata;
 
     wire [`Vec(`KbWidth)]	kb_rdata;
     wire 		kb_ready;
+    wire overflow;
 
     wire [`Vec(`LedWidth)]	led_wdata;
 
     wire [`Vec(8)]	swt_rdata;
     cpu u_cpu (
             //ports
-            // .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
-            .clk        		( clkdiv[10]		), // 200 0000 / (2^27)
+            .clk        		( clkdiv[0]		), // 200 0000 / (2^27)
+            // .clk        		( clkdiv[10]		), // 200 0000 / (2^27)
             // .clk        		( clk200m			), // 200 0000 / (2^27)
             // .clk        		( btn_clk			), // 200 0000 / (2^27)
             /* use switch as reset? */
@@ -95,7 +96,7 @@ module top	(
 
 	// assign leds [7:0] = seg_wdata[7:0];
 
-    swt u_swt(
+    swt u_swt (
     	//ports
     	.swt       		( swt       		),
 
@@ -103,18 +104,21 @@ module top	(
     );
 
 
-    led u_led(
+    led u_led (
     	//ports
     	.led_wdata 		( led_wdata 		),
+    	// .led_wdata 		( seg_wdata[7:0] ),
 
-    	.led_out   		( leds)
+    	.led_out   		( leds           )
     );
 
+    wire [`Vec(`ImmWidth)]  led_ext = `ZEXT(led_wdata, 8);
 
-    seg u_seg(
+    seg u_seg (
             //ports
             .clkdiv   		( clkdiv   		),
             .num    		( seg_wdata		),
+            // .num    		( led_ext[31:0]		),
             // .num    		( inst ),
 
             .s_clk  		( SEGCLK		),
@@ -123,16 +127,19 @@ module top	(
             .EN     		( SEGEN		)
         );
 
-    ps2_kbd u_ps2_kbd(
+    ps2_kbd u_ps2_kbd (
                 //ports
-                .clk      		( clk200m 		),
+                /* clk200m may be too quickly? */
+                // .clk      		( clkdiv[10] 	),
+                .clk      		( clkdiv[0]     ),
                 .clrn     		( rst			),
                 .ps2_clk  		( PS2_clk  		),
                 .ps2_data 		( PS2_Data 		),
-                .rdn      		( sig_rd_kb     		),
+                .rdn      		( sig_rd_kb     ),
 
-                .data     		( kb_rdata     		),
-                .ready    		( kb_ready    		)
+                .data     		( kb_rdata     	),
+                .ready    		( kb_ready    	),
+                .overflow       ( overflow      )
             );
 
 endmodule //top
