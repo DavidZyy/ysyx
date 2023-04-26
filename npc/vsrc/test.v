@@ -1,15 +1,14 @@
 /* verilator lint_off TIMESCALEMOD */
-// `timescale 1us/1ns
+`timescale 1us/1ns
 
-module test (
-);
+module test ();
 
-reg clk, sysclk_n, rst;
-	// reg SEGCLK;
-    // reg SEGCLR;
-    // reg SEGDT;
-    // reg SEGEN;
+reg clk;
+reg sysclk_n;
+reg rst;
+reg [7:0] swt;
 
+wire  [7:0]	leds;
 wire 	SEGCLK;
 wire 	SEGCLR;
 wire 	SEGDT;
@@ -20,7 +19,11 @@ top u_top(
 	.clk      		( clk      		),
 	.sysclk_n 		( sysclk_n 		),
 	.rst      		( rst      		),
+	.PS2_clk  		( PS2_clk  		),
+	.PS2_Data 		( PS2_Data 		),
+	.swt      		( swt      		),
 
+	.leds     		( leds     		),
 	.SEGCLK   		( SEGCLK   		),
 	.SEGCLR   		( SEGCLR   		),
 	.SEGDT    		( SEGDT    		),
@@ -39,11 +42,18 @@ top u_top(
   end
 
   initial begin
+    swt = 0;
     // rst = 0;
     // #10;
     rst  = 1;
     #100;
     rst = 0;
+    #100
+    swt = 1;
+    #100
+    swt = 2;
+    #100
+    swt = 3;
     #100000000;
     $stop;
   end

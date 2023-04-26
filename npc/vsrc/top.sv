@@ -59,10 +59,12 @@ module top	(
 
     wire [`Vec(`LedWidth)]	led_wdata;
 
+    wire [`Vec(8)]	swt_rdata;
     cpu u_cpu (
             //ports
             // .clk        		( clkdiv[27]		), // 200 0000 / (2^27)
-            .clk        		( clk200m			), // 200 0000 / (2^27)
+            .clk        		( clkdiv[10]		), // 200 0000 / (2^27)
+            // .clk        		( clk200m			), // 200 0000 / (2^27)
             // .clk        		( btn_clk			), // 200 0000 / (2^27)
             /* use switch as reset? */
             .rst        		( rst        		),
@@ -92,7 +94,6 @@ module top	(
 //     assign leds[3:0] = pc_IF[3:0];
 
 	// assign leds [7:0] = seg_wdata[7:0];
-    wire [`Vec(8)]	swt_rdata;
 
     swt u_swt(
     	//ports
@@ -114,6 +115,7 @@ module top	(
             //ports
             .clkdiv   		( clkdiv   		),
             .num    		( seg_wdata		),
+            // .num    		( inst ),
 
             .s_clk  		( SEGCLK		),
             .s_clrn 		( SEGCLR		),

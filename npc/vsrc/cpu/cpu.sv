@@ -391,8 +391,8 @@ end
 always @(negedge clk) begin
   if (sig_op_WB[`SIG_OP_is_ebreak]) begin
     /* program end signal */
-    seg_wdata <= 32'hffffffff;
-    led_wdata <=  8'hff;
+    // seg_wdata <= 32'haaaaaaaa;
+    // led_wdata <=  8'hff;
     exit_code();
     $display("exit code");
   end
