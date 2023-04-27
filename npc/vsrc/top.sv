@@ -103,7 +103,6 @@ module top	(
     	.swt_rdata 		( swt_rdata 		)
     );
 
-
     led u_led (
     	//ports
     	.led_wdata 		( led_wdata 		),
@@ -113,6 +112,8 @@ module top	(
     );
 
     wire [`Vec(`ImmWidth)]  led_ext = `ZEXT(led_wdata, 8);
+
+    // seg_wdata shift left to display the signal
 
     seg u_seg (
             //ports
