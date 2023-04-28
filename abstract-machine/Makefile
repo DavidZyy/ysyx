@@ -124,9 +124,10 @@ LDFLAGS  += -z noexecstack
 
 ## 4. Arch-Specific Configurations
 
+$(info $(yellow)$(OBJS)$(reset))
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
 -include $(AM_HOME)/scripts/$(ARCH).mk
-$(info $(yellow)$(OBJS)$(reset))
+# $(info $(yellow)$(OBJS)$(reset))
 
 # $(error $(AM_HOME))
 # $(error $(ARCH))
