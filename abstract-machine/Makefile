@@ -82,7 +82,7 @@ C_SRCS := $(filter %.c, $(SRCS))
 PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(C_SRCS))))
 
 # put after include native.mk
-$(info $(yellow)$(OBJS)$(reset))
+$(info $(yellow)$(PRES)$(reset))
 LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recursions
 
 # $(error $(LIBS))
