@@ -75,6 +75,7 @@ ARCHIVE   = $(WORK_DIR)/build/$(NAME)-$(ARCH).a
 # $(error $(LIBS))
 ### Collect the files to be linked: object files (`.o`) and libraries (`.a`)
 OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
+$(info $(green)$(OBJS)$(reset))
 
 # $(error $(SRCS))
 # new added
