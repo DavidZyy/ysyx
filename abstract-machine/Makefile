@@ -79,6 +79,9 @@ $(info $(green)$(OBJS)$(reset))
 
 # $(error $(SRCS))
 # new added
+
+# if use :=, because SRCS of am will changed when campile am-riscv64-nemu.a, after
+# include $(ARCH).mk, it not chaned, so am/build/xxx.i will not be compiled.
 # C_SRCS := $(filter %.c, $(SRCS))
 C_SRCS = $(filter %.c, $(SRCS))
 PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(C_SRCS))))
