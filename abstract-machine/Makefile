@@ -75,7 +75,7 @@ ARCHIVE   = $(WORK_DIR)/build/$(NAME)-$(ARCH).a
 # $(error $(LIBS))
 ### Collect the files to be linked: object files (`.o`) and libraries (`.a`)
 OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
-$(info $(green)$(OBJS)$(reset))
+# $(info $(green)$(OBJS)$(reset))
 
 # $(error $(SRCS))
 # new added
@@ -129,7 +129,7 @@ LDFLAGS  += -z noexecstack
 
 ## 4. Arch-Specific Configurations
 
-$(info $(yellow)$(OBJS)$(reset))
+# $(info $(yellow)$(OBJS)$(reset))
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
 -include $(AM_HOME)/scripts/$(ARCH).mk
 # $(info $(yellow)$(OBJS)$(reset))
