@@ -34,6 +34,5 @@ void __am_gpu_status(AM_GPU_STATUS_T *status) {
   status->ready = true;
 }
 
-void __am_gpu_screen_size(){
-
+void __am_gpu_screen_size() {
 }
