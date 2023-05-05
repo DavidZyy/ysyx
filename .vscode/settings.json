@@ -26,6 +26,7 @@
     "inttypes.h": "c",
     "stdbool.h": "c",
     "debug.h": "c",
-    "amdev.h": "c"
+    "amdev.h": "c",
+    "amtest.h": "c"
   }
 }
