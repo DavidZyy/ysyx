@@ -80,10 +80,10 @@ void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
   // *(volatile uint32_t *)addr = data;
-  if((*(volatile uint32_t *)SYNC_ADDR) == 1) {
+  // if((*(volatile uint32_t *)SYNC_ADDR) == 1) {
     update_screen();
-  }
-  *(volatile uint32_t *)SYNC_ADDR = 0;
+  // }
+  // *(volatile uint32_t *)SYNC_ADDR = 0;
 }
 
 void init_vga() {
