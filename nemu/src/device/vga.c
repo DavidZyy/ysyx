@@ -82,7 +82,7 @@ void vga_update_screen() {
   // *(volatile uint32_t *)addr = data;
   // should use ghost to host ?
   // if((*(volatile uint32_t *)SYNC_ADDR) == 1) {
-    update_screen();
+    // update_screen();
   // }
   // *(volatile uint32_t *)SYNC_ADDR = 0;
 }
