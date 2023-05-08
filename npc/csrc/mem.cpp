@@ -41,7 +41,7 @@ void pmem_read(long long raddr, long long *rdata) {
 }
 
 void pmem_write(long long waddr, long long wdata, char wmask) {
-  // printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
+  printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
   assert(in_pmem(waddr));
 
   // assert(!(waddr & 0x7));
