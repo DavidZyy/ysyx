@@ -85,7 +85,8 @@ void vga_update_screen() {
   // if((*(volatile uint32_t *)guest_to_host((uint64_t)SYNC_ADDR)) == 1) {
     update_screen();
   // }
-  *(volatile uint32_t *)SYNC_ADDR = 0;
+  /* 幸好配置了gdb debug，检测到了这里segmentfault */
+  // *(volatile uint32_t *)SYNC_ADDR = 0;
 }
 
 void init_vga() {
