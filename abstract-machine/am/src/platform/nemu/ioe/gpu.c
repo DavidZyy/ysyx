@@ -38,7 +38,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   // fb += ctl->x * ctl->y;
   int a = ctl->x * ctl->y;
   int b = ctl->w * ctl->h;
-  for (i = 0; i < b; i ++) fb[a + i] = ctl_pixels[i];
+  for (i = 0; i < b; i ++) fb[a + i + 10] = ctl_pixels[i];
   // for (i = 0; i < b; i ++) fb[a + i] = ctl_pixels[b-1-i];
   if (ctl->sync) {
     // nemu no this func
