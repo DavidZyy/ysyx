@@ -70,9 +70,7 @@ static inline void update_screen() {
 #endif
 #endif
 
-// #define VGACTL_ADDR     (DEVICE_BASE + 0x0000100)
-#define VGACTL_ADDR      0xa0000100
-#define SYNC_ADDR (VGACTL_ADDR + 4)
+
 /**
  * where is the sync register?
  */
