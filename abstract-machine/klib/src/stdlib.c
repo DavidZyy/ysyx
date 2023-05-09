@@ -29,7 +29,8 @@ int atoi(const char* nptr) {
   return x;
 }
 
-// void *addr = heap.start;
+extern char _heap_start;
+void *addr = &_heap_start;
 
 void *malloc(size_t size) {
   // On native, malloc() will be called during initializaion of C runtime.
