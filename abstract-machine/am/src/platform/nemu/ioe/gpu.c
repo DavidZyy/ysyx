@@ -32,12 +32,12 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  int i;
-  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  uint32_t *ctl_pixels = (uint32_t *)ctl->pixels;
-  // fb += ctl->x * ctl->y;
-  int a = ctl->x * ctl->y;
-  for (i = 0; i < ctl->w * ctl->h; i ++) fb[a + i] = ctl_pixels[i];
+  // int i;
+  // uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+  // uint32_t *ctl_pixels = (uint32_t *)ctl->pixels;
+  // // fb += ctl->x * ctl->y;
+  // int a = ctl->x * ctl->y;
+  // for (i = 0; i < ctl->w * ctl->h; i ++) fb[a + i] = ctl_pixels[i];
   if (ctl->sync) {
     // nemu no this func
     outl(SYNC_ADDR, 1);
