@@ -89,6 +89,10 @@ void vga_update_screen() {
   // *(volatile uint32_t *)SYNC_ADDR = 0;
 }
 
+/**
+ * the first 4 bytes of addr vgactl_port_base is height and width,
+ * the later 4 bytes of addr vgactl_port_base + 4 is SYNC_ADDR in am.
+ */
 void init_vga() {
   vgactl_port_base = (uint32_t *)new_space(8);
   vgactl_port_base[0] = (screen_width() << 16) | screen_height();
