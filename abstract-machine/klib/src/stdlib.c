@@ -29,6 +29,8 @@ int atoi(const char* nptr) {
   return x;
 }
 
+// void *addr = heap.start;
+
 void *malloc(size_t size) {
   // On native, malloc() will be called during initializaion of C runtime.
   // Therefore do not call panic() here, else it will yield a dead recursion:
