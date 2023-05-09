@@ -20,10 +20,13 @@ void __am_gpu_init() {
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
+  int a = inl(VGACTL_ADDR);
+  int w = a >> 16;
+  int h = ((a << 16) >> 16);
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
     // .width = 0, .height = 0,
-    .width = 32, .height = 32,
+    .width = w, .height = h,
     .vmemsz = 0
   };
 }
