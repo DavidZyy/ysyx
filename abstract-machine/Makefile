@@ -75,14 +75,20 @@ ARCHIVE   = $(WORK_DIR)/build/$(NAME)-$(ARCH).a
 # $(error $(LIBS))
 ### Collect the files to be linked: object files (`.o`) and libraries (`.a`)
 OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
+# $(info $(green)$(OBJS)$(reset))
 
 # $(error $(SRCS))
 # new added
-C_SRCS := $(filter %.c, $(SRCS))
+
+# if use :=, because SRCS of am will changed when campile am-riscv64-nemu.a, after
+# include $(ARCH).mk, it not chaned, so am/build/xxx.i will not be compiled.
+# C_SRCS := $(filter %.c, $(SRCS))
+C_SRCS = $(filter %.c, $(SRCS))
 PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(C_SRCS))))
+# PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(SRCS))))
 
 # put after include native.mk
-# $(info $(yellow)$(OBJS)$(reset))
+# $(info $(yellow)$(PRES)$(reset))
 LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recursions
 
 # $(error $(LIBS))
@@ -123,6 +129,7 @@ LDFLAGS  += -z noexecstack
 
 ## 4. Arch-Specific Configurations
 
+# $(info $(yellow)$(OBJS)$(reset))
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
 -include $(AM_HOME)/scripts/$(ARCH).mk
 # $(info $(yellow)$(OBJS)$(reset))

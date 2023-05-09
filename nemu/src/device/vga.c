@@ -70,11 +70,30 @@ static inline void update_screen() {
 #endif
 #endif
 
+
+/**
+ * where is the sync register?
+ */
 void vga_update_screen() {
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
+
+  // *(volatile uint32_t *)addr = data;
+  // should use ghost to host ?
+  // if((*(volatile uint32_t *)guest_to_host((uint64_t)SYNC_ADDR)) == 1) {
+  if(vgactl_port_base[1]){
+    update_screen();
+    vgactl_port_base[1] = 0;
+  }
+  // }
+  /* 幸好配置了gdb debug，检测到了这里segmentfault */
+  // *(volatile uint32_t *)SYNC_ADDR = 0;
 }
 
+/**
+ * the first 4 bytes of addr vgactl_port_base is height and width,
+ * the later 4 bytes of addr vgactl_port_base + 4 is SYNC_ADDR in am.
+ */
 void init_vga() {
   vgactl_port_base = (uint32_t *)new_space(8);
   vgactl_port_base[0] = (screen_width() << 16) | screen_height();
