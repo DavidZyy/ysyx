@@ -54,7 +54,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
     for (int i = 0; i < h; i++)
     {
-        memcpy(&fb[(y + i) * 400 + x], pixels, 4 * w);
+        memcpy(&fb[(y + i) * 300 + x], pixels, 4 * w);
         pixels += w;
     }
 
