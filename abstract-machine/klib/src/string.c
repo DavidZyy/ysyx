@@ -96,7 +96,8 @@ void *memcpy(void *out, const void *in, size_t n) {
   assert(out >= in + n || out + n <= in);
   char *cdst = (char *)out;
   char *csrc = (char *)in;
-  while(*csrc != '\0' && n--){
+  // while(*csrc != '\0' && n--){
+  while(n--){
     *cdst = *csrc;
     cdst++;
     csrc++;
