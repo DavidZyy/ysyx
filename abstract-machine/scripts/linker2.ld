@@ -5,8 +5,8 @@ RAM_SIZE = 0x2000;
 /* NOTE, instruction size should not exceed 0x100 0000*/
 MEMORY {
   /* rom (rx) : ORIGIN = 0x00000000, LENGTH = ROM_SIZE  */
-  rom (rx) : ORIGIN = 0x80000000, LENGTH = ROM_SIZE 
-  ram (rwx) : ORIGIN = 0x81000000, LENGTH = RAM_SIZE 
+  rom (rx) : ORIGIN = 0x80000000, LENGTH = ROM_SIZE
+  ram (rwx) : ORIGIN = 0x81000000, LENGTH = RAM_SIZE
   /* ram (rwx) : ORIGIN = 0x00001790, LENGTH = RAM_SIZE  */
 }
 
