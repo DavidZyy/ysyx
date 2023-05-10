@@ -83,7 +83,7 @@ void *memset(void *s, int c, size_t n) {
 void *memmove(void *dst, const void *src, size_t n) {
   char *cdst = (char *)dst;
   char *csrc = (char *)src;
-  while(*csrc != '\0' && n--){
+  while(n--) {
     *cdst = *csrc;
     cdst++;
     csrc++;
@@ -96,24 +96,13 @@ void *memcpy(void *out, const void *in, size_t n) {
   assert(out >= in + n || out + n <= in);
   char *cdst = (char *)out;
   char *csrc = (char *)in;
-  // while(*csrc != '\0' && n--){
-  while(n--){
+  while(n--) {
     *cdst = *csrc;
     cdst++;
     csrc++;
   }
   return out;
 }
-
-// void *memcpy(void *out, const void *in, size_t n) {
-//     char *dst = out;
-//     const char *src = in;
-//     while (n > 0) {
-//         *dst++ = *src++;
-//         n--;
-//     }
-//     return out;
-// }
 
 int memcmp(const void *s1, const void *s2, size_t n) {
   if(!n)
