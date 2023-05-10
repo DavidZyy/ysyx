@@ -39,35 +39,35 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  // uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  // uint32_t *ctl_pixels = (uint32_t *)ctl->pixels;
-  // int a = w * ctl->y + ctl->x;
-  // int idx = 0;
-  // for(int i = 0; i < ctl->h; i++){
-  //   for(int j = 0; j < ctl->w; j++)
-  //     fb[a + i*w + j] = ctl_pixels[idx++];
-  // }
-  // if (ctl->sync) {
-  //   outl(SYNC_ADDR, 1);
-  // }
+  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+  uint32_t *ctl_pixels = (uint32_t *)ctl->pixels;
+  int a = w * ctl->y + ctl->x;
+  int idx = 0;
+  for(int i = 0; i < ctl->h; i++){
+    for(int j = 0; j < ctl->w; j++)
+      fb[a + i*w + j] = ctl_pixels[idx++];
+  }
+  if (ctl->sync) {
+    outl(SYNC_ADDR, 1);
+  }
 
-  int x = ctl->x;
-  int y = ctl->y;
-    uint32_t *pixels = ctl->pixels;
-    int w = ctl->w;
-    int h = ctl->h;
-
-    uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-    for (int i = 0; i < h; i++)
-    {
-        memcpy(&fb[(y + i) * 400 + x], pixels, 4 * w);
-        pixels += w;
-    }
-
-    if (ctl->sync)
-    {
-        outl(SYNC_ADDR, 1);
-    }
+//   int x = ctl->x;
+//   int y = ctl->y;
+//     uint32_t *pixels = ctl->pixels;
+//     int w = ctl->w;
+//     int h = ctl->h;
+// 
+//     uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+//     for (int i = 0; i < h; i++)
+//     {
+//         memcpy(&fb[(y + i) * 400 + x], pixels, 4 * w);
+//         pixels += w;
+//     }
+// 
+//     if (ctl->sync)
+//     {
+//         outl(SYNC_ADDR, 1);
+//     }
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
