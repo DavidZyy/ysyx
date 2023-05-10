@@ -103,12 +103,12 @@ void *memmove(void *dst, const void *src, size_t n) {
 //   }
 //   return out;
 // }
+
 void *memcpy(void *out, const void *in, size_t n)
 {
     char *dst = out;
     const char *src = in;
-    while (n > 0)
-    {
+    while (n > 0) {
         *dst++ = *src++;
         n--;
     }
