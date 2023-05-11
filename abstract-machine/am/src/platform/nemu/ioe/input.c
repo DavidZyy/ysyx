@@ -7,7 +7,7 @@
 static uint32_t read_key(){
   // uint32_t key = *(volatile uint32_t *)KBD_ADDR;
   uint32_t key = inl(KBD_ADDR);
-  // printf("%x\n", key);
+  if(key) printf("%x\n", key);
   return key;
 }
 
