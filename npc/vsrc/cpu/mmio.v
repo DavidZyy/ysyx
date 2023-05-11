@@ -30,7 +30,8 @@ module mmio (
       .clk  	  ( clk      ),
       .mem_raddr  ( mem_raddr),
       .mem_waddr  ( mem_waddr),
-      .mem_wdata  ( ram_wdata),
+    //   .mem_wdata  ( ram_wdata),
+      .mem_wdata  ( mem_wdata),
       .mem_wen    ( mem_wen  ),
       .mem_ren    ( mem_ren  ),
       .wdt_op     ( wdt_op   ),
@@ -90,9 +91,9 @@ module mmio (
             else if (`InMem(mem_waddr, `LED_ADDR, `PERI_LEN)) begin
                 led_wdata   <=  mem_wdata[`Vec(`LedWidth)];
             end
-            else if (`InMem(mem_waddr, `ADDR_RAM, `RAM_LEN)) begin
-                ram_wdata <= mem_wdata;
-            end
+            // else if (`InMem(mem_waddr, `ADDR_RAM, `RAM_LEN)) begin
+            //     ram_wdata <= mem_wdata;
+            // end
             else begin
                 $display("write address out of boundary: %x", mem_waddr);
             end
