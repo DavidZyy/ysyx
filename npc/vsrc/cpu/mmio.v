@@ -65,7 +65,7 @@ module mmio (
             end
             else if (`InMem(mem_raddr, `RTC_ADDR, `RTC_LEN)) begin
                 mem_rdata = clkdiv;
-                prit_clkdiv(clkdiv);
+                print_clkdiv(clkdiv);
             end
             else
                 mem_rdata  =   mem_rdata;
