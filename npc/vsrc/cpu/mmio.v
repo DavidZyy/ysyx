@@ -91,9 +91,9 @@ module mmio (
             else if (`InMem(mem_waddr, `LED_ADDR, `PERI_LEN)) begin
                 led_wdata   <=  mem_wdata[`Vec(`LedWidth)];
             end
-            // else if (`InMem(mem_waddr, `ADDR_RAM, `RAM_LEN)) begin
-            //     ram_wdata <= mem_wdata;
-            // end
+            else if (`InMem(mem_waddr, `ADDR_RAM, `RAM_LEN)) begin
+                ram_wdata <= mem_wdata;
+            end
             else begin
                 $display("write address out of boundary: %x", mem_waddr);
             end
