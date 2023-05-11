@@ -22,7 +22,7 @@ module mmio (
 );
 
     wire [`Vec(`ImmWidth)]  ram_rdata;
-    wire [`Vec(`ImmWidth)]  ram_wdata;
+    reg  [`Vec(`ImmWidth)]  ram_wdata;
     // wire [`Vec(`ImmWidth)]  kb_rdata;   // read data from keyboard
 
     ram u_ram (
