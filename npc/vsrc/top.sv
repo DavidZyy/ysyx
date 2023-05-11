@@ -13,9 +13,9 @@ module top	(
         input   PS2_Data,
         input   [`Vec(8)]   swt,
 
-        output  [`Vec(`ImmWidth)] pc_WB,
-        output  [`Vec(`ImmWidth)] pc_IF,
-        output  flush_WB,
+        // output  [`Vec(`ImmWidth)] pc_WB,
+        // output  [`Vec(`ImmWidth)] pc_IF,
+        // output  flush_WB,
         output	[7:0] leds,
         output  SEGCLK,
         output  SEGCLR,
@@ -24,9 +24,9 @@ module top	(
     );
 
     /* verilator lint_off UNUSEDSIGNAL */
-    // wire [`Vec(`ImmWidth)] pc_WB;
-    // wire [`Vec(`ImmWidth)] pc_IF;
-    // wire flush_WB;
+    wire [`Vec(`ImmWidth)] pc_WB;
+    wire [`Vec(`ImmWidth)] pc_IF;
+    wire flush_WB;
     wire [`Vec(`InstWidth)]	inst;
 
     wire    clk200m;
@@ -64,11 +64,10 @@ module top	(
     cpu u_cpu (
             //ports
             // .clk        		( clkdiv[0]		), // 200 0000 / (2^27)
-            /* for simulation on varilator */
-            .clk        		( clk200m			),
+            .clk        		( clk200m			), /* for simulation on varilator */
             /* 10 can run on sword */
-            // .clk        		( clkdiv[10]		), // 200 0000 / (2^27)
-            // .clk        		( btn_clk			), // 200 0000 / (2^27)
+            // .clk        		( clkdiv[10]		),
+            // .clk        		( btn_clk			),
             /* use switch as reset? */
             .rst        		( rst        		),
             .kb_rdata     		( kb_rdata     		),
