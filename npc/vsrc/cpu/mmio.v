@@ -51,7 +51,7 @@ module mmio (
                 mem_rdata = ram_rdata;
             end
             // else if (mem_raddr >= `ADDR_KB && mem_raddr < `ADDR_KB + `PERI_LEN) begin
-            else if (`InMem(mem_raddr, `ADDR_KB, `PERI_LEN)) begin
+            else if (`InMem(mem_raddr, `KBD_ADDR, `KBD_LEN)) begin
                 if(kb_ready) begin
                     sig_rd_kb   =  1;
                     mem_rdata =    `ZEXT(kb_rdata, `KbWidth);
@@ -59,7 +59,7 @@ module mmio (
                 else
                     mem_rdata  =   mem_rdata;
             end
-            else if (`InMem(mem_raddr, `ADDR_SWT, `PERI_LEN)) begin
+            else if (`InMem(mem_raddr, `SWT_ADDR, `PERI_LEN)) begin
                     mem_rdata =    `ZEXT(swt_rdata, 8);
             end
             else
@@ -76,10 +76,10 @@ module mmio (
 
     always @(negedge clk) begin
         if(mem_wen) begin
-            if(`InMem(mem_waddr, `ADDR_SEG, `PERI_LEN)) begin
+            if(`InMem(mem_waddr, `SEG_ADDR, `PERI_LEN)) begin
                 seg_wdata <= mem_wdata[31:0];
             end
-            else if(`InMem(mem_waddr, `ADDR_LED, `PERI_LEN)) begin
+            else if(`InMem(mem_waddr, `LED_ADDR, `PERI_LEN)) begin
                 led_wdata   <=  mem_wdata[`Vec(`LedWidth)];
             end
         end
