@@ -50,8 +50,8 @@ module ram (
     reg [31:0]  ram_mem[mem_size-1:0];
 
     initial begin
-        $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/kb_test-riscv64-npc.ram.hex", ram_mem);
-        // $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/test_store_load-riscv64-npc.ram.hex", ram_mem);
+        // $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/kb_test-riscv64-npc.ram.hex", ram_mem);
+        $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/am-tests/build/amtest-riscv64-npc.ram.hex", ram_mem);
     end
 /********************************** read data ****************************************/
     wire [`Vec(`RegWidth)] sub_raddr   = mem_raddr - `RamAddr;
