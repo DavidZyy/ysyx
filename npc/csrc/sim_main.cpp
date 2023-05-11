@@ -191,8 +191,8 @@ int main(int argc, char *argv[]) {
   top->rst = 0;
 
   uint64_t i;
-  // uint64_t times = -1;
-  uint64_t times = 2^16;
+  uint64_t times = -1;
+  // uint64_t times = 2^16;
 
   // int nemu_not_run = 1;
   int begin = 1;
