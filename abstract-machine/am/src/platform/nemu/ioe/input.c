@@ -1,11 +1,13 @@
 #include <am.h>
 #include <nemu.h>
+#include <stdio.h>
 
 #define KEYDOWN_MASK 0x8000
 
 static uint32_t read_key(){
   // uint32_t key = *(volatile uint32_t *)KBD_ADDR;
   uint32_t key = inl(KBD_ADDR);
+  printf("%x\n", key);
   return key;
 }
 
