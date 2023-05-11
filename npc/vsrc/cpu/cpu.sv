@@ -1,8 +1,13 @@
 /* code style: the name of variable use snake style, 
   the name of macro use camel style. */
 
+/* used in ram.sv */
 import "DPI-C" function void pmem_read(
   input longint mem_raddr, output longint rinst);
+import "DPI-C" function void pmem_write(
+  input longint mem_waddr, input longint wdata, input byte wmask);
+
+/* used in this file */
 import "DPI-C" function void exit_code();
 // import "DPI-C" function void not_ipl_exception();
 

@@ -1,8 +1,6 @@
 /* move instructions to rom, this module act like ram */
 `include "../include/defines.v"
 
-import "DPI-C" function void pmem_write(
-  input longint mem_waddr, input longint wdata, input byte wmask);
 
 module ram (
     input clk,
