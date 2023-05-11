@@ -6,6 +6,9 @@ import "DPI-C" function void pmem_read(
   input longint mem_raddr, output longint rinst);
 import "DPI-C" function void pmem_write(
   input longint mem_waddr, input longint wdata, input byte wmask);
+/* used in mmio.v */
+import "DPI-C" function void print_clkdiv(
+  output longint clkdiv);
 
 /* used in this file */
 import "DPI-C" function void exit_code();
