@@ -65,7 +65,7 @@ void exit_code(){
 }
 
 void print_clkdiv(long long clkdiv){
-  printf("%llx\n", clkdiv);
+  printf("read rtc in cpu: %llx\n", clkdiv);
 }
 
 /**
