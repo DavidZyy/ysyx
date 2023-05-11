@@ -1,6 +1,6 @@
 ENTRY(_start)
 ROM_SIZE = 0x4000;
-RAM_SIZE = 0x2000;
+RAM_SIZE = 38688 + 8192;
 /* STACK_SIZE = 0x1000; */
 /* NOTE, instruction size should not exceed 0x100 0000*/
 MEMORY {
