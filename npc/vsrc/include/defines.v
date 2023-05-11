@@ -202,6 +202,7 @@
 
   `define DEVICE_BASE           64'ha0000000
   `define MMIO_BASE             64'ha0000000
+
   `define SERIAL_PORT           (`DEVICE_BASE + 64'h00003f8) // copy from nemu.h
   `define KBD_ADDR              (`DEVICE_BASE + 64'h0000060)
   `define RTC_ADDR              (`DEVICE_BASE + 64'h0000048)
