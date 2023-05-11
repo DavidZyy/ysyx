@@ -22,6 +22,7 @@ module mmio (
 );
 
     wire [`Vec(`ImmWidth)]  ram_rdata;
+    wire [`Vec(`ImmWidth)]  ram_wdata;
     // wire [`Vec(`ImmWidth)]  kb_rdata;   // read data from keyboard
 
     ram u_ram (
@@ -30,7 +31,7 @@ module mmio (
       .mem_raddr  ( mem_raddr),
       .mem_waddr  ( mem_waddr),
       .mem_wdata  ( mem_wdata),
-      .mem_wen    ( mem_wen     ),
+      .mem_wen    ( mem_wen  ),
       .mem_ren    ( mem_ren  ),
       .wdt_op     ( wdt_op   ),
 
@@ -67,9 +68,11 @@ module mmio (
                 mem_rdata = clkdiv;
                 print_clkdiv(clkdiv);
             end
-            else // report out of boundary error
+            // report out of boundary error
+            else begin
                 mem_rdata  =   mem_rdata;
                 $display("read address out of boundary: %x", mem_raddr);
+            end
         end
         else
             mem_rdata  =   mem_rdata;
@@ -87,8 +90,9 @@ module mmio (
             else if (`InMem(mem_waddr, `LED_ADDR, `PERI_LEN)) begin
                 led_wdata   <=  mem_wdata[`Vec(`LedWidth)];
             end
-            else 
+            else begin
                 $display("write address out of boundary: %x", mem_waddr);
+            end
         end
     end
 
