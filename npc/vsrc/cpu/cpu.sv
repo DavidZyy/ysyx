@@ -1,6 +1,8 @@
 /* code style: the name of variable use snake style, 
   the name of macro use camel style. */
 
+import "DPI-C" function void pmem_read(
+  input longint mem_raddr, output longint rinst);
 import "DPI-C" function void exit_code();
 // import "DPI-C" function void not_ipl_exception();
 
