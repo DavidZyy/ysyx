@@ -184,6 +184,9 @@ int main(int argc, char *argv[]) {
   top->rst = 1;
   single_cycle(0);
   single_cycle(0);
+  single_cycle(0);
+  single_cycle(0);
+  single_cycle(0);
   // single_cycle(0);
   top->rst = 0;
 
