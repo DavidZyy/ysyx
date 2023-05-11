@@ -64,6 +64,10 @@ void exit_code(){
         // (void *)top->pc_IF);
 }
 
+void print_clkdiv(long long clkdiv){
+  printf("%llx\n", clkdiv);
+}
+
 /**
  * At the first two clock cycles, the pc is 0, the
  * instructions at 0 is illegal, so the 

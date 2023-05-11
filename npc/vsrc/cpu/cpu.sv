@@ -9,6 +9,7 @@ import "DPI-C" function void exit_code();
 /* assemble all cpu moudules into top moudule */
 module cpu (
   input clk,
+  input [`Vec(`ClkDivWidth)]  clkdiv;
   input rst,
   input [`Vec(`KbWidth)] kb_rdata,
   input kb_ready,
@@ -319,13 +320,13 @@ mmio u_mmio(
 	.kb_rdata   	( kb_rdata   		),
 	.kb_ready  		( kb_ready  		),
   .swt_rdata    ( swt_rdata     ),
+  .clkdiv       ( clkdiv        ),
 
 	.mem_rdata 		( mem_rdata 		),
 	.sig_rd_kb 		( sig_rd_kb 		),
 	.seg_wdata 		( seg_wdata 		),
   .led_wdata    ( led_wdata     )
 );
-
 
 wire [`Vec(`ImmWidth)] mem_rdata_ex_MEM;
 

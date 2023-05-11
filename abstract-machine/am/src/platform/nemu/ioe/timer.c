@@ -3,6 +3,7 @@
 
 static uint64_t boot_time = 0;
 
+/* the clock frequency in nemu */
 static uint64_t read_time() {
   uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
   uint32_t hi = *(volatile uint32_t *)(RTC_ADDR + 4);

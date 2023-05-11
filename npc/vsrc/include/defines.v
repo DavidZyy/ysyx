@@ -217,9 +217,7 @@
   `define AUDIO_SBUF_ADDR       (`MMIO_BASE   + 64'h1200000)
 
   `define KBD_LEN               64'h20 //32 in decimal
-
-
-
+  `define RTC_LEN               64'h20 //32 in decimal
 
   // `define ADDR_KB               64'ha0000000
   // `define ADDR_SEG              `ADDR_KB  + `PERI_LEN
@@ -227,12 +225,10 @@
   // `define ADDR_LED              `ADDR_VGA + `PERI_LEN
   // `define ADDR_SWT              `ADDR_LED + `PERI_LEN
 
-
   `define SegWidth              32
-  `define ClkDivWidth           32
+  `define ClkDivWidth           64
   `define KbWidth               8
   `define LedWidth              8
 
   `define InMem(addr, ADDR, LEN)  addr >= ADDR && addr < ADDR + LEN
   
-

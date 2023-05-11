@@ -3,16 +3,17 @@
 
 module mmio (
     input clk,
-    input [`Vec(`RegWidth)]   mem_raddr,
-    input [`Vec(`AddrWidth)]  mem_waddr,
+    input [`Vec(`RegWidth)]     mem_raddr,
+    input [`Vec(`AddrWidth)]    mem_waddr,
     /* verilator lint_off UNUSEDSIGNAL */
-    input [`Vec(`RegWidth)]   mem_wdata,
+    input [`Vec(`RegWidth)]     mem_wdata,
     input mem_wen,
     input mem_ren,
-    input [`Vec(`WdtTypeCnt)] wdt_op,
-    input [`Vec(`KbWidth)]    kb_rdata,   // read data from keyboard
+    input [`Vec(`WdtTypeCnt)]   wdt_op,
+    input [`Vec(`KbWidth)]      kb_rdata,   // read data from keyboard
     input kb_ready,
-    input [`Vec(8)]           swt_rdata,
+    input [`Vec(8)]             swt_rdata,
+    input [`Vec(`ClkDivWidth)]  clkdiv,
 
     output reg [`Vec(`ImmWidth)]  mem_rdata,
     output reg sig_rd_kb,
@@ -60,7 +61,10 @@ module mmio (
                     mem_rdata  =   mem_rdata;
             end
             else if (`InMem(mem_raddr, `SWT_ADDR, `PERI_LEN)) begin
-                    mem_rdata =    `ZEXT(swt_rdata, 8);
+                mem_rdata =    `ZEXT(swt_rdata, 8);
+            end
+            else if (`InMem(mem_raddr, `RTC_ADDR, `RTC_LEN)) begin
+                mem_rdata = clkdiv;
             end
             else
                 mem_rdata  =   mem_rdata;
