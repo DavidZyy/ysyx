@@ -63,10 +63,11 @@ module top	(
     wire [`Vec(8)]	swt_rdata;
     cpu u_cpu (
             //ports
-            .clk        		( clkdiv[0]		), // 200 0000 / (2^27)
+            // .clk        		( clkdiv[0]		), // 200 0000 / (2^27)
+            /* for simulation on varilator */
+            .clk        		( clk200m			),
             /* 10 can run on sword */
             // .clk        		( clkdiv[10]		), // 200 0000 / (2^27)
-            // .clk        		( clk200m			), // 200 0000 / (2^27)
             // .clk        		( btn_clk			), // 200 0000 / (2^27)
             /* use switch as reset? */
             .rst        		( rst        		),
