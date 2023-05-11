@@ -9,7 +9,7 @@ import "DPI-C" function void exit_code();
 /* assemble all cpu moudules into top moudule */
 module cpu (
   input clk,
-  input [`Vec(`ClkDivWidth)]  clkdiv;
+  input [`Vec(`ClkDivWidth)]  clkdiv,
   input rst,
   input [`Vec(`KbWidth)] kb_rdata,
   input kb_ready,
