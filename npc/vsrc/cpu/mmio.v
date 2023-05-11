@@ -69,7 +69,7 @@ module mmio (
             end
             else // report out of boundary error
                 mem_rdata  =   mem_rdata;
-                $display("read address error!");
+                $display("read address out of boundary: %x", mem_raddr);
         end
         else
             mem_rdata  =   mem_rdata;
@@ -81,12 +81,14 @@ module mmio (
 
     always @(negedge clk) begin
         if(mem_wen) begin
-            if(`InMem(mem_waddr, `SEG_ADDR, `PERI_LEN)) begin
+            if (`InMem(mem_waddr, `SEG_ADDR, `PERI_LEN)) begin
                 seg_wdata <= mem_wdata[31:0];
             end
-            else if(`InMem(mem_waddr, `LED_ADDR, `PERI_LEN)) begin
+            else if (`InMem(mem_waddr, `LED_ADDR, `PERI_LEN)) begin
                 led_wdata   <=  mem_wdata[`Vec(`LedWidth)];
             end
+            else 
+                $display("write address out of boundary: %x", mem_waddr);
         end
     end
 
