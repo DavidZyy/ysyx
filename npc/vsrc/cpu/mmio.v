@@ -67,9 +67,9 @@ module mmio (
                 mem_rdata = clkdiv;
                 print_clkdiv(clkdiv);
             end
-            else
+            else // report out of boundary error
                 mem_rdata  =   mem_rdata;
-                // $display("read address error!");
+                $display("read address error!");
         end
         else
             mem_rdata  =   mem_rdata;
