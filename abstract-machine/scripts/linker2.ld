@@ -26,6 +26,7 @@ SECTIONS {
     *(.srodata*)
     /* *(.data*) match .data.a */
     *(.data*)
+    *(.sdata*)
   } > ram
   /* .data : {
     *(.data)
