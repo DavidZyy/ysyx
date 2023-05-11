@@ -24,9 +24,9 @@ module top	(
     );
 
     /* verilator lint_off UNUSEDSIGNAL */
-    // wire [`Vec(`ImmWidth)] pc_WB;
-    // wire [`Vec(`ImmWidth)] pc_IF;
-    // wire flush_WB;
+    wire [`Vec(`ImmWidth)] pc_WB;
+    wire [`Vec(`ImmWidth)] pc_IF;
+    wire flush_WB;
     wire [`Vec(`InstWidth)]	inst;
 
     wire    clk200m;
