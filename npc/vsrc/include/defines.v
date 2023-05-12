@@ -217,7 +217,8 @@
   `define AUDIO_SBUF_ADDR       (`MMIO_BASE   + 64'h1200000)
 
   `define KBD_LEN               64'h20 //32 in decimal
-  `define RTC_LEN               64'h20 //32 in decimal
+  `define RTC_LEN               64'h40 //64 in decimal
+  `define SERIAL_LEN            64'h40 //64 in decimal
 
   // `define ADDR_KB               64'ha0000000
   // `define ADDR_SEG              `ADDR_KB  + `PERI_LEN
