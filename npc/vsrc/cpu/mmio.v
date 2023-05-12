@@ -50,11 +50,9 @@ module mmio (
         sig_rd_kb   =  0;
         if(mem_ren) begin
             $display("clkdiv: %x", clkdiv);
-            // if(mem_raddr >= `ADDR_RAM && mem_raddr < `ADDR_RAM + `RAM_LEN) begin
             if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) begin
                 mem_rdata = ram_rdata;
             end
-            // else if (mem_raddr >= `ADDR_KB && mem_raddr < `ADDR_KB + `PERI_LEN) begin
             else if (`InMem(mem_raddr, `KBD_ADDR, `KBD_LEN)) begin
                 if(kb_ready) begin
                     sig_rd_kb   =  1;
