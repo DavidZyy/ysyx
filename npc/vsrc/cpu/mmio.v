@@ -33,7 +33,7 @@ module mmio (
     //   .mem_wdata  ( ram_wdata),
       .mem_wdata  ( mem_wdata),
       .mem_wen    ( mem_wen  ),
-      .mem_ren    ( mem_ren  ),
+    //   .mem_ren    ( mem_ren  ),
       .wdt_op     ( wdt_op   ),
 
       .mem_rdata  ( ram_rdata)
