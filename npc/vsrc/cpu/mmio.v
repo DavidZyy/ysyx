@@ -49,9 +49,9 @@ module mmio (
         mem_rdata   =  64'h0;
         sig_rd_kb   =  0;
         if(mem_ren) begin
-            $display("clkdiv: %x", mem_raddr);
             if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) begin
                 mem_rdata = ram_rdata;
+                $display("clkdiv: %x", mem_raddr);
             end
             else if (`InMem(mem_raddr, `KBD_ADDR, `KBD_LEN)) begin
                 if(kb_ready) begin
