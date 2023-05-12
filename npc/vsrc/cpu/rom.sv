@@ -20,16 +20,16 @@ module rom (
 //     end
 // 
 
-    localparam addr_width = 11;
+    localparam addr_width = 16;
+    // localparam addr_width = 21;
     localparam mem_size   = (2**addr_width); 
 
     reg [31:0] rom_mem[mem_size-1:0];
     
     /* reg应该是31:0，怀疑是readmemh的锅*/
     initial begin
-    //   $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/hello.hex", rom_mem);
-      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/kb_test-riscv64-npc.rom.hex", rom_mem);
-    //   $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/test_store_load-riscv64-npc.rom.hex", rom_mem);
+    //   $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/kb_test-riscv64-npc.rom.hex", rom_mem);
+      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/am-tests/build/amtest-riscv64-npc.rom.hex", rom_mem);
     end
     
 

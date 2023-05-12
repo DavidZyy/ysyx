@@ -64,6 +64,14 @@ void exit_code(){
         // (void *)top->pc_IF);
 }
 
+void print_clkdiv(long long clkdiv){
+  printf("read rtc in cpu: %llx\n", clkdiv);
+}
+
+void print_serial(long long ch){
+  printf("%c", ch);
+}
+
 /**
  * At the first two clock cycles, the pc is 0, the
  * instructions at 0 is illegal, so the 
@@ -189,6 +197,7 @@ int main(int argc, char *argv[]) {
 
   uint64_t i;
   uint64_t times = -1;
+  // uint64_t times = 2^16;
 
   // int nemu_not_run = 1;
   int begin = 1;

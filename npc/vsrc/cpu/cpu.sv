@@ -1,6 +1,19 @@
 /* code style: the name of variable use snake style, 
   the name of macro use camel style. */
 
+/* used in ram.sv */
+import "DPI-C" function void pmem_read(
+  input longint mem_raddr, output longint rinst);
+import "DPI-C" function void pmem_write(
+  input longint mem_waddr, input longint wdata, input byte wmask);
+
+/* used in mmio.v */
+import "DPI-C" function void print_clkdiv(
+  input longint clkdiv);
+import "DPI-C" function void print_serial(
+  input longint clkdiv);
+
+/* used in this file */
 import "DPI-C" function void exit_code();
 // import "DPI-C" function void not_ipl_exception();
 
@@ -9,6 +22,7 @@ import "DPI-C" function void exit_code();
 /* assemble all cpu moudules into top moudule */
 module cpu (
   input clk,
+  input [`Vec(`ClkDivWidth)]  clkdiv,
   input rst,
   input [`Vec(`KbWidth)] kb_rdata,
   input kb_ready,
@@ -319,13 +333,13 @@ mmio u_mmio(
 	.kb_rdata   	( kb_rdata   		),
 	.kb_ready  		( kb_ready  		),
   .swt_rdata    ( swt_rdata     ),
+  .clkdiv       ( clkdiv        ),
 
 	.mem_rdata 		( mem_rdata 		),
 	.sig_rd_kb 		( sig_rd_kb 		),
 	.seg_wdata 		( seg_wdata 		),
   .led_wdata    ( led_wdata     )
 );
-
 
 wire [`Vec(`ImmWidth)] mem_rdata_ex_MEM;
 

@@ -199,15 +199,35 @@
 
   `define ADDR_ROM              64'h80000000
   `define ADDR_RAM              `ADDR_ROM  + `ROM_LEN
-  `define ADDR_KB               64'ha0000000
-  `define ADDR_SEG              `ADDR_KB  + `PERI_LEN
-  `define ADDR_VGA              `ADDR_SEG + `PERI_LEN
-  `define ADDR_LED              `ADDR_VGA + `PERI_LEN
-  `define ADDR_SWT              `ADDR_LED + `PERI_LEN
 
+  `define DEVICE_BASE           64'ha0000000
+  `define MMIO_BASE             64'ha0000000
+
+
+  `define SERIAL_PORT           (`DEVICE_BASE + 64'h00003f8) // copy from nemu.h
+  `define KBD_ADDR              (`DEVICE_BASE + 64'h0000060)
+  `define RTC_ADDR              (`DEVICE_BASE + 64'h0000048)
+  `define VGACTL_ADDR           (`DEVICE_BASE + 64'h0000100)
+  `define AUDIO_ADDR            (`DEVICE_BASE + 64'h0000200)
+  `define DISK_ADDR             (`DEVICE_BASE + 64'h0000300)
+  `define SEG_ADDR              (`DEVICE_BASE + 64'h0000400) //new added for npc
+  `define LED_ADDR              (`DEVICE_BASE + 64'h0000500)
+  `define SWT_ADDR              (`DEVICE_BASE + 64'h0000600)
+  `define FB_ADDR               (`MMIO_BASE   + 64'h1000000) //new added end
+  `define AUDIO_SBUF_ADDR       (`MMIO_BASE   + 64'h1200000)
+
+  `define KBD_LEN               64'h20 //32 in decimal
+  `define RTC_LEN               64'h40 //64 in decimal
+  `define SERIAL_LEN            64'h40 //64 in decimal
+
+  // `define ADDR_KB               64'ha0000000
+  // `define ADDR_SEG              `ADDR_KB  + `PERI_LEN
+  // `define ADDR_VGA              `ADDR_SEG + `PERI_LEN
+  // `define ADDR_LED              `ADDR_VGA + `PERI_LEN
+  // `define ADDR_SWT              `ADDR_LED + `PERI_LEN
 
   `define SegWidth              32
-  `define ClkDivWidth           32
+  `define ClkDivWidth           64
   `define KbWidth               8
   `define LedWidth              8
 

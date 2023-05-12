@@ -83,7 +83,7 @@ void *memset(void *s, int c, size_t n) {
 void *memmove(void *dst, const void *src, size_t n) {
   char *cdst = (char *)dst;
   char *csrc = (char *)src;
-  while(*csrc != '\0' && n--){
+  while(n--) {
     *cdst = *csrc;
     cdst++;
     csrc++;
@@ -91,12 +91,12 @@ void *memmove(void *dst, const void *src, size_t n) {
   return dst;
 }
 
-/* could not overlap */
+/* could not overlap (wrong memcpy) */
 void *memcpy(void *out, const void *in, size_t n) {
   assert(out >= in + n || out + n <= in);
   char *cdst = (char *)out;
   char *csrc = (char *)in;
-  while(*csrc != '\0' && n--){
+  while(n--) {
     *cdst = *csrc;
     cdst++;
     csrc++;
