@@ -68,6 +68,10 @@ void print_clkdiv(long long clkdiv){
   printf("read rtc in cpu: %llx\n", clkdiv);
 }
 
+void print_serial(long long ch){
+  printf("%c", ch);
+}
+
 /**
  * At the first two clock cycles, the pc is 0, the
  * instructions at 0 is illegal, so the 
