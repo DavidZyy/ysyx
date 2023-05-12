@@ -16,31 +16,31 @@ module ram (
 );
 
     /* check  if aligned */
-    always @(posedge clk) begin
-      if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) 
-      if(mem_ren) begin
-          if( wdt_op == `Wdt16 ) begin
-            if(mem_raddr[0]) begin
-              $display("-----------------Not aligned 2  bytes-----------------");
-              $display("%x", mem_raddr);
-            end
-          end
-
-          if( wdt_op == `Wdt32 ) begin
-            if(mem_raddr % 4 != 0) begin
-              $display("-----------------Not aligned 4  bytes-----------------");
-              $display("%x", mem_raddr);
-            end
-          end
-          
-          if( wdt_op == `Wdt64 ) begin
-            if(mem_raddr % 8 != 0) begin
-              $display("-----------------Not aligned 8  bytes-----------------");
-              $display("%x", mem_raddr);
-            end
-          end
-      end
-    end
+//     always @(posedge clk) begin
+//       if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) 
+//       if(mem_ren) begin
+//           if( wdt_op == `Wdt16 ) begin
+//             if(mem_raddr[0]) begin
+//               $display("-----------------Not aligned 2  bytes-----------------");
+//               $display("%x", mem_raddr);
+//             end
+//           end
+// 
+//           if( wdt_op == `Wdt32 ) begin
+//             if(mem_raddr % 4 != 0) begin
+//               $display("-----------------Not aligned 4  bytes-----------------");
+//               $display("%x", mem_raddr);
+//             end
+//           end
+//           
+//           if( wdt_op == `Wdt64 ) begin
+//             if(mem_raddr % 8 != 0) begin
+//               $display("-----------------Not aligned 8  bytes-----------------");
+//               $display("%x", mem_raddr);
+//             end
+//           end
+//       end
+//     end
 
 
     // localparam  addr_width = 8;
@@ -243,9 +243,9 @@ module ram (
       end
     end
 
-    reg  [`Vec(`ImmWidth)] width_64_out_1;
-    reg  [`Vec(`ImmWidth)] width_64_out_2;
-    wire [`Vec(`RegWidth)] ram_waddr = shift_waddr & ~mask;
+    // reg  [`Vec(`ImmWidth)] width_64_out_1;
+    // reg  [`Vec(`ImmWidth)] width_64_out_2;
+    // wire [`Vec(`RegWidth)] ram_waddr = shift_waddr & ~mask;
 
     /* check if write correct */
     // always @(negedge clk) begin
