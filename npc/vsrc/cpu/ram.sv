@@ -211,8 +211,8 @@ module ram (
     //     ;
     // end
 
-    always @(negedge clk) begin
-    // always @(posedge clk) begin
+    // always @(negedge clk) begin
+    always @(posedge clk) begin
       if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) 
       if(mem_wen) begin
         if(wdt_op == `Wdt8) begin
