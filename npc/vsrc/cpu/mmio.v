@@ -51,7 +51,7 @@ module mmio (
         if(mem_ren) begin
             if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) begin
                 mem_rdata = ram_rdata;
-                $display("clkdiv: %x", mem_raddr);
+                // $display("clkdiv: %x", mem_raddr);
             end
             else if (`InMem(mem_raddr, `KBD_ADDR, `KBD_LEN)) begin
                 if(kb_ready) begin
@@ -67,7 +67,7 @@ module mmio (
             else if (`InMem(mem_raddr, `RTC_ADDR, `RTC_LEN)) begin
                 mem_rdata = clkdiv;
                 // print_clkdiv(clkdiv);
-                $display("clkdiv: %x", clkdiv);
+                $display("clkdiv: %x", mem_raddr);
             end
             // report out of boundary error
             else begin
