@@ -105,7 +105,7 @@ module top	(
     	.swt_rdata 		( swt_rdata 		)
     );
 
-    assign leds[7] = rst;
+    assign leds[7] = leds[7] | rst;
     led u_led (
     	//ports
     	.led_wdata 		( led_wdata 		),
