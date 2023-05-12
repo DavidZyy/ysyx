@@ -11,7 +11,7 @@ module ram (
     /* verilator lint_off UNUSEDSIGNAL */
     input [`Vec(`RegWidth)]  mem_wdata,
     input mem_wen,
-    // input mem_ren,
+    input mem_ren,
     input [`Vec(`WdtTypeCnt)] wdt_op,
 
     output [`Vec(`ImmWidth)]  mem_rdata
@@ -76,10 +76,10 @@ module ram (
     always @(posedge clk) begin
     // always @(*) begin
         if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN))
-        // if(mem_ren) begin
+        if(mem_ren) begin
           width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
           width_64_out[63:32] <= ram_mem[ram_raddr[addr_width-1:0] + 1][31:0];
-        // end
+        end
     end
 
     wire [7:0] wmask;
