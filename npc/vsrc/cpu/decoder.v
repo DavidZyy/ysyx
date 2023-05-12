@@ -99,7 +99,7 @@ module decoder (
   wire jalr = op_jalr;
 
     /* conditianal branches */
-  wire beq  = op_branch & funct3_001;
+  wire beq  = op_branch & funct3_000;
   wire bne  = op_branch & funct3_001;
   wire blt  = op_branch & funct3_100;
   wire bltu = op_branch & funct3_110;
