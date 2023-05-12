@@ -48,8 +48,8 @@ module mmio (
         /* in test c , if(read_data != 0) write_seg */
         mem_rdata   =  64'h0;
         sig_rd_kb   =  0;
-                $display("clkdiv: %x", clkdiv);
         if(mem_ren) begin
+            $display("clkdiv: %x", clkdiv);
             // if(mem_raddr >= `ADDR_RAM && mem_raddr < `ADDR_RAM + `RAM_LEN) begin
             if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN)) begin
                 mem_rdata = ram_rdata;
