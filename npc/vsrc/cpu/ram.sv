@@ -9,7 +9,7 @@ module ram (
     /* verilator lint_off UNUSEDSIGNAL */
     input [`Vec(`RegWidth)]  mem_wdata,
     input mem_wen,
-    input mem_ren,
+    // input mem_ren,
     input [`Vec(`WdtTypeCnt)] wdt_op,
 
     output [`Vec(`ImmWidth)]  mem_rdata
