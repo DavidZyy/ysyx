@@ -217,7 +217,7 @@ int main(int argc, char *argv[]) {
       npc_exec_once();
     }
 
-    // nemu_exec_once(); // execute jmp / branch
+    nemu_exec_once(); // execute jmp / branch
 
 //     if(i == 10)
 //       kdb_sendcode();
