@@ -71,7 +71,7 @@ module ram (
 
     /* time se*/
     always @(posedge clk) begin
-    always @(*) begin
+    // always @(*) begin
         if (`InMem(mem_raddr, `ADDR_RAM, `RAM_LEN))
         if(mem_ren) begin
           width_64_out[31:0]  <= ram_mem[ram_raddr[addr_width-1:0]][31:0];
