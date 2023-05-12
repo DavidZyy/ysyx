@@ -1,6 +1,8 @@
 /* move instructions to rom, this module act like ram */
 `include "../include/defines.v"
 
+/* Do not modify the port, this module should be infered 
+  to block ram */
 
 module ram (
     input clk,
