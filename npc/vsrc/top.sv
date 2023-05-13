@@ -63,11 +63,11 @@ module top	(
     wire [`Vec(8)]	swt_rdata;
     cpu u_cpu (
             //ports
-            // .clk        		( clkdiv[0]		), // 200 0000 / (2^27)
+            .clk        		( clkdiv[0]		), // 200 0000 / (2^27)
             // .clk        		( clk200m			), /* for simulation on varilator */
             .clkdiv             ( clkdiv            ),
             /* 10 can run on sword */
-            .clk        		( clkdiv[10]		),
+            // .clk        		( clkdiv[10]		),
             // .clk        		( btn_clk			),
             /* use switch as reset? */
             .rst        		( rst        		),
@@ -105,7 +105,7 @@ module top	(
     	.swt_rdata 		( swt_rdata 		)
     );
 
-    assign leds[7] = leds[7] | rst;
+    // assign leds[7] = leds[7] | rst;
     led u_led (
     	//ports
     	.led_wdata 		( led_wdata 		),
@@ -128,7 +128,7 @@ module top	(
             .s_clk  		( SEGCLK		),
             .s_clrn 		( SEGCLR		),
             .sout   		( SEGDT			),
-            .EN     		( SEGEN		)
+            .EN     		( SEGEN		    )
         );
 
     ps2_kbd u_ps2_kbd (

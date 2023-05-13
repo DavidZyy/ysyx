@@ -98,7 +98,8 @@ module mmio (
             end
             else if (`InMem(mem_waddr, `SERIAL_PORT, `SERIAL_LEN)) begin
                 // $display("%x", mem_wdata);
-                print_serial(mem_wdata);
+                // print_serial(mem_wdata);
+                ;
             end
             else begin
                 $display("write address out of boundary: %x", mem_waddr);
