@@ -45,7 +45,7 @@ module ram (
 //     end
 
 
-    localparam  addr_width = 8;
+    localparam  addr_width = 9;
     // localparam  addr_width = 16;
     localparam  mem_size   = (2**addr_width);
     /* verilator lint_off UNDRIVEN */
