@@ -105,9 +105,10 @@ module top	(
     );
 
 
-	assign leds [6:0] = led_wdata[6:0];
+	// assign leds [6:0] = led_wdata[6:0];
+	assign leds [5:0] = led_wdata[5:0];
     // assign leds[5] = swt_rdata[5];
-    // assign leds[6] = swt[6];
+    assign leds[6] = swt[6];
     assign leds[7] = rst;
 //     led u_led (
 //     	//ports
