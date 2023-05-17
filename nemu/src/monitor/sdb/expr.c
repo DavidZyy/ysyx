@@ -20,6 +20,8 @@
  */
 #include <regex.h>
 
+#include <string.h>
+
 enum {
   TK_NOTYPE = 256, TK_EQ,
 
@@ -101,8 +103,19 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          // default: TODO();
+          case '+': tokens[nr_token].type = '+'; break;
+          case '-': tokens[nr_token].type = '-'; break;
+          case '*': tokens[nr_token].type = '*'; break;
+          case '/': tokens[nr_token].type = '/'; break;
+          case '(': tokens[nr_token].type = '('; break;
+          case ')': tokens[nr_token].type = ')'; break;
+          case TK_DECIMAL:
+            tokens[nr_token].type = TK_DECIMAL; 
+            memcpy(tokens[nr_token].str, substr_start, substr_len);
+            break;
+          default: TODO();
         }
+        nr_token++;
 
         break;
       }
