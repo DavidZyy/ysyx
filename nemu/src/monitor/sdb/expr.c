@@ -163,6 +163,7 @@ int getop(int p, int q) {
         op = i;
     }
   }
+  assert(op >= 0);
   return op;
 }
 
