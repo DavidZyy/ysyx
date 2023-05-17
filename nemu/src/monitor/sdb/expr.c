@@ -144,9 +144,9 @@ int prio(char ch){
 }
 
 bool is_operator(Token tok) {
-  if(tok.type == '+' || 
-      tok.type == '-' || 
-      tok.type == '/' || 
+  if(tok.type == '+' ||
+      tok.type == '-' ||
+      tok.type == '/' ||
       tok.type == '*')
       return true;
 
