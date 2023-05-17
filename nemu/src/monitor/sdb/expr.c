@@ -167,7 +167,7 @@ int getop(int p, int q) {
 }
 
 bool check_parentheses(int p, int q) {
-  if(tokens[p].type == '(' || tokens[q].type == ')')
+  if(tokens[p].type == '(' && tokens[q].type == ')')
     return true;
   return false;
 }
@@ -177,7 +177,7 @@ word_t eval(int p, int q) {
     assert(0);
   } else if (p == q) {
     return atoi(tokens[p].str);
-  } else if (check_parentheses(p, q) == true) {
+  } else if (check_parentheses(p, q)) {
     return eval(p+1, q-1);
   } else {
     int op = getop(p, q);
