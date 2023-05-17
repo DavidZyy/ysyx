@@ -110,7 +110,7 @@ static bool make_token(char *e) {
           case '(': tokens[nr_token].type = '('; break;
           case ')': tokens[nr_token].type = ')'; break;
           case TK_DECIMAL:
-            tokens[nr_token].type = TK_DECIMAL; 
+            tokens[nr_token].type = TK_DECIMAL;
             memcpy(tokens[nr_token].str, substr_start, substr_len);
             break;
           default: TODO();
@@ -131,6 +131,67 @@ static bool make_token(char *e) {
 }
 
 
+int prio(char ch){
+  switch (ch) {
+    case '+':
+    case '-': return 0;
+    case '*':
+    case '/': return 1;
+    default : assert(0);
+  }
+}
+
+bool is_operator(Token tok) {
+  if(tok.type == '+' || 
+      tok.type == '-' || 
+      tok.type == '/' || 
+      tok.type == '*')
+      return true;
+
+  return false;
+}
+
+int getop(int p, int q) {
+  int op = -1;
+  for(int i = p; i <= q; i++) {
+    if(tokens[i].type == '(') {
+      while(tokens[i].type != ')') i++;
+    } else if(is_operator(tokens[i])) {
+      if(op == -1 || prio(tokens[op].type) > prio(tokens[i].type))
+        op = i;
+    }
+  }
+  return op;
+}
+
+bool check_parentheses(int p, int q) {
+  if(tokens[p].type == '(' || tokens[q].type == ')')
+    return true;
+  return false;
+}
+
+word_t eval(int p, int q) {
+  if(p > q) {
+    assert(0);
+  } else if (p == q) {
+    return atoi(tokens[p].str);
+  } else if (check_parentheses(p, q) == true) {
+    return eval(p+1, q-1);
+  } else {
+    int op = getop(p, q);
+    int val1 = eval(p, op-1);
+    int val2 = eval(op+1, q);
+
+    switch (tokens[op].type) {
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2;
+      case '/': return val1 / val2;
+      default : assert(0);
+    }
+  }
+}
+
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
@@ -138,7 +199,8 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  // TODO();
 
-  return 0;
+  // return 0;
+  return eval(0, nr_token-1);
 }
