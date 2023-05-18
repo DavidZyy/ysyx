@@ -28,8 +28,9 @@ module rom (
     
     /* reg应该是31:0，怀疑是readmemh的锅*/
     initial begin
-    //   $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/kb_test-riscv64-npc.rom.hex", rom_mem);
-      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/am-tests/build/amtest-riscv64-npc.rom.hex", rom_mem);
+      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/kb_test-riscv64-npc.rom.hex", rom_mem);
+    //   $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/am-tests/build/amtest-riscv64-npc.rom.hex", rom_mem);
+    //   $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/hello-str-riscv64-npc.rom.hex", rom_mem);
     end
     
 

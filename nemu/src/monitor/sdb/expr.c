@@ -20,11 +20,13 @@
  */
 #include <regex.h>
 
+#include <string.h>
+
 enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-
+  TK_DECIMAL,
 };
 
 static struct rule {
@@ -36,9 +38,15 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
-  {" +", TK_NOTYPE},    // spaces
-  {"\\+", '+'},         // plus
-  {"==", TK_EQ},        // equal
+  {" +", TK_NOTYPE},        // spaces
+  {"\\+", '+'},             // plus
+  {"==", TK_EQ},            // equal
+  {"-", '-'},              // minus
+  {"\\*", '*'},            // multiplication
+  {"/", '/'},              // division
+  {"\\(", '('},            // left parentheses
+  {"\\)", ')'},            // right parentheses
+  {"[0-9]+", TK_DECIMAL},  // decimal integers
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -95,8 +103,23 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
+          case '+': tokens[nr_token++].type = '+'; break;
+          case '-': tokens[nr_token++].type = '-'; break;
+          case '*': tokens[nr_token++].type = '*'; break;
+          case '/': tokens[nr_token++].type = '/'; break;
+          case '(': tokens[nr_token++].type = '('; break;
+          case ')': tokens[nr_token++].type = ')'; break;
+          // case TK_NOTYPE: tokens[nr_token].type = TK_NOTYPE; break;
+          case TK_NOTYPE: break;
+          case TK_EQ: tokens[nr_token++].type = TK_EQ; break;
+          case TK_DECIMAL:
+            tokens[nr_token].type = TK_DECIMAL;
+            memcpy(tokens[nr_token].str, substr_start, substr_len);
+            nr_token++;
+            break;
           default: TODO();
         }
+        // nr_token++;
 
         break;
       }
@@ -112,6 +135,107 @@ static bool make_token(char *e) {
 }
 
 
+int prio(char ch){
+  switch (ch) {
+    case '+':
+    case '-': return 0;
+    case '*':
+    case '/': return 1;
+    default : assert(0);
+  }
+}
+
+bool is_operator(Token tok) {
+  if(tok.type == '+' ||
+      tok.type == '-' ||
+      tok.type == '/' ||
+      tok.type == '*')
+      return true;
+
+  return false;
+}
+
+int getop(int p, int q) {
+  int op = -1;
+  for(int i = p; i <= q; i++) {
+    if(tokens[i].type == '(') {
+      while(tokens[i].type != ')') i++;
+    } else if(is_operator(tokens[i])) {
+      if(op == -1 || prio(tokens[op].type) > prio(tokens[i].type))
+        op = i;
+    }
+  }
+  assert(op >= 0);
+  return op;
+}
+
+// typedef struct paren {
+//   int idx;
+//   int type;
+// } paren_t;
+
+// left parentheses stack
+int stack[32];
+
+/**
+ * (1+2)*(3-1), the first "(" matches with the last ")".
+ */
+bool check_parentheses(int p, int q) {
+  // if(tokens[p].type == '(' && tokens[q].type == ')')
+  //   return true;
+  // return false;
+  int parentheses_correct = 0;
+  int match_p_q = 0;
+
+  int stack_id = 0;
+  for(int i = p; i <= q; i++) {
+    assert(stack_id < 32);
+    if(tokens[i].type == '(') {
+      stack[stack_id++] = i;
+    } else if (tokens[i].type == ')') {
+      // match
+      stack_id--;
+      if((i == q) && (stack[stack_id] == p))
+        match_p_q = 1;
+    }
+  }
+
+  if(stack_id == 0)
+    parentheses_correct = 1;
+
+  if(parentheses_correct) {
+    if(match_p_q) {
+      return true;
+    } else {
+      return  false;
+    }
+  } else {
+    assert(0);
+  }
+}
+
+word_t eval(int p, int q) {
+  if(p > q) {
+    assert(0);
+  } else if (p == q) {
+    return atoi(tokens[p].str);
+  } else if (check_parentheses(p, q)) {
+    return eval(p+1, q-1);
+  } else {
+    int op = getop(p, q);
+    int val1 = eval(p, op-1);
+    int val2 = eval(op+1, q);
+
+    switch (tokens[op].type) {
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2;
+      case '/': return val1 / val2;
+      default : assert(0);
+    }
+  }
+}
+
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
@@ -119,7 +243,8 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  // TODO();
 
-  return 0;
+  // return 0;
+  return eval(0, nr_token-1);
 }

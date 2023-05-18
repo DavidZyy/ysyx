@@ -58,20 +58,20 @@ u_ps2_keyboard_model(
     // rst = 0;
     // #10;
     rst  = 1;
-    #100;
+    #1000;
     rst = 0;
-    #100
+    #1000
     swt = 1;
-    #100
+    #1000
     swt = 2;
-    #100
+    #1000
     swt = 3;
 
-    #100
+    #1000
     u_ps2_keyboard_model.kbd_sendcode(8'h1C);
-    #100
+    #1000
     u_ps2_keyboard_model.kbd_sendcode(8'hF0); // break code
-    #100
+    #1000
     u_ps2_keyboard_model.kbd_sendcode(8'h1C); // release 'A'
     #100000000;
     $stop;

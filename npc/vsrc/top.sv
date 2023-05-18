@@ -13,9 +13,9 @@ module top	(
         input   PS2_Data,
         input   [`Vec(8)]   swt,
 
-        output  [`Vec(`ImmWidth)] pc_WB,
-        output  [`Vec(`ImmWidth)] pc_IF,
-        output  flush_WB,
+        // output  [`Vec(`ImmWidth)] pc_WB,
+        // output  [`Vec(`ImmWidth)] pc_IF,
+        // output  flush_WB,
         output	[7:0] leds,
         output  SEGCLK,
         output  SEGCLR,
@@ -24,9 +24,9 @@ module top	(
     );
 
     /* verilator lint_off UNUSEDSIGNAL */
-    // wire [`Vec(`ImmWidth)] pc_WB;
-    // wire [`Vec(`ImmWidth)] pc_IF;
-    // wire flush_WB;
+    wire [`Vec(`ImmWidth)] pc_WB;
+    wire [`Vec(`ImmWidth)] pc_IF;
+    wire flush_WB;
     wire [`Vec(`InstWidth)]	inst;
 
     wire    clk200m;
@@ -63,8 +63,8 @@ module top	(
     wire [`Vec(8)]	swt_rdata;
     cpu u_cpu (
             //ports
-            // .clk        		( clkdiv[0]		), // 200 0000 / (2^27)
-            .clk        		( clk200m			), /* for simulation on varilator */
+            .clk        		( clkdiv[0]		    ), // 200 0000 / (2^27)
+            // .clk        		( clk200m			), /* for simulation on varilator */
             .clkdiv             ( clkdiv            ),
             /* 10 can run on sword */
             // .clk        		( clkdiv[10]		),
@@ -96,7 +96,6 @@ module top	(
 // 
 //     assign leds[3:0] = pc_IF[3:0];
 
-	// assign leds [7:0] = seg_wdata[7:0];
 
     swt u_swt (
     	//ports
@@ -105,13 +104,20 @@ module top	(
     	.swt_rdata 		( swt_rdata 		)
     );
 
-    led u_led (
-    	//ports
-    	.led_wdata 		( led_wdata 		),
-    	// .led_wdata 		( seg_wdata[7:0] ),
 
-    	.led_out   		( leds           )
-    );
+	assign leds [6:0] = led_wdata[6:0];
+	// assign leds [5:0] = led_wdata[5:0];
+	// assign leds [4:0] = led_wdata[4:0];
+    // assign leds[5] = swt_rdata[5];
+    // assign leds[6] = swt[6];
+    assign leds[7] = rst;
+//     led u_led (
+//     	//ports
+//     	.led_wdata 		( led_wdata 		),
+//     	// .led_wdata 		( seg_wdata[7:0] ),
+// 
+//     	.led_out   		( leds           )
+//     );
 
     wire [`Vec(`ImmWidth)]  led_ext = `ZEXT(led_wdata, 8);
 
@@ -127,7 +133,7 @@ module top	(
             .s_clk  		( SEGCLK		),
             .s_clrn 		( SEGCLR		),
             .sout   		( SEGDT			),
-            .EN     		( SEGEN		)
+            .EN     		( SEGEN		    )
         );
 
     ps2_kbd u_ps2_kbd (

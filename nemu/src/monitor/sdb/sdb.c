@@ -47,9 +47,44 @@ static int cmd_c(char *args) {
   return 0;
 }
 
-
 static int cmd_q(char *args) {
   return -1;
+}
+
+static int cmd_si(char *args) {
+  int steps = atoi(args);
+  cpu_exec(steps);
+  return 0;
+}
+
+static int cmd_info(char *args) {
+  if(args[0] == 'r'){
+
+  } else if (args[0] == 'w') {
+
+  } else {
+    printf("error argument!\n");
+  }
+  return 0;
+}
+
+static int cmd_x(char *args) {
+  return 0;
+}
+
+static int cmd_p(char *args) {
+  bool success;
+  uint64_t result = expr(args, &success);
+  printf("%ld\n", result);
+  return success;
+}
+
+static int cmd_w(char *args) {
+  return 0;
+}
+
+static int cmd_d(char *args) {
+  return 0;
 }
 
 static int cmd_help(char *args);
@@ -62,6 +97,13 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
+  { "si", "single step", cmd_si},
+  { "info", "infomation", cmd_info},
+  { "x", "memmory", cmd_x},
+  { "p", "memmory", cmd_p},
+  { "w", "memmory", cmd_w},
+  { "d", "memmory", cmd_d},
+  
 
   /* TODO: Add more commands */
 
