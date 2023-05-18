@@ -25,7 +25,7 @@ void init_regex();
 void init_wp_pool();
 
 char *cmd_line[] = {
-  // "p 123",
+  "p 123",
   "345",
   "678"
 };
@@ -163,7 +163,10 @@ void sdb_mainloop() {
     char *str_end = str + strlen(str);
 
     /* extract the first token as the command */
-    char *cmd = strtok(str, " ");
+    // char *cmd = strtok(str, " ");
+    char *saveptr;
+    char *cmd = strtok_r(str, " ", &saveptr);
+
     if (cmd == NULL) { continue; }
 
     /* treat the remaining string as the arguments,
