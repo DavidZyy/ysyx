@@ -169,10 +169,49 @@ int getop(int p, int q) {
   return op;
 }
 
+// typedef struct paren {
+//   int idx;
+//   int type;
+// } paren_t;
+
+// left parentheses stack
+int stack[32];
+
+/**
+ * (1+2)*(3-1), the first "(" matches with the last ")".
+ */
 bool check_parentheses(int p, int q) {
-  if(tokens[p].type == '(' && tokens[q].type == ')')
-    return true;
-  return false;
+  // if(tokens[p].type == '(' && tokens[q].type == ')')
+  //   return true;
+  // return false;
+  int parentheses_correct = 0;
+  int match_p_q = 0;
+
+  int stack_id = 0;
+  for(int i = p; i <= q; i++) {
+    assert(stack_id < 32);
+    if(tokens[i].type == '(') {
+      stack[stack_id++] = i;
+    } else if (tokens[i].type == ')') {
+      // match
+      stack_id--;
+      if((i == q) && stack_id == 0)
+        match_p_q = 1;
+    }
+  }
+
+  if(stack_id == 0)
+    parentheses_correct = 1;
+
+  if(parentheses_correct) {
+    if(match_p_q) {
+      return true;
+    } else {
+      return  false;
+    }
+  } else {
+    assert(0);
+  }
 }
 
 word_t eval(int p, int q) {
