@@ -24,7 +24,7 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 
-static char *cmd_line[] = {
+char *cmd_line[] = {
   "p 123",
   "345",
   "678"
