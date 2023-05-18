@@ -37,13 +37,17 @@ int initial_cmd = 1;
 static char* rl_gets() {
   static char *line_read = NULL;
 
-  if (line_read && cmdl_id > initial_cmd) {
+  // if (line_read && cmdl_id > initial_cmd) {
+  if (line_read) {
     free(line_read);
     line_read = NULL;
   }
 
-  if(cmdl_id < initial_cmd)
-    line_read = cmd_line[cmdl_id++];
+  if(cmdl_id < initial_cmd) {
+    char *new = malloc(sizeof(cmd_line[cmdl_id++]));
+    // line_read = cmd_line[cmdl_id++];
+    line_read = new;
+  }
   else
     line_read = readline("(nemu) ");
 
@@ -152,8 +156,6 @@ void sdb_set_batch_mode() {
 
 void sdb_mainloop() {
 
-  // is_batch_mode = 1;
-
   if (is_batch_mode) {
     cmd_c(NULL);
     return;
@@ -163,9 +165,9 @@ void sdb_mainloop() {
     char *str_end = str + strlen(str);
 
     /* extract the first token as the command */
-    // char *cmd = strtok(str, " ");
-    char *saveptr;
-    char *cmd = strtok_r(str, " ", &saveptr);
+    char *cmd = strtok(str, " ");
+    // char *saveptr;
+    // char *cmd = strtok_r(str, " ", &saveptr);
 
     if (cmd == NULL) { continue; }
 
