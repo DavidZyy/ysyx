@@ -24,11 +24,11 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 
-// static char *cmd_line = {
-//   "1",
-//   "2",
-//   "3"
-// }
+static char *cmd_line[] = {
+  "123",
+  "345",
+  "678"
+};
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -39,7 +39,8 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  line_read = readline("(nemu) ");
+  // line_read = readline("(nemu) ");
+  line_read = cmd_line[0];
 
   if (line_read && *line_read) {
     add_history(line_read);
