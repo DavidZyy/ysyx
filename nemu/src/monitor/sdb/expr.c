@@ -161,7 +161,7 @@ int getop(int p, int q) {
     if(tokens[i].type == '(') {
       while(tokens[i].type != ')') i++;
     } else if(is_operator(tokens[i])) {
-      if(op == -1 || prio(tokens[op].type) > prio(tokens[i].type))
+      if(op == -1 || prio(tokens[op].type) >= prio(tokens[i].type))
         op = i;
     }
   }
