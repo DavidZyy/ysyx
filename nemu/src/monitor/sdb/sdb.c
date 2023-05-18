@@ -44,8 +44,11 @@ static char* rl_gets() {
   }
 
   if(cmdl_id < initial_cmd) {
-    char *new = malloc(sizeof(cmd_line[cmdl_id++]));
+    size_t length = strlen(cmd_line[cmdl_id]);
+    char *new = malloc(length+1);
+    memcpy(new, cmd_line[cmdl_id], length+1);
     // line_read = cmd_line[cmdl_id++];
+    cmdl_id++;
     line_read = new;
   }
   else
