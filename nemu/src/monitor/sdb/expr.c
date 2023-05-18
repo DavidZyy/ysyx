@@ -103,22 +103,23 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          case '+': tokens[nr_token].type = '+'; break;
-          case '-': tokens[nr_token].type = '-'; break;
-          case '*': tokens[nr_token].type = '*'; break;
-          case '/': tokens[nr_token].type = '/'; break;
-          case '(': tokens[nr_token].type = '('; break;
-          case ')': tokens[nr_token].type = ')'; break;
+          case '+': tokens[nr_token++].type = '+'; break;
+          case '-': tokens[nr_token++].type = '-'; break;
+          case '*': tokens[nr_token++].type = '*'; break;
+          case '/': tokens[nr_token++].type = '/'; break;
+          case '(': tokens[nr_token++].type = '('; break;
+          case ')': tokens[nr_token++].type = ')'; break;
           // case TK_NOTYPE: tokens[nr_token].type = TK_NOTYPE; break;
           case TK_NOTYPE: break;
-          case TK_EQ: tokens[nr_token].type = TK_EQ; break;
+          case TK_EQ: tokens[nr_token++].type = TK_EQ; break;
           case TK_DECIMAL:
             tokens[nr_token].type = TK_DECIMAL;
             memcpy(tokens[nr_token].str, substr_start, substr_len);
+            nr_token++;
             break;
           default: TODO();
         }
-        nr_token++;
+        // nr_token++;
 
         break;
       }
