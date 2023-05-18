@@ -25,7 +25,7 @@ void init_regex();
 void init_wp_pool();
 
 char *cmd_line[] = {
-  "p 123",
+  "p 1+3 + 4/2",
   "p 456",
   "p 678"
 };
