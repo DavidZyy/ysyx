@@ -30,6 +30,8 @@ static char *cmd_line[] = {
   "678"
 };
 
+int cmdl_id = 0;
+
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -39,8 +41,10 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  // line_read = readline("(nemu) ");
-  line_read = cmd_line[0];
+  if(cmdl_id < 1)
+    line_read = cmd_line[cmdl_id++];
+  else
+    line_read = readline("(nemu) ");
 
   if (line_read && *line_read) {
     add_history(line_read);
