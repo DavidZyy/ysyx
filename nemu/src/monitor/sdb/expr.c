@@ -193,10 +193,10 @@ bool check_parentheses(int p, int q) {
     if(tokens[i].type == '(') {
       stack[stack_id++] = i;
     } else if (tokens[i].type == ')') {
+      if((i == q) && (stack[stack_id] == p))
+        match_p_q = 1;
       // match
       stack_id--;
-      if((i == q) && stack_id == 0)
-        match_p_q = 1;
     }
   }
 
