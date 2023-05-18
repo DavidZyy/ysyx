@@ -134,7 +134,6 @@ static bool make_token(char *e) {
   return true;
 }
 
-
 int prio(char ch){
   switch (ch) {
     case '+':
