@@ -25,23 +25,24 @@ void init_regex();
 void init_wp_pool();
 
 static char *cmd_line[] = {
-  // "p 123\n",
+  "p 123\n",
   "345",
   "678"
 };
 
 int cmdl_id = 0;
+int initial_cmd = 1;
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
 
-  if (line_read && cmdl_id >= 1) {
+  if (line_read && cmdl_id > initial_cmd) {
     free(line_read);
     line_read = NULL;
   }
 
-  if(cmdl_id < 1)
+  if(cmdl_id < initial_cmd)
     line_read = cmd_line[cmdl_id++];
   else
     line_read = readline("(nemu) ");
