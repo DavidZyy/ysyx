@@ -26,12 +26,12 @@ void init_wp_pool();
 
 char *cmd_line[] = {
   "p 123",
-  "345",
-  "678"
+  "p 456",
+  "p 678"
 };
 
 int cmdl_id = 0;
-int initial_cmd = 1;
+int initial_cmd = 3;
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
