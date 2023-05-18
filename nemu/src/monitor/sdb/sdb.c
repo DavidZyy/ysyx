@@ -36,7 +36,7 @@ int cmdl_id = 0;
 static char* rl_gets() {
   static char *line_read = NULL;
 
-  if (line_read) {
+  if (line_read && cmdl_id > 1) {
     free(line_read);
     line_read = NULL;
   }
