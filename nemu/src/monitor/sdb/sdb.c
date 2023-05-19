@@ -37,7 +37,6 @@ int initial_cmd = 3;
 static char* rl_gets() {
   static char *line_read = NULL;
 
-  // if (line_read && cmdl_id > initial_cmd) {
   if (line_read) {
     free(line_read);
     line_read = NULL;
