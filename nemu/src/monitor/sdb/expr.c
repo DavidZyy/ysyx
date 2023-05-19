@@ -229,7 +229,14 @@ word_t eval(int p, int q) {
   if(p > q) {
     assert(0);
   } else if (p == q) {
-    return atoi(tokens[p].str);
+    if(tokens[p].type == TK_DECIMAL) {
+      return atoi(tokens[p].str);
+    } else if(tokens[p].type == TK_REG) {
+      bool success;
+      return isa_reg_str2val(tokens[p].str, &success);
+    } else {
+      assert(0);
+    }
   } else if (check_parentheses(p, q)) {
     return eval(p+1, q-1);
   } else {

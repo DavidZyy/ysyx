@@ -27,7 +27,7 @@ void init_wp_pool();
 char *cmd_line[] = {
   "p 0x123+3 + 4/2 + $34",
   "p 1==2",
-  "p 1==(2-1"
+  "p 1==(2-1)"
 };
 
 int cmdl_id = 0;
