@@ -220,6 +220,7 @@ bool check_parentheses(int p, int q) {
       return  false;
     }
   } else {
+    printf("parentheses not correct!\n");
     assert(0);
   }
 }
