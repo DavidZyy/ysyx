@@ -26,7 +26,7 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-  TK_DECIMAL,
+  TK_DECIMAL, TK_HEX
 };
 
 static struct rule {
@@ -47,6 +47,7 @@ static struct rule {
   {"\\(", '('},            // left parentheses
   {"\\)", ')'},            // right parentheses
   {"[0-9]+", TK_DECIMAL},  // decimal integers
+  {"\\b0x[0-9A-Fa-f]+\\b", TK_HEX}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -243,6 +244,7 @@ word_t expr(char *e, bool *success) {
 
   /* TODO: Insert codes to evaluate the expression. */
   // TODO();
+
 
   // return 0;
   return eval(0, nr_token-1);
