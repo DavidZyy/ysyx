@@ -143,21 +143,23 @@ static bool make_token(char *e) {
   return true;
 }
 
-int prio(char ch){
-  switch (ch) {
+int prio(int type){
+  switch (type) {
     case '+':
     case '-': return 0;
     case '*':
     case '/': return 1;
+    case TK_EQ: return 2;
     default : assert(0);
   }
 }
 
 bool is_operator(Token tok) {
-  if(tok.type == '+' ||
+  if( tok.type == '+' ||
       tok.type == '-' ||
       tok.type == '/' ||
-      tok.type == '*')
+      tok.type == '*' ||
+      tok.type == TK_EQ)
       return true;
 
   return false;
