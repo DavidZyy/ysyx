@@ -47,7 +47,7 @@ static struct rule {
   {"\\(", '('},            // left parentheses
   {"\\)", ')'},            // right parentheses
   {"[0-9]+", TK_DECIMAL},  // decimal integers
-  {"\\b0x[0-9A-Fa-f]+\\b", TK_HEX}
+  {"\b0x[0-9A-Fa-f]+\b", TK_HEX}
 };
 
 #define NR_REGEX ARRLEN(rules)
