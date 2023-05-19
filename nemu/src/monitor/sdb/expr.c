@@ -231,6 +231,8 @@ word_t eval(int p, int q) {
   } else if (p == q) {
     if(tokens[p].type == TK_DECIMAL) {
       return atoi(tokens[p].str);
+    } else if(tokens[p].type == TK_HEX) {
+      return 0;
     } else if(tokens[p].type == TK_REG) {
       bool success;
       return isa_reg_str2val(tokens[p].str, &success);
