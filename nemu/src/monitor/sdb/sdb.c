@@ -26,8 +26,8 @@ void init_wp_pool();
 
 char *cmd_line[] = {
   "p 1+3 + 4/2",
-  "p 456",
-  "p 678"
+  "p 456 * 2",
+  "p 678 / 2"
 };
 
 int cmdl_id = 0;
