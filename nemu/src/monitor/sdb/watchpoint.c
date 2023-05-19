@@ -20,9 +20,8 @@
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
-
+  uint64_t last_val;
   /* TODO: Add more members if necessary */
-
 } WP;
 
 static WP wp_pool[NR_WP] = {};
@@ -58,4 +57,10 @@ void free_up(WP *wp) {
 
   wp->next = free_;
   free_ = wp;
+}
+
+void watch(char *args) {
+  bool success;
+  WP *new = new_wp();
+  new->last_val = expr(args, &success);
 }

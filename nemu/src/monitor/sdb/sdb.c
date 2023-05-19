@@ -97,7 +97,9 @@ static int cmd_p(char *args) {
   return success;
 }
 
+extern void watch(char *args);
 static int cmd_w(char *args) {
+  watch(args);
   return 0;
 }
 
