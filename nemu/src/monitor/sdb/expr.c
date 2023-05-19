@@ -46,7 +46,7 @@ static struct rule {
   {"/", '/'},              // division
   {"\\(", '('},            // left parentheses
   {"\\)", ')'},            // right parentheses
-  {"\b0x[0-9A-Fa-f]+\b", TK_HEX},
+  {"0x[0-9A-Fa-f]+", TK_HEX},
   {"[0-9]+", TK_DECIMAL}   // decimal integers
 };
 
