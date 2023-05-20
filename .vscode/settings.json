@@ -42,6 +42,8 @@
     "regex.h": "c",
     "functional": "c",
     "future": "c",
-    "type_traits": "c"
+    "type_traits": "c",
+    "*.inc": "c",
+    "cstdio": "c"
   }
 }

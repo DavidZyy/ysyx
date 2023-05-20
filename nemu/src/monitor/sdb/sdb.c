@@ -78,8 +78,10 @@ static int cmd_si(char *args) {
 
 void print_wp_info();
 static int cmd_info(char *args) {
-  assert(args);
-  if(args[0] == 'r') {
+  // assert(args);
+  if(args == 0)
+    return 0;
+  if (args[0] == 'r') {
     isa_reg_display();
   } else if (args[0] == 'w') {
     print_wp_info();
