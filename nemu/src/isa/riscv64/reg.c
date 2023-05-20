@@ -29,6 +29,7 @@ void isa_reg_display() {
     if(i%8 == 0) printf("\n");
     printf("%s: %ld\t", regs[i], gpr(i));
   }
+  printf("\n");
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
