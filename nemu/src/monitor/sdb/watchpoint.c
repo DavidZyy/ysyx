@@ -87,6 +87,6 @@ void if_wp_chg() {
 void print_wp_info() {
   WP *p;
   for (p = head; p; p = p->next) {
-    printf("NO.%d, args:%s\n", p->NO, p->args);
+    printf("NO.%d, args:%s\n, val:%ld", p->NO, p->args, p->last_val);
   }
 }
