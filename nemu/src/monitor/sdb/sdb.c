@@ -80,9 +80,8 @@ void print_wp_info();
 static int cmd_info(char *args) {
   assert(args);
   if(args[0] == 'r') {
-    print_wp_info();
   } else if (args[0] == 'w') {
-
+    print_wp_info();
   } else {
     printf("error argument!\n");
   }
