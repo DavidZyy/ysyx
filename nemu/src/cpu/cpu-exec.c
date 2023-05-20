@@ -31,6 +31,7 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
+void if_wp_chg();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
@@ -39,6 +40,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   /* _this->pc is the pc the nemu has executed, dnpc is the next pc it will execute. */
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+  if_wp_chg(); 
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {

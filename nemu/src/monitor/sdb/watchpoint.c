@@ -21,6 +21,7 @@ typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
   uint64_t last_val;
+  char args[32];
   /* TODO: Add more members if necessary */
 } WP;
 
@@ -63,4 +64,15 @@ void watch(char *args) {
   bool success;
   WP *new = new_wp();
   new->last_val = expr(args, &success);
+  memcpy(new->args, args, strlen(args));
+}
+
+void if_wp_chg() {
+  WP* p = head;
+  while(p) {
+    bool success;
+    uint64_t new_val = expr(p->args, &success);
+    if(new_val != p->last_val)
+      printf("watch point changed!\n");
+  }
 }
