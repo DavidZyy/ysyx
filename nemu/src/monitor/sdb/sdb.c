@@ -76,10 +76,11 @@ static int cmd_si(char *args) {
   return 0;
 }
 
+void print_wp_info();
 static int cmd_info(char *args) {
   assert(args);
-  if(args[0] == 'r'){
-
+  if(args[0] == 'r') {
+    print_wp_info();
   } else if (args[0] == 'w') {
 
   } else {

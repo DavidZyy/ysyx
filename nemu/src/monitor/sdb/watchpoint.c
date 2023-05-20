@@ -68,11 +68,25 @@ void watch(char *args) {
 }
 
 void if_wp_chg() {
-  WP* p = head;
-  while(p) {
+  // WP *p = head;
+  // while(p) {
+  //   bool success;
+  //   uint64_t new_val = expr(p->args, &success);
+  //   if(new_val != p->last_val)
+  //     printf("watch point changed!\n");
+  // }
+  WP *p;
+  for (p = head; p; p = p->next) {
     bool success;
     uint64_t new_val = expr(p->args, &success);
-    if(new_val != p->last_val)
+    if (new_val != p->last_val)
       printf("watch point changed!\n");
+  }
+}
+
+void print_wp_info() {
+  WP *p;
+  for (p = head; p; p = p->next) {
+    printf("NO.%d, args:%s\n", p->NO, p->args);
   }
 }
