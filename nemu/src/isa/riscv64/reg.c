@@ -24,7 +24,11 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-  printf(ANSI_FMT("You are pig!\n", ANSI_FG_RED));
+  // printf(ANSI_FMT("You are pig!\n", ANSI_FG_RED));
+  for (int i = 0; i <= 32; i++) {
+    if(i%8 == 0) printf("\n");
+    printf("%s: %ld", regs[i], gpr(i));
+  }
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
