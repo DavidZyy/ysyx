@@ -79,8 +79,10 @@ void if_wp_chg() {
   for (p = head; p; p = p->next) {
     bool success;
     uint64_t new_val = expr(p->args, &success);
-    if (new_val != p->last_val)
+    if (new_val != p->last_val) {
       printf("watch point changed!\n");
+      for(;;);
+    }
   }
 }
 
