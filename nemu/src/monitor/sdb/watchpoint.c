@@ -67,19 +67,18 @@ void watch(char *args) {
   memcpy(new->args, args, strlen(args));
 }
 
-void if_wp_chg() {
+bool if_wp_chg() {
   WP *p;
   for (p = head; p; p = p->next) {
     bool success;
     uint64_t new_val = expr(p->args, &success);
     // printf("watch point changed!\n");
     if (new_val != p->last_val) {
-      printf("watch point changed!\n");
-      nemu_state.state = NEMU_STOP;
-      // for(;;);
+      return true;
     }
     p->last_val = new_val;
   }
+  return false;
 }
 
 void print_wp_info() {
