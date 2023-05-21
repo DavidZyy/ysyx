@@ -41,6 +41,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   /* _this->pc is the pc the nemu has executed, dnpc is the next pc it will execute. */
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   if_wp_chg();
+  nemu_state.state = NEMU_STOP;
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {

@@ -75,7 +75,7 @@ void if_wp_chg() {
     // printf("watch point changed!\n");
     if (new_val != p->last_val) {
       printf("watch point changed!\n");
-      for(;;);
+      // for(;;);
     }
     p->last_val = new_val;
   }
