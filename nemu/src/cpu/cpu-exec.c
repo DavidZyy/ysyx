@@ -43,6 +43,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   if(if_wp_chg()) {
     printf("watch point changed!\n");
     nemu_state.state = NEMU_STOP;
+    printf("pc: %lx\n", _this->pc);
   }
 }
 
