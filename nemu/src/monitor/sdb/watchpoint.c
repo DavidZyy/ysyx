@@ -75,6 +75,7 @@ void if_wp_chg() {
     // printf("watch point changed!\n");
     if (new_val != p->last_val) {
       printf("watch point changed!\n");
+      nemu_state.state = NEMU_STOP;
       // for(;;);
     }
     p->last_val = new_val;
