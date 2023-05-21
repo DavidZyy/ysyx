@@ -74,12 +74,12 @@ bool if_wp_chg() {
     uint64_t new_val = expr(p->args, &success);
     // printf("watch point changed!\n");
     if (new_val != p->last_val) {
+      p->last_val = new_val;
       // printf("watch point changed!\n");
       printf("Hit watch point: NO.%d, old value: %lx, new value %lx, expression: %s\n",
             p->NO, p->last_val, new_val, p->args);
       return true;
     }
-    p->last_val = new_val;
   }
   return false;
 }
