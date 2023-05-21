@@ -117,10 +117,12 @@ static bool make_token(char *e) {
           case TK_DECIMAL:
             tokens[nr_token].type = TK_DECIMAL;
             memcpy(tokens[nr_token].str, substr_start, substr_len);
+            tokens[nr_token].str[substr_len] = '\0';
             nr_token++; break;
           case TK_HEX:
             tokens[nr_token].type = TK_HEX;
             memcpy(tokens[nr_token].str, substr_start, substr_len);
+            tokens[nr_token].str[substr_len] = '\0';
             nr_token++; break;
           case TK_REG:
             tokens[nr_token].type = TK_REG;
