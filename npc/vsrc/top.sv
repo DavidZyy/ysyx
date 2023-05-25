@@ -39,9 +39,6 @@ module top	(
                 .O(clk200m)
             );
 
-    // always@(posedge clk200m)
-    //     clkdiv <= clkdiv+1;
-
     /* seg no display, to see rst signal */
     always@(posedge clk200m or posedge rst)
     	if(rst) begin
@@ -50,6 +47,11 @@ module top	(
     	else begin
         	clkdiv <= clkdiv+1;
     	end
+    
+    wire clk100m = clkdiv[0];
+    wire clk50m  = clkdiv[1];
+    wire clk25m  = clkdiv[2];
+    wire clk12m  = clkdiv[3];
 
     wire  sig_rd_kb;
     wire [`Vec(`SegWidth)]  seg_wdata;
@@ -140,7 +142,7 @@ module top	(
                 //ports
                 /* clk200m may be too quickly? */
                 // .clk      		( clkdiv[10] 	),
-                .clk      		( clkdiv[0]     ),
+                .clk      		( clk100m       ),
                 .clrn     		( rst			),
                 .ps2_clk  		( PS2_clk  		),
                 .ps2_data 		( PS2_Data 		),
