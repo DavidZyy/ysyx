@@ -53,8 +53,9 @@ module top	(
     wire clk25m  = clkdiv[2];
     wire clk12m  = clkdiv[3];
 
-    wire  sig_rd_kb;
+    wire sig_rd_kb;
     wire [`Vec(`SegWidth)]  seg_wdata;
+    wire [`Vec(`SegWidth)]  true_seg_wdata;
 
     wire [`Vec(`KbWidth)]	kb_rdata;
     wire 		kb_ready;
@@ -124,13 +125,12 @@ module top	(
     wire [`Vec(`ImmWidth)]  led_ext = `ZEXT(led_wdata, 8);
 
     // seg_wdata shift left to display the signal
+    assign true_seg_wdata = (32'hff & seg_wdata) | (true_seg_wdata << 8);
 
     seg u_seg (
             //ports
             .clkdiv   		( clkdiv   		),
-            .num    		( seg_wdata		),
-            // .num    		( led_ext[31:0]		),
-            // .num    		( inst ),
+            .num    		( true_seg_wdata		),
 
             .s_clk  		( SEGCLK		),
             .s_clrn 		( SEGCLR		),
