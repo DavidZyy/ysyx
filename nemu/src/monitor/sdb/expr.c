@@ -26,7 +26,7 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-  TK_DECIMAL,
+  TK_DECIMAL, TK_HEX, TK_REG
 };
 
 static struct rule {
@@ -46,7 +46,9 @@ static struct rule {
   {"/", '/'},              // division
   {"\\(", '('},            // left parentheses
   {"\\)", ')'},            // right parentheses
-  {"[0-9]+", TK_DECIMAL},  // decimal integers
+  {"0x[0-9A-Fa-f]+", TK_HEX},
+  {"[0-9]+", TK_DECIMAL},   // decimal integers
+  {"\\$[0-9A-Za-z]+", TK_REG}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -115,8 +117,18 @@ static bool make_token(char *e) {
           case TK_DECIMAL:
             tokens[nr_token].type = TK_DECIMAL;
             memcpy(tokens[nr_token].str, substr_start, substr_len);
-            nr_token++;
-            break;
+            tokens[nr_token].str[substr_len] = '\0';
+            nr_token++; break;
+          case TK_HEX:
+            tokens[nr_token].type = TK_HEX;
+            memcpy(tokens[nr_token].str, substr_start, substr_len);
+            tokens[nr_token].str[substr_len] = '\0';
+            nr_token++; break;
+          case TK_REG:
+            tokens[nr_token].type = TK_REG;
+            memcpy(tokens[nr_token].str, substr_start, substr_len);
+            tokens[nr_token].str[substr_len] = '\0';
+            nr_token++; break;
           default: TODO();
         }
         // nr_token++;
@@ -134,22 +146,23 @@ static bool make_token(char *e) {
   return true;
 }
 
-
-int prio(char ch){
-  switch (ch) {
+int prio(int type){
+  switch (type) {
     case '+':
     case '-': return 0;
     case '*':
     case '/': return 1;
+    case TK_EQ: return 2;
     default : assert(0);
   }
 }
 
 bool is_operator(Token tok) {
-  if(tok.type == '+' ||
+  if( tok.type == '+' ||
       tok.type == '-' ||
       tok.type == '/' ||
-      tok.type == '*')
+      tok.type == '*' ||
+      tok.type == TK_EQ)
       return true;
 
   return false;
@@ -161,7 +174,7 @@ int getop(int p, int q) {
     if(tokens[i].type == '(') {
       while(tokens[i].type != ')') i++;
     } else if(is_operator(tokens[i])) {
-      if(op == -1 || prio(tokens[op].type) > prio(tokens[i].type))
+      if(op == -1 || prio(tokens[op].type) >= prio(tokens[i].type))
         op = i;
     }
   }
@@ -210,6 +223,7 @@ bool check_parentheses(int p, int q) {
       return  false;
     }
   } else {
+    printf("parentheses not correct!\n");
     assert(0);
   }
 }
@@ -218,7 +232,16 @@ word_t eval(int p, int q) {
   if(p > q) {
     assert(0);
   } else if (p == q) {
-    return atoi(tokens[p].str);
+    if(tokens[p].type == TK_DECIMAL) {
+      return atoi(tokens[p].str);
+    } else if(tokens[p].type == TK_HEX) {
+      return 0;
+    } else if(tokens[p].type == TK_REG) {
+      bool success;
+      return isa_reg_str2val(tokens[p].str, &success);
+    } else {
+      assert(0);
+    }
   } else if (check_parentheses(p, q)) {
     return eval(p+1, q-1);
   } else {
@@ -231,6 +254,7 @@ word_t eval(int p, int q) {
       case '-': return val1 - val2;
       case '*': return val1 * val2;
       case '/': return val1 / val2;
+      case TK_EQ: return val1 == val2;
       default : assert(0);
     }
   }

@@ -39,9 +39,6 @@ module top	(
                 .O(clk200m)
             );
 
-    // always@(posedge clk200m)
-    //     clkdiv <= clkdiv+1;
-
     /* seg no display, to see rst signal */
     always@(posedge clk200m or posedge rst)
     	if(rst) begin
@@ -50,8 +47,13 @@ module top	(
     	else begin
         	clkdiv <= clkdiv+1;
     	end
+    
+    wire clk100m = clkdiv[0];
+    wire clk50m  = clkdiv[1];
+    wire clk25m  = clkdiv[2];
+    wire clk12m  = clkdiv[3];
 
-    wire  sig_rd_kb;
+    wire sig_rd_kb;
     wire [`Vec(`SegWidth)]  seg_wdata;
 
     wire [`Vec(`KbWidth)]	kb_rdata;
@@ -63,8 +65,8 @@ module top	(
     wire [`Vec(8)]	swt_rdata;
     cpu u_cpu (
             //ports
-            .clk        		( clkdiv[0]		    ), // 200 0000 / (2^27)
-            // .clk        		( clk200m			), /* for simulation on varilator */
+            // .clk        		( clkdiv[0]		    ), // 200 0000 / (2^27)
+            .clk        		( clk200m			), /* for simulation on varilator */
             .clkdiv             ( clkdiv            ),
             /* 10 can run on sword */
             // .clk        		( clkdiv[10]		),
@@ -127,8 +129,6 @@ module top	(
             //ports
             .clkdiv   		( clkdiv   		),
             .num    		( seg_wdata		),
-            // .num    		( led_ext[31:0]		),
-            // .num    		( inst ),
 
             .s_clk  		( SEGCLK		),
             .s_clrn 		( SEGCLR		),
@@ -140,7 +140,7 @@ module top	(
                 //ports
                 /* clk200m may be too quickly? */
                 // .clk      		( clkdiv[10] 	),
-                .clk      		( clkdiv[0]     ),
+                .clk      		( clk100m       ),
                 .clrn     		( rst			),
                 .ps2_clk  		( PS2_clk  		),
                 .ps2_data 		( PS2_Data 		),

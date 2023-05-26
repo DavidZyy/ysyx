@@ -39,6 +39,11 @@
     "memory_resource": "c",
     "tuple": "c",
     "*.def": "c",
-    "regex.h": "c"
+    "regex.h": "c",
+    "functional": "c",
+    "future": "c",
+    "type_traits": "c",
+    "*.inc": "c",
+    "cstdio": "c"
   }
 }

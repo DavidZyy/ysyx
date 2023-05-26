@@ -24,6 +24,16 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 
+char *cmd_line[] = {
+  "w $sp",
+  "p 0x123+3 + 4/2 + $sp",
+  "p 1",
+  // "p 1==(2-1)"
+};
+
+int cmdl_id = 0;
+int initial_cmd = 3;
+
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -33,7 +43,16 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  line_read = readline("(nemu) ");
+  if(cmdl_id < initial_cmd) {
+    size_t length = strlen(cmd_line[cmdl_id]);
+    char *new = malloc(length+1);
+    memcpy(new, cmd_line[cmdl_id], length+1);
+    // line_read = cmd_line[cmdl_id++];
+    cmdl_id++;
+    line_read = new;
+  }
+  else
+    line_read = readline("(nemu) ");
 
   if (line_read && *line_read) {
     add_history(line_read);
@@ -57,11 +76,15 @@ static int cmd_si(char *args) {
   return 0;
 }
 
+void print_wp_info();
 static int cmd_info(char *args) {
-  if(args[0] == 'r'){
-
+  // assert(args);
+  if(args == 0)
+    return 0;
+  if (args[0] == 'r') {
+    isa_reg_display();
   } else if (args[0] == 'w') {
-
+    print_wp_info();
   } else {
     printf("error argument!\n");
   }
@@ -79,7 +102,9 @@ static int cmd_p(char *args) {
   return success;
 }
 
+extern void watch(char *args);
 static int cmd_w(char *args) {
+  watch(args);
   return 0;
 }
 
@@ -140,8 +165,6 @@ void sdb_set_batch_mode() {
 
 void sdb_mainloop() {
 
-  // is_batch_mode = 1;
-
   if (is_batch_mode) {
     cmd_c(NULL);
     return;
@@ -152,6 +175,9 @@ void sdb_mainloop() {
 
     /* extract the first token as the command */
     char *cmd = strtok(str, " ");
+    // char *saveptr;
+    // char *cmd = strtok_r(str, " ", &saveptr);
+
     if (cmd == NULL) { continue; }
 
     /* treat the remaining string as the arguments,

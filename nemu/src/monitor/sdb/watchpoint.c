@@ -20,9 +20,9 @@
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
-
+  uint64_t last_val;
+  char args[32];
   /* TODO: Add more members if necessary */
-
 } WP;
 
 static WP wp_pool[NR_WP] = {};
@@ -40,4 +40,54 @@ void init_wp_pool() {
 }
 
 /* TODO: Implement the functionality of watchpoint */
+
+WP* new_wp() {
+  assert(free_);
+  WP* new = free_;
+  free_ = free_->next;
+
+  new->next = head;
+  head = new;
+  return new;
+}
+
+void free_up(WP *wp) {
+  WP* p = head;
+  while(p->next != wp) p = p->next;
+  p->next = wp->next;
+
+  wp->next = free_;
+  free_ = wp;
+}
+
+void watch(char *args) {
+  bool success;
+  WP *new = new_wp();
+  new->last_val = expr(args, &success);
+  memcpy(new->args, args, strlen(args));
+}
+
+bool if_wp_chg() {
+  WP *p;
+  for (p = head; p; p = p->next) {
+    bool success;
+    uint64_t new_val = expr(p->args, &success);
+    // printf("watch point changed!\n");
+    if (new_val != p->last_val) {
+      // printf("watch point changed!\n");
+      printf("Hit watch point: NO.%d, old value: %lx, new value %lx, expression: %s\n",
+            p->NO, p->last_val, new_val, p->args);
+      p->last_val = new_val;
+      return true;
+    }
+  }
+  return false;
+}
+
+void print_wp_info() {
+  WP *p;
+  for (p = head; p; p = p->next) {
+    printf("NO.%d, args:%s, val:%ld\n", p->NO, p->args, p->last_val);
+  }
+}
 
