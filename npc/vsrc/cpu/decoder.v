@@ -70,8 +70,16 @@ module decoder (
   /* 2.4 integer computational instructions */
     /* integer register-immediate instructions */
   wire addi     = op_imm & funct3_000;
-
-  // add more codes here
+  wire slti     = op_imm & funct3_010;
+  wire sltiu    = op_imm & funct3_011;
+  wire andi     = op_imm & funct3_111;
+  wire ori      = op_imm & funct3_110;
+  wire xori     = op_imm & funct3_100;
+  wire slli     = op_imm & funct3_001 & inst_31_26_000000;
+  wire srli     = op_imm & funct3_101 & inst_31_26_000000;
+  wire srai     = op_imm & funct3_101 & inst_31_26_010000;
+  wire lui      = op_lui;
+  wire auipc    = op_auipc;
 
     /* integer register-register instructions */
   wire add        = op_op & funct3_000 & funct7_0000000;
