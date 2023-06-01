@@ -36,13 +36,14 @@ void isa_reg_display(CPU_state *ref) {
     if(ref->gpr[i] != gpr(i)) {
       printf("%-3s: %016lx  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
       printf("%-3s: %016lx  ", regs[i], ref->gpr[i]);
+      printf("\n");
     }
   }
-  printf("\n");
   for (int i = 0; i < csr_cnt; i++) {
     if(ref->csr[i] != cpu.csr[i]) {
       printf("%-7s: %016lx  ", csrs[i], cpu.csr[i]);  // Use width and alignment specifiers in the format string
       printf("%-7s: %016lx  ", csrs[i], ref->csr[i]);
+      printf("\n");
     }
   }
 }
