@@ -51,7 +51,7 @@ void sim_t::diff_init(int port) {
   p = get_core("0");
   state = p->get_state();
   // pa3 
-  state->mstatus = 0xa00001800;
+  // state->mstatus = 0xa00001800;
 }
 
 void sim_t::diff_step(uint64_t n) {
