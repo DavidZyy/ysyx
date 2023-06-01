@@ -28,9 +28,8 @@ void isa_reg_display(CPU_state *ref) {
   for (int i = 0; i < 32; i++) {
     if(ref->gpr[i] != gpr(i)) {
       printf("%-3s: %016lx  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
-      printf("%-3s: %016lx  ", regs[i], ref->gpr[i]);  // Use width and alignment specifiers in the format string
+      printf("%-3s: %016lx  ", regs[i], ref->gpr[i]);
     }
-    // if(i%4 == 0) printf("\n");
   }
   printf("\n");
 }
