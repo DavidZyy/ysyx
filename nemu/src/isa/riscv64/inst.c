@@ -219,8 +219,17 @@ void csrrw(word_t csr_id, int rd, word_t src1) {
   if (csr_id == mtvec_id) {
     R(rd) = cpu.csr[cpu_mtvec_id];
     cpu.csr[cpu_mtvec_id] = src1;
+  } else if (csr_id == mepc_id) {
+    R(rd) = cpu.csr[cpu_mepc_id];
+    cpu.csr[cpu_mepc_id] = src1;
+  } else if (csr_id == mstatus_id) {
+    R(rd) = cpu.csr[cpu_mstatus_id];
+    cpu.csr[cpu_mstatus_id] = src1;
+  } else if (csr_id == mcause_id) {
+    R(rd) = cpu.csr[cpu_mcause_id];
+    cpu.csr[cpu_mcause_id] = src1;
   } else {
-    panic("here!");
+    panic("here!!");
   }
 }
 
