@@ -38,9 +38,22 @@ static debug_module_config_t difftest_dm_config = {
   .support_impebreak = true
 };
 
+#define mtvec_id    0x305
+#define mepc_id     0x341
+#define mstatus_id  0x300
+#define mcause_id   0x342
+
+#define cpu_mtvec_id    0
+#define cpu_mepc_id     1
+#define cpu_mstatus_id  2
+#define cpu_mcause_id   3
+
+#define csr_cnt 4
+
 struct diff_context_t {
   word_t gpr[32];
   word_t pc;
+  word_t csr[csr_cnt];
 };
 
 static sim_t* s = NULL;
@@ -64,6 +77,10 @@ void sim_t::diff_get_regs(void* diff_context) {
     ctx->gpr[i] = state->XPR[i];
   }
   ctx->pc = state->pc;
+  ctx->csr[cpu_mtvec_id]   = state->mtvec;
+  ctx->csr[cpu_mepc_id]    = state->mepc;
+  ctx->csr[cpu_mstatus_id] = state->mstatus;
+  ctx->csr[cpu_mcause_id]  = state->mcause;
 }
 
 void sim_t::diff_set_regs(void* diff_context) {
@@ -72,6 +89,10 @@ void sim_t::diff_set_regs(void* diff_context) {
     state->XPR.write(i, (sword_t)ctx->gpr[i]);
   }
   state->pc = ctx->pc;
+  state->mtvec   = ctx->csr[cpu_mtvec_id]   ;
+  state->mepc    = ctx->csr[cpu_mepc_id]    ;
+  state->mstatus = ctx->csr[cpu_mstatus_id] ;
+  state->mcause  = ctx->csr[cpu_mcause_id]  ;
 }
 
 void sim_t::diff_memcpy(reg_t dest, void* src, size_t n) {
