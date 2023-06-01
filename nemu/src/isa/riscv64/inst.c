@@ -234,7 +234,7 @@ void csrrw(word_t csr_id, int rd, word_t src1) {
 }
 
 void ecall(Decode *s) {
-  cpu.csr[cpu_mepc_id] = s->snpc;
+  cpu.csr[cpu_mepc_id] = cpu.pc; // see ref
   s->dnpc = cpu.csr[cpu_mtvec_id];
 }
 
