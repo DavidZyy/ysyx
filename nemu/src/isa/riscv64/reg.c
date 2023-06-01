@@ -24,7 +24,7 @@ const char *regs[] = {
 };
 
 void isa_reg_display(CPU_state *ref) {
-  printf("nemu(dut)     spike(ref)");
+  printf("nemu(dut)     spike(ref)\n");
   for (int i = 0; i < 32; i++) {
     if(ref->gpr[i] != gpr(i)) {
       printf("%-3s: %016lx  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
