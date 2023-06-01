@@ -84,8 +84,8 @@ OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
 # include $(ARCH).mk, it not chaned, so am/build/xxx.i will not be compiled.
 # C_SRCS := $(filter %.c, $(SRCS))
 C_SRCS = $(filter %.c, $(SRCS))
-PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(C_SRCS))))
-# PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(SRCS))))
+# PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(C_SRCS))))
+PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(SRCS))))
 $(info $(green)$(PRES)$(reset))
 
 
