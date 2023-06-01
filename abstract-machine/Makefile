@@ -150,6 +150,10 @@ $(DST_DIR)/%.i: %.c
 	@mkdir -p $(dir $@) && echo + PRE $<
 	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
 
+$(DST_DIR)/%.i: %.S
+	@mkdir -p $(dir $@) && echo + PRE $<
+	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
+
 $(DST_DIR)/%.o: %.c
 	@mkdir -p $(dir $@) && echo + CC $<
 	@$(CC) -std=gnu11 $(CFLAGS) -c -o $@ $(realpath $<)
