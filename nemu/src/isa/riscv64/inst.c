@@ -64,10 +64,12 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
  */
 
 void csrrw(word_t csr_id, int rd, word_t src1);
+void ecall(Decode *s);
 
 static int decode_exec(Decode *s) {
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
+  /* snpc is the addr of current pc + 4, dnpc is the next pc to execute */
   s->dnpc = s->snpc;
 
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
@@ -131,8 +133,7 @@ static int decode_exec(Decode *s) {
 
 /* 2.8 Environment Call and Breakpoints */
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, NEMUTRAP(s->pc, R(10)));
-
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, ecall(s));
 
 /* RV64I */
   /* 5.2 Integer Computational Instructions */
@@ -219,6 +220,11 @@ void csrrw(word_t csr_id, int rd, word_t src1) {
   } else {
     panic("here!");
   }
+}
+
+void ecall(Decode *s) {
+  cpu.csr[cpu_mepc_id] = s->snpc;
+  s->dnpc = cpu.csr[cpu_mtvec_id];
 }
 
 int isa_exec_once(Decode *s) {
