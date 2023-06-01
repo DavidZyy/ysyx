@@ -205,15 +205,15 @@ static int decode_exec(Decode *s) {
   return 0;
 }
 
-#define mtvec_id    0x305
-#define mepc_id     0x341
-#define mstatus_id  0x300
-#define mcause_id   0x342
-
-#define cpu_mtvec_id    0
-#define cpu_mepc_id     1
-#define cpu_mstatus_id  2
-#define cpu_mcause_id   3
+// #define mtvec_id    0x305
+// #define mepc_id     0x341
+// #define mstatus_id  0x300
+// #define mcause_id   0x342
+// 
+// #define cpu_mtvec_id    0
+// #define cpu_mepc_id     1
+// #define cpu_mstatus_id  2
+// #define cpu_mcause_id   3
 
 void csrrw(word_t csr_id, int rd, word_t src1) {
   if (csr_id == mtvec_id) {
