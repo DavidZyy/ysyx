@@ -23,7 +23,7 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
-void isa_reg_display() {
+void isa_reg_display(CPU_state *ref) {
   for (int i = 0; i < 32; i++) {
     if(i%4 == 0) printf("\n");
     printf("%-3s: %016lx  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
