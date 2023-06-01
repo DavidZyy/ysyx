@@ -25,7 +25,7 @@ const char *regs[] = {
 
 void isa_reg_display() {
   for (int i = 0; i < 32; i++) {
-    if(i%8 == 0) printf("\n");
+    if(i%4 == 0) printf("\n");
     printf("%-3s: %016lx  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
     // printf("%s: %lx\t\t", regs[i], gpr(i));
   }
