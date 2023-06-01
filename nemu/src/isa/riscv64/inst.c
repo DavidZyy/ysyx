@@ -62,6 +62,9 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
  * s->pc is the address of the instruction: s.isa.inst.val
  * s->snpc = s->pc + 4
  */
+
+void csrrw(word_t csr_id, int rd, word_t src1);
+
 static int decode_exec(Decode *s) {
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
@@ -184,14 +187,37 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000001 ????? ????? 101 ????? 01110 11", divuw  , R, R(dest) = SEXT((uint32_t)src1 / (uint32_t)src2, 32));
   INSTPAT("0000001 ????? ????? 111 ????? 01110 11", remuw  , R, R(dest) = SEXT((uint32_t)src1 % (uint32_t)src2, 32));
 
+  /* RV-Zicsr */
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, csrrw(imm, dest, src1));
+
 /* Invalid Instructions, not risc-v inst. */
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
+
 
   INSTPAT_END();
 
   R(0) = 0; // reset $zero to 0
 
   return 0;
+}
+
+#define mtvec_id    0x305
+#define mepc_id     0x341
+#define mstatus_id  0x300
+#define mcause_id   0x342
+
+#define cpu_mtvec_id    0
+#define cpu_mepc_id     1
+#define cpu_mstatus_id  2
+#define cpu_mcause_id   3
+
+void csrrw(word_t csr_id, int rd, word_t src1) {
+  if (csr_id == mtvec_id) {
+    R(rd) = cpu.csr[cpu_mtvec_id];
+    cpu.csr[cpu_mtvec_id] = src1;
+  } else {
+    panic("here!");
+  }
 }
 
 int isa_exec_once(Decode *s) {
