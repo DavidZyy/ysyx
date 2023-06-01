@@ -86,7 +86,8 @@ OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
 C_SRCS = $(filter %.c, $(SRCS))
 PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(C_SRCS))))
 # PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(SRCS))))
-# $(error $(SRCS))
+$(info $(C_SRCS))
+$(info $(SRCS))
 
 
 # put after include native.mk
