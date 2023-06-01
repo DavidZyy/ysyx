@@ -28,6 +28,7 @@
 #define cpu_mstatus_id  2
 #define cpu_mcause_id   3
 
+#define csr_cnt 4
 /* zyy: why without flag registers? like NZCV? */
 typedef struct {
   word_t gpr[32];
