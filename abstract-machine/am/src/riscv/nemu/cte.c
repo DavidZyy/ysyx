@@ -14,7 +14,7 @@ const char *regs[] = {
 
 void print_context(Context *c) {
   for(int i = 0; i < 32; i++) {
-    printf("%-3s: %016lx  ", regs[i], c->gpr[i]);
+    printf("%-3s: %016lx  \n", regs[i], c->gpr[i]);
   }
 }
 // new added
