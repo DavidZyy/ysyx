@@ -219,7 +219,7 @@ static int decode_exec(Decode *s) {
 
 void mret() {
   cpu.pc  = cpu.csr[cpu_mepc_id] + 4;
-  // cpu.csr[cpu_mstatus_id] = 0xa00000080;
+  cpu.csr[cpu_mstatus_id] = 0xa00000080;
 }
 
 void csrrw(word_t csr_id, int rd, word_t src1) {
