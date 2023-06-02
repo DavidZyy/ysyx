@@ -46,6 +46,11 @@ void isa_reg_display(CPU_state *ref) {
       printf("\n");
     }
   }
+  if(ref->pc != cpu.pc) {
+      printf("%-3s: %016lx  ", "pc", cpu.pc);  // Use width and alignment specifiers in the format string
+      printf("%-3s: %016lx  ", "pc", ref->pc);
+      printf("\n");
+  }
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
