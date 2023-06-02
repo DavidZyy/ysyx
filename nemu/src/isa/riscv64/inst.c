@@ -218,7 +218,8 @@ static int decode_exec(Decode *s) {
 // #define cpu_mcause_id   3
 
 void mret() {
-  cpu.pc  = cpu.csr[cpu_mepc_id];
+  // cpu.pc  = cpu.csr[cpu_mepc_id];
+  cpu.pc  = 0x80000700;
   cpu.csr[cpu_mstatus_id] = 0xa00000080;
 }
 

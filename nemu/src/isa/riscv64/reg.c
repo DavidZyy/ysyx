@@ -40,11 +40,11 @@ void isa_reg_display(CPU_state *ref) {
     }
   }
   for (int i = 0; i < csr_cnt; i++) {
-    // if(ref->csr[i] != cpu.csr[i]) {
+    if(ref->csr[i] != cpu.csr[i]) {
       printf("%-7s: %016lx  ", csrs[i], cpu.csr[i]);  // Use width and alignment specifiers in the format string
       printf("%-7s: %016lx  ", csrs[i], ref->csr[i]);
       printf("\n");
-    // }
+    }
   }
   if (ref->pc != cpu.pc) {
       printf("%-3s: %016lx  ", "pc", cpu.pc);  // Use width and alignment specifiers in the format string
