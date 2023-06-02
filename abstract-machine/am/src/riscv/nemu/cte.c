@@ -12,10 +12,20 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
+const char *csrs[] = {
+  "mtvec",
+  "mepc",
+  "mstatus",
+  "mcause"
+};
+
 void print_context(Context *c) {
   for(int i = 0; i < 32; i++) {
     printf("%-3s: %016lx  \n", regs[i], c->gpr[i]);
   }
+  printf("%-7s: %016lx  \n", csrs[3], c->mcause);
+  printf("%-7s: %016lx  \n", csrs[2], c->mstatus);
+  printf("%-7s: %016lx  \n", csrs[1], c->mepc);
 }
 // new added
 
