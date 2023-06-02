@@ -84,8 +84,10 @@ OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
 # include $(ARCH).mk, it not chaned, so am/build/xxx.i will not be compiled.
 # C_SRCS := $(filter %.c, $(SRCS))
 C_SRCS = $(filter %.c, $(SRCS))
-PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(C_SRCS))))
-# PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(SRCS))))
+# PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(C_SRCS))))
+PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(SRCS))))
+# $(info $(green)$(PRES)$(reset))
+
 
 # put after include native.mk
 # $(info $(yellow)$(PRES)$(reset))
@@ -147,6 +149,10 @@ endif
 
 ### Rule (compile): a single `.c` -> `.o` (gcc)
 $(DST_DIR)/%.i: %.c
+	@mkdir -p $(dir $@) && echo + PRE $<
+	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
+
+$(DST_DIR)/%.i: %.S
 	@mkdir -p $(dir $@) && echo + PRE $<
 	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
 

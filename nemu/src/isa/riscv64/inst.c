@@ -62,9 +62,16 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
  * s->pc is the address of the instruction: s.isa.inst.val
  * s->snpc = s->pc + 4
  */
+
+void csrrw(word_t csr_id, int rd, word_t src1);
+void csrrs(word_t csr_id, int rd, word_t src1);
+void ecall(Decode *s);
+void mret(Decode *s);
+
 static int decode_exec(Decode *s) {
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
+  /* snpc is the addr of current pc + 4, dnpc is the next pc to execute */
   s->dnpc = s->snpc;
 
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
@@ -128,7 +135,7 @@ static int decode_exec(Decode *s) {
 
 /* 2.8 Environment Call and Breakpoints */
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
-
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, ecall(s));
 
 /* RV64I */
   /* 5.2 Integer Computational Instructions */
@@ -184,14 +191,75 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000001 ????? ????? 101 ????? 01110 11", divuw  , R, R(dest) = SEXT((uint32_t)src1 / (uint32_t)src2, 32));
   INSTPAT("0000001 ????? ????? 111 ????? 01110 11", remuw  , R, R(dest) = SEXT((uint32_t)src1 % (uint32_t)src2, 32));
 
+  /* RV-Zicsr */
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, csrrw(imm, dest, src1));
+  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, csrrs(imm, dest, src1));
+
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , I, mret(s));
 /* Invalid Instructions, not risc-v inst. */
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
+
 
   INSTPAT_END();
 
   R(0) = 0; // reset $zero to 0
 
   return 0;
+}
+
+// #define mtvec_id    0x305
+// #define mepc_id     0x341
+// #define mstatus_id  0x300
+// #define mcause_id   0x342
+// 
+// #define cpu_mtvec_id    0
+// #define cpu_mepc_id     1
+// #define cpu_mstatus_id  2
+// #define cpu_mcause_id   3
+
+void mret(Decode *s) {
+  s->dnpc = cpu.csr[cpu_mepc_id];
+  cpu.csr[cpu_mstatus_id] = 0xa00000080;
+}
+
+void csrrw(word_t csr_id, int rd, word_t src1) {
+  if (csr_id == mtvec_id) {
+    R(rd) = cpu.csr[cpu_mtvec_id];
+    cpu.csr[cpu_mtvec_id] = src1;
+  } else if (csr_id == mepc_id) {
+    R(rd) = cpu.csr[cpu_mepc_id];
+    cpu.csr[cpu_mepc_id] = src1;
+  } else if (csr_id == mstatus_id) {
+    R(rd) = cpu.csr[cpu_mstatus_id];
+    cpu.csr[cpu_mstatus_id] = src1;
+  } else if (csr_id == mcause_id) {
+    R(rd) = cpu.csr[cpu_mcause_id];
+    cpu.csr[cpu_mcause_id] = src1;
+  } else {
+    panic("here!!");
+  }
+}
+
+void ecall(Decode *s) {
+  cpu.csr[cpu_mstatus_id] = 0xa00001800;
+  cpu.csr[cpu_mepc_id]    = cpu.pc; // see ref
+  cpu.csr[cpu_mcause_id]  = 0xb; // environment call from M-mode
+  s->dnpc = cpu.csr[cpu_mtvec_id];
+}
+
+void csrrs(word_t csr_id, int rd, word_t src1) {
+  if (csr_id == mtvec_id) {
+    R(rd) = cpu.csr[cpu_mtvec_id];
+    /* no set */
+  } else if (csr_id == mepc_id) {
+    R(rd) = cpu.csr[cpu_mepc_id];
+  } else if (csr_id == mstatus_id) {
+    R(rd) = cpu.csr[cpu_mstatus_id];
+  } else if (csr_id == mcause_id ) {
+    R(rd) = cpu.csr[cpu_mcause_id];
+  } else {
+    panic("here!!");
+  }
 }
 
 int isa_exec_once(Decode *s) {

@@ -23,12 +23,34 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
-void isa_reg_display() {
+const char *csrs[] = {
+  "mtvec",
+  "mepc",
+  "mstatus",
+  "mcause"
+};
+
+void isa_reg_display(CPU_state *ref) {
+  printf("nemu(dut)     spike(ref)\n");
   for (int i = 0; i < 32; i++) {
-    if(i%8 == 0) printf("\n");
-    printf("%s: %lx\t\t", regs[i], gpr(i));
+    if(ref->gpr[i] != gpr(i)) {
+      printf("%-3s: %016lx  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
+      printf("%-3s: %016lx  ", regs[i], ref->gpr[i]);
+      printf("\n");
+    }
   }
-  printf("\n");
+  for (int i = 0; i < csr_cnt; i++) {
+    if(ref->csr[i] != cpu.csr[i]) {
+      printf("%-7s: %016lx  ", csrs[i], cpu.csr[i]);  // Use width and alignment specifiers in the format string
+      printf("%-7s: %016lx  ", csrs[i], ref->csr[i]);
+      printf("\n");
+    }
+  }
+  if (ref->pc != cpu.pc) {
+      printf("%-3s: %016lx  ", "pc", cpu.pc);  // Use width and alignment specifiers in the format string
+      printf("%-3s: %016lx  ", "pc", ref->pc);
+      printf("\n");
+  }
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
