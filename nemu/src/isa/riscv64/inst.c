@@ -66,6 +66,7 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
 void csrrw(word_t csr_id, int rd, word_t src1);
 void csrrs(word_t csr_id, int rd, word_t src1);
 void ecall(Decode *s);
+void mret();
 
 static int decode_exec(Decode *s) {
   int dest = 0;
@@ -194,6 +195,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, csrrw(imm, dest, src1));
   INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, csrrs(imm, dest, src1));
 
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , I, mret());
 /* Invalid Instructions, not risc-v inst. */
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
 
@@ -214,6 +216,10 @@ static int decode_exec(Decode *s) {
 // #define cpu_mepc_id     1
 // #define cpu_mstatus_id  2
 // #define cpu_mcause_id   3
+
+void mret() {
+  cpu.pc  = cpu.csr[cpu_mepc_id];
+}
 
 void csrrw(word_t csr_id, int rd, word_t src1) {
   if (csr_id == mtvec_id) {
