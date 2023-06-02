@@ -10,6 +10,7 @@ Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
     uint32_t ex_code = 0;
+    // uint32_t ex_code = c->m
     switch (ex_code) {
       default: ev.event = EVENT_ERROR; break;
     }
