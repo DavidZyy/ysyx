@@ -30,6 +30,7 @@ f(30) f(31)
 .align 3
 .globl __am_asm_trap
 __am_asm_trap:
+  # pass parameters on stack.
   addi sp, sp, -CONTEXT_SIZE
 
   MAP(REGS, PUSH)
