@@ -20,6 +20,7 @@ void print_context(Context *c) {
 // new added
 
 Context* __am_irq_handle(Context *c) {
+  print_context(c);
   if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
@@ -29,7 +30,6 @@ Context* __am_irq_handle(Context *c) {
     c = user_handler(ev, c);
     assert(c != NULL);
   }
-  print_context(c);
 
   return c;
 }
