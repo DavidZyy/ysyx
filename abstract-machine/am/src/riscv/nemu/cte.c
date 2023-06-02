@@ -31,7 +31,7 @@ void print_context(Context *c) {
 
 Context* __am_irq_handle(Context *c) {
   // add mepc 4
-  c->mepc += 4;
+  // c->mepc += 4;
   print_context(c);
   if (user_handler) {
     Event ev = {0};
