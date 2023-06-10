@@ -8,7 +8,7 @@ module divider #(parameter N = 1) (
 
   reg [31:0] counter;
 
-  always @(posedge clk)  begin
+  always @(posedge clk or negedge clk)  begin
     if(rst) begin
         counter <= 0;
         clk_N <= 0;
