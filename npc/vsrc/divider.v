@@ -15,7 +15,7 @@ module divider #(parameter N = 1) (
     end
     else begin
         counter <= counter + 1;
-        if (counter == N) begin
+        if (counter == N-1) begin
           clk_N   <= ~clk_N;
           counter <= 0;
         end
