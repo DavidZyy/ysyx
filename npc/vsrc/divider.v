@@ -17,8 +17,8 @@ module divider #(parameter N = 1) (
 //   end
   always @(posedge clk)  begin    // 时钟上升沿
     if(rst) begin
-        counter = 0;
-        clk_N = 0;
+        counter <= 0;
+        clk_N <= 0;
     end
     else begin
         counter = counter + 1;
