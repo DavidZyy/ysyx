@@ -21,13 +21,13 @@ module divider #(parameter N = 1) (
         clk_N <= 0;
     end
     else begin
-        counter = counter + 1;
+        counter <= counter + 1;
         if (counter == N) begin
           clk_N   <= ~clk_N;
           counter <= 0;
         end
         else begin
-          clk_N = clk_N;
+          clk_N <= clk_N;
         end   
     end
   end
