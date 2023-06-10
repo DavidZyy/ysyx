@@ -60,8 +60,8 @@ module top	(
 
 
     divider #(2) div1(clk, rst, clk100m);
-    divider #(4) div1(clk, rst, clk50m );
-    divider #(8) div1(clk, rst, clk25m );
+    divider #(4) div2(clk, rst, clk50m );
+    divider #(8) div3(clk, rst, clk25m );
 
 
 
