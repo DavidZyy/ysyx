@@ -46,7 +46,7 @@ module top	(
       end
       else begin
         clkdiv <= clkdiv+1;
-      end  
+      end
     end
     	
     // wire clk100m = clkdiv[0];
@@ -58,18 +58,15 @@ module top	(
     wire clk50m ;
     wire clk25m ;
 
-
     divider #(2) div1(clk200m, rst, clk100m);
     divider #(4) div2(clk200m, rst, clk50m );
     divider #(8) div3(clk200m, rst, clk25m );
-
-
 
     wire sig_rd_kb;
     wire [`Vec(`SegWidth)]  seg_wdata;
 
     wire [`Vec(`KbWidth)]	kb_rdata;
-    wire 		kb_ready;
+    wire kb_ready;
     wire overflow;
 
     wire [`Vec(`LedWidth)]	led_wdata;

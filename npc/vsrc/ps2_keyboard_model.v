@@ -1,5 +1,6 @@
-// `timescale 1ns / 1ps
-// `timescale 1us/1ns
+// 不能去掉，和test.v的保持一致，否则test.v的#1表示1us，即为1000ns，这里的表示
+// 1ns，timescale不一致。
+`timescale 1us/1ns
 
 module ps2_keyboard_model(
     output reg ps2_clk,

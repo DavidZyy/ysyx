@@ -1,5 +1,5 @@
 /* verilator lint_off TIMESCALEMOD */
-// `timescale 1us/1ns
+`timescale 1us/1ns
 
 module test ();
 
@@ -41,16 +41,17 @@ top u_top(
     forever #1 sysclk_n = ~sysclk_n;
   end
 
-//   wire 	ps2_clk;
-// wire 	ps2_data;
+  //   wire 	ps2_clk;
+  // wire 	ps2_data;
 
-ps2_keyboard_model #(
-	.kbd_clk_period 		( 60 		))
-u_ps2_keyboard_model(
-	//ports
-	.ps2_clk  		( PS2_clk     ),
-	.ps2_data 		( PS2_Data    )
-);
+  ps2_keyboard_model #(
+  	.kbd_clk_period 		( 60 		))
+  u_ps2_keyboard_model(
+  	//ports
+
+  	.ps2_clk  		( PS2_clk     ),
+  	.ps2_data 		( PS2_Data    )
+  );
 
 
   initial begin
