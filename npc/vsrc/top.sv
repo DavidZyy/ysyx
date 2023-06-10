@@ -59,9 +59,9 @@ module top	(
     wire clk25m ;
 
 
-    divider #(2) div1(clk, rst, clk100m);
-    divider #(4) div2(clk, rst, clk50m );
-    divider #(8) div3(clk, rst, clk25m );
+    divider #(2) div1(clk200m, rst, clk100m);
+    divider #(4) div2(clk200m, rst, clk50m );
+    divider #(8) div3(clk200m, rst, clk25m );
 
 
 
