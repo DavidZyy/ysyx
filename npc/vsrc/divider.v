@@ -1,4 +1,5 @@
 // module divider(clk, clk_N);
+/* verilator lint_off TIMESCALEMOD */
 module divider #(parameter N = 1) (
     input clk,
     input rst,
