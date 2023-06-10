@@ -1,6 +1,7 @@
 // module divider(clk, clk_N);
-module divider #(parameter N) (
+module divider #(parameter N = 1) (
     input clk,
+    input rst,
 
     output reg clk_N
 );
@@ -10,18 +11,24 @@ module divider #(parameter N) (
   reg [31:0] counter;
 
 //    parameter N = 500_000_00;
-  initial begin
-    counter = 0;
-    clk_N = 0;
-  end
+//   initial begin
+//     counter = 0;
+//     clk_N = 0;
+//   end
   always @(posedge clk)  begin    // 时钟上升沿
-    counter = counter + 1;
-    if (counter == N) begin
-      clk_N   <= ~clk_N;
-      counter <= 0;
+    if(rst) begin
+        counter = 0;
+        clk_N = 0;
     end
     else begin
-      clk_N = clk_N;
+        counter = counter + 1;
+        if (counter == N) begin
+          clk_N   <= ~clk_N;
+          counter <= 0;
+        end
+        else begin
+          clk_N = clk_N;
+        end   
     end
   end
 endmodule

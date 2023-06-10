@@ -21,7 +21,7 @@ module top	(
         output  SEGCLR,
         output  SEGDT,
         output  SEGEN
-    );
+);
 
     /* verilator lint_off UNUSEDSIGNAL */
     // wire [`Vec(`ImmWidth)] pc_WB;
@@ -40,18 +40,30 @@ module top	(
             );
 
     /* seg no display, to see rst signal */
-    always@(posedge clk200m or posedge rst)
-    	if(rst) begin
-    		clkdiv <= 0;
-    	end
-    	else begin
-        	clkdiv <= clkdiv+1;
-    	end
-    
-    wire clk100m = clkdiv[0];
-    wire clk50m  = clkdiv[1];
-    wire clk25m  = clkdiv[2];
-    wire clk12m  = clkdiv[3];
+    always@(posedge clk200m or posedge rst) begin
+      if(rst) begin
+    	clkdiv <= 0;
+      end
+      else begin
+        clkdiv <= clkdiv+1;
+      end  
+    end
+    	
+    // wire clk100m = clkdiv[0];
+    // wire clk50m  = clkdiv[1];
+    // wire clk25m  = clkdiv[2];
+    // wire clk12m  = clkdiv[3];
+
+    wire clk100m;
+    wire clk50m ;
+    wire clk25m ;
+
+
+    divider #(2) div1(clk, rst, clk100m);
+    divider #(4) div1(clk, rst, clk50m );
+    divider #(8) div1(clk, rst, clk25m );
+
+
 
     wire sig_rd_kb;
     wire [`Vec(`SegWidth)]  seg_wdata;

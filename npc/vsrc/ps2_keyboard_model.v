@@ -4,7 +4,7 @@
 module ps2_keyboard_model(
     output reg ps2_clk,
     output reg ps2_data
-    );
+);
 parameter [31:0] kbd_clk_period = 60;
 initial ps2_clk = 1'b1;
 
