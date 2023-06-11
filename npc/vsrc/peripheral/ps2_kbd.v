@@ -1,4 +1,5 @@
-/*kb_clk 的频率应该大于rdn的频率，这样才能有效有效采样到 */
+/*kb_clk 的频率应该大于rdn的频率，即cpu_clk的频率，这样才能有效有效采样，但是
+    这样有可能一个cpu_clk中读出多个fifo中的data， */
 module ps2_kbd (
     input   kb_clk,
     input   clrn,                   // clock and reset (active low)
@@ -26,6 +27,10 @@ module ps2_kbd (
     // edge of ps2_clk detected
     wire sampling = ps2_clk_sync[2] & ~ps2_clk_sync[1];
 
+    /* 因为键盘时钟频率大于cpu时钟频率，确保键盘每次取时，fifo中只有一个数据，在一个cpu周期中，
+        只要键盘clk有，就会取一次。 */
+    /* if kb_clk faster than cpu_clk, maybe in one inst cycle read more than one 
+        kb codes. if kb_clk is cpu_clk, cpu_clk get new inst at negedge. */
     // always @(posedge kb_clk) begin
     always @(negedge kb_clk) begin
         if (clrn == 1) begin // reset (shit !! clrn is 0)

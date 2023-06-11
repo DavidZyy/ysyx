@@ -74,11 +74,10 @@ module top	(
     wire [`Vec(8)]	swt_rdata;
     cpu u_cpu (
             //ports
-            // .clk        		( clkdiv[0]		    ), // 200 0000 / (2^27)
             .cpu_clk        	( clk25m			), /* for simulation on varilator */
             .clkdiv             ( clkdiv            ),
             /* 10 can run on sword */
-            // .clk        		( clkdiv[10]		),
+            // .cpu_clk        	( clkdiv[10]		),
             // .clk        		( btn_clk			),
             /* use switch as reset? */
             .rst        		( rst        		),
@@ -148,7 +147,7 @@ module top	(
     ps2_kbd u_ps2_kbd (
                 //ports
                 /* clk200m may be too quickly? */
-                // .clk      		( clkdiv[10] 	),
+                // .kb_clk      	( clk25m       ),
                 .kb_clk      	( clk200m       ),
                 .clrn     		( rst			),
                 .ps2_clk  		( PS2_clk  		),
