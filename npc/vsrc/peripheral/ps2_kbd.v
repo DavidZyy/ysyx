@@ -1,76 +1,7 @@
-/*
-    This implementation has no fifo queue, if a data is assigned and not
-    used by cpu, it will be covered by the next data. We can use an fifo 
-    queue version later.
-*/
-// module ps2_kbd(
-//     input   clk,
-//     input   clrn,                   // clock and reset (active low)
-//     input   ps2_clk,
-//     input   ps2_data, 	         	// ps2 signals from keyboard
-//     input   rdn,               		// read signal from cpu, (cpu had read the kb, and send out the signal to clear ready)
-// 
-//     output  reg [7:0] data,        // keyboard code
-//     output  reg ready         		// queue (fifo) state
-// );
-// 
-// reg [3:0] count;          							// count ps2_data bits
-// reg [9:0] buffer;         							// ps2_data bits
-// 
-// reg [2:0] ps2_clk_sync;   							// for detecting the falling-edge of a frame
-// // reg [1:0] clk_sample;
-//  
-// always @ (posedge clk)
-// begin 					  			// this is a common method to
-//     ps2_clk_sync <= {ps2_clk_sync[1:0],ps2_clk};    	// detect
-// end                                                 	// falling-edge
-// 
-// wire sampling = ps2_clk_sync[2] & ~ps2_clk_sync[1]; 	// (start bit)
-// 
-// // always @ (posedge clk) begin
-// always @ (negedge clk) begin
-//     if (clrn == 0) begin
-//         count  <= 0;
-//         ready  <= 0;
-//     end
-//     else begin
-//         if (rdn && ready)   // cpu had read the data
-//             ready <= 0;
-//         else
-//             ready <= ready ;     	// when cpu reads
-//         if (sampling) begin
-//             if (count == 4'd10)// for one frame
-//             begin
-//                 if ((buffer[0] == 0) &&          	// start bit
-//                     (ps2_data)       &&          	// stop bit 
-//                     ({^buffer[9:1]}))
-//                 begin        						// odd prity
-//                     data<=buffer[8:1];
-//                     ready<=1;
-//                 end
-//                 count <= 0;                     	// for next
-//             end
-//             else
-//             begin                       	    	// within one frame
-//                 buffer[count] <= ps2_data;       	// store ps2_data
-//                 count <= count + 3'b1;           	// count ps2_data bits
-//             end
-//         end
-//     end
-// end
-// 
-// endmodule
-
-// module ps2_keyboard(clk,clrn,ps2_clk,ps2_data,data,
-//                     ready,rdn,overflow);
-//     input clk,clrn,ps2_clk,ps2_data;
-//     input rdn;
-//     output [7:0] data;
-//     output reg ready;
-//     output reg overflow;     // fifo overflow
-
+/*kb_clk 的频率应该大于rdn的频率，即cpu_clk的频率，这样才能有效有效采样，但是
+    这样有可能一个cpu_clk中读出多个fifo中的data， */
 module ps2_kbd (
-    input   clk,
+    input   kb_clk,
     input   clrn,                   // clock and reset (active low)
     input   ps2_clk,
     input   ps2_data, 	         	// ps2 signals from keyboard
@@ -89,14 +20,19 @@ module ps2_kbd (
     // detect falling edge of ps2_clk
     reg [2:0] ps2_clk_sync;
 
-    always @(posedge clk) begin
+    always @(posedge kb_clk) begin
         ps2_clk_sync <=  {ps2_clk_sync[1:0],ps2_clk};
     end
 
+    // edge of ps2_clk detected
     wire sampling = ps2_clk_sync[2] & ~ps2_clk_sync[1];
 
-    // always @(posedge clk) begin
-    always @(negedge clk) begin
+    /* 因为键盘时钟频率大于cpu时钟频率，确保键盘每次取时，fifo中只有一个数据，在一个cpu周期中，
+        只要键盘clk有，就会取一次。 */
+    /* if kb_clk faster than cpu_clk, maybe in one inst cycle read more than one 
+        kb codes. if kb_clk is cpu_clk, cpu_clk get new inst at negedge. */
+    // always @(posedge kb_clk) begin
+    always @(negedge kb_clk) begin
         if (clrn == 1) begin // reset (shit !! clrn is 0)
             count <= 0; w_ptr <= 0; r_ptr <= 0; overflow <= 0; ready<= 0;
         end

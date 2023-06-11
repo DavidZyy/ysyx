@@ -44,6 +44,9 @@
     "future": "c",
     "type_traits": "c",
     "*.inc": "c",
-    "cstdio": "c"
+    "cstdio": "c",
+    "proc.h": "c",
+    "elf.h": "c",
+    "memory.h": "c"
   }
 }

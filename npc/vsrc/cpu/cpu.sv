@@ -21,7 +21,7 @@ import "DPI-C" function void exit_code();
 
 /* assemble all cpu moudules into top moudule */
 module cpu (
-  input clk,
+  input cpu_clk,
   input [`Vec(`ClkDivWidth)]  clkdiv,
   input rst,
   input [`Vec(`KbWidth)] kb_rdata,
@@ -71,7 +71,7 @@ assign inst_IF = flush ? `NOP : inst;
 
 /* registers between if and id stage */
 IF_ID u_IF_ID (
-  .clk      ( clk),
+  .clk      ( cpu_clk),
   .rst      ( rst),
   .pc_IF    ( pc_IF),
   .inst_IF  ( inst_IF),
@@ -122,7 +122,7 @@ RegisterFile
   .DATA_WIDTH (`RegWidth)
 )
 u_RegisterFile(
-  .clk        ( clk     ),
+  .clk        ( cpu_clk     ),
   .rst        ( rst     ),
   .reg_wdata  ( reg_wdata   ),
   .rd         ( rd_WB      ),
@@ -197,7 +197,7 @@ wire rdata_2_forward_EX_MEM;
 
 ID_EX u_ID_EX(
 	//ports
-	.clk        		( clk        		),
+	.clk        		( cpu_clk        		),
 	.rst        		( rst | flush_EX),
 	.alu_op_ID  		( alu_op_ID  		),
 	.wdt_op_ID  		( wdt_op_ID  		),
@@ -271,7 +271,7 @@ wire [`Vec(`ImmWidth)]	  rdata_2_EX_hazard = (rdata_2_forward_EX_MEM && sig_op_M
 
 EX_MEM u_EX_MEM(
 	//ports
-	.clk            		( clk            		),
+	.clk            		( cpu_clk            		),
 	.rst            		( rst            		),
 	.flush_EX       		( flush_EX       		),
 	.rd_EX          		( rd_EX          		),
@@ -323,7 +323,7 @@ wire [`Vec(`RegWidth)]  mem_rdata;
 
 mmio u_mmio(
 	//ports
-	.clk       		( clk       		),
+	.clk       		( cpu_clk       ),
 	.mem_raddr 		( mem_raddr 		),
 	.mem_waddr 		( mem_waddr 		),
 	.mem_wdata 		( mem_wdata 		),
@@ -362,7 +362,7 @@ wire [`Vec(`InstWidth)]	inst_WB;
 
 MEM_WB u_MEM_WB(
 	//ports
-	.clk              		( clk              		),
+	.clk              		( cpu_clk              		),
 	.rst              		( rst              		),
 	.flush_MEM        		( flush_MEM        		),
 	.rd_MEM           		( rd_MEM           		),
@@ -390,7 +390,7 @@ MEM_WB u_MEM_WB(
   new value of it is delayed. But in the posedge, 
   in the middle of the cycle, the inst_not_ipl signal
   is been updated. */
-always @(posedge clk) begin
+always @(posedge cpu_clk) begin
   if (sig_op_WB[`SIG_OP_inst_not_ipl]) begin
     // not_ipl_exception();
     $display("instructions not implemented!");
@@ -402,7 +402,7 @@ always @(posedge clk) begin
 end
 
 // always @(posedge clk) begin
-always @(negedge clk) begin
+always @(negedge cpu_clk) begin
   if (sig_op_WB[`SIG_OP_is_ebreak]) begin
     /* program end signal */
     // seg_wdata <= 32'haaaaaaaa;
@@ -441,7 +441,7 @@ assign next_pc = (sig_op_WB[`SIG_OP_is_jal] | sig_op_WB[`SIG_OP_is_jalr]) ?
   .RESET_VAL (`PcRst)
  )
  Pc_Reg(
-  .clk  (clk  ),
+  .clk  (cpu_clk  ),
   .rst  (rst  ),
   .din  (next_pc),
   .wen  (1'b1),

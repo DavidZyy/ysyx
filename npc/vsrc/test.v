@@ -41,16 +41,17 @@ top u_top(
     forever #1 sysclk_n = ~sysclk_n;
   end
 
-//   wire 	ps2_clk;
-// wire 	ps2_data;
+  //   wire 	ps2_clk;
+  // wire 	ps2_data;
 
-ps2_keyboard_model #(
-	.kbd_clk_period 		( 60 		))
-u_ps2_keyboard_model(
-	//ports
-	.ps2_clk  		( PS2_clk     ),
-	.ps2_data 		( PS2_Data    )
-);
+  ps2_keyboard_model #(
+  	.kbd_clk_period 		( 60 		))
+  u_ps2_keyboard_model(
+  	//ports
+
+  	.ps2_clk  		( PS2_clk     ),
+  	.ps2_data 		( PS2_Data    )
+  );
 
 
   initial begin
@@ -71,6 +72,7 @@ u_ps2_keyboard_model(
     u_ps2_keyboard_model.kbd_sendcode(8'h1C);
     #1000
     u_ps2_keyboard_model.kbd_sendcode(8'hF0); // break code
+    u_ps2_keyboard_model.kbd_sendcode(8'h1C); // release 'A'
     #1000
     u_ps2_keyboard_model.kbd_sendcode(8'h1C); // release 'A'
     #100000000;

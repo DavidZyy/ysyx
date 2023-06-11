@@ -14,14 +14,14 @@ static uint32_t read_key(){
 
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
   uint32_t key = read_key();
-
-  /* key up */
   if(key == 0xf0){
+    /* key up */
     kbd->keydown = 0;
-    kbd->keycode = read_key();
+    while((key = read_key()) == 0); // cpu快于键盘，可能第二个数据没有准备好，poll一下
+    kbd->keycode = key; 
   } else {
+    /* key down */
     kbd->keydown = 1;
     kbd->keycode = key;
   }
-
 }

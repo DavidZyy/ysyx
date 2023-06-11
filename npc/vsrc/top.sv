@@ -13,20 +13,20 @@ module top	(
         input   PS2_Data,
         input   [`Vec(8)]   swt,
 
-        output  [`Vec(`ImmWidth)] pc_WB,
-        output  [`Vec(`ImmWidth)] pc_IF,
-        output  flush_WB,
+        // output  [`Vec(`ImmWidth)] pc_WB,
+        // output  [`Vec(`ImmWidth)] pc_IF,
+        // output  flush_WB,
         output	[7:0] leds,
         output  SEGCLK,
         output  SEGCLR,
         output  SEGDT,
         output  SEGEN
-    );
+);
 
     /* verilator lint_off UNUSEDSIGNAL */
-    // wire [`Vec(`ImmWidth)] pc_WB;
-    // wire [`Vec(`ImmWidth)] pc_IF;
-    // wire flush_WB;
+    wire [`Vec(`ImmWidth)] pc_WB;
+    wire [`Vec(`ImmWidth)] pc_IF;
+    wire flush_WB;
     wire [`Vec(`InstWidth)]	inst;
 
     wire    clk200m;
@@ -40,24 +40,33 @@ module top	(
             );
 
     /* seg no display, to see rst signal */
-    always@(posedge clk200m or posedge rst)
-    	if(rst) begin
-    		clkdiv <= 0;
-    	end
-    	else begin
-        	clkdiv <= clkdiv+1;
-    	end
-    
-    wire clk100m = clkdiv[0];
-    wire clk50m  = clkdiv[1];
-    wire clk25m  = clkdiv[2];
-    wire clk12m  = clkdiv[3];
+    always@(posedge clk200m or posedge rst) begin
+      if(rst) begin
+    	clkdiv <= 0;
+      end
+      else begin
+        clkdiv <= clkdiv+1;
+      end
+    end
+    	
+    // wire clk100m = clkdiv[0];
+    // wire clk50m  = clkdiv[1];
+    // wire clk25m  = clkdiv[2];
+    // wire clk12m  = clkdiv[3];
+
+    wire clk100m;
+    wire clk50m ;
+    wire clk25m ;
+
+    divider #(2) div1(clk200m, rst, clk100m);
+    divider #(4) div2(clk200m, rst, clk50m );
+    divider #(8) div3(clk200m, rst, clk25m );
 
     wire sig_rd_kb;
     wire [`Vec(`SegWidth)]  seg_wdata;
 
     wire [`Vec(`KbWidth)]	kb_rdata;
-    wire 		kb_ready;
+    wire kb_ready;
     wire overflow;
 
     wire [`Vec(`LedWidth)]	led_wdata;
@@ -65,11 +74,10 @@ module top	(
     wire [`Vec(8)]	swt_rdata;
     cpu u_cpu (
             //ports
-            // .clk        		( clkdiv[0]		    ), // 200 0000 / (2^27)
-            .clk        		( clk200m			), /* for simulation on varilator */
+            .cpu_clk        	( clk25m			), /* for simulation on varilator */
             .clkdiv             ( clkdiv            ),
             /* 10 can run on sword */
-            // .clk        		( clkdiv[10]		),
+            // .cpu_clk        	( clkdiv[10]		),
             // .clk        		( btn_clk			),
             /* use switch as reset? */
             .rst        		( rst        		),
@@ -139,8 +147,8 @@ module top	(
     ps2_kbd u_ps2_kbd (
                 //ports
                 /* clk200m may be too quickly? */
-                // .clk      		( clkdiv[10] 	),
-                .clk      		( clk100m       ),
+                // .kb_clk      	( clk25m       ),
+                .kb_clk      	( clk200m       ),
                 .clrn     		( rst			),
                 .ps2_clk  		( PS2_clk  		),
                 .ps2_data 		( PS2_Data 		),
