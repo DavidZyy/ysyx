@@ -75,7 +75,7 @@ module top	(
     cpu u_cpu (
             //ports
             // .clk        		( clkdiv[0]		    ), // 200 0000 / (2^27)
-            .clk        		( clk200m			), /* for simulation on varilator */
+            .cpu_clk        	( clk25m			), /* for simulation on varilator */
             .clkdiv             ( clkdiv            ),
             /* 10 can run on sword */
             // .clk        		( clkdiv[10]		),
@@ -149,7 +149,7 @@ module top	(
                 //ports
                 /* clk200m may be too quickly? */
                 // .clk      		( clkdiv[10] 	),
-                .clk      		( clk100m       ),
+                .kb_clk      	( clk200m       ),
                 .clrn     		( rst			),
                 .ps2_clk  		( PS2_clk  		),
                 .ps2_data 		( PS2_Data 		),

@@ -72,6 +72,7 @@ top u_top(
     u_ps2_keyboard_model.kbd_sendcode(8'h1C);
     #1000
     u_ps2_keyboard_model.kbd_sendcode(8'hF0); // break code
+    u_ps2_keyboard_model.kbd_sendcode(8'h1C); // release 'A'
     #1000
     u_ps2_keyboard_model.kbd_sendcode(8'h1C); // release 'A'
     #100000000;

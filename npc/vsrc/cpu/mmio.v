@@ -42,9 +42,10 @@ module mmio (
 
 /************************* read data *********************/
 
-    // always @(posedge clk) begin
+    /* 键盘和cpu， mem_rdata维持一个周期 */
+    always @(posedge clk) begin
     /* or ram use  always @(*) and here use always @(posedge clk) */
-    always @(*) begin
+    // always @(*) begin
         /* in test c , if(read_data != 0) write_seg */
         mem_rdata   =  64'h0;
         sig_rd_kb   =  0;
@@ -59,7 +60,8 @@ module mmio (
                     mem_rdata =    `ZEXT(kb_rdata, `KbWidth);
                 end
                 else
-                    mem_rdata  =   mem_rdata;
+                    // mem_rdata  =   mem_rdata;
+                    mem_rdata  =   0; //键盘数据未准备好，读出0。
             end
             else if (`InMem(mem_raddr, `SWT_ADDR, `PERI_LEN)) begin
                 mem_rdata =    `ZEXT(swt_rdata, 8);
