@@ -40,14 +40,13 @@ module mmio (
     );
 
 
-    vram u_vram(
+    vram u_vram (
     	//ports
     	.clk       		( clk       		),
     	.mem_waddr 		( mem_waddr 		),
     	.mem_wdata 		( mem_wdata 		),
     	.mem_wen   		( mem_wen   		)
     );
-
 
 /************************* read data *********************/
 
