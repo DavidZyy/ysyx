@@ -20,7 +20,12 @@ module top	(
         output  SEGCLK,
         output  SEGCLR,
         output  SEGDT,
-        output  SEGEN
+        output  SEGEN,
+        output  [3:0]   vga_r,
+        output  [3:0]   vga_g,
+        output  [3:0]   vga_b,
+        output  vga_hs,
+        output  vga_vs
 );
 
     /* verilator lint_off UNUSEDSIGNAL */
@@ -166,5 +171,31 @@ module top	(
                 .ready    		( kb_ready    	),
                 .overflow       ( overflow      )
             );
+
+    wire [8:0]	row;
+    wire [9:0]	col;
+    wire rdn;
+
+    // wire [3:0]	R;
+    // wire [3:0]	G;
+    // wire [3:0]	B;
+    // wire HS;
+    // wire VS;
+
+    VGA u_VGA(
+    	//ports
+    	.clk 		( clk25m    ),
+    	.rst 		( rst 		),
+    	.din 		( 12'b0     ),
+
+    	.row 		( row 		),
+    	.col 		( col 		),
+    	.rdn 		( rdn 		),
+    	.R   		( vga_r   	),
+    	.G   		( vga_g   	),
+    	.B   		( vga_b   	),
+    	.HS  		( vga_hs    ),
+    	.VS  		( vga_vs    )
+    );
 
 endmodule //top
