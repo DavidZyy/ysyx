@@ -74,7 +74,7 @@ module top	(
     wire [`Vec(8)]	swt_rdata;
     cpu u_cpu (
             //ports
-            .cpu_clk        	( clk25m			), /* for simulation on varilator */
+            .cpu_clk        	( clk200m			), /* for simulation on varilator */
             .clkdiv             ( clkdiv            ),
             /* 10 can run on sword */
             // .cpu_clk        	( clkdiv[10]		),
