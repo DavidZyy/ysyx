@@ -16,11 +16,11 @@ module top	(
         output  [`Vec(`ImmWidth)] pc_WB,
         output  [`Vec(`ImmWidth)] pc_IF,
         output  flush_WB,
-        // output	[7:0] leds,
-        // output  SEGCLK,
-        // output  SEGCLR,
-        // output  SEGDT,
-        // output  SEGEN
+        output	[7:0] leds,
+        output  SEGCLK,
+        output  SEGCLR,
+        output  SEGDT,
+        output  SEGEN
 );
 
     /* verilator lint_off UNUSEDSIGNAL */
