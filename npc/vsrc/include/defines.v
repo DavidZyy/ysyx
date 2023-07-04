@@ -196,7 +196,6 @@
   `define ROM_LEN               64'h01000000  //  the size of rom
   `define RAM_LEN               64'h01000000  //  the size of ram
   `define PERI_LEN              64'h00000100  //  the size of peripheral
-  `define VRAM_LEN              64'h01000000  //  the size of ram
 
   `define ADDR_ROM              64'h80000000
   `define ADDR_RAM              `ADDR_ROM  + `ROM_LEN
@@ -234,3 +233,4 @@
 
   `define InMem(addr, ADDR, LEN)  addr >= ADDR && addr < ADDR + LEN
   
+

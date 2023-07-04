@@ -20,12 +20,7 @@ module top	(
         output  SEGCLK,
         output  SEGCLR,
         output  SEGDT,
-        output  SEGEN,
-        output  [3:0]   vga_r,
-        output  [3:0]   vga_g,
-        output  [3:0]   vga_b,
-        output  vga_hs,
-        output  vga_vs
+        output  SEGEN
 );
 
     /* verilator lint_off UNUSEDSIGNAL */
@@ -134,22 +129,14 @@ module top	(
 //     	.led_out   		( leds           )
 //     );
 
-    wire [`Vec(`ImmWidth)] led_ext = `ZEXT(led_wdata, 8);
+    wire [`Vec(`ImmWidth)]  led_ext = `ZEXT(led_wdata, 8);
 
     // seg_wdata shift left to display the signal
-    // reg [`Vec(`SegWidth)] seg_wdata2;
-    // always @(*) begin
-    //     if(rst)
-    //         seg_wdata2 = 0;
-    //     else
-    //         seg_wdata2 = {seg_wdata2[23:0], seg_wdata[7:0]};
-    // end
 
     seg u_seg (
             //ports
             .clkdiv   		( clkdiv   		),
-            // .num    		( seg_wdata2	),
-            .num    		( seg_wdata	    ),
+            .num    		( seg_wdata		),
 
             .s_clk  		( SEGCLK		),
             .s_clrn 		( SEGCLR		),
@@ -171,31 +158,5 @@ module top	(
                 .ready    		( kb_ready    	),
                 .overflow       ( overflow      )
             );
-
-    wire [8:0]	row;
-    wire [9:0]	col;
-    wire rdn;
-
-    // wire [3:0]	R;
-    // wire [3:0]	G;
-    // wire [3:0]	B;
-    // wire HS;
-    // wire VS;
-
-    VGA u_VGA(
-    	//ports
-    	.clk 		( clk25m    ),
-    	.rst 		( rst 		),
-    	.din 		( 12'b0     ),
-
-    	.row 		( row 		),
-    	.col 		( col 		),
-    	.rdn 		( rdn 		),
-    	.R   		( vga_r   	),
-    	.G   		( vga_g   	),
-    	.B   		( vga_b   	),
-    	.HS  		( vga_hs    ),
-    	.VS  		( vga_vs    )
-    );
 
 endmodule //top

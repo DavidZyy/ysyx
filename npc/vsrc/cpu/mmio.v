@@ -40,14 +40,6 @@ module mmio (
     );
 
 
-    vram u_vram (
-    	//ports
-    	.clk       		( clk       		),
-    	.mem_waddr 		( mem_waddr 		),
-    	.mem_wdata 		( mem_wdata 		),
-    	.mem_wen   		( mem_wen   		)
-    );
-
 /************************* read data *********************/
 
     /* 键盘和cpu， mem_rdata维持一个周期 */
@@ -110,10 +102,6 @@ module mmio (
             else if (`InMem(mem_waddr, `SERIAL_PORT, `SERIAL_LEN)) begin
                 // $display("%x", mem_wdata);
                 // print_serial(mem_wdata);
-                ;
-            end
-            else if (`InMem(mem_waddr, `FB_ADDR, `VRAM_LEN)) begin
-                // ram_wdata <= mem_wdata;
                 ;
             end
             else begin
