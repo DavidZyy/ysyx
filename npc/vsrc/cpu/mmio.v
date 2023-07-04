@@ -43,9 +43,9 @@ module mmio (
 /************************* read data *********************/
 
     /* 键盘和cpu， mem_rdata维持一个周期 */
-    always @(posedge clk) begin
+    // always @(posedge clk) begin
     /* or ram use  always @(*) and here use always @(posedge clk) */
-    // always @(*) begin
+    always @(*) begin
         /* in test c , if(read_data != 0) write_seg */
         mem_rdata   =  64'h0;
         sig_rd_kb   =  0;
