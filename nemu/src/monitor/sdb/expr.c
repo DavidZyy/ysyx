@@ -262,13 +262,17 @@ word_t eval(int p, int q) {
       val2 = eval(op+1, q);
     }
 
-    switch (tokens[op].type) {
-      case '+': return val1 + val2;
-      case '-': return val1 - val2;
-      case '*': return val1 * val2;
-      case '/': return val1 / val2;
-      case TK_EQ: return val1 == val2;
-      default : assert(0);
+    if(op == -1) {
+      return val2;
+    } else {
+      switch (tokens[op].type) {
+        case '+': return val1 + val2;
+        case '-': return val1 - val2;
+        case '*': return val1 * val2;
+        case '/': return val1 / val2;
+        case TK_EQ: return val1 == val2;
+        default : assert(0);
+      }
     }
   }
 }
