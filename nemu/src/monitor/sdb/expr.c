@@ -178,7 +178,8 @@ int getop(int p, int q) {
         op = i;
     }
   }
-  assert(op >= 0);
+  // assert(op >= 0);
+  // if not find, return -1
   return op;
 }
 
