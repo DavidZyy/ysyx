@@ -236,9 +236,10 @@ word_t eval(int p, int q) {
     if(tokens[p].type == TK_DECIMAL) {
       return atoi(tokens[p].str);
     } else if(tokens[p].type == TK_HEX) {
-      printf("hex: %s\n", tokens[p].str);
-      assert(0);
-      return 0;
+      char *endptr;
+      long decimal = strtol(tokens[p].str, &endptr, 16);
+      if(*endptr  !=  '\0') assert(0);
+      return decimal;
     } else if(tokens[p].type == TK_REG) {
       bool success;
       return isa_reg_str2val(tokens[p].str, &success);
