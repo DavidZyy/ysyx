@@ -26,7 +26,7 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-  TK_DECIMAL, TK_HEX, TK_REG
+  TK_DECIMAL, TK_HEX, TK_REG, TK_MINUS, TK_DEREF
 };
 
 static struct rule {
@@ -273,8 +273,18 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  // TODO();
+  // to support minus calculation
+  int i;
 
-  // return 0;
+  for (i = 0; i < nr_token; i++) {
+    // if(tokens[i].type == "-" && (i == 0 || is_operator(tokens[i-1])))
+      // tokens[i].type = TK_MINUS;
+  }
+
+  for (i = 0; i < nr_token; i ++) {
+    if(tokens[i].type == '*' && (i == 0 || is_operator(tokens[i-1])))
+      tokens[i].type = TK_DEREF;
+  }
+
   return eval(0, nr_token-1);
 }
