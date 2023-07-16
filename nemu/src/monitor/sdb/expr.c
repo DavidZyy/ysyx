@@ -236,6 +236,7 @@ word_t eval(int p, int q) {
     if(tokens[p].type == TK_DECIMAL) {
       return atoi(tokens[p].str);
     } else if(tokens[p].type == TK_HEX) {
+      printf("hex: %s\n", tokens[p].str);
       assert(0);
       return 0;
     } else if(tokens[p].type == TK_REG) {
