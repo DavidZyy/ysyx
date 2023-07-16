@@ -93,6 +93,7 @@ static int cmd_info(char *args) {
 
 // x/FMT ADDRESS, FMT are o, x, d
 static int cmd_x(char *args) {
+  assert(args);
   return 0;
 }
 
