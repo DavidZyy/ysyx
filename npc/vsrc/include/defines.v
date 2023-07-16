@@ -160,7 +160,7 @@
 
   `define Wdt8    `WdtTypeCnt'h1
   `define Wdt16   `WdtTypeCnt'h2
-  `define Wdt32   `WdtTypeCnt'h4    
+  `define Wdt32   `WdtTypeCnt'h4
   `define Wdt64   `WdtTypeCnt'h8
 
   /* signals, for the elegant of codes, I write it in this way */
