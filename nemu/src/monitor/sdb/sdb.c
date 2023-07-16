@@ -43,7 +43,7 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  if(cmdl_id < initial_cmd) {
+  if (cmdl_id < initial_cmd) {
     size_t length = strlen(cmd_line[cmdl_id]);
     char *new = malloc(length+1);
     memcpy(new, cmd_line[cmdl_id], length+1);
