@@ -26,7 +26,7 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-  TK_DECIMAL, TK_HEX, TK_REG
+  TK_DECIMAL, TK_HEX, TK_REG, TK_MINUS, TK_DEREF
 };
 
 static struct rule {
@@ -178,7 +178,8 @@ int getop(int p, int q) {
         op = i;
     }
   }
-  assert(op >= 0);
+  // assert(op >= 0);
+  // if not find, return -1
   return op;
 }
 
@@ -230,7 +231,8 @@ bool check_parentheses(int p, int q) {
 
 word_t eval(int p, int q) {
   if(p > q) {
-    assert(0);
+    // assert(0);
+    return 0;
   } else if (p == q) {
     // operands
     if(tokens[p].type == TK_DECIMAL) {
@@ -253,15 +255,24 @@ word_t eval(int p, int q) {
     // operators
     int op = getop(p, q);
     int val1 = eval(p, op-1);
-    int val2 = eval(op+1, q);
+    int val2;
+    if(tokens[op+1].type == TK_MINUS) {
+      val2 = -eval(op+2, q);
+    } else {
+      val2 = eval(op+1, q);
+    }
 
-    switch (tokens[op].type) {
-      case '+': return val1 + val2;
-      case '-': return val1 - val2;
-      case '*': return val1 * val2;
-      case '/': return val1 / val2;
-      case TK_EQ: return val1 == val2;
-      default : assert(0);
+    if(op == -1) {
+      return val2;
+    } else {
+      switch (tokens[op].type) {
+        case '+': return val1 + val2;
+        case '-': return val1 - val2;
+        case '*': return val1 * val2;
+        case '/': return val1 / val2;
+        case TK_EQ: return val1 == val2;
+        default : assert(0);
+      }
     }
   }
 }
@@ -273,8 +284,18 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  // TODO();
+  // to support minus calculation
+  int i;
 
-  // return 0;
+  for (i = 0; i < nr_token; i++) {
+    if(tokens[i].type == '-' && (i == 0 || is_operator(tokens[i-1])))
+      tokens[i].type = TK_MINUS;
+  }
+
+  for (i = 0; i < nr_token; i ++) {
+    if(tokens[i].type == '*' && (i == 0 || is_operator(tokens[i-1])))
+      tokens[i].type = TK_DEREF;
+  }
+
   return eval(0, nr_token-1);
 }
