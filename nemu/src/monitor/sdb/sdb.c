@@ -26,7 +26,7 @@ void init_wp_pool();
 
 char *cmd_line[] = {
   "w $sp",
-  "p 0x123+3 + 4/2 + $sp",
+  "p 0xff+3 + 4/2 + $sp",
   "p 1",
   // "p 1==(2-1)"
 };
@@ -43,7 +43,7 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  if(cmdl_id < initial_cmd) {
+  if (cmdl_id < initial_cmd) {
     size_t length = strlen(cmd_line[cmdl_id]);
     char *new = malloc(length+1);
     memcpy(new, cmd_line[cmdl_id], length+1);
@@ -91,7 +91,21 @@ static int cmd_info(char *args) {
   return 0;
 }
 
+word_t vaddr_read(vaddr_t addr, int len);
+// x/FMT ADDRESS, FMT are o, x, d
 static int cmd_x(char *args) {
+  assert(args);
+  char *N = strtok(args, " ");
+  char *EXPR = N + strlen(N) + 1;
+  // printf("arg: %s\n", N);
+  // printf("arg: %s\n", EXPR);
+  int n = atoi(N);
+  bool success;
+  uint64_t  addr = expr(EXPR, &success);
+  for(int i = 0; i < n; i++) {
+    printf("%p: %08lx\n", (void *)addr, vaddr_read(addr, 4));
+    addr += 4;
+  }
   return 0;
 }
 

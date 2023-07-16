@@ -47,6 +47,7 @@
     "cstdio": "c",
     "proc.h": "c",
     "elf.h": "c",
-    "memory.h": "c"
+    "memory.h": "c",
+    "cstdlib": "c"
   }
 }
