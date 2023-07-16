@@ -29,7 +29,7 @@ override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += $(ARGS_DIFF)
 
 # add for batch mode
-override ARGS += -b
+# override ARGS += -b
 
 # $(error $(ARGS))
 # Command to execute NEMU
