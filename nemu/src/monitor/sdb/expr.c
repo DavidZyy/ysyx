@@ -232,9 +232,11 @@ word_t eval(int p, int q) {
   if(p > q) {
     assert(0);
   } else if (p == q) {
+    // operands
     if(tokens[p].type == TK_DECIMAL) {
       return atoi(tokens[p].str);
     } else if(tokens[p].type == TK_HEX) {
+      assert(0);
       return 0;
     } else if(tokens[p].type == TK_REG) {
       bool success;
@@ -243,8 +245,10 @@ word_t eval(int p, int q) {
       assert(0);
     }
   } else if (check_parentheses(p, q)) {
+    // parentheses
     return eval(p+1, q-1);
   } else {
+    // operators
     int op = getop(p, q);
     int val1 = eval(p, op-1);
     int val2 = eval(op+1, q);

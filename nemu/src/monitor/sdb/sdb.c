@@ -91,6 +91,7 @@ static int cmd_info(char *args) {
   return 0;
 }
 
+// x/FMT ADDRESS, FMT are o, x, d
 static int cmd_x(char *args) {
   return 0;
 }
