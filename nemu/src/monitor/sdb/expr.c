@@ -232,7 +232,7 @@ bool check_parentheses(int p, int q) {
 word_t eval(int p, int q) {
   if(p > q) {
     printf("p: %d, q: %d\n", p, q);
-    assert(0);
+    panic("ilegal expression!\n");
     // return 0;
   } else if (p == q) {
     // operands
