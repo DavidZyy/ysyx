@@ -26,7 +26,7 @@ void init_wp_pool();
 
 char *cmd_line[] = {
   "w $sp",
-  "p 0xf+3 + 4/2 + $sp",
+  "p 0xff+3 + 4/2 + $sp",
   "p 1",
   // "p 1==(2-1)"
 };
