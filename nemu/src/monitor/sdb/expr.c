@@ -258,7 +258,8 @@ word_t eval(int p, int q) {
     int val1, val2;
 
     if(op == -1) {
-      val1 = 0;
+      if (tokens[0].type == TK_MINUS) val1 = 0;
+      else assert(0);
     } else {
       val1 = eval(p, op-1);
     }
