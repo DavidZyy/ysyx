@@ -91,13 +91,21 @@ static int cmd_info(char *args) {
   return 0;
 }
 
+word_t vaddr_read(vaddr_t addr, int len);
 // x/FMT ADDRESS, FMT are o, x, d
 static int cmd_x(char *args) {
   assert(args);
   char *N = strtok(args, " ");
   char *EXPR = N + strlen(N) + 1;
-  printf("arg: %s\n", N);
-  printf("arg: %s\n", EXPR);
+  // printf("arg: %s\n", N);
+  // printf("arg: %s\n", EXPR);
+  int n = atoi(N);
+  bool success;
+  uint64_t  addr = expr(EXPR, &success);
+  for(int i = 0; i < n; i++) {
+    printf("%p: %lx", (void *)addr, vaddr_read(addr, 4));
+    addr += 4;
+  }
   return 0;
 }
 
