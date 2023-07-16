@@ -277,8 +277,8 @@ word_t expr(char *e, bool *success) {
   int i;
 
   for (i = 0; i < nr_token; i++) {
-    // if(tokens[i].type == "-" && (i == 0 || is_operator(tokens[i-1])))
-      // tokens[i].type = TK_MINUS;
+    if(tokens[i].type == '-' && (i == 0 || is_operator(tokens[i-1])))
+      tokens[i].type = TK_MINUS;
   }
 
   for (i = 0; i < nr_token; i ++) {
