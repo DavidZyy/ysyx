@@ -253,7 +253,12 @@ word_t eval(int p, int q) {
     // operators
     int op = getop(p, q);
     int val1 = eval(p, op-1);
-    int val2 = eval(op+1, q);
+    int val2;
+    if(tokens[op+1].type == TK_MINUS) {
+      val2 = -eval(op+2, q);
+    } else {
+      val2 = eval(op+1, q);
+    }
 
     switch (tokens[op].type) {
       case '+': return val1 + val2;
