@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 #else
   init_monitor(argc, argv);
 #endif
-  assert(0);
+  assert(1);
   /* Start engine. */
   engine_start();
 
