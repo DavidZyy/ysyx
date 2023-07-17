@@ -20,6 +20,14 @@ void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
 
+void test_gen_expr() {
+  FILE *file;
+  // char line[256];
+
+  file = fopen("/home/zhuyangyang/project/ysyx-workbench/nemu/tools/gen-expr/input", "r");
+  assert(file != NULL);
+}
+
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM

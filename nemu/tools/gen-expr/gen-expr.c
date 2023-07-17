@@ -32,10 +32,12 @@ static char *code_format =
 "}";
 
 static void gen_rand_expr() {
-  buf[0] = '\0';
+  // buf[0] = '\0';
+  sprintf(buf, "%s", "(1 + 2) * (3-1)");
 }
 
 int main(int argc, char *argv[]) {
+  int a = 0;
   int seed = time(0);
   srand(seed);
   int loop = 1;
@@ -60,10 +62,11 @@ int main(int argc, char *argv[]) {
     assert(fp != NULL);
 
     int result;
-    fscanf(fp, "%d", &result);
+    a = fscanf(fp, "%d", &result);
+
     pclose(fp);
 
     printf("%u %s\n", result, buf);
   }
-  return 0;
+  return a;
 }
