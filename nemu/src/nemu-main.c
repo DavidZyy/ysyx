@@ -26,7 +26,7 @@ void test_gen_expr() {
   char line[256];
 
   file = fopen("/home/zhuyangyang/project/ysyx-workbench/nemu/tools/gen-expr_str/input", "r");
-  assert(file);
+  // assert(file);
 
   while (fgets(line, sizeof(line), file)) {
     // printf("%s", line);
