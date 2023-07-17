@@ -28,7 +28,7 @@ void test_gen_expr() {
   file = fopen("/home/zhuyangyang/project/ysyx-workbench/nemu/tools/gen-expr_str/input", "r");
   assert(file);
 
-  while(fgets(line, sizeof(line), file)) {
+  while (fgets(line, sizeof(line), file)) {
     // printf("%s", line);
     char *result_str = strtok(line, " ");
     int result  = atoi(result_str);
