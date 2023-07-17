@@ -27,7 +27,7 @@ void test_gen_expr() {
   file = fopen("/home/zhuyangyang/project/ysyx-workbench/nemu/tools/gen-expr/input", "r");
   assert(file);
   while(fgets(line, sizeof(line), file)) {
-    printf("%s\n", line);
+    printf("%s", line);
   }
   fclose(file);
   return;
