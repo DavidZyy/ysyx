@@ -31,7 +31,7 @@ void test_gen_expr() {
     char *result_str = strtok(line, " ");
     int result  = atoi(result_str);
     char *expr  = result_str  + strlen(result_str) + 1;
-    printf("result: %d", result);
+    printf("result: %d\n", result);
     printf("expr: %s", expr);
   }
   fclose(file);
