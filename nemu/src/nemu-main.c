@@ -23,21 +23,21 @@ int is_exit_status_bad();
 word_t expr(char *e, bool *success);
 void test_gen_expr() {
   FILE *file;
-  // char line[256];
+  char line[256];
 
   file = fopen("/home/zhuyangyang/project/ysyx-workbench/nemu/tools/gen-expr_str/input", "r");
   assert(file);
 
-  // while(fgets(line, sizeof(line), file)) {
-  //   // printf("%s", line);
-  //   char *result_str = strtok(line, " ");
-  //   int result  = atoi(result_str);
-  //   char *expr_str  = result_str  + strlen(result_str) + 1;
-  //   printf("result: %d\n", result);
-  //   printf("expr_str: %s", expr_str);
-  //   bool success;
-  //   assert(result == expr(expr_str, &success));
-  // }
+  while(fgets(line, sizeof(line), file)) {
+    // printf("%s", line);
+    char *result_str = strtok(line, " ");
+    int result  = atoi(result_str);
+    char *expr_str  = result_str  + strlen(result_str) + 1;
+    printf("result: %d\n", result);
+    printf("expr_str: %s", expr_str);
+    bool success;
+    assert(result == expr(expr_str, &success));
+  }
   fclose(file);
   return;
 }
