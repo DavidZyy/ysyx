@@ -39,7 +39,7 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},        // spaces
-  {"\\n", TK_NOTYPE},
+  {"\n", TK_NOTYPE},
   {"\\+", '+'},             // plus
   {"==", TK_EQ},            // equal
   {"-", '-'},              // minus
