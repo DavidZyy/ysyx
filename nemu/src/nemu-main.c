@@ -22,10 +22,15 @@ int is_exit_status_bad();
 
 void test_gen_expr() {
   FILE *file;
-  // char line[256];
+  char line[256];
 
   file = fopen("/home/zhuyangyang/project/ysyx-workbench/nemu/tools/gen-expr/input", "r");
-  assert(file != NULL);
+  assert(file);
+  while(fgets(line, sizeof(line), file)) {
+    printf("%s\n", line);
+  }
+  fclose(file);
+  return;
 }
 
 int main(int argc, char *argv[]) {
@@ -35,7 +40,9 @@ int main(int argc, char *argv[]) {
 #else
   init_monitor(argc, argv);
 #endif
-  assert(1);
+
+  test_gen_expr();
+
   /* Start engine. */
   engine_start();
 
