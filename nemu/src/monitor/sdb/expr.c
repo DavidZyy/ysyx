@@ -241,13 +241,13 @@ bool check_parentheses(int p, int q) {
 
 word_t vaddr_read(vaddr_t addr, int len);
 word_t eval(int p, int q) {
-  if(p > q) {
+  if (p > q) {
     printf("p: %d, q: %d\n", p, q);
     panic("ilegal expression!\n");
     // return 0;
   } else if (p == q) {
     // operands
-    if(tokens[p].type == TK_DECIMAL) {
+    if (tokens[p].type == TK_DECIMAL) {
       return atoi(tokens[p].str);
     } else if(tokens[p].type == TK_HEX) {
       char *endptr;
@@ -269,15 +269,15 @@ word_t eval(int p, int q) {
     int op = getop(p, q);
     int val1, val2;
 
-    if(op == -1) {
-      // -(expr) or *(expr), val is before the - or *, val2 is (expr)
+    // have format with: -(expr) or *(expr), val is before the - or *, val2 is (expr)
+    if (op == -1) {
       if (tokens[0].type == TK_MINUS || tokens[0].type == TK_DEREF) val1 = 0;
       else assert(0);
     } else {
       val1 = eval(p, op-1);
     }
 
-    if(tokens[op+1].type == TK_MINUS) {
+    if (tokens[op+1].type == TK_MINUS) {
       val2 = -eval(op+2, q);
     } else if (tokens[op+1].type == TK_DEREF) {
       val2 = vaddr_read(eval(op+2, q), 4);
@@ -285,7 +285,7 @@ word_t eval(int p, int q) {
       val2 = eval(op+1, q);
     }
 
-    if(op == -1) {
+    if (op == -1) {
       return val2;
     } else {
       switch (tokens[op].type) {
