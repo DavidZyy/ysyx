@@ -28,7 +28,7 @@ void test_gen_expr() {
   assert(file);
 
   while (fgets(line, sizeof(line), file)) {
-    // printf("%s", line);
+    printf("\n");
     char *result_str = strtok(line, " ");
     int result  = atoi(result_str);
     char *expr_str  = result_str  + strlen(result_str) + 1;
@@ -37,6 +37,7 @@ void test_gen_expr() {
     bool success;
     assert(result == expr(expr_str, &success));
     printf("expr: %ld\n", expr(expr_str, &success));
+    printf("\n");
   }
   fclose(file);
   return;
