@@ -36,7 +36,7 @@ char *cmd_line[] = {
 };
 
 int cmdl_id = 0;
-int initial_cmd = 3;
+int initial_cmd = 0;
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
