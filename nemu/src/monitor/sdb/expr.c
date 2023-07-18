@@ -171,12 +171,21 @@ bool is_operator(Token tok) {
 
 int getop(int p, int q) {
   int op = -1;
+  int left_parenthese_num = 0;
   for(int i = p; i <= q; i++) {
     if(tokens[i].type == '(') {
-      while(tokens[i].type != ')') i++;
-    } else if(is_operator(tokens[i])) {
+      // assert(0)
+      // panic("parentheses not matched!");
+      // while(tokens[i].type != ')') i++;
+      left_parenthese_num++;
+    } else if(tokens[i].type == ')') {
+      left_parenthese_num--;  
+    }
+    else if(is_operator(tokens[i]) && !left_parenthese_num) {
       if(op == -1 || prio(tokens[op].type) >= prio(tokens[i].type))
         op = i;
+    } else {
+      ;
     }
   }
   // assert(op >= 0);
@@ -253,6 +262,7 @@ word_t eval(int p, int q) {
   } else if (check_parentheses(p, q)) {
     // parentheses
     return eval(p+1, q-1);
+    // return eval(p+2, q-2); no necessary if have more than one parentheses??, it will be removed recursively.
   } else {
     // operators
     int op = getop(p, q);
