@@ -116,7 +116,7 @@ static int cmd_x(char *args) {
 static int cmd_p(char *args) {
   bool success;
   uint64_t result = expr(args, &success);
-  printf("%ld\n", result);
+  printf("%lx\n", result);
   return success;
 }
 
