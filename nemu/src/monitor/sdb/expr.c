@@ -190,7 +190,7 @@ int getop(int p, int q) {
 // } paren_t;
 
 // left parentheses stack
-int stack[32];
+int stack[320];
 
 /**
  * (1+2)*(3-1), the first "(" matches with the last ")".
