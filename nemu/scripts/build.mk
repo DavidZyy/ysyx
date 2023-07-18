@@ -23,7 +23,9 @@ endif
 LD := $(CXX)
 INCLUDES = $(addprefix -I, $(INC_PATH))
 # add -g
-CFLAGS  := -O2 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS) -g
+# CFLAGS  := -O2 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS) -g
+# not optimized out
+CFLAGS  := -O0 -MMD -Wall -Werror $(INCLUDES) $(CFLAGS) -g
 LDFLAGS := -O2 $(LDFLAGS)
 
 # $(error $(SRCS))
