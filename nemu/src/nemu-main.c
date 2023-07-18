@@ -36,6 +36,7 @@ void test_gen_expr() {
     printf("expr_str: %s", expr_str);
     bool success;
     assert(result == expr(expr_str, &success));
+    printf("expr: %ld", expr(expr_str, &success));
   }
   fclose(file);
   return;
