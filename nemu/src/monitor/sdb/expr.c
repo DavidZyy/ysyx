@@ -239,6 +239,7 @@ bool check_parentheses(int p, int q) {
   }
 }
 
+word_t vaddr_read(vaddr_t addr, int len);
 word_t eval(int p, int q) {
   if(p > q) {
     printf("p: %d, q: %d\n", p, q);
@@ -269,7 +270,8 @@ word_t eval(int p, int q) {
     int val1, val2;
 
     if(op == -1) {
-      if (tokens[0].type == TK_MINUS) val1 = 0;
+      // -(expr) or *(expr), val is before the - or *, val2 is (expr)
+      if (tokens[0].type == TK_MINUS || tokens[0].type == TK_DEREF) val1 = 0;
       else assert(0);
     } else {
       val1 = eval(p, op-1);
@@ -277,6 +279,8 @@ word_t eval(int p, int q) {
 
     if(tokens[op+1].type == TK_MINUS) {
       val2 = -eval(op+2, q);
+    } else if (tokens[op+1].type == TK_DEREF) {
+      val2 = vaddr_read(eval(op+2, q), 4);
     } else {
       val2 = eval(op+1, q);
     }

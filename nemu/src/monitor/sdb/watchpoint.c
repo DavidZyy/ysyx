@@ -44,17 +44,21 @@ void init_wp_pool() {
 WP* new_wp() {
   assert(free_);
   WP* new = free_;
-  free_ = free_->next;
+  free_ = free_->next;// remove new from free list
 
-  new->next = head;
+  new->next = head; // add new to used list
   head = new;
   return new;
 }
 
 void free_up(WP *wp) {
-  WP* p = head;
-  while(p->next != wp) p = p->next;
-  p->next = wp->next;
+  if(wp != head) {
+    WP* p = head;
+    while(p->next != wp) p = p->next;
+    p->next = wp->next;
+  } else {
+    head = wp->next;
+  }
 
   wp->next = free_;
   free_ = wp;
