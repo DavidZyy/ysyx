@@ -32,7 +32,7 @@ void test_gen_expr() {
     char *result_str = strtok(line, " ");
     int result  = atoi(result_str);
     char *expr_str  = result_str  + strlen(result_str) + 1;
-    assert(strlen(result_str) + strlen(expr_str) + 1 <= sizeof(line));
+    assert(strlen(result_str) + strlen(expr_str) + 1 < sizeof(line));
     printf("result: %d\n", result);
     printf("expr_str: %s", expr_str);
     bool success;
