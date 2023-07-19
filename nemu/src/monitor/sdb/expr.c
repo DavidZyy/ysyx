@@ -226,6 +226,7 @@ bool check_parentheses(int p, int q) {
 
   if(stack_id == 0)
     parentheses_correct = 1;
+  printf("%d\n", stack_id);
 
   if(parentheses_correct) {
     if(match_p_q) {
