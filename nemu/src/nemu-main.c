@@ -34,8 +34,8 @@ void test_gen_expr() {
     char *expr_str  = result_str  + strlen(result_str) + 1;
     assert(strlen(result_str) + strlen(expr_str) + 10 < sizeof(line));
     // printf("result_str: %ld, expr_str: %ld, sizeof line: %ld\n", strlen(result_str), strlen(expr_str), sizeof(line));
-    // printf("result: %d\n", result);
-    // printf("expr_str: %s", expr_str);
+    printf("result: %d\n", result);
+    printf("expr_str: %s", expr_str);
     bool success;
     assert(result == expr(expr_str, &success));
     // printf("expr: %ld\n", expr(expr_str, &success));
