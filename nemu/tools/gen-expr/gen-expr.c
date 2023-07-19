@@ -76,7 +76,7 @@ void gen_rand_op() {
 
 static void gen_rand_expr() {
   // buf[0] = '\0';
-  // sprintf(buf, "%s", "1");
+  // sprintf(buf, "%s", "1/0");
   switch (choose(3)) {
     case 0: gen_num(); break;
     case 1: gen('('); gen_rand_expr(); gen(')'); break;
@@ -111,6 +111,23 @@ int main(int argc, char *argv[]) {
     int ret = system("gcc /tmp/.code.c -o /tmp/.expr > /tmp/.compile_output 2>&1");
     if (ret != 0) continue;
 
+    // Open the file containing the compilation output
+        fp = fopen("/tmp/.compile_output", "r");
+        assert(fp != NULL);
+
+        char output_buf[1024];
+        int divide_by_zero = 0;
+        while (fgets(output_buf, sizeof(output_buf), fp) != NULL) {
+            // Display the compilation output to the terminal
+            // printf("%s", output_buf);
+            if (strstr(output_buf, "division by zero") != NULL) {
+              divide_by_zero  = 1;
+            }
+        }
+        fclose(fp);
+    if(divide_by_zero) continue;
+
+    // assert(0);
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
 
