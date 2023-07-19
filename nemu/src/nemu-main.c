@@ -33,6 +33,7 @@ void test_gen_expr() {
     int result  = atoi(result_str);
     char *expr_str  = result_str  + strlen(result_str) + 1;
     assert(strlen(result_str) + strlen(expr_str) + 1 < sizeof(line));
+    printf("result_str: %ld, expr_str: %ld, sizeof line: %ld\n", strlen(result_str), strlen(expr_str), sizeof(line));
     printf("result: %d\n", result);
     printf("expr_str: %s", expr_str);
     bool success;
