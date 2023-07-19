@@ -40,11 +40,13 @@ int choose(int n) {
 void put_str_in_buf(char *str) {
   sprintf(buf+buf_id, "%s", str);
   buf_id += strlen(str);
+  assert(buf_id < sizeof(buf));
 }
 
 void put_char_in_buf(char ch) {
   sprintf(buf+buf_id, "%c", ch);
   buf_id++;
+  assert(buf_id < sizeof(buf));
 }
 
 void gen(char ch) {
@@ -105,7 +107,8 @@ int main(int argc, char *argv[]) {
     fputs(code_buf, fp);
     fclose(fp);
 
-    int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
+    // int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
+    int ret = system("gcc /tmp/.code.c -o /tmp/.expr > /tmp/.compile_output 2>&1");
     if (ret != 0) continue;
 
     fp = popen("/tmp/.expr", "r");
@@ -116,7 +119,9 @@ int main(int argc, char *argv[]) {
 
     pclose(fp);
 
-    printf("%u %s\n", result, buf);
+    // remove divided by zero
+    // if (result != UINT32_MAX)
+      printf("%u %s\n", result, buf);
   }
   return a;
 }
