@@ -230,7 +230,7 @@ bool check_parentheses(int p, int q) {
 
   if(stack_id == 0)
     parentheses_correct = 1;
-  printf("\nstack_id: %d, left: %d, right: %d\n", stack_id, left_paren, right_paren);
+  // printf("\nstack_id: %d, left: %d, right: %d\n", stack_id, left_paren, right_paren);
 
   if(parentheses_correct) {
     if(match_p_q) {
