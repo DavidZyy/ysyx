@@ -102,7 +102,7 @@ static int cmd_x(char *args) {
   char *N = strtok(args, " ");
   char *EXPR = N + strlen(N) + 1;
   assert(N);
-  assert(args);
+  assert(EXPR);
   // printf("arg: %s\n", N);
   // printf("arg: %s\n", EXPR);
   int n = atoi(N);
