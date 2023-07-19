@@ -23,7 +23,7 @@ int is_exit_status_bad();
 word_t expr(char *e, bool *success);
 void test_gen_expr() {
   FILE *file;
-  char line[256];
+  char line[2560];
   file = fopen("/home/zhuyangyang/project/ysyx-workbench/nemu/tools/gen-expr/input", "r");
   assert(file);
 
