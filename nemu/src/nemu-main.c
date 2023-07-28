@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
 #endif
 
-  test_gen_expr();
+  // test_gen_expr();
 
   /* Start engine. */
   engine_start();
