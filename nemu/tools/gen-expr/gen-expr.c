@@ -117,6 +117,7 @@ int main(int argc, char *argv[]) {
 
         char output_buf[1024];
         int divide_by_zero = 0;
+        // read compile info to tell if the expression division by zero.
         while (fgets(output_buf, sizeof(output_buf), fp) != NULL) {
             // Display the compilation output to the terminal
             // printf("%s", output_buf);
