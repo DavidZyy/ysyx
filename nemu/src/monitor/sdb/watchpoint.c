@@ -88,6 +88,16 @@ bool if_wp_chg() {
   return false;
 }
 
+void del_wp(int n) {
+  WP *p;
+  for (p = head; p; p = p->next) {
+    if(p->NO == n) {
+      free_up(p);
+      break;
+    }
+  }
+}
+
 void print_wp_info() {
   WP *p;
   for (p = head; p; p = p->next) {

@@ -128,10 +128,10 @@ static int cmd_w(char *args) {
   return 0;
 }
 
+void del_wp(int n);
 static int cmd_d(char *args) {
-  // printf("%s\n", args);
   int n = atoi(args);
-  printf("%d\n", n);
+  del_wp(n);
   return 0;
 }
 
