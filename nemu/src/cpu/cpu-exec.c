@@ -30,10 +30,27 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
+#define IRINGBUFSIZE 20
+char iringbuf[IRINGBUFSIZE][128];
+int ring_p = 0;
+
 void device_update();
 bool if_wp_chg();
 
+void print_iringbuf() {
+  for(int i = 0; i < IRINGBUFSIZE; i++){
+    if(i == ring_p % IRINGBUFSIZE){
+      printf("-->");
+    } else {
+      printf("   ");
+    }
+    printf("%s\n", iringbuf[i]);
+  }
+}
+
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+  sprintf(iringbuf[ring_p++ % IRINGBUFSIZE], "%s\n",_this->logbuf);
+
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
@@ -117,6 +134,8 @@ void cpu_exec(uint64_t n) {
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
 
+
+  print_iringbuf();
   switch (nemu_state.state) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break;
 
