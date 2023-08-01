@@ -40,19 +40,26 @@ bool if_wp_chg();
 void print_iringbuf() {
   for(int i = 0; i < IRINGBUFSIZE; i++){
     if(i == (ring_p-1) % IRINGBUFSIZE){
-      printf("-->");
+      // printf("-->");
+      log_write("-->");
     } else {
-      printf("   ");
+      // printf("   ");
+      log_write("   ");
     }
-    printf("%s\n", iringbuf[i]);
+    // printf("%s\n", iringbuf[i]);
+    log_write("%s\n", iringbuf[i]);
   }
 }
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
-  // sprintf(iringbuf[ring_p++ % IRINGBUFSIZE], "%s\n",_this->logbuf);
 
 #ifdef CONFIG_ITRACE_COND
-  if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
+  // if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
+  if (ITRACE_COND) {
+    memset(iringbuf[ring_p % IRINGBUFSIZE], 0, sizeof(iringbuf[ring_p % IRINGBUFSIZE]));
+    sprintf(iringbuf[ring_p % IRINGBUFSIZE], "%s\n",_this->logbuf);
+    ring_p++;
+  }
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   /* _this->pc is the pc the nemu has executed, dnpc is the next pc it will execute. */
