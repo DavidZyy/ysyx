@@ -107,6 +107,7 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Parse arguments. */
   parse_args(argc, argv);
+  log_write("%s\n", elf_file);
 
   
   // printf("image file:"ANSI_FMT("%s\n", ANSI_FG_RED), img_file);
