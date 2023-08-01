@@ -39,7 +39,7 @@ bool if_wp_chg();
 
 void print_iringbuf() {
   for(int i = 0; i < IRINGBUFSIZE; i++){
-    if(i == ring_p % IRINGBUFSIZE){
+    if(i == (ring_p-1) % IRINGBUFSIZE){
       printf("-->");
     } else {
       printf("   ");
