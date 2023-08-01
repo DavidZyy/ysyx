@@ -49,7 +49,7 @@ void print_iringbuf() {
 }
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
-  sprintf(iringbuf[ring_p++ % IRINGBUFSIZE], "%s\n",_this->logbuf);
+  // sprintf(iringbuf[ring_p++ % IRINGBUFSIZE], "%s\n",_this->logbuf);
 
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
