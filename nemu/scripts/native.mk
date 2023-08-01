@@ -31,6 +31,7 @@ override ARGS += $(ARGS_DIFF)
 # add for batch mode
 override ARGS += -b
 
+$(info $(IMG))
 # $(error $(ARGS))
 # Command to execute NEMU
 IMG ?=
