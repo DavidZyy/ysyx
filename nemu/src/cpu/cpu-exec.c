@@ -47,7 +47,7 @@ void print_iringbuf() {
       log_write("   ");
     }
     // printf("%s\n", iringbuf[i]);
-    log_write("%s\n", iringbuf[i]);
+    log_write("%s", iringbuf[i]);
   }
 }
 
