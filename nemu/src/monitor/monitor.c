@@ -103,16 +103,24 @@ static int parse_args(int argc, char *argv[]) {
   return 0;
 }
 
+Elf64_Shdr section_headers[20];
+
 void init_elf(const char* elf_file) {
   assert(elf_file);
   FILE *file = fopen(elf_file, "rb");
   assert(file);
 
   Elf64_Ehdr elf_header;
-  int ret = fread(&elf_header, sizeof(Elf64_Ehdr), 1, file);
-  assert(ret == 1);
+  assert(fread(&elf_header, sizeof(Elf64_Ehdr), 1, file) == 1);
+
+  // Read and validate the section header table
+  int num_sections = elf_header.e_shnum;
+  // Elf64_Shdr *section_headers = malloc(sizeof(Elf64_Shdr) * num_sections);
+  fseek(file, elf_header.e_shoff, SEEK_SET);
+  assert(fread(section_headers, sizeof(Elf64_Shdr), num_sections, file) == num_sections);
 
 
+  // free(section_headers);
   fclose(file);
   return;
 }
