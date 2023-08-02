@@ -118,7 +118,7 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Open the log file. */
   init_log(log_file);
-  log_write("%s\n", elf_file);
+  Log("%s\n", elf_file);
 
   /* Initialize memory. */
   init_mem();
