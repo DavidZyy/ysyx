@@ -150,7 +150,9 @@ void init_elf(const char* elf_file) {
   /*read symbol table */
   fseek(file, symtab.sh_offset, SEEK_SET);
   // Elf64_Sym *symbols = malloc(symtab.sh_size);
-  assert(fread(symbols, symtab.sh_size, 1, file) == 1);
+  // assert(fread(symbols, symtab.sh_size, 1, file) == 1);
+  int ret = fread(symbols, symtab.sh_size, 1, file);
+  assert(ret);
 
 
   int num_symbols = symtab.sh_size / sizeof(Elf64_Sym);
