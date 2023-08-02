@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <memory/paddr.h>
+#include </usr/include/elf.h>
 
 void init_rand();
 void init_log(const char *log_file);
@@ -103,7 +104,17 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 void init_elf(const char* elf_file) {
-  assert(elf_file != NULL);
+  assert(elf_file);
+  FILE *file = fopen(elf_file, "rb");
+  assert(file);
+
+  Elf64_Ehdr elf_header;
+  int ret = fread(&elf_header, sizeof(Elf64_Ehdr), 1, file);
+  assert(ret == 1);
+
+
+  fclose(file);
+  return;
 }
 
 void init_monitor(int argc, char *argv[]) {
