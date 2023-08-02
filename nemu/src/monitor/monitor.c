@@ -102,6 +102,10 @@ static int parse_args(int argc, char *argv[]) {
   return 0;
 }
 
+void init_elf(const char* elf_file) {
+  assert(elf_file != NULL);
+}
+
 void init_monitor(int argc, char *argv[]) {
   /* Perform some global initialization. */
 
@@ -109,16 +113,16 @@ void init_monitor(int argc, char *argv[]) {
   parse_args(argc, argv);
 
   // printf("image file:"ANSI_FMT("%s\n", ANSI_FG_RED), img_file);
-  printf("elf file:"ANSI_FMT("%s\n", ANSI_FG_RED), elf_file);
+  // printf("elf file:"ANSI_FMT("%s\n", ANSI_FG_RED), elf_file);
 
-  // init_elf();
+  init_elf(elf_file);
 
   /* Set random seed. */
   init_rand();
 
   /* Open the log file. */
   init_log(log_file);
-  Log("%s\n", elf_file);
+  // Log("%s\n", elf_file);
 
   /* Initialize memory. */
   init_mem();
