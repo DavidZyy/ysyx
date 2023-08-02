@@ -120,7 +120,36 @@ void init_elf(const char* elf_file) {
   assert(fread(section_headers, sizeof(Elf64_Shdr), num_sections, file) == num_sections);
 
 
-  // free(section_headers);
+  /* get symbol table section */
+  Elf64_Shdr symtab, strtab;
+  memset(&symtab, 0, sizeof(Elf64_Shdr));
+  memset(&strtab, 0, sizeof(Elf64_Shdr));
+  for(int i = 0; i < elf_header.e_shnum; i++) {
+    if(section_headers[i].sh_type == SHT_SYMTAB)
+      symtab = section_headers[i];
+    if(section_headers[i].sh_type == SHT_STRTAB)
+      strtab = section_headers[i];
+  }
+
+  /* read str table */
+  char *section_names = malloc(strtab.sh_size);
+  fseek(file, strtab.sh_offset, SEEK_SET);
+  assert(fread(section_names, strtab.sh_size, 1, file) == 1);
+
+  /*read symbol table */
+  fseek(file, symtab.sh_offset, SEEK_SET);
+  Elf64_Sym *symbols = malloc(symtab.sh_size);
+  assert(fread(symbols, symtab.sh_size, 1, file) == 1);
+
+
+  int num_symbols = symtab.sh_size / sizeof(Elf64_Sym);
+  for (int i = 0; i < num_symbols; i++) {
+      Log("Symbol %d: Name=%s, Value=0x%lx, Size=%lu\n", i,
+             section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size);
+  }
+
+  free(section_names);
+  free(symbols);
   fclose(file);
   return;
 }
