@@ -105,7 +105,7 @@ static int parse_args(int argc, char *argv[]) {
 
 Elf64_Shdr section_headers[20];
 char section_names[512];
-Elf64_Sym symbols[20]; 
+Elf64_Sym symbols[200]; 
 
 void init_elf(const char* elf_file) {
   assert(elf_file);
