@@ -104,6 +104,8 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 Elf64_Shdr section_headers[20];
+char section_names[512];
+Elf64_Sym symbols[20]; 
 
 void init_elf(const char* elf_file) {
   assert(elf_file);
@@ -115,6 +117,7 @@ void init_elf(const char* elf_file) {
 
   // Read and validate the section header table
   int num_sections = elf_header.e_shnum;
+  assert(num_sections < sizeof(section_headers) / sizeof(Elf64_Shdr));
   // Elf64_Shdr *section_headers = malloc(sizeof(Elf64_Shdr) * num_sections);
   fseek(file, elf_header.e_shoff, SEEK_SET);
   assert(fread(section_headers, sizeof(Elf64_Shdr), num_sections, file) == num_sections);
@@ -139,13 +142,14 @@ void init_elf(const char* elf_file) {
   }
 
   /* read str table */
-  char *section_names = malloc(strtab.sh_size);
+  // char *section_names = malloc(strtab.sh_size);
+  assert(strtab.sh_size < sizeof(section_names));
   fseek(file, strtab.sh_offset, SEEK_SET);
   assert(fread(section_names, strtab.sh_size, 1, file) == 1);
 
   /*read symbol table */
   fseek(file, symtab.sh_offset, SEEK_SET);
-  Elf64_Sym *symbols = malloc(symtab.sh_size);
+  // Elf64_Sym *symbols = malloc(symtab.sh_size);
   assert(fread(symbols, symtab.sh_size, 1, file) == 1);
 
 
@@ -155,8 +159,8 @@ void init_elf(const char* elf_file) {
              section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size);
   }
 
-  free(section_names);
-  free(symbols);
+  // free(section_names);
+  // free(symbols);
   fclose(file);
   return;
 }
