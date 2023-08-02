@@ -125,10 +125,17 @@ void init_elf(const char* elf_file) {
   memset(&symtab, 0, sizeof(Elf64_Shdr));
   memset(&strtab, 0, sizeof(Elf64_Shdr));
   for(int i = 0; i < elf_header.e_shnum; i++) {
-    if(section_headers[i].sh_type == SHT_SYMTAB)
+    if(section_headers[i].sh_type == SHT_SYMTAB) {
       symtab = section_headers[i];
-    if(section_headers[i].sh_type == SHT_STRTAB)
+      break;
+    }
+  }
+
+  for(int i = 0; i < elf_header.e_shnum; i++) {
+    if(section_headers[i].sh_type == SHT_STRTAB) {
       strtab = section_headers[i];
+      break;
+    }
   }
 
   /* read str table */
