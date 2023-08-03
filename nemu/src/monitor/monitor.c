@@ -16,6 +16,7 @@
 #include <isa.h>
 #include <memory/paddr.h>
 #include </usr/include/elf.h>
+#include <ftrace.h>
 
 void init_rand();
 void init_log(const char *log_file);
@@ -107,13 +108,6 @@ Elf64_Shdr section_headers[20];
 char section_names[512];
 Elf64_Sym symbols[200];
 int func_id = 0;
-
-typedef struct {
-  char func_name[20];
-  uint64_t func_addr_begin;
-  uint64_t func_size;
-} ftrace_struct;
-
 ftrace_struct func_info[64];
 
 void init_elf(const char* elf_file) {

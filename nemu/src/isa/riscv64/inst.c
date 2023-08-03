@@ -17,6 +17,7 @@
 #include <cpu/cpu.h>
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
+#include <ftrace.h>
 
 #define R(i) gpr(i)
 #define Mr vaddr_read
@@ -68,6 +69,11 @@ void csrrs(word_t csr_id, int rd, word_t src1);
 void ecall(Decode *s);
 void mret(Decode *s);
 
+extern ftrace_struct func_info[64];
+void ftrace(uint64_t old_addr, uint64_t new_addr) {
+
+}
+
 static int decode_exec(Decode *s) {
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
@@ -118,7 +124,7 @@ static int decode_exec(Decode *s) {
 
 /* 2.5 Control Transfer Instructions */
   /* Unconditional Jumps */
-  INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(dest) = s->pc + 4; s->dnpc = s->pc + imm);
+  INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(dest) = s->pc + 4; ftrace(s->dnpc, s->pc+imm); s->dnpc = s->pc + imm);
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, R(dest) = s->pc + 4; s->dnpc = src1 + imm; s->dnpc = s->dnpc & ~1);
 
   /* Conditional Branches, B-type */
