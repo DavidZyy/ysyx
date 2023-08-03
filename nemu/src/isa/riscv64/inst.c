@@ -92,7 +92,7 @@ void ftrace(uint64_t old_addr, uint64_t new_addr, int is_ret) {
   if(old_func != new_func) {
     log_write("0x%lx", old_addr);
     for(int i = 0; i < nest_num; i++) {
-      log_write("\t");
+      log_write("  ");
     }
     if(!is_ret){
       log_write("call [%s@0x%lx]\n", new_func, new_addr);
