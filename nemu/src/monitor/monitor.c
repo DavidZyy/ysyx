@@ -169,6 +169,7 @@ void init_elf(const char* elf_file) {
              section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size);
             //  NULL, symbols[i].st_value, symbols[i].st_size);
       // if(symbols[i].)
+
   }
 
   // free(section_names);
