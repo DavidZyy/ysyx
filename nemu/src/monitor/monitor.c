@@ -166,9 +166,8 @@ void init_elf(const char* elf_file) {
   assert(num_symbols < sizeof(symbols) / sizeof(Elf64_Sym));
   for (int i = 0; i < num_symbols; i++) {
     // if(symbols[i].st_name)
-      // log_write("Symbol %d: Name=%s, Value=0x%lx, Size=%lu\n", i,
-            //  section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size);
-      log_write("Symbol %d: Value=0x%lx, Size=%lu\n", i, symbols[i].st_value, symbols[i].st_size);
+      log_write("Symbol %d: Name=%s, Value=0x%lx, Size=%lu\n", i,
+             section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size);
             //  NULL, symbols[i].st_value, symbols[i].st_size);
       // if(symbols[i].)
   }
@@ -188,13 +187,13 @@ void init_monitor(int argc, char *argv[]) {
   // printf("image file:"ANSI_FMT("%s\n", ANSI_FG_RED), img_file);
   // printf("elf file:"ANSI_FMT("%s\n", ANSI_FG_RED), elf_file);
 
-  init_elf(elf_file);
 
   /* Set random seed. */
   init_rand();
 
   /* Open the log file. */
   init_log(log_file);
+  init_elf(elf_file);
   // Log("%s\n", elf_file);
 
   /* Initialize memory. */
