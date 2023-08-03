@@ -29,8 +29,16 @@ void print_context(Context *c) {
 }
 // new added
 
+
+/**
+ * whe irq is happened, trap is called, then jump here.
+ * 
+ * __am_asm_trap  <----+ 
+ *    -->__am_irq_handle  <----+
+ *          -->do_event   -----+
+ */
 Context* __am_irq_handle(Context *c) {
-  // add mepc 4, do by software
+  // add mepc 4, do by software, nemu is seemd to hardware
   c->mepc += 4;
   print_context(c);
   if (user_handler) {
