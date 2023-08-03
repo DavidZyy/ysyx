@@ -69,7 +69,7 @@ void csrrs(word_t csr_id, int rd, word_t src1);
 void ecall(Decode *s);
 void mret(Decode *s);
 
-// the number of nest
+// the number of call nested
 int nest_num;
 extern ftrace_struct func_info[64];
 extern int func_id;
@@ -84,10 +84,10 @@ char *addr_to_func(uint64_t addr) {
 
 #define RET 0x00008067
 /* current inst pc is s->snpc-4 */
-#define FUNC_TRACE {ftrace(s->snpc-4, s->dnpc, 0); nest_num++;}
+#define FUNC_TRACE {ftrace(s->snpc-4, s->dnpc, 0);}
 #define FUNC_TRACE_RET {ftrace(s->snpc-4, s->dnpc, 1);}
+/* from the beginning of a function is a call */
 void ftrace(uint64_t old_addr, uint64_t new_addr, int is_ret) {
-  /* a func call itself failed */
   char *old_func = addr_to_func(old_addr);
   char *new_func = addr_to_func(new_addr);
   if(old_func != new_func) {
@@ -96,6 +96,7 @@ void ftrace(uint64_t old_addr, uint64_t new_addr, int is_ret) {
       log_write("  ");
     }
     if(!is_ret){
+      nest_num++;
       log_write("call [%s@0x%lx]\n", new_func, new_addr);
     } else {
       log_write("ret [%s]\n", old_func);
