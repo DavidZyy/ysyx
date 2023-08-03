@@ -25,12 +25,17 @@ $(BINARY): compile_git
 
 # Some convenient rules
 
+ELF := $(patsubst %.bin, %.elf, $(IMG))
+# $(error $(ARGS))
 override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += $(ARGS_DIFF)
 
+override ARGS += -e $(ELF)
 # add for batch mode
-# override ARGS += -b
+override ARGS += -b
 
+
+# $(info $(ELF))
 # $(error $(ARGS))
 # Command to execute NEMU
 IMG ?=

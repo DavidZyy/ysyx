@@ -39,6 +39,7 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},        // spaces
+  {"\n", TK_NOTYPE},        // match \n
   {"\\+", '+'},             // plus
   {"==", TK_EQ},            // equal
   {"-", '-'},              // minus
@@ -77,7 +78,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[320] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -94,8 +95,8 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        // Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+            // i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
 
@@ -170,12 +171,21 @@ bool is_operator(Token tok) {
 
 int getop(int p, int q) {
   int op = -1;
+  int left_parenthese_num = 0;
   for(int i = p; i <= q; i++) {
     if(tokens[i].type == '(') {
-      while(tokens[i].type != ')') i++;
-    } else if(is_operator(tokens[i])) {
+      // assert(0)
+      // panic("parentheses not matched!");
+      // while(tokens[i].type != ')') i++;
+      left_parenthese_num++;
+    } else if(tokens[i].type == ')') {
+      left_parenthese_num--;  
+    }
+    else if(is_operator(tokens[i]) && !left_parenthese_num) {
       if(op == -1 || prio(tokens[op].type) >= prio(tokens[i].type))
         op = i;
+    } else {
+      ;
     }
   }
   // assert(op >= 0);
@@ -189,7 +199,7 @@ int getop(int p, int q) {
 // } paren_t;
 
 // left parentheses stack
-int stack[32];
+int stack[320];
 
 /**
  * (1+2)*(3-1), the first "(" matches with the last ")".
@@ -200,22 +210,27 @@ bool check_parentheses(int p, int q) {
   // return false;
   int parentheses_correct = 0;
   int match_p_q = 0;
+  int left_paren = 0;
+  int right_paren = 0;
 
   int stack_id = 0;
   for(int i = p; i <= q; i++) {
     assert(stack_id < 32);
     if(tokens[i].type == '(') {
       stack[stack_id++] = i;
+      left_paren++;
     } else if (tokens[i].type == ')') {
       // match
       stack_id--;
       if((i == q) && (stack[stack_id] == p))
         match_p_q = 1;
+      right_paren++;
     }
   }
 
   if(stack_id == 0)
     parentheses_correct = 1;
+  // printf("\nstack_id: %d, left: %d, right: %d\n", stack_id, left_paren, right_paren);
 
   if(parentheses_correct) {
     if(match_p_q) {
@@ -229,13 +244,15 @@ bool check_parentheses(int p, int q) {
   }
 }
 
+word_t vaddr_read(vaddr_t addr, int len);
 word_t eval(int p, int q) {
-  if(p > q) {
-    // assert(0);
-    return 0;
+  if (p > q) {
+    printf("p: %d, q: %d\n", p, q);
+    panic("ilegal expression!\n");
+    // return 0;
   } else if (p == q) {
     // operands
-    if(tokens[p].type == TK_DECIMAL) {
+    if (tokens[p].type == TK_DECIMAL) {
       return atoi(tokens[p].str);
     } else if(tokens[p].type == TK_HEX) {
       char *endptr;
@@ -251,18 +268,29 @@ word_t eval(int p, int q) {
   } else if (check_parentheses(p, q)) {
     // parentheses
     return eval(p+1, q-1);
+    // return eval(p+2, q-2); no necessary if have more than one parentheses??, it will be removed recursively.
   } else {
     // operators
     int op = getop(p, q);
-    int val1 = eval(p, op-1);
-    int val2;
-    if(tokens[op+1].type == TK_MINUS) {
+    int val1, val2;
+
+    // have format with: -(expr) or *(expr), val is before the - or *, val2 is (expr)
+    if (op == -1) {
+      if (tokens[0].type == TK_MINUS || tokens[0].type == TK_DEREF) val1 = 0;
+      else assert(0);
+    } else {
+      val1 = eval(p, op-1);
+    }
+
+    if (tokens[op+1].type == TK_MINUS) {
       val2 = -eval(op+2, q);
+    } else if (tokens[op+1].type == TK_DEREF) {
+      val2 = vaddr_read(eval(op+2, q), 4);
     } else {
       val2 = eval(op+1, q);
     }
 
-    if(op == -1) {
+    if (op == -1) {
       return val2;
     } else {
       switch (tokens[op].type) {
@@ -282,6 +310,7 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
+  assert(nr_token);
 
   /* TODO: Insert codes to evaluate the expression. */
   // to support minus calculation

@@ -27,14 +27,16 @@ void init_wp_pool();
 char *cmd_line[] = {
   "w $sp",
   "p 0xff+3 + 4/2 + $sp",
-  // "p 1",
-  "p -1 + 1",
+  // "p -(2 + 3) + (4 - 1)",
+  "p 1-2",
+  // "p 1+",
+  // "p -1 + 1",
   // "p 2*-(3-1)",
   // "p 1==(2-1)"
 };
 
 int cmdl_id = 0;
-int initial_cmd = 3;
+int initial_cmd = 0;
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -69,6 +71,8 @@ static int cmd_c(char *args) {
 }
 
 static int cmd_q(char *args) {
+  /* 优雅的退出 */
+  nemu_state.state = NEMU_QUIT;
   return -1;
 }
 
@@ -99,6 +103,8 @@ static int cmd_x(char *args) {
   assert(args);
   char *N = strtok(args, " ");
   char *EXPR = N + strlen(N) + 1;
+  assert(N);
+  assert(EXPR);
   // printf("arg: %s\n", N);
   // printf("arg: %s\n", EXPR);
   int n = atoi(N);
@@ -114,7 +120,7 @@ static int cmd_x(char *args) {
 static int cmd_p(char *args) {
   bool success;
   uint64_t result = expr(args, &success);
-  printf("%ld\n", result);
+  printf("%lx\n", result);
   return success;
 }
 
@@ -124,7 +130,10 @@ static int cmd_w(char *args) {
   return 0;
 }
 
+void del_wp(int n);
 static int cmd_d(char *args) {
+  int n = atoi(args);
+  del_wp(n);
   return 0;
 }
 

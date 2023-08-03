@@ -48,6 +48,14 @@
     "proc.h": "c",
     "elf.h": "c",
     "memory.h": "c",
-    "cstdlib": "c"
+    "cstdlib": "c",
+    "assert.h": "c",
+    "time.h": "c",
+    "stdlib.h": "c",
+    "_ansi.h": "c",
+    "array": "c",
+    "compare": "c",
+    "ratio": "c",
+    "utility": "c"
   }
 }
