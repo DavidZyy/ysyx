@@ -70,8 +70,22 @@ void ecall(Decode *s);
 void mret(Decode *s);
 
 extern ftrace_struct func_info[64];
-void ftrace(uint64_t old_addr, uint64_t new_addr) {
+extern int func_id;
+char *addr_to_func(uint64_t addr) {
+  for(int i = 0; i < func_id; i++) {
+    if(func_info[i].func_addr_begin <= addr &&  addr < func_info[i].func_addr_begin+func_info[i].func_size) {
+      return func_info[i].func_name;
+    }
+  }
+  return NULL;
+}
 
+void ftrace(uint64_t old_addr, uint64_t new_addr) {
+  char *old_func = addr_to_func(old_addr);
+  char *new_func = addr_to_func(new_addr);
+  if(old_func != new_func) {
+    log_write("%s\n", new_func);
+  }
 }
 
 static int decode_exec(Decode *s) {
