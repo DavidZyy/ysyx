@@ -161,14 +161,14 @@ void init_elf(const char* elf_file) {
   int ret = fread(symbols, symtab.sh_size, 1, file);
   assert(ret);
 
-
   func_id = 0;
   int num_symbols = symtab.sh_size / sizeof(Elf64_Sym);
   assert(num_symbols < sizeof(symbols) / sizeof(Elf64_Sym));
   for (int i = 0; i < num_symbols; i++) {
     // if(symbols[i].st_name)
-      log_write("Symbol %d: Name=%s, Value=0x%lx, Size=%lu\n", i,
-             section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size);
+      // log_write("Symbol %d: Name=%s, Value=0x%lx, Size=%lu\n", i,
+            //  section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size);
+      log_write("Symbol %d: Value=0x%lx, Size=%lu\n", i, symbols[i].st_value, symbols[i].st_size);
             //  NULL, symbols[i].st_value, symbols[i].st_size);
       // if(symbols[i].)
   }
