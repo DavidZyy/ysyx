@@ -87,6 +87,7 @@ char *addr_to_func(uint64_t addr) {
 #define FUNC_TRACE {ftrace(s->snpc-4, s->dnpc, 0); nest_num++;}
 #define FUNC_TRACE_RET {ftrace(s->snpc-4, s->dnpc, 1);}
 void ftrace(uint64_t old_addr, uint64_t new_addr, int is_ret) {
+  /* a func call itself failed */
   char *old_func = addr_to_func(old_addr);
   char *new_func = addr_to_func(new_addr);
   if(old_func != new_func) {
