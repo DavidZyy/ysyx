@@ -105,7 +105,14 @@ static int parse_args(int argc, char *argv[]) {
 
 Elf64_Shdr section_headers[20];
 char section_names[512];
-Elf64_Sym symbols[200]; 
+Elf64_Sym symbols[200];
+int func_id = 0;
+
+typedef struct {
+  char func_name[20];
+  uint64_t func_addr_begin;
+  uint64_t func_size;
+} ftrace_struct;
 
 void init_elf(const char* elf_file) {
   assert(elf_file);
@@ -155,13 +162,15 @@ void init_elf(const char* elf_file) {
   assert(ret);
 
 
+  func_id = 0;
   int num_symbols = symtab.sh_size / sizeof(Elf64_Sym);
   assert(num_symbols < sizeof(symbols) / sizeof(Elf64_Sym));
   for (int i = 0; i < num_symbols; i++) {
     // if(symbols[i].st_name)
-      printf("Symbol %d: Name=%s, Value=0x%lx, Size=%lu\n", i,
+      Log("Symbol %d: Name=%s, Value=0x%lx, Size=%lu\n", i,
              section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size);
             //  NULL, symbols[i].st_value, symbols[i].st_size);
+      // if(symbols[i].)
   }
 
   // free(section_names);
