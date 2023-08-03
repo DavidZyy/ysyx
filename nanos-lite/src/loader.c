@@ -10,9 +10,9 @@
 #endif
 
 static uintptr_t loader(PCB *pcb, const char *filename) {
-  TODO();
-  char buf[sizeof(Elf_Ehdr)];
-  ramdisk_read(buf, 0, sizeof(Elf_Ehdr));
+  // TODO();
+  // char buf[sizeof(Elf_Ehdr)];
+  // ramdisk_read(buf, 0, sizeof(Elf_Ehdr));
   return 0;
 }
 
