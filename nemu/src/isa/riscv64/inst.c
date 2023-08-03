@@ -69,6 +69,8 @@ void csrrs(word_t csr_id, int rd, word_t src1);
 void ecall(Decode *s);
 void mret(Decode *s);
 
+// the number of nest
+int nest_num;
 extern ftrace_struct func_info[64];
 extern int func_id;
 char *addr_to_func(uint64_t addr) {
@@ -80,12 +82,23 @@ char *addr_to_func(uint64_t addr) {
   return NULL;
 }
 
-#define FUNC_TRACE ftrace(s->snpc, s->dnpc);
-void ftrace(uint64_t old_addr, uint64_t new_addr) {
+#define RET 0x00008067
+/* current inst pc is s->snpc-4 */
+#define FUNC_TRACE {ftrace(s->snpc-4, s->dnpc, 0); nest_num++;}
+#define FUNC_TRACE_RET {ftrace(s->snpc-4, s->dnpc, 1);}
+void ftrace(uint64_t old_addr, uint64_t new_addr, int is_ret) {
   char *old_func = addr_to_func(old_addr);
   char *new_func = addr_to_func(new_addr);
   if(old_func != new_func) {
-    log_write("%s\n", new_func);
+    log_write("0x%lx", old_addr);
+    for(int i = 0; i < nest_num; i++) {
+      log_write("\t");
+    }
+    if(!is_ret){
+      log_write("call [%s@0x%lx]\n", new_func, new_addr);
+    } else {
+      log_write("ret [%s]\n", old_func);
+    }
   }
 }
 
@@ -139,8 +152,10 @@ static int decode_exec(Decode *s) {
 
 /* 2.5 Control Transfer Instructions */
   /* Unconditional Jumps */
+  
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(dest) = s->pc + 4; s->dnpc = s->pc + imm; FUNC_TRACE);
-  INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, R(dest) = s->pc + 4; s->dnpc = src1 + imm; s->dnpc = s->dnpc & ~1; FUNC_TRACE);
+  INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, 
+  R(dest) = s->pc + 4; s->dnpc = src1 + imm; s->dnpc = s->dnpc & ~1; if(s->isa.inst.val == RET) {nest_num --; FUNC_TRACE_RET} else {FUNC_TRACE});
 
   /* Conditional Branches, B-type */
   INSTPAT("??????? ????? ????? 000 ????? 11000 11", beq    , B, if(src1 == src2) {s->dnpc = s->pc + imm; FUNC_TRACE} ); /* it does not matter add or not add (int64_t) before imm? */
