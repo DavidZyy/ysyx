@@ -82,15 +82,26 @@ char *addr_to_func(uint64_t addr) {
   return NULL;
 }
 
+int is_a_call(uint64_t addr) {
+  for(int i = 0; i < func_id; i++) {
+    if(addr == func_info[i].func_addr_begin){
+      return 1;
+    }
+  }
+  return 0;
+}
+
 #define RET 0x00008067
 /* current inst pc is s->snpc-4 */
 #define FUNC_TRACE {ftrace(s->snpc-4, s->dnpc, 0);}
 #define FUNC_TRACE_RET {ftrace(s->snpc-4, s->dnpc, 1);}
 /* from the beginning of a function is a call */
 void ftrace(uint64_t old_addr, uint64_t new_addr, int is_ret) {
-  char *old_func = addr_to_func(old_addr);
-  char *new_func = addr_to_func(new_addr);
-  if(old_func != new_func) {
+  int is_call = is_a_call(new_addr);
+
+  if(is_call) {
+    char *old_func = addr_to_func(old_addr);
+    char *new_func = addr_to_func(new_addr);
     log_write("0x%lx", old_addr);
     for(int i = 0; i < nest_num; i++) {
       log_write("  ");
