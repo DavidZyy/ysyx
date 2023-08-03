@@ -52,6 +52,10 @@
     "assert.h": "c",
     "time.h": "c",
     "stdlib.h": "c",
-    "_ansi.h": "c"
+    "_ansi.h": "c",
+    "array": "c",
+    "compare": "c",
+    "ratio": "c",
+    "utility": "c"
   }
 }
