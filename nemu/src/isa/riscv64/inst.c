@@ -99,7 +99,7 @@ int is_a_call(uint64_t addr) {
 void ftrace(uint64_t old_addr, uint64_t new_addr, int is_ret) {
   int is_call = is_a_call(new_addr);
 
-  if(is_call) {
+  if(is_call || is_ret) {
     char *old_func = addr_to_func(old_addr);
     char *new_func = addr_to_func(new_addr);
     log_write("0x%lx", old_addr);
