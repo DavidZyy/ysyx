@@ -114,6 +114,8 @@ typedef struct {
   uint64_t func_size;
 } ftrace_struct;
 
+ftrace_struct func_info[64];
+
 void init_elf(const char* elf_file) {
   assert(elf_file);
   FILE *file = fopen(elf_file, "rb");
@@ -168,8 +170,14 @@ void init_elf(const char* elf_file) {
       log_write("Symbol %-2d: Name=%-15s, Value=0x%-10lx, Size=%-5lu, info=%x\n", i,
              section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size, symbols[i].st_info);
             //  NULL, symbols[i].st_value, symbols[i].st_size);
-      // if(symbols[i].)
-
+      unsigned char st_info = symbols[i].st_info; 
+      unsigned char type = ELF64_ST_TYPE(st_info);
+      if(type == STT_FUNC) {
+        func_info[func_id].func_addr_begin = symbols[i].st_value;
+        func_info[func_id].func_size       = symbols[i].st_size;
+        memcpy(func_info[func_id].func_name, section_names+symbols[i].st_name, strlen(section_names+symbols[i].st_name));
+        func_id++;
+      }
   }
 
   // free(section_names);
