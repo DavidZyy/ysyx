@@ -129,7 +129,6 @@ void init_elf(const char* elf_file) {
   fseek(file, elf_header.e_shoff, SEEK_SET);
   assert(fread(section_headers, sizeof(Elf64_Shdr), num_sections, file) == num_sections);
 
-
   /* get symbol table section */
   Elf64_Shdr symtab, strtab;
   memset(&symtab, 0, sizeof(Elf64_Shdr));
@@ -166,7 +165,7 @@ void init_elf(const char* elf_file) {
   assert(num_symbols < sizeof(symbols) / sizeof(Elf64_Sym));
   for (int i = 0; i < num_symbols; i++) {
     // if(symbols[i].st_name)
-      log_write("Symbol %d: Name=%s, Value=0x%lx, Size=%lu\n", i,
+      log_write("Symbol %d: Name=%-9s, Value=0x%lx, Size=%lu\n", i,
              section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size);
             //  NULL, symbols[i].st_value, symbols[i].st_size);
       // if(symbols[i].)
