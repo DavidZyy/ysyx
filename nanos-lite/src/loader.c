@@ -57,7 +57,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
     print_program_header(phdr);
   }
 
-  return ramdisk_start;
+  return (uintptr_t )&ramdisk_start;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
