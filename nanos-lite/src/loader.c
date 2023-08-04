@@ -36,6 +36,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   // TODO();
   Elf_Ehdr ehdr;
   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
+  assert(*(uint32_t *)ehdr.e_ident == 0xBadC0de);
   printf_elf_header(ehdr);
   return 0;
 }
