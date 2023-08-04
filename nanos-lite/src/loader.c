@@ -42,6 +42,7 @@ void print_program_header(Elf_Phdr program_header) {
   printf("Align: 0x%lx\n", program_header.p_align);
 }
 
+extern uint8_t ramdisk_start;
 size_t ramdisk_read(void *buf, size_t offset, size_t len);
 static uintptr_t loader(PCB *pcb, const char *filename) {
   // TODO();
@@ -56,8 +57,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
     print_program_header(phdr);
   }
 
-  // return 0;
-  return ehdr.e_entry;
+  return ramdisk_start;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
