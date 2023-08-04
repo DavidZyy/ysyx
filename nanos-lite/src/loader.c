@@ -56,7 +56,8 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
     print_program_header(phdr);
   }
 
-  return 0;
+  // return 0;
+  return 0x83000000;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
