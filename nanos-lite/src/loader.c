@@ -9,7 +9,7 @@
 # define Elf_Phdr Elf32_Phdr
 #endif
 
-void printf_elf_header(Elf64_Ehdr elf_header){
+void print_elf_header(Elf_Ehdr elf_header) {
   printf("ELF Header Information:\n");
   printf("  Magic: ");
   for (int i = 0; i < 16; i++) {
@@ -31,13 +31,31 @@ void printf_elf_header(Elf64_Ehdr elf_header){
   printf("  Section header string table index: %u\n", elf_header.e_shstrndx);
 }
 
+void print_program_header(Elf_Phdr program_header) {
+  printf("Type: %u ", program_header.p_type);
+  printf("Offset: 0x%lx ", program_header.p_offset);
+  printf("Virtual Address: 0x%lx ", program_header.p_vaddr);
+  printf("Physical Address: 0x%lx ", program_header.p_paddr);
+  printf("File Size: 0x%lx ", program_header.p_filesz);
+  printf("Memory Size: 0x%lx ", program_header.p_memsz);
+  printf("Flags: 0x%x ", program_header.p_flags);
+  printf("Align: 0x%lx\n", program_header.p_align);
+}
+
 size_t ramdisk_read(void *buf, size_t offset, size_t len);
 static uintptr_t loader(PCB *pcb, const char *filename) {
   // TODO();
   Elf_Ehdr ehdr;
   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
   assert(*(uint64_t *)ehdr.e_ident == 0x00010102464c457f);
-  printf_elf_header(ehdr);
+  print_elf_header(ehdr);
+
+  for(int i=0; i < ehdr.e_phnum; i++) {
+    Elf_Phdr phdr;
+    ramdisk_read(&phdr, ehdr.e_phoff + i*sizeof(Elf_Phdr), sizeof(Elf_Phdr));
+    print_program_header(phdr);
+  }
+
   return 0;
 }
 
@@ -46,3 +64,4 @@ void naive_uload(PCB *pcb, const char *filename) {
   Log("Jump to entry = %p", entry);
   ((void(*)())entry) ();
 }
+
