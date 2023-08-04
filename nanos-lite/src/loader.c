@@ -49,15 +49,15 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr ehdr;
   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
   assert(*(uint64_t *)ehdr.e_ident == 0x00010102464c457f);
-  print_elf_header(ehdr);
+  // print_elf_header(ehdr);
 
   for(int i=0; i < ehdr.e_phnum; i++) {
     Elf_Phdr phdr;
     ramdisk_read(&phdr, ehdr.e_phoff + i*sizeof(Elf_Phdr), sizeof(Elf_Phdr));
-    print_program_header(phdr);
+    // print_program_header(phdr);
   }
 
-  return (uintptr_t )&ramdisk_start;
+  return (uintptr_t )(&ramdisk_start + 0x468);
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
