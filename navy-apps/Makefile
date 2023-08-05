@@ -70,6 +70,7 @@ OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
 LIBS     := $(sort $(LIBS)) # lazy evaluation ("=") causes infinite recursions
 LINKAGE   = $(OBJS) $(foreach l,$(LIBS),$(NAVY_HOME)/libs/$(l)/build/$(l)-$(ISA).a)
 
+PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(SRCS))))
 ## 3. General Compilation Flags
 
 ### (Cross) compilers, e.g., mips-linux-gnu-g++
@@ -94,6 +95,14 @@ ASFLAGS  +=  $(CFLAGS)
 -include $(NAVY_HOME)/scripts/$(ISA).mk
 
 ## 5. Compilation Rules
+
+$(DST_DIR)/%.i: %.c
+	@mkdir -p $(dir $@) && echo + PRE $<
+	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
+
+$(DST_DIR)/%.i: %.S
+	@mkdir -p $(dir $@) && echo + PRE $<
+	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
 
 ### Rule (compile): a single `.c` -> `.o` (gcc)
 $(DST_DIR)/%.o: %.c
@@ -120,12 +129,12 @@ libs:
 	@for t in $(LIBS); do $(MAKE) -s -C $(NAVY_HOME)/libs/$$t archive; done
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `$(APP)`, the final ELF binary to be packed into application (ld)
-$(APP): $(OBJS) libs
+$(APP): $(OBJS) libs $(PRES)
 	@echo + LD "->" $(shell realpath $@ --relative-to .)
 	@$(LD) $(LDFLAGS) -o $@ $(WL)--start-group $(LINKAGE) $(WL)--end-group
 
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
-$(ARCHIVE): $(OBJS) libs
+$(ARCHIVE): $(OBJS) libs $(PRES)
 	@echo + AR "->" $(shell realpath $@ --relative-to .)
 	@ar rcsT $@ $(LINKAGE)
 

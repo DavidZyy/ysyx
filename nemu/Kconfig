@@ -153,7 +153,12 @@ config MTRACE
 
 config FTRACE
   depends on TRACE && TARGET_NATIVE_ELF && ENGINE_INTERPRETER
-  bool "Enable elf function tracer"
+  bool "Enable function tracer"
+  default n
+
+config ETRACE
+  depends on TRACE && TARGET_NATIVE_ELF && ENGINE_INTERPRETER
+  bool "Enable exception tracer"
   default n
 
 config DIFFTEST
