@@ -57,6 +57,7 @@
     "compare": "c",
     "ratio": "c",
     "utility": "c",
-    "list": "c"
+    "list": "c",
+    "syscall.h": "c"
   }
 }
