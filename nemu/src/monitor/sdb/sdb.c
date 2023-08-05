@@ -115,7 +115,7 @@ static int cmd_x(char *args) {
   bool success;
   uint64_t  addr = expr(EXPR, &success);
   for(int i = 0; i < n; i++) {
-    printf("%p: %08""XX""\n", (void *)addr, vaddr_read(addr, 4));
+    printf("%p: %08""X""\n", (void *)addr, vaddr_read(addr, 4));
     addr += 4;
   }
   return 0;
