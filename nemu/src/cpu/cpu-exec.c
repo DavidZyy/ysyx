@@ -66,7 +66,10 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   if(if_wp_chg()) {
     nemu_state.state = NEMU_STOP;
-    printf("pc: %lx\n", _this->pc);
+    MUXDEF(CONFIG_ISA64, 
+    printf("pc: %lx\n", _this->pc); ,
+    printf("pc: %x\n", _this->pc); 
+    )
   }
 }
 
