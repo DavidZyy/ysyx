@@ -97,7 +97,6 @@ static int cmd_info(char *args) {
   return 0;
 }
 
-#define XX MUXDEF(CONFIG_ISA64, "lx", "x")
 // Convert the MACRO_VALUE macro to a string
 // #define STRINGIFY(x) #x
 
