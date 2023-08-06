@@ -132,8 +132,24 @@ static int decode_exec(Decode *s) {
 
 
 /* 7.1 Multiplication Operations */
-a
+  INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul    , R, R(dest) = src1 * src2);
+  // not right!!
+  INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(dest) = ((sword_t)src1>>16 * (sword_t)src2)>>16);//seems not right, shoule be 64
+  INSTPAT("0000001 ????? ????? 010 ????? 01100 11", mulhsu , R, R(dest) = ((sword_t)src1>>16 * (word_t)src2)>>16);
+  INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu  , R, R(dest) = ((word_t)src1>>16 * (word_t)src2)>>16);
 
+/* 7.2 Division Operations */
+  INSTPAT("0000001 ????? ????? 100 ????? 01100 11", div    , R, R(dest) = ((sword_t)src1 / (sword_t)src2));
+  INSTPAT("0000001 ????? ????? 101 ????? 01100 11", divu   , R, R(dest) = ((word_t)src1 / (word_t)src2));
+
+  INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem    , R, R(dest) = ((sword_t)src1 % (sword_t)src2));
+  INSTPAT("0000001 ????? ????? 111 ????? 01100 11", remu   , R, R(dest) = ((word_t)src1 % (word_t)src2));
+
+  /* RV-Zicsr */
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, csrrw(imm, dest, src1));
+  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, csrrs(imm, dest, src1));
+
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , I, mret(s));
 /* Invalid Instructions, not risc-v inst. */
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
   INSTPAT_END();
@@ -145,7 +161,7 @@ a
 
 void mret(Decode *s) {
   s->dnpc = cpu.csr[cpu_mepc_id];
-  cpu.csr[cpu_mstatus_id] = 0xa00000080;
+  cpu.csr[cpu_mstatus_id] = (word_t)0xa00000080;
 }
 
 void csrrw(word_t csr_id, int rd, word_t src1) {
@@ -168,7 +184,7 @@ void csrrw(word_t csr_id, int rd, word_t src1) {
 
 void ecall(Decode *s) {
   IFDEF(CONFIG_ETRACE, log_write("etrace: ecall in ecall function in inst.c\n"));
-  cpu.csr[cpu_mstatus_id] = 0xa00001800;
+  cpu.csr[cpu_mstatus_id] = (word_t)0xa00001800;
   cpu.csr[cpu_mepc_id]    = cpu.pc; // see ref
   cpu.csr[cpu_mcause_id]  = 0xb; // environment call from M-mode
   s->dnpc = cpu.csr[cpu_mtvec_id];
@@ -188,7 +204,6 @@ void csrrs(word_t csr_id, int rd, word_t src1) {
     panic("here!!");
   }
 }
-
 
 int isa_exec_once(Decode *s) {
   s->isa.inst.val = inst_fetch(&s->snpc, 4);
