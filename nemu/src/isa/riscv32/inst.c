@@ -52,6 +52,12 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   }
 }
 
+
+void csrrw(word_t csr_id, int rd, word_t src1);
+void csrrs(word_t csr_id, int rd, word_t src1);
+void ecall(Decode *s);
+void mret(Decode *s);
+
 static int decode_exec(Decode *s) {
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
@@ -109,16 +115,26 @@ static int decode_exec(Decode *s) {
 
 
 /* 2.6 Load and Store Instructions */
-/* move to the 5.3, ld and sd only exist in RV64I, lw needs to sign-extended in RV64I */
+  INSTPAT("??????? ????? ????? 000 ????? 00000 11", lb     , I, R(dest) = SEXT(BITS(Mr(src1 + imm, 1), 8, 0), 8));
+  INSTPAT("??????? ????? ????? 100 ????? 00000 11", lbu    , I, R(dest) = Mr(src1 + imm, 1));
+  INSTPAT("??????? ????? ????? 001 ????? 00000 11", lh     , I, R(dest) = SEXT(BITS(Mr(src1 + imm, 2), 16, 0), 16));
+  INSTPAT("??????? ????? ????? 101 ????? 00000 11", lhu    , I, R(dest) = Mr(src1 + imm, 2));
+  INSTPAT("??????? ????? ????? 110 ????? 00000 11", lw     , I, R(dest) = Mr(src1 + imm, 4));
+
+  INSTPAT("??????? ????? ????? 000 ????? 01000 11", sb     , S, Mw(src1 + imm, 1, src2));
+  INSTPAT("??????? ????? ????? 001 ????? 01000 11", sh     , S, Mw(src1 + imm, 2, src2));
+  INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));
+
 
 /* 2.8 Environment Call and Breakpoints */
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
-  // INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, ecall(s));
-  // INSTPAT("??????? ????? ????? ??? ????? 01101 11", lui    , U, R(dest) = imm);
-  // INSTPAT("??????? ????? ????? 010 ????? 00000 11", lw     , I, R(dest) = Mr(src1 + imm, 4));
-  // INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, ecall(s));
 
-  // INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
+
+/* 7.1 Multiplication Operations */
+a
+
+/* Invalid Instructions, not risc-v inst. */
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
   INSTPAT_END();
 
@@ -126,6 +142,53 @@ static int decode_exec(Decode *s) {
 
   return 0;
 }
+
+void mret(Decode *s) {
+  s->dnpc = cpu.csr[cpu_mepc_id];
+  cpu.csr[cpu_mstatus_id] = 0xa00000080;
+}
+
+void csrrw(word_t csr_id, int rd, word_t src1) {
+  if (csr_id == mtvec_id) {
+    R(rd) = cpu.csr[cpu_mtvec_id];
+    cpu.csr[cpu_mtvec_id] = src1;
+  } else if (csr_id == mepc_id) {
+    R(rd) = cpu.csr[cpu_mepc_id];
+    cpu.csr[cpu_mepc_id] = src1;
+  } else if (csr_id == mstatus_id) {
+    R(rd) = cpu.csr[cpu_mstatus_id];
+    cpu.csr[cpu_mstatus_id] = src1;
+  } else if (csr_id == mcause_id) {
+    R(rd) = cpu.csr[cpu_mcause_id];
+    cpu.csr[cpu_mcause_id] = src1;
+  } else {
+    panic("here!!");
+  }
+}
+
+void ecall(Decode *s) {
+  IFDEF(CONFIG_ETRACE, log_write("etrace: ecall in ecall function in inst.c\n"));
+  cpu.csr[cpu_mstatus_id] = 0xa00001800;
+  cpu.csr[cpu_mepc_id]    = cpu.pc; // see ref
+  cpu.csr[cpu_mcause_id]  = 0xb; // environment call from M-mode
+  s->dnpc = cpu.csr[cpu_mtvec_id];
+}
+
+void csrrs(word_t csr_id, int rd, word_t src1) {
+  if (csr_id == mtvec_id) {
+    R(rd) = cpu.csr[cpu_mtvec_id];
+    /* no set */
+  } else if (csr_id == mepc_id) {
+    R(rd) = cpu.csr[cpu_mepc_id];
+  } else if (csr_id == mstatus_id) {
+    R(rd) = cpu.csr[cpu_mstatus_id];
+  } else if (csr_id == mcause_id ) {
+    R(rd) = cpu.csr[cpu_mcause_id];
+  } else {
+    panic("here!!");
+  }
+}
+
 
 int isa_exec_once(Decode *s) {
   s->isa.inst.val = inst_fetch(&s->snpc, 4);

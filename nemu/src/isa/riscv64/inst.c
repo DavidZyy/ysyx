@@ -141,7 +141,7 @@ static int decode_exec(Decode *s) {
   /* Integer Register-Immediate Instructions */
   INSTPAT("??????? ????? ????? 000 ????? 00110 11", addiw  , I, R(dest) = SEXT(BITS(src1 + imm, 31, 0), 32)); /* the src1 = R(rs1), see decode_operand */
 
-  INSTPAT("010000? ????? ????? 101 ????? 00100 11", srai   , I, R(dest) = (((int64_t) src1) >> RV64_shamt(imm)));
+  // INSTPAT("010000? ????? ????? 101 ????? 00100 11", srai   , I, R(dest) = (((int64_t) src1) >> RV64_shamt(imm)));
   INSTPAT("0000000 ????? ????? 001 ????? 00110 11", slliw  , I, R(dest) = SEXT(BITS(src1 << RV32_shamt(imm), 31, 0), 32)); /* use (int32_t) to replace BTIS(x, 31, 0) ? */
   INSTPAT("0000000 ????? ????? 101 ????? 00110 11", srliw  , I, R(dest) = SEXT((uint32_t)src1 >> RV32_shamt(imm), 32)); /* use (int32_t) to replace BTIS(x, 31, 0) ? */
   INSTPAT("0100000 ????? ????? 101 ????? 00110 11", sraiw  , I, R(dest) = SEXT((int32_t)src1 >> RV32_shamt(imm), 32)); /* use (int32_t) to replace BTIS(x, 31, 0) ? */
@@ -171,7 +171,8 @@ static int decode_exec(Decode *s) {
 
   /* 7.1 Multiplication Operations */
   INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul    , R, R(dest) = src1 * src2);
-  INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(dest) = ((int64_t)src1 * (int64_t)src2)  >>32);
+  // INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(dest) = ((int64_t)src1 * (int64_t)src2)  >>32);//seems not right, shoule be 64
+  INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(dest) = ((int64_t)src1>>32 * (int64_t)src2)>>32);//seems not right, shoule be 64
   INSTPAT("0000001 ????? ????? 010 ????? 01100 11", mulhsu , R, R(dest) = ((int64_t)src1 * (uint64_t)src2) >>32);
   INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu  , R, R(dest) = ((uint64_t)src1 * (uint64_t)src2)>>32);
 
@@ -205,16 +206,6 @@ static int decode_exec(Decode *s) {
 
   return 0;
 }
-
-// #define mtvec_id    0x305
-// #define mepc_id     0x341
-// #define mstatus_id  0x300
-// #define mcause_id   0x342
-// 
-// #define cpu_mtvec_id    0
-// #define cpu_mepc_id     1
-// #define cpu_mstatus_id  2
-// #define cpu_mcause_id   3
 
 void mret(Decode *s) {
   s->dnpc = cpu.csr[cpu_mepc_id];

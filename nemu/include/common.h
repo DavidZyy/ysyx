@@ -52,6 +52,9 @@ typedef uint16_t ioaddr_t;
 #define RV32_shamt_len 5
 #define RV32_shamt(imm)  (imm & ((1ull << RV32_shamt_len) - 1))
 
+/* riscv bit length */
+#define XLEN MUXDEF(CONFIG_ISA64, 64, 32)
+
 #include <debug.h>
 
 #endif
