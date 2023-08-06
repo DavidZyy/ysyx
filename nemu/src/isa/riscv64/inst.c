@@ -70,7 +70,7 @@ void ecall(Decode *s);
 void mret(Decode *s);
 
 // the number of call nested
-int nest_num;
+extern int nest_num;
 extern ftrace_struct func_info[64];
 extern int func_id;
 char *addr_to_func(uint64_t addr) {
