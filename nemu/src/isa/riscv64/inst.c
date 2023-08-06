@@ -69,48 +69,6 @@ void csrrs(word_t csr_id, int rd, word_t src1);
 void ecall(Decode *s);
 void mret(Decode *s);
 
-// the number of call nested
-extern int nest_num;
-extern ftrace_struct func_info[64];
-extern int func_id;
-char *addr_to_func(uint64_t addr) {
-  for(int i = 0; i < func_id; i++) {
-    if(func_info[i].func_addr_begin <= addr &&  addr < func_info[i].func_addr_begin+func_info[i].func_size) {
-      return func_info[i].func_name;
-    }
-  }
-  return NULL;
-}
-
-int is_a_call(uint64_t addr) {
-  for(int i = 0; i < func_id; i++) {
-    if(addr == func_info[i].func_addr_begin){
-      return 1;
-    }
-  }
-  return 0;
-}
-
-/* from the beginning of a function is a call */
-void ftrace(uint64_t old_addr, uint64_t new_addr, int is_ret) {
-  int is_call = is_a_call(new_addr);
-
-  if(is_call || is_ret) {
-    char *old_func = addr_to_func(old_addr);
-    char *new_func = addr_to_func(new_addr);
-    log_write("0x%lx", old_addr);
-    for(int i = 0; i < nest_num; i++) {
-      log_write("  ");
-    }
-    if(!is_ret){
-      nest_num++;
-      log_write("call [%s@0x%lx]\n", new_func, new_addr);
-    } else {
-      log_write("ret [%s]\n", old_func);
-    }
-  }
-}
-
 static int decode_exec(Decode *s) {
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
@@ -164,7 +122,7 @@ static int decode_exec(Decode *s) {
   
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(dest) = s->pc + 4; s->dnpc = s->pc + imm; FUNC_TRACE);
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, 
-  R(dest) = s->pc + 4; s->dnpc = src1 + imm; s->dnpc = s->dnpc & ~1; if(s->isa.inst.val == RET) {nest_num --; FUNC_TRACE_RET} else {FUNC_TRACE});
+  R(dest) = s->pc + 4; s->dnpc = src1 + imm; s->dnpc = s->dnpc & ~1; if(s->isa.inst.val == RET) {FUNC_TRACE_RET} else {FUNC_TRACE});
 
   /* Conditional Branches, B-type */
   INSTPAT("??????? ????? ????? 000 ????? 11000 11", beq    , B, if(src1 == src2) {s->dnpc = s->pc + imm; FUNC_TRACE} ); /* it does not matter add or not add (int64_t) before imm? */
