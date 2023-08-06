@@ -55,10 +55,6 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   }
 }
 
-#define RV64_shamt_len 6
-#define RV64_shamt(imm)  (imm & ((1ull << RV64_shamt_len) - 1))
-#define RV32_shamt_len 5
-#define RV32_shamt(imm)  (imm & ((1ull << RV32_shamt_len) - 1))
 /**
  * s->pc is the address of the instruction: s.isa.inst.val
  * s->snpc = s->pc + 4
@@ -244,7 +240,7 @@ void csrrw(word_t csr_id, int rd, word_t src1) {
 }
 
 void ecall(Decode *s) {
-  IFDEF(CONFIG_ETRACE, log_write("ecall\n"));
+  IFDEF(CONFIG_ETRACE, log_write("etrace: ecall in ecall function in inst.c\n"));
   cpu.csr[cpu_mstatus_id] = 0xa00001800;
   cpu.csr[cpu_mepc_id]    = cpu.pc; // see ref
   cpu.csr[cpu_mcause_id]  = 0xb; // environment call from M-mode

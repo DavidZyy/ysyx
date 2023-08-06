@@ -61,6 +61,7 @@
     "syscall.h": "c",
     "random": "c",
     "ftrace.h": "c",
-    "macro.h": "c"
+    "macro.h": "c",
+    "autoconf.h": "c"
   }
 }
