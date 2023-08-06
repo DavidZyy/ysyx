@@ -59,6 +59,8 @@
     "utility": "c",
     "list": "c",
     "syscall.h": "c",
-    "random": "c"
+    "random": "c",
+    "ftrace.h": "c",
+    "macro.h": "c"
   }
 }
