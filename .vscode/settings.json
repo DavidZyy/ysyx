@@ -62,6 +62,10 @@
     "random": "c",
     "ftrace.h": "c",
     "macro.h": "c",
-    "autoconf.h": "c"
+    "autoconf.h": "c",
+    "decode.h": "c",
+    "stubs-64.h": "c",
+    "stubs-32.h": "c",
+    "stubs-x32.h": "c"
   }
 }
