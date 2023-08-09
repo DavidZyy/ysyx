@@ -57,6 +57,14 @@ void csrrs(word_t csr_id, int rd, word_t src1);
 void ecall(Decode *s);
 void mret(Decode *s);
 
+word_t mulhu(word_t src1, word_t src2) {
+  uint64_t a = (uint64_t)src1;
+  uint64_t b = (uint64_t)src2;
+  uint64_t c = a * b;
+  c = c >> 32;
+  return (word_t)c;
+}
+
 static int decode_exec(Decode *s) {
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
@@ -127,19 +135,13 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
   INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, ecall(s));
 
-
 /* 7.1 Multiplication Operations */
   INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul    , R, R(dest) = src1 * src2);
   // not right!!
   INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(dest) = ((sword_t)src1>>16 * (sword_t)src2)>>16);//seems not right, shoule be 64
   INSTPAT("0000001 ????? ????? 010 ????? 01100 11", mulhsu , R, R(dest) = ((sword_t)src1>>16 * (word_t)src2)>>16);
   // INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu  , R, R(dest) = (src1>>16 * src2)>>16);
-  INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu  , R, 
-  uint64_t a = (uint64_t)src1;
-  uint64_t b = (uint64_t)src2;
-  uint64_t c = a * b;
-  c = c >> 32;
-  R(dest) = (word_t)c);
+  INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu  , R, R(dest) = mulhu(src1, src2));
 
 /* 7.2 Division Operations */
   INSTPAT("0000001 ????? ????? 100 ????? 01100 11", div    , R, R(dest) = ((sword_t)src1 / (sword_t)src2));
