@@ -13,7 +13,7 @@
       "args": [
         // "-l",
         // "/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/nemu-log.txt",
-        // "--diff=/home/zhuyangyang/project/ysyx-workbench/nemu/tools/spike-diff/build/riscv64-spike-so",
+        "--diff=/home/zhuyangyang/project/ysyx-workbench/nemu/tools/spike-diff/build/riscv32-spike-so",
         "-e",
         "/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/hello-str-riscv64-nemu.elf",
         "-b",
