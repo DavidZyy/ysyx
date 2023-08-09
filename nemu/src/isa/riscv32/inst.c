@@ -64,9 +64,9 @@ word_t mulhu(word_t src1, word_t src2) {
   // c = c >> 32;
   // return (word_t)c;
 
-  word_t a = src1>>16;
-  word_t b = src2>>16;
-  word_t c = a * b;
+  volatile word_t a = src1>>16;
+  volatile word_t b = src2>>16;
+  volatile word_t c = a * b;
   // c = c >> 32;
   return (word_t)c;
 }
