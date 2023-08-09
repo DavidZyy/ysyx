@@ -58,9 +58,9 @@ void ecall(Decode *s);
 void mret(Decode *s);
 
 word_t mulhu(word_t src1, word_t src2) {
-  uint64_t a = (uint64_t)src1;
-  uint64_t b = (uint64_t)src2;
-  uint64_t c = a * b;
+  volatile uint64_t a = (uint64_t)src1;
+  volatile uint64_t b = (uint64_t)src2;
+  volatile uint64_t c = a * b;
   c = c >> 32;
   return (word_t)c;
 }
