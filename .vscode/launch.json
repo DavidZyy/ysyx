@@ -18,7 +18,8 @@
         "/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/hello-str-riscv64-nemu.elf",
         "-b",
         // "/home/zhuyangyang/project/ysyx-workbench/nanos-lite/build/nanos-lite-riscv64-nemu.bin"
-        "/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/hello-str-riscv64-nemu.bin"
+        "/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/mul-longlong-riscv32-nemu.bin"
+        // "/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/hello-str-riscv64-nemu.bin"
       ],
       "stopAtEntry": false,
       // "cwd": "${fileDirname}/..",
