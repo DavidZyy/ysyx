@@ -60,7 +60,7 @@ int terminal = 0;
 void exit_code(){
   terminal = 1;
   printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
-        (void *)top->pc_WB);
+        (void *)top->io_out_pc);
         // (void *)top->pc_IF);
 }
 
@@ -121,7 +121,7 @@ void get_cpu() {
     cpu.gpr[i] = cpu_gpr[i];
   }
   // cpu.pc = top->pc_IF;
-  cpu.pc = top->pc_WB;
+  cpu.pc = top->io_out_pc;
 }
 
 void npc_exec_once() {
