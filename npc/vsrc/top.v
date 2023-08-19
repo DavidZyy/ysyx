@@ -1,3 +1,5 @@
+/* verilator lint_off DECLFILENAME */
+
 module PCReg(
   input         clock,
   input         reset,
