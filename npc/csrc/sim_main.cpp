@@ -46,11 +46,11 @@ void sim_exit(){
 }
 
 void single_cycle(int rst) {
-  top->clk = 0;
-  if(rst) top->rst = 1;
+  top->clock = 0;
+  if(rst) top->reset = 1;
   step_and_dump_wave();
-  if(rst) top->rst = 0;
-  top->clk = 1;
+  if(rst) top->reset = 0;
+  top->clock = 1;
   step_and_dump_wave();
 }
 
@@ -189,11 +189,11 @@ int main(int argc, char *argv[]) {
 
   sim_init();
 
-  top->rst = 1;
+  top->reset = 1;
   single_cycle(0);
   single_cycle(0);
   // single_cycle(0);
-  top->rst = 0;
+  top->reset = 0;
 
   uint64_t i;
   uint64_t times = -1;
