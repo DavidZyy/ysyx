@@ -32,15 +32,15 @@ void ftrace(vaddr_t old_addr, vaddr_t new_addr, int is_ret) {
   if(is_ret) nest_num--;
 
   if(is_call || is_ret) {
-    char *old_func = addr_to_func(old_addr);
-    char *new_func = addr_to_func(new_addr);
     log_write("0x%"XX, old_addr);
     for(int i = 0; i < nest_num; i++) {
       log_write("  ");
     }
     if(!is_ret){
+      // char *old_func = addr_to_func(old_addr);
+      // char *new_func = addr_to_func(new_addr);
       nest_num++;
-      log_write("call [%s@0x%"XX"]\n", new_func, new_addr);
+      log_write("call [%s@0x%"XX"]\n", addr_to_func(new_addr), new_addr);
     } else {
       log_write("ret [%s]\n", old_func);
     }
