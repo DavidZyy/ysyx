@@ -55,10 +55,6 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   }
 }
 
-#define RV64_shamt_len 6
-#define RV64_shamt(imm)  (imm & ((1ull << RV64_shamt_len) - 1))
-#define RV32_shamt_len 5
-#define RV32_shamt(imm)  (imm & ((1ull << RV32_shamt_len) - 1))
 /**
  * s->pc is the address of the instruction: s.isa.inst.val
  * s->snpc = s->pc + 4
@@ -68,52 +64,6 @@ void csrrw(word_t csr_id, int rd, word_t src1);
 void csrrs(word_t csr_id, int rd, word_t src1);
 void ecall(Decode *s);
 void mret(Decode *s);
-
-// the number of call nested
-int nest_num;
-extern ftrace_struct func_info[64];
-extern int func_id;
-char *addr_to_func(uint64_t addr) {
-  for(int i = 0; i < func_id; i++) {
-    if(func_info[i].func_addr_begin <= addr &&  addr < func_info[i].func_addr_begin+func_info[i].func_size) {
-      return func_info[i].func_name;
-    }
-  }
-  return NULL;
-}
-
-int is_a_call(uint64_t addr) {
-  for(int i = 0; i < func_id; i++) {
-    if(addr == func_info[i].func_addr_begin){
-      return 1;
-    }
-  }
-  return 0;
-}
-
-#define RET 0x00008067
-/* current inst pc is s->snpc-4 */
-#define FUNC_TRACE {IFDEF(CONFIG_FTRACE, ftrace(s->snpc-4, s->dnpc, 0));}
-#define FUNC_TRACE_RET {IFDEF(CONFIG_FTRACE, ftrace(s->snpc-4, s->dnpc, 1));}
-/* from the beginning of a function is a call */
-void ftrace(uint64_t old_addr, uint64_t new_addr, int is_ret) {
-  int is_call = is_a_call(new_addr);
-
-  if(is_call || is_ret) {
-    char *old_func = addr_to_func(old_addr);
-    char *new_func = addr_to_func(new_addr);
-    log_write("0x%lx", old_addr);
-    for(int i = 0; i < nest_num; i++) {
-      log_write("  ");
-    }
-    if(!is_ret){
-      nest_num++;
-      log_write("call [%s@0x%lx]\n", new_func, new_addr);
-    } else {
-      log_write("ret [%s]\n", old_func);
-    }
-  }
-}
 
 static int decode_exec(Decode *s) {
   int dest = 0;
@@ -168,7 +118,7 @@ static int decode_exec(Decode *s) {
   
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(dest) = s->pc + 4; s->dnpc = s->pc + imm; FUNC_TRACE);
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, 
-  R(dest) = s->pc + 4; s->dnpc = src1 + imm; s->dnpc = s->dnpc & ~1; if(s->isa.inst.val == RET) {nest_num --; FUNC_TRACE_RET} else {FUNC_TRACE});
+  R(dest) = s->pc + 4; s->dnpc = src1 + imm; s->dnpc = s->dnpc & ~1; if(s->isa.inst.val == RET) {FUNC_TRACE_RET} else {FUNC_TRACE});
 
   /* Conditional Branches, B-type */
   INSTPAT("??????? ????? ????? 000 ????? 11000 11", beq    , B, if(src1 == src2) {s->dnpc = s->pc + imm; FUNC_TRACE} ); /* it does not matter add or not add (int64_t) before imm? */
@@ -191,7 +141,7 @@ static int decode_exec(Decode *s) {
   /* Integer Register-Immediate Instructions */
   INSTPAT("??????? ????? ????? 000 ????? 00110 11", addiw  , I, R(dest) = SEXT(BITS(src1 + imm, 31, 0), 32)); /* the src1 = R(rs1), see decode_operand */
 
-  INSTPAT("010000? ????? ????? 101 ????? 00100 11", srai   , I, R(dest) = (((int64_t) src1) >> RV64_shamt(imm)));
+  // INSTPAT("010000? ????? ????? 101 ????? 00100 11", srai   , I, R(dest) = (((int64_t) src1) >> RV64_shamt(imm)));
   INSTPAT("0000000 ????? ????? 001 ????? 00110 11", slliw  , I, R(dest) = SEXT(BITS(src1 << RV32_shamt(imm), 31, 0), 32)); /* use (int32_t) to replace BTIS(x, 31, 0) ? */
   INSTPAT("0000000 ????? ????? 101 ????? 00110 11", srliw  , I, R(dest) = SEXT((uint32_t)src1 >> RV32_shamt(imm), 32)); /* use (int32_t) to replace BTIS(x, 31, 0) ? */
   INSTPAT("0100000 ????? ????? 101 ????? 00110 11", sraiw  , I, R(dest) = SEXT((int32_t)src1 >> RV32_shamt(imm), 32)); /* use (int32_t) to replace BTIS(x, 31, 0) ? */
@@ -221,23 +171,22 @@ static int decode_exec(Decode *s) {
 
   /* 7.1 Multiplication Operations */
   INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul    , R, R(dest) = src1 * src2);
-  INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(dest) = ((int64_t)src1 * (int64_t)src2)  >>32);
+  // INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(dest) = ((int64_t)src1 * (int64_t)src2)  >>32);//seems not right, shoule be 64
+  INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(dest) = ((int64_t)src1>>32 * (int64_t)src2)>>32);//seems not right, shoule be 64
   INSTPAT("0000001 ????? ????? 010 ????? 01100 11", mulhsu , R, R(dest) = ((int64_t)src1 * (uint64_t)src2) >>32);
   INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu  , R, R(dest) = ((uint64_t)src1 * (uint64_t)src2)>>32);
 
   INSTPAT("0000001 ????? ????? 000 ????? 01110 11", mulw   , R, R(dest) = SEXT(BITS(src1 * src2, 31, 0), 32));
-  
+ 
   /* 7.2 Division Operations */
   INSTPAT("0000001 ????? ????? 100 ????? 01100 11", div    , R, R(dest) = ((int64_t)src1 / (int64_t)src2));
   INSTPAT("0000001 ????? ????? 101 ????? 01100 11", divu   , R, R(dest) = ((uint64_t)src1 / (uint64_t)src2));
+  INSTPAT("0000001 ????? ????? 100 ????? 01110 11", divw   , R, R(dest) = SEXT((int32_t)src1 / (int32_t)src2, 32));
+  INSTPAT("0000001 ????? ????? 101 ????? 01110 11", divuw  , R, R(dest) = SEXT((uint32_t)src1 / (uint32_t)src2, 32));
 
   INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem    , R, R(dest) = ((int64_t)src1 % (int64_t)src2));
   INSTPAT("0000001 ????? ????? 111 ????? 01100 11", remu   , R, R(dest) = ((uint64_t)src1 % (uint64_t)src2));
-
-  INSTPAT("0000001 ????? ????? 100 ????? 01110 11", divw   , R, R(dest) = SEXT((int32_t)src1 / (int32_t)src2, 32));
   INSTPAT("0000001 ????? ????? 110 ????? 01110 11", remw   , R, R(dest) = SEXT((int32_t)src1 % (int32_t)src2, 32));
-
-  INSTPAT("0000001 ????? ????? 101 ????? 01110 11", divuw  , R, R(dest) = SEXT((uint32_t)src1 / (uint32_t)src2, 32));
   INSTPAT("0000001 ????? ????? 111 ????? 01110 11", remuw  , R, R(dest) = SEXT((uint32_t)src1 % (uint32_t)src2, 32));
 
   /* RV-Zicsr */
@@ -255,16 +204,6 @@ static int decode_exec(Decode *s) {
 
   return 0;
 }
-
-// #define mtvec_id    0x305
-// #define mepc_id     0x341
-// #define mstatus_id  0x300
-// #define mcause_id   0x342
-// 
-// #define cpu_mtvec_id    0
-// #define cpu_mepc_id     1
-// #define cpu_mstatus_id  2
-// #define cpu_mcause_id   3
 
 void mret(Decode *s) {
   s->dnpc = cpu.csr[cpu_mepc_id];
@@ -290,7 +229,7 @@ void csrrw(word_t csr_id, int rd, word_t src1) {
 }
 
 void ecall(Decode *s) {
-  IFDEF(CONFIG_ETRACE, log_write("ecall\n"));
+  IFDEF(CONFIG_ETRACE, log_write("etrace: ecall in ecall function in inst.c\n"));
   cpu.csr[cpu_mstatus_id] = 0xa00001800;
   cpu.csr[cpu_mepc_id]    = cpu.pc; // see ref
   cpu.csr[cpu_mcause_id]  = 0xb; // environment call from M-mode

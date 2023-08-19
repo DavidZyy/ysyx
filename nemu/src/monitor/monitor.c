@@ -17,6 +17,7 @@
 #include <memory/paddr.h>
 #include </usr/include/elf.h>
 #include <ftrace.h>
+#include <common.h>
 
 void init_rand();
 void init_log(const char *log_file);
@@ -104,9 +105,14 @@ static int parse_args(int argc, char *argv[]) {
   return 0;
 }
 
-Elf64_Shdr section_headers[20];
+#define Elf_Ehdr MUXDEF(CONFIG_ISA64, Elf64_Ehdr, Elf32_Ehdr)
+#define Elf_Phdr MUXDEF(CONFIG_ISA64, Elf64_Phdr, Elf32_Phdr)
+#define Elf_Shdr MUXDEF(CONFIG_ISA64, Elf64_Shdr, Elf32_Shdr)
+#define Elf_Sym  MUXDEF(CONFIG_ISA64, Elf64_Sym,  Elf32_Sym)
+
+Elf_Shdr section_headers[20];
 char section_names[512];
-Elf64_Sym symbols[200];
+Elf_Sym symbols[200];
 int func_id = 0;
 ftrace_struct func_info[64];
 
@@ -115,20 +121,20 @@ void init_elf(const char* elf_file) {
   FILE *file = fopen(elf_file, "rb");
   assert(file);
 
-  Elf64_Ehdr elf_header;
-  assert(fread(&elf_header, sizeof(Elf64_Ehdr), 1, file) == 1);
+  Elf_Ehdr elf_header;
+  assert(fread(&elf_header, sizeof(Elf_Ehdr), 1, file) == 1);
 
   // Read and validate the section header table
   int num_sections = elf_header.e_shnum;
-  assert(num_sections < sizeof(section_headers) / sizeof(Elf64_Shdr));
-  // Elf64_Shdr *section_headers = malloc(sizeof(Elf64_Shdr) * num_sections);
+  assert(num_sections < sizeof(section_headers) / sizeof(Elf_Shdr));
+  // Elf_Shdr *section_headers = malloc(sizeof(Elf_Shdr) * num_sections);
   fseek(file, elf_header.e_shoff, SEEK_SET);
-  assert(fread(section_headers, sizeof(Elf64_Shdr), num_sections, file) == num_sections);
+  assert(fread(section_headers, sizeof(Elf_Shdr), num_sections, file) == num_sections);
 
   /* get symbol table section */
-  Elf64_Shdr symtab, strtab;
-  memset(&symtab, 0, sizeof(Elf64_Shdr));
-  memset(&strtab, 0, sizeof(Elf64_Shdr));
+  Elf_Shdr symtab, strtab;
+  memset(&symtab, 0, sizeof(Elf_Shdr));
+  memset(&strtab, 0, sizeof(Elf_Shdr));
   for(int i = 0; i < elf_header.e_shnum; i++) {
     if(section_headers[i].sh_type == SHT_SYMTAB) {
       symtab = section_headers[i];
@@ -151,17 +157,17 @@ void init_elf(const char* elf_file) {
 
   /*read symbol table */
   fseek(file, symtab.sh_offset, SEEK_SET);
-  // Elf64_Sym *symbols = malloc(symtab.sh_size);
+  // Elf_Sym *symbols = malloc(symtab.sh_size);
   // assert(fread(symbols, symtab.sh_size, 1, file) == 1);
   int ret = fread(symbols, symtab.sh_size, 1, file);
   assert(ret);
 
   func_id = 0;
-  int num_symbols = symtab.sh_size / sizeof(Elf64_Sym);
-  assert(num_symbols < sizeof(symbols) / sizeof(Elf64_Sym));
+  int num_symbols = symtab.sh_size / sizeof(Elf_Sym);
+  assert(num_symbols < sizeof(symbols) / sizeof(Elf_Sym));
   for (int i = 0; i < num_symbols; i++) {
     // if(symbols[i].st_name)
-      log_write("Symbol %-2d: Name=%-15s, Value=0x%-10lx, Size=%-5lu, info=%x\n", i,
+      log_write("Symbol %-2d: Name=%-15s, Value=0x%-10"XX", Size=%-5"UU", info=%x\n", i,
              section_names + symbols[i].st_name, symbols[i].st_value, symbols[i].st_size, symbols[i].st_info);
             //  NULL, symbols[i].st_value, symbols[i].st_size);
       unsigned char st_info = symbols[i].st_info; 
