@@ -46,11 +46,11 @@ void sim_exit(){
 }
 
 void single_cycle(int rst) {
-  top->clk = 0;
-  if(rst) top->rst = 1;
+  top->clock = 0;
+  if(rst) top->reset = 1;
   step_and_dump_wave();
-  if(rst) top->rst = 0;
-  top->clk = 1;
+  if(rst) top->reset = 0;
+  top->clock = 1;
   step_and_dump_wave();
 }
 
@@ -78,16 +78,16 @@ void print_serial(long long ch){
  * signal is emited. To prevent this case happens,
  * I add the condition "top->pc > 0".
  */
-void not_ipl_exception(){
-  if(top->pc_IF){
-  terminal = 1;
-  printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
-  printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
-    (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
-    // (void *)top->pc, top->inst);
-  // printf(ANSI_FMT(""))
-  }
-}
+// void not_ipl_exception(){
+//   if(top->pc_IF){
+//   terminal = 1;
+//   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
+//   printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
+//     (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
+//     // (void *)top->pc, top->inst);
+//   // printf(ANSI_FMT(""))
+//   }
+// }
 
 /**
  * argv[1] is the path of the program to be executed.
@@ -145,11 +145,11 @@ int main(int argc, char *argv[]) {
 
   sim_init();
 
-  top->rst = 1;
+  top->reset = 1;
   single_cycle(0);
   single_cycle(0);
   // single_cycle(0);
-  top->rst = 0;
+  top->reset = 0;
 
   uint64_t i;
   // uint64_t times = -1;
