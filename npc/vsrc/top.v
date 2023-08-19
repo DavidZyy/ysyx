@@ -81,7 +81,7 @@ module Rom(
   assign mem_io_inst_MPORT_en = 1'h1;
   assign mem_io_inst_MPORT_addr = io_addr[11:2];
   assign mem_io_inst_MPORT_data = mem[mem_io_inst_MPORT_addr]; // @[instmem.scala 20:18]
-  assign io_inst = mem_io_inst_MPORT_data; // @[instmem.scala 23:13]
+  assign io_inst = mem_io_inst_MPORT_data; // @[instmem.scala 22:13]
 // Register and memory initialization
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
@@ -973,7 +973,7 @@ end // initial
 `endif
 `endif // SYNTHESIS
 endmodule
-module Top(
+module top(
   input         clock,
   input         reset,
   output [31:0] io_out_inst
