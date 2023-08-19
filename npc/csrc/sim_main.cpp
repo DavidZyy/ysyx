@@ -4,7 +4,7 @@
 
 /* DPI-C function */
 #include "svdpi.h"
-#include "Vtop__Dpi.h"
+// #include "Vtop__Dpi.h"
 #include "verilated_dpi.h"
 
 // my header
