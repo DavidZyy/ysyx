@@ -1,27 +1,13 @@
-# am-kernels cpu_test will include this file
-
-ANSI_FG_GREEN  = "\33[1;32m"
-ANSI_NONE    =   "\33[0m"
-ANSI_FG_YELLOW = "\33[1;33m"
-ANSI_FG_BLUE = "\33[1;34m"
-
-red:=$(shell tput setaf 1)
-green:=$(shell tput setaf 2)
-yellow:=$(shell tput setaf 3)
-reset:=$(shell tput sgr0)
 # Makefile for AbstractMachine Kernels and Libraries
 
 ### *Get a more readable version of this Makefile* by `make html` (requires python-markdown)
-# markdown_py is in /home/zhuyangyang/.local/bin
 html:
-# cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
-	cat Makefile | sed 's/^\([^#]\)/    \1/g' | python3 -m markdown > Makefile.html
+	cat Makefile | sed 's/^\([^#]\)/    \1/g' | markdown_py > Makefile.html
 .PHONY: html
 
 ## 1. Basic Setup and Checks
 
 ### Default to create a bare-metal kernel image
-# start with the target image
 ifeq ($(MAKECMDGOALS),)
   MAKECMDGOALS  = image
   .DEFAULT_GOAL = image
@@ -62,7 +48,6 @@ endif
 ### Create the destination directory (`build/$ARCH`)
 WORK_DIR  = $(shell pwd)
 DST_DIR   = $(WORK_DIR)/build/$(ARCH)
-# $(info $(green)$(DST_DIR)$(reset))
 $(shell mkdir -p $(DST_DIR))
 
 ### Compilation targets (a binary image or archive)
@@ -70,37 +55,14 @@ IMAGE_REL = build/$(NAME)-$(ARCH)
 IMAGE     = $(abspath $(IMAGE_REL))
 ARCHIVE   = $(WORK_DIR)/build/$(NAME)-$(ARCH).a
 
-# $(info $(red)$(ARCHIVE)$(reset))
-
-# $(error $(LIBS))
 ### Collect the files to be linked: object files (`.o`) and libraries (`.a`)
 OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
-# $(info $(green)$(OBJS)$(reset))
-
-# $(error $(SRCS))
-# new added
-
-# if use :=, because SRCS of am will changed when campile am-riscv64-nemu.a, after
-# include $(ARCH).mk, it not chaned, so am/build/xxx.i will not be compiled.
-# C_SRCS := $(filter %.c, $(SRCS))
-C_SRCS = $(filter %.c, $(SRCS))
-# PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(C_SRCS))))
-PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(SRCS))))
-# $(info $(green)$(PRES)$(reset))
-
-
-# put after include native.mk
-# $(info $(yellow)$(PRES)$(reset))
 LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recursions
-
-# $(error $(LIBS))
-
 LINKAGE   = $(OBJS) \
   $(addsuffix -$(ARCH).a, $(join \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
     $(LIBS) ))
 
-# $(error $(LINKAGE))
 ## 3. General Compilation Flags
 
 ### (Cross) compilers, e.g., mips-linux-gnu-g++
@@ -108,6 +70,7 @@ AS        = $(CROSS_COMPILE)gcc
 CC        = $(CROSS_COMPILE)gcc
 CXX       = $(CROSS_COMPILE)g++
 LD        = $(CROSS_COMPILE)ld
+AR        = $(CROSS_COMPILE)ar
 OBJDUMP   = $(CROSS_COMPILE)objdump
 OBJCOPY   = $(CROSS_COMPILE)objcopy
 READELF   = $(CROSS_COMPILE)readelf
@@ -116,30 +79,22 @@ READELF   = $(CROSS_COMPILE)readelf
 INC_PATH += $(WORK_DIR)/include $(addsuffix /include/, $(addprefix $(AM_HOME)/, $(LIBS)))
 INCFLAGS += $(addprefix -I, $(INC_PATH))
 
-# CFLAGS   += -O0 -MMD -Wall -Werror $(INCFLAGS) 
-
-CFLAGS   += -O0 -MMD -Wall -Werror $(INCFLAGS) \
+ARCH_H := arch/$(ARCH).h
+CFLAGS   += -O2 -MMD -Wall -Werror $(INCFLAGS) \
             -D__ISA__=\"$(ISA)\" -D__ISA_$(shell echo $(ISA) | tr a-z A-Z)__ \
             -D__ARCH__=$(ARCH) -D__ARCH_$(shell echo $(ARCH) | tr a-z A-Z | tr - _) \
             -D__PLATFORM__=$(PLATFORM) -D__PLATFORM_$(shell echo $(PLATFORM) | tr a-z A-Z | tr - _) \
-            -DARCH_H=\"arch/$(ARCH).h\" \
+            -DARCH_H=\"$(ARCH_H)\" \
             -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector \
             -Wno-main -U_FORTIFY_SOURCE
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  += -MMD $(INCFLAGS)
 LDFLAGS  += -z noexecstack
 
-# $(error $(CFLAGS))
-
 ## 4. Arch-Specific Configurations
 
-# $(info $(yellow)$(OBJS)$(reset))
 ### Paste in arch-specific configurations (e.g., from `scripts/x86_64-qemu.mk`)
 -include $(AM_HOME)/scripts/$(ARCH).mk
-# $(info $(yellow)$(OBJS)$(reset))
-
-# $(error $(AM_HOME))
-# $(error $(ARCH))
 
 ### Fall back to native gcc/binutils if there is no cross compiler
 ifeq ($(wildcard $(shell which $(CC))),)
@@ -148,14 +103,6 @@ ifeq ($(wildcard $(shell which $(CC))),)
 endif
 
 ## 5. Compilation Rules
-
-$(DST_DIR)/%.i: %.c
-	@mkdir -p $(dir $@) && echo + PRE $<
-	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
-
-$(DST_DIR)/%.i: %.S
-	@mkdir -p $(dir $@) && echo + PRE $<
-	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
 
 ### Rule (compile): a single `.c` -> `.o` (gcc)
 $(DST_DIR)/%.o: %.c
@@ -178,36 +125,28 @@ $(DST_DIR)/%.o: %.S
 	@$(AS) $(ASFLAGS) -c -o $@ $(realpath $<)
 
 ### Rule (recursive make): build a dependent library (am, klib, ...)
-# 5.7 use make command in make file
 $(LIBS): %:
-# echo $*
-# @$(MAKE) -s -C $(AM_HOME)/$* archive
-	$(MAKE) -C $(AM_HOME)/$* archive
+	@$(MAKE) -s -C $(AM_HOME)/$* archive
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `IMAGE.elf`, the final ELF binary to be packed into image (ld)
-$(IMAGE).elf: $(OBJS) am $(LIBS) $(PRES)
+$(IMAGE).elf: $(OBJS) am $(LIBS)
 	@echo + LD "->" $(IMAGE_REL).elf
 	@$(LD) $(LDFLAGS) -o $(IMAGE).elf --start-group $(LINKAGE) --end-group
 
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
-$(ARCHIVE): $(OBJS) $(PRES)
+$(ARCHIVE): $(OBJS)
 	@echo + AR "->" $(shell realpath $@ --relative-to .)
-	@ar rcs $(ARCHIVE) $(OBJS)
+	@$(AR) rcs $(ARCHIVE) $(OBJS)
 
 ### Rule (`#include` dependencies): paste in `.d` files generated by gcc on `-MMD`
-# $(error $(SRCS))
-# $(error $(addprefix $(DST_DIR)/, $(addsuffix .d, $(basename $(SRCS)))))
 -include $(addprefix $(DST_DIR)/, $(addsuffix .d, $(basename $(SRCS))))
 
 ## 6. Miscellaneous
 
 ### Build order control
-# also has an image in nemu.mk ...
 image: image-dep
 archive: $(ARCHIVE)
 image-dep: $(OBJS) am $(LIBS)
-# @echo $(ANSI_FG_GREEN)$(OBJS)$(ANSI_NONE)
-# @echo $(ANSI_FG_GREEN)$(LIBS)$(ANSI_NONE)
 	@echo \# Creating image [$(ARCH)]
 .PHONY: image image-dep archive run $(LIBS)
 
@@ -218,12 +157,6 @@ clean:
 
 ### Clean all sub-projects within depth 2 (and ignore errors)
 CLEAN_ALL = $(dir $(shell find . -mindepth 2 -name Makefile))
-
-# when in cpu-tests, CLEAN_ALL has nothing, becuase the find is work
-# on the path of cpu-tests. Under $AM_HOME use make clean_all will find something.
-# CLEAN_ALL = $(shell find . -mindepth 2 -name Makefile)
-# $(error $(CLEAN_ALL))
-
 clean-all: $(CLEAN_ALL) clean
 $(CLEAN_ALL):
 	-@$(MAKE) -s -C $@ clean
