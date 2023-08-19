@@ -74,10 +74,16 @@ module Rom(
   input  [31:0] io_addr,
   output [31:0] io_inst
 );
+    
 `ifdef RANDOMIZE_MEM_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_MEM_INIT
   reg [31:0] mem [0:1023]; // @[instmem.scala 20:18]
+
+initial begin
+      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/add-riscv32e-npc.rom.hex", 
+      mem);
+end
   wire  mem_io_inst_MPORT_en; // @[instmem.scala 20:18]
   wire [9:0] mem_io_inst_MPORT_addr; // @[instmem.scala 20:18]
   wire [31:0] mem_io_inst_MPORT_data; // @[instmem.scala 20:18]
@@ -857,6 +863,10 @@ module Ram(
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_MEM_INIT
   reg [31:0] mem [0:1023]; // @[datamem.scala 33:18]
+initial begin
+      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/add-riscv32e-npc.ram.hex", 
+      mem);
+end
   wire  mem_rdata_align_4_en; // @[datamem.scala 33:18]
   wire [9:0] mem_rdata_align_4_addr; // @[datamem.scala 33:18]
   wire [31:0] mem_rdata_align_4_data; // @[datamem.scala 33:18]
