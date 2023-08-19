@@ -1,6 +1,6 @@
 /* verilator lint_off DECLFILENAME */
 /* verilator lint_off UNUSEDSIGNAL */
-
+/* verilator lint_off UNDRIVEN */
 module PCReg(
   input         clock,
   input         reset,
