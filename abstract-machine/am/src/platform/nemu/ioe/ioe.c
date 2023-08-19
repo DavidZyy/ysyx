@@ -55,7 +55,5 @@ bool ioe_init() {
   return true;
 }
 
-/* these two functions are just abstraction of the above functions
-  call them equals to directly call the above function */
 void ioe_read (int reg, void *buf) { ((handler_t)lut[reg])(buf); }
 void ioe_write(int reg, void *buf) { ((handler_t)lut[reg])(buf); }
