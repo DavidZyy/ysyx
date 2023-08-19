@@ -134,11 +134,11 @@ void nemu_exec_once() {
 
 int main(int argc, char *argv[]) {
   // get_cpu();
-  cpu.pc = RESET_VECTOR;
+  // cpu.pc = RESET_VECTOR;
   // print_arg(argc, argv);
-  long size = load_img(argv[1]);
+  // long size = load_img(argv[1]);
   // long size = load_init_img();
-  init_difftest(argv[2], size, 0);
+  // init_difftest(argv[2], size, 0);
 
   sim_init();
 
