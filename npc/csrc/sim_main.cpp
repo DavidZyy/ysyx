@@ -78,16 +78,16 @@ void print_serial(long long ch){
  * signal is emited. To prevent this case happens,
  * I add the condition "top->pc > 0".
  */
-void not_ipl_exception(){
-  if(top->pc_IF){
-  terminal = 1;
-  printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
-  printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
-    (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
-    // (void *)top->pc, top->inst);
-  // printf(ANSI_FMT(""))
-  }
-}
+// void not_ipl_exception(){
+//   if(top->pc_IF){
+//   terminal = 1;
+//   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
+//   printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
+//     (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
+//     // (void *)top->pc, top->inst);
+//   // printf(ANSI_FMT(""))
+//   }
+// }
 
 /**
  * argv[1] is the path of the program to be executed.
@@ -102,7 +102,6 @@ void print_arg(int argc, char *argv[]){
 uint64_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
-  // cpu.gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
 // 一个输出RTL中通用寄存器的值的示例
@@ -133,52 +132,6 @@ void nemu_exec_once() {
   difftest_step();
 }
 
-void kdb_sendcode() {
-  int send_buffer[11];
-//   send_buffer[0]  = 0;
-// 
-//   /* 1C */
-//   send_buffer[1]  = 0;
-//   send_buffer[2]  = 0;
-//   send_buffer[3]  = 0;
-//   send_buffer[4]  = 1;
-//   send_buffer[5]  = 1;
-//   send_buffer[6]  = 1;
-//   send_buffer[7]  = 0;
-//   send_buffer[8]  = 0;
-// 
-//   send_buffer[9]  = send_buffer[1];
-//   for(int i = 2; i <= 8; i++){
-//     send_buffer[9] = send_buffer[9] ^ send_buffer[i];
-//   }
-//   send_buffer[9]  = ~send_buffer[9];
-// 
-//   send_buffer[10] = 1;
-  send_buffer[0]  = 1;
-  send_buffer[1]  = 0;
-  send_buffer[2]  = 1;
-  send_buffer[3]  = 0;
-  send_buffer[4]  = 1;
-  send_buffer[5]  = 0;
-  send_buffer[6]  = 1;
-  send_buffer[7]  = 0;
-  send_buffer[8]  = 1;
-  send_buffer[9]  = 0;
-  send_buffer[10] = 1;
-
-  for(int i = 0; i <= 10; i++){
-    top->PS2_clk = 1;
-    top->PS2_Data = send_buffer[i];
-    single_cycle(0);
-    single_cycle(0);
-    top->PS2_clk = 0;
-    single_cycle(0);
-    single_cycle(0);
-  }
-}
-
-// 当nemu的pc和npc的pc_IF为xxxx时，说明这个地址的指令还没有执行。
-/** * The single cycle time series design refers: * https://nju-projectn.github.io/dlco-lecture-note/exp/11.html#id9 */
 int main(int argc, char *argv[]) {
   // get_cpu();
   cpu.pc = RESET_VECTOR;
@@ -196,43 +149,15 @@ int main(int argc, char *argv[]) {
   top->reset = 0;
 
   uint64_t i;
-  uint64_t times = -1;
-  // uint64_t times = 2^16;
+  // uint64_t times = -1;
+  uint64_t times = 10000;
 
-  // int nemu_not_run = 1;
   int begin = 1;
 
   for(i = 0; i < times; i++){
 
-    /* if control branch failed */
-    if(begin){
-      begin = 0;
-      npc_exec_once(); // execute jmp / branch
-      npc_exec_once(); // execute nop
-      npc_exec_once(); // execute nop
-      npc_exec_once(); // execute nop
-      npc_exec_once(); // execute nop
-    }
-    else {
-      npc_exec_once();
-    }
-
+    npc_exec_once()
     // nemu_exec_once(); // execute jmp / branch
-
-//     if(i == 10)
-//       kdb_sendcode();
-// 
-//     if(i == 100)
-//       top->swt  = 1;
-// 
-//     if (i == 200)
-//       top->swt  = 2;
-// 
-//     if (i == 300)
-//       top->swt  = 3;
-      
-    if(top->flush_WB)
-      begin = 1;
     
     if(terminal)
       break;
