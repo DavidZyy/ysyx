@@ -1,6 +1,6 @@
 /* general registers */
 
-`define REG_OP_WIDTH 4
+`define REG_OP_WIDTH 5
 `define DATA_WIDTH 32
 `define RegCnt     32
 

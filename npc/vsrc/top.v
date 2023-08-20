@@ -74,10 +74,6 @@ module Rom(
   input  [31:0] io_addr,
   output [31:0] io_inst
 );
-initial begin
-      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/add-riscv32e-npc.rom.hex", 
-      mem);
-end
 `ifdef RANDOMIZE_MEM_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_MEM_INIT
@@ -140,9 +136,9 @@ endmodule
 module Decoder(
   input  [31:0] io_inst,
   output [31:0] io_out_imm,
-  output [3:0]  io_out_rs1,
-  output [3:0]  io_out_rs2,
-  output [3:0]  io_out_rd,
+  output [4:0]  io_out_rs1,
+  output [4:0]  io_out_rs2,
+  output [4:0]  io_out_rd,
   output        io_out_ctrl_sig_mem_wen,
   output        io_out_ctrl_sig_reg_wen,
   output [1:0]  io_out_ctrl_sig_src1_op,
@@ -515,9 +511,9 @@ module Decoder(
   wire [31:0] _io_out_imm_T_7 = 3'h4 == inst_type ? imm_u : _io_out_imm_T_5; // @[Mux.scala 81:58]
   wire [32:0] _io_out_imm_T_9 = 3'h5 == inst_type ? imm_j : {{1'd0}, _io_out_imm_T_7}; // @[Mux.scala 81:58]
   assign io_out_imm = _io_out_imm_T_9[31:0]; // @[decoder.scala 108:16]
-  assign io_out_rs1 = io_inst[18:15]; // @[decoder.scala 126:16]
-  assign io_out_rs2 = io_inst[23:20]; // @[decoder.scala 127:16]
-  assign io_out_rd = io_inst[10:7]; // @[decoder.scala 128:16]
+  assign io_out_rs1 = io_inst[19:15]; // @[decoder.scala 126:26]
+  assign io_out_rs2 = io_inst[24:20]; // @[decoder.scala 127:26]
+  assign io_out_rd = io_inst[11:7]; // @[decoder.scala 128:26]
   assign io_out_ctrl_sig_mem_wen = decode_info_invMatrixOutputs[0]; // @[decoder.scala 116:45]
   assign io_out_ctrl_sig_reg_wen = decode_info_invMatrixOutputs[1]; // @[decoder.scala 117:45]
   assign io_out_ctrl_sig_src1_op = decode_info_invMatrixOutputs[5:4]; // @[decoder.scala 119:45]
@@ -529,9 +525,9 @@ endmodule
 module RegFile(
   input         clock,
   input         reset,
-  input  [3:0]  io_in_rs1,
-  input  [3:0]  io_in_rs2,
-  input  [3:0]  io_in_rd,
+  input  [4:0]  io_in_rs1,
+  input  [4:0]  io_in_rs2,
+  input  [4:0]  io_in_rd,
   input  [31:0] io_in_wdata,
   input         io_in_reg_wen,
   output [31:0] io_out_rdata1,
@@ -539,9 +535,9 @@ module RegFile(
 );
   wire  regfile_clock; // @[regfile.scala 48:25]
   wire  regfile_reset; // @[regfile.scala 48:25]
-  wire [3:0] regfile_rs1; // @[regfile.scala 48:25]
-  wire [3:0] regfile_rs2; // @[regfile.scala 48:25]
-  wire [3:0] regfile_rd; // @[regfile.scala 48:25]
+  wire [4:0] regfile_rs1; // @[regfile.scala 48:25]
+  wire [4:0] regfile_rs2; // @[regfile.scala 48:25]
+  wire [4:0] regfile_rd; // @[regfile.scala 48:25]
   wire [31:0] regfile_wdata; // @[regfile.scala 48:25]
   wire  regfile_reg_wen; // @[regfile.scala 48:25]
   wire [31:0] regfile_rdata1; // @[regfile.scala 48:25]
@@ -634,10 +630,6 @@ module Ram(
   input  [3:0]  io_ram_in_lsu_op,
   output [31:0] io_ram_out_rdata
 );
-initial begin
-      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/add-riscv32e-npc.ram.hex", 
-      mem);
-end
 `ifdef RANDOMIZE_MEM_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_MEM_INIT
@@ -777,9 +769,9 @@ module top(
   wire [31:0] Rom_i_io_inst; // @[top.scala 23:29]
   wire [31:0] Decoder_i_io_inst; // @[top.scala 24:29]
   wire [31:0] Decoder_i_io_out_imm; // @[top.scala 24:29]
-  wire [3:0] Decoder_i_io_out_rs1; // @[top.scala 24:29]
-  wire [3:0] Decoder_i_io_out_rs2; // @[top.scala 24:29]
-  wire [3:0] Decoder_i_io_out_rd; // @[top.scala 24:29]
+  wire [4:0] Decoder_i_io_out_rs1; // @[top.scala 24:29]
+  wire [4:0] Decoder_i_io_out_rs2; // @[top.scala 24:29]
+  wire [4:0] Decoder_i_io_out_rd; // @[top.scala 24:29]
   wire  Decoder_i_io_out_ctrl_sig_mem_wen; // @[top.scala 24:29]
   wire  Decoder_i_io_out_ctrl_sig_reg_wen; // @[top.scala 24:29]
   wire [1:0] Decoder_i_io_out_ctrl_sig_src1_op; // @[top.scala 24:29]
@@ -789,9 +781,9 @@ module top(
   wire [3:0] Decoder_i_io_out_ctrl_sig_bru_op; // @[top.scala 24:29]
   wire  RegFile_i_clock; // @[top.scala 25:29]
   wire  RegFile_i_reset; // @[top.scala 25:29]
-  wire [3:0] RegFile_i_io_in_rs1; // @[top.scala 25:29]
-  wire [3:0] RegFile_i_io_in_rs2; // @[top.scala 25:29]
-  wire [3:0] RegFile_i_io_in_rd; // @[top.scala 25:29]
+  wire [4:0] RegFile_i_io_in_rs1; // @[top.scala 25:29]
+  wire [4:0] RegFile_i_io_in_rs2; // @[top.scala 25:29]
+  wire [4:0] RegFile_i_io_in_rd; // @[top.scala 25:29]
   wire [31:0] RegFile_i_io_in_wdata; // @[top.scala 25:29]
   wire  RegFile_i_io_in_reg_wen; // @[top.scala 25:29]
   wire [31:0] RegFile_i_io_out_rdata1; // @[top.scala 25:29]
