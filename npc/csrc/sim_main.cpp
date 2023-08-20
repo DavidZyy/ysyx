@@ -131,7 +131,7 @@ void nemu_exec_once() {
 }
 
 int main(int argc, char *argv[]) {
-  get_cpu();
+  // get_cpu();
   cpu.pc = RESET_VECTOR;
   print_arg(argc, argv);
   long size = load_img(argv[1]);
@@ -155,7 +155,7 @@ int main(int argc, char *argv[]) {
   for(i = 0; i < times; i++){
 
     npc_exec_once();
-    // nemu_exec_once(); // execute jmp / branch
+    nemu_exec_once(); // execute jmp / branch
     
     if(terminal)
       break;
