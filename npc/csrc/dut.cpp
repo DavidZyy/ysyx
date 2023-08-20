@@ -5,6 +5,7 @@
 
 #include "macro.h"
 #include "utils.h"
+#include "isa.h"
 
 // #define NULL nullptr
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
