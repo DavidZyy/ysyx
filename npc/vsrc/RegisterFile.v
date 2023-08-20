@@ -2,7 +2,7 @@
 
 `define REG_OP_WIDTH 4
 `define DATA_WIDTH 32
-`define RegCnt     16
+`define RegCnt     32
 
 import "DPI-C" function void set_gpr_ptr(input logic [`DATA_WIDTH:0] a []);
 
