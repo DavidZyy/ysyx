@@ -98,7 +98,8 @@ void print_arg(int argc, char *argv[]){
   }
 }
 
-uint64_t *cpu_gpr = NULL;
+// uint64_t *cpu_gpr = NULL;
+word_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   // cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
   cpu_gpr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());

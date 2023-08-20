@@ -4,8 +4,8 @@
 `define DATA_WIDTH 32
 `define RegCnt     32
 
-// import "DPI-C" function void set_gpr_ptr(input logic [`DATA_WIDTH:0] a []);
-import "DPI-C" function void set_gpr_ptr(input logic [64:0] a []);
+import "DPI-C" function void set_gpr_ptr(input logic [`DATA_WIDTH:0] a []);
+// import "DPI-C" function void set_gpr_ptr(input logic [64:0] a []);
 
 module RegisterFile (
   input clock,
