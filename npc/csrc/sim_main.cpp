@@ -11,6 +11,7 @@
 #include "utils.h"
 #include "macro.h"
 #include "mem.h"
+#include "isa.h"
 
 // c library
 // #include <iostream>
