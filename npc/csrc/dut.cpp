@@ -10,7 +10,8 @@
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
 extern uint8_t pmem[CONFIG_MSIZE];
-extern riscv64_CPU_state cpu;
+// extern riscv64_CPU_state cpu;
+extern CPU_state cpu;
 extern int terminal;
 
 extern uint8_t* guest_to_host(paddr_t paddr);
