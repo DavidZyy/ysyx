@@ -9,7 +9,7 @@ import "DPI-C" function void set_gpr_ptr(input logic [`DATA_WIDTH:0] a []);
 module RegisterFile (
   input clock,
   input reset,
-  input [`DATA_WIDTH-1:0] reg_wdata,
+  input [`DATA_WIDTH-1:0] wdata,
   input [`REG_OP_WIDTH-1:0] rd,
   input reg_wen,
   input [`REG_OP_WIDTH-1:0] rs1,
@@ -27,7 +27,7 @@ module RegisterFile (
     if(reset)
       regs[0] <= 0;
     /* do not write reg0, remain it to zero */
-    if (reg_wen && (rd != 0)) regs[rd] <= reg_wdata;
+    if (reg_wen && (rd != 0)) regs[rd] <= wdata;
     else ;
   end
 
