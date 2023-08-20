@@ -98,9 +98,9 @@ void print_arg(int argc, char *argv[]){
 }
 
 uint64_t *cpu_gpr = NULL;
-// extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-//   cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
-// }
+extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
+  cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+}
 
 // 一个输出RTL中通用寄存器的值的示例
 void dump_gpr() {
@@ -122,7 +122,7 @@ void get_cpu() {
 
 void npc_exec_once() {
     single_cycle(0);
-    // get_cpu();
+    get_cpu();
 }
 
 void nemu_exec_once() {
@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
   // print_arg(argc, argv);
   long size = load_img(argv[1]);
   // long size = load_init_img();
-  // init_difftest(argv[2], size, 0);
+  init_difftest(argv[2], size, 0);
 
   sim_init();
 
@@ -154,7 +154,7 @@ int main(int argc, char *argv[]) {
   for(i = 0; i < times; i++){
 
     npc_exec_once();
-    // nemu_exec_once(); // execute jmp / branch
+    nemu_exec_once(); // execute jmp / branch
     
     if(terminal)
       break;
