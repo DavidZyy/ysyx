@@ -16,7 +16,7 @@ module PCReg(
   assign io_cur_pc = regPC; // @[pc.scala 25:15]
   always @(posedge clock) begin
     if (reset) begin // @[pc.scala 17:24]
-      regPC <= 32'h0; // @[pc.scala 17:24]
+      regPC <= 32'h80000000; // @[pc.scala 17:24]
     end else if (io_ctrl_br) begin // @[pc.scala 19:23]
       regPC <= io_addr_target; // @[pc.scala 20:15]
     end else begin
@@ -81,10 +81,11 @@ module Rom(
   wire  mem_io_inst_MPORT_en; // @[instmem.scala 20:18]
   wire [9:0] mem_io_inst_MPORT_addr; // @[instmem.scala 20:18]
   wire [31:0] mem_io_inst_MPORT_data; // @[instmem.scala 20:18]
+  wire [31:0] true_addr = io_addr - 32'h80000000; // @[instmem.scala 21:29]
   assign mem_io_inst_MPORT_en = 1'h1;
-  assign mem_io_inst_MPORT_addr = io_addr[11:2];
+  assign mem_io_inst_MPORT_addr = true_addr[11:2];
   assign mem_io_inst_MPORT_data = mem[mem_io_inst_MPORT_addr]; // @[instmem.scala 20:18]
-  assign io_inst = mem_io_inst_MPORT_data; // @[instmem.scala 22:13]
+  assign io_inst = mem_io_inst_MPORT_data; // @[instmem.scala 23:13]
 // Register and memory initialization
 `ifdef RANDOMIZE_GARBAGE_ASSIGN
 `define RANDOMIZE
@@ -632,15 +633,15 @@ module Ram(
 `ifdef RANDOMIZE_MEM_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_MEM_INIT
-  reg [31:0] mem [0:1023]; // @[datamem.scala 33:18]
-  wire  mem_rdata_align_4_en; // @[datamem.scala 33:18]
-  wire [9:0] mem_rdata_align_4_addr; // @[datamem.scala 33:18]
-  wire [31:0] mem_rdata_align_4_data; // @[datamem.scala 33:18]
-  wire [31:0] mem_MPORT_data; // @[datamem.scala 33:18]
-  wire [9:0] mem_MPORT_addr; // @[datamem.scala 33:18]
-  wire  mem_MPORT_mask; // @[datamem.scala 33:18]
-  wire  mem_MPORT_en; // @[datamem.scala 33:18]
-  wire [1:0] addr_low_2 = io_ram_in_addr[1:0]; // @[datamem.scala 31:36]
+  reg [31:0] mem [0:1023]; // @[datamem.scala 34:18]
+  wire  mem_rdata_align_4_en; // @[datamem.scala 34:18]
+  wire [9:0] mem_rdata_align_4_addr; // @[datamem.scala 34:18]
+  wire [31:0] mem_rdata_align_4_data; // @[datamem.scala 34:18]
+  wire [31:0] mem_MPORT_data; // @[datamem.scala 34:18]
+  wire [9:0] mem_MPORT_addr; // @[datamem.scala 34:18]
+  wire  mem_MPORT_mask; // @[datamem.scala 34:18]
+  wire  mem_MPORT_en; // @[datamem.scala 34:18]
+  wire [1:0] addr_low_2 = io_ram_in_addr[1:0]; // @[datamem.scala 32:31]
   wire [23:0] _lb_rdata_T_2 = mem_rdata_align_4_data[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 77:12]
   wire [31:0] _lb_rdata_T_4 = {_lb_rdata_T_2,mem_rdata_align_4_data[7:0]}; // @[Cat.scala 33:92]
   wire [23:0] _lb_rdata_T_7 = mem_rdata_align_4_data[15] ? 24'hffffff : 24'h0; // @[Bitwise.scala 77:12]
@@ -673,7 +674,7 @@ module Ram(
   wire [31:0] _io_ram_out_rdata_T_5 = 4'h4 == io_ram_in_lsu_op ? lbu_rdata : _io_ram_out_rdata_T_3; // @[Mux.scala 81:58]
   wire [31:0] _io_ram_out_rdata_T_7 = 4'h2 == io_ram_in_lsu_op ? lh_rdata : _io_ram_out_rdata_T_5; // @[Mux.scala 81:58]
   wire [31:0] _io_ram_out_rdata_T_9 = 4'h5 == io_ram_in_lsu_op ? lhu_rdata : _io_ram_out_rdata_T_7; // @[Mux.scala 81:58]
-  wire [31:0] lw_rdata = mem_rdata_align_4_data; // @[datamem.scala 41:25 67:14]
+  wire [31:0] lw_rdata = mem_rdata_align_4_data; // @[datamem.scala 42:25 68:14]
   wire [15:0] _sb_wmask_T_1 = 2'h1 == addr_low_2 ? 16'hff00 : 16'hff; // @[Mux.scala 81:58]
   wire [23:0] _sb_wmask_T_3 = 2'h2 == addr_low_2 ? 24'hff0000 : {{8'd0}, _sb_wmask_T_1}; // @[Mux.scala 81:58]
   wire [31:0] sb_wmask = 2'h3 == addr_low_2 ? 32'hff000000 : {{8'd0}, _sb_wmask_T_3}; // @[Mux.scala 81:58]
@@ -682,19 +683,19 @@ module Ram(
   wire [31:0] _wmask_T_1 = 4'h6 == io_ram_in_lsu_op ? sb_wmask : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _wmask_T_3 = 4'h7 == io_ram_in_lsu_op ? sh_wmask : _wmask_T_1; // @[Mux.scala 81:58]
   wire [31:0] wmask = 4'h8 == io_ram_in_lsu_op ? 32'hffffffff : _wmask_T_3; // @[Mux.scala 81:58]
-  wire [31:0] _T = {{2'd0}, io_ram_in_addr[31:2]}; // @[datamem.scala 103:34]
-  wire [5:0] _T_1 = 4'h8 * addr_low_2; // @[datamem.scala 104:35]
-  wire [94:0] _GEN_8 = {{63'd0}, io_ram_in_wdata}; // @[datamem.scala 104:27]
-  wire [94:0] _T_2 = _GEN_8 << _T_1; // @[datamem.scala 104:27]
-  wire [94:0] _GEN_6 = {{63'd0}, wmask}; // @[datamem.scala 104:50]
-  wire [94:0] _T_3 = _T_2 & _GEN_6; // @[datamem.scala 104:50]
-  wire [31:0] _T_4 = ~wmask; // @[datamem.scala 104:76]
-  wire [31:0] _T_5 = mem_rdata_align_4_data & _T_4; // @[datamem.scala 104:74]
-  wire [94:0] _GEN_7 = {{63'd0}, _T_5}; // @[datamem.scala 104:58]
-  wire [94:0] _T_6 = _T_3 | _GEN_7; // @[datamem.scala 104:58]
+  wire [31:0] _T = {{2'd0}, io_ram_in_addr[31:2]}; // @[datamem.scala 104:29]
+  wire [5:0] _T_1 = 4'h8 * addr_low_2; // @[datamem.scala 105:35]
+  wire [94:0] _GEN_8 = {{63'd0}, io_ram_in_wdata}; // @[datamem.scala 105:27]
+  wire [94:0] _T_2 = _GEN_8 << _T_1; // @[datamem.scala 105:27]
+  wire [94:0] _GEN_6 = {{63'd0}, wmask}; // @[datamem.scala 105:50]
+  wire [94:0] _T_3 = _T_2 & _GEN_6; // @[datamem.scala 105:50]
+  wire [31:0] _T_4 = ~wmask; // @[datamem.scala 105:76]
+  wire [31:0] _T_5 = mem_rdata_align_4_data & _T_4; // @[datamem.scala 105:74]
+  wire [94:0] _GEN_7 = {{63'd0}, _T_5}; // @[datamem.scala 105:58]
+  wire [94:0] _T_6 = _T_3 | _GEN_7; // @[datamem.scala 105:58]
   assign mem_rdata_align_4_en = 1'h1;
   assign mem_rdata_align_4_addr = io_ram_in_addr[11:2];
-  assign mem_rdata_align_4_data = mem[mem_rdata_align_4_addr]; // @[datamem.scala 33:18]
+  assign mem_rdata_align_4_data = mem[mem_rdata_align_4_addr]; // @[datamem.scala 34:18]
   assign mem_MPORT_data = _T_6[31:0];
   assign mem_MPORT_addr = _T[9:0];
   assign mem_MPORT_mask = 1'h1;
@@ -702,7 +703,7 @@ module Ram(
   assign io_ram_out_rdata = 4'h3 == io_ram_in_lsu_op ? lw_rdata : _io_ram_out_rdata_T_9; // @[Mux.scala 81:58]
   always @(posedge clock) begin
     if (mem_MPORT_en & mem_MPORT_mask) begin
-      mem[mem_MPORT_addr] <= mem_MPORT_data; // @[datamem.scala 33:18]
+      mem[mem_MPORT_addr] <= mem_MPORT_data; // @[datamem.scala 34:18]
     end
   end
 // Register and memory initialization
