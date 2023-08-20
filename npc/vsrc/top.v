@@ -74,16 +74,10 @@ module Rom(
   input  [31:0] io_addr,
   output [31:0] io_inst
 );
-    
 `ifdef RANDOMIZE_MEM_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_MEM_INIT
   reg [31:0] mem [0:1023]; // @[instmem.scala 20:18]
-
-initial begin
-      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/add-riscv32e-npc.rom.hex", 
-      mem);
-end
   wire  mem_io_inst_MPORT_en; // @[instmem.scala 20:18]
   wire [9:0] mem_io_inst_MPORT_addr; // @[instmem.scala 20:18]
   wire [31:0] mem_io_inst_MPORT_data; // @[instmem.scala 20:18]
@@ -530,267 +524,43 @@ endmodule
 module RegFile(
   input         clock,
   input         reset,
-  input  [3:0]  io_rf_in_rs1,
-  input  [3:0]  io_rf_in_rs2,
-  input  [3:0]  io_rf_in_rd,
-  input  [31:0] io_rf_in_wdata,
-  input         io_rf_in_reg_wen,
-  output [31:0] io_rf_out_rdata1,
-  output [31:0] io_rf_out_rdata2
+  input  [3:0]  io_in_rs1,
+  input  [3:0]  io_in_rs2,
+  input  [3:0]  io_in_rd,
+  input  [31:0] io_in_wdata,
+  input         io_in_reg_wen,
+  output [31:0] io_out_rdata1,
+  output [31:0] io_out_rdata2
 );
-`ifdef RANDOMIZE_REG_INIT
-  reg [31:0] _RAND_0;
-  reg [31:0] _RAND_1;
-  reg [31:0] _RAND_2;
-  reg [31:0] _RAND_3;
-  reg [31:0] _RAND_4;
-  reg [31:0] _RAND_5;
-  reg [31:0] _RAND_6;
-  reg [31:0] _RAND_7;
-  reg [31:0] _RAND_8;
-  reg [31:0] _RAND_9;
-  reg [31:0] _RAND_10;
-  reg [31:0] _RAND_11;
-  reg [31:0] _RAND_12;
-  reg [31:0] _RAND_13;
-  reg [31:0] _RAND_14;
-  reg [31:0] _RAND_15;
-`endif // RANDOMIZE_REG_INIT
-  reg [31:0] regs_0; // @[regfile.scala 30:23]
-  reg [31:0] regs_1; // @[regfile.scala 30:23]
-  reg [31:0] regs_2; // @[regfile.scala 30:23]
-  reg [31:0] regs_3; // @[regfile.scala 30:23]
-  reg [31:0] regs_4; // @[regfile.scala 30:23]
-  reg [31:0] regs_5; // @[regfile.scala 30:23]
-  reg [31:0] regs_6; // @[regfile.scala 30:23]
-  reg [31:0] regs_7; // @[regfile.scala 30:23]
-  reg [31:0] regs_8; // @[regfile.scala 30:23]
-  reg [31:0] regs_9; // @[regfile.scala 30:23]
-  reg [31:0] regs_10; // @[regfile.scala 30:23]
-  reg [31:0] regs_11; // @[regfile.scala 30:23]
-  reg [31:0] regs_12; // @[regfile.scala 30:23]
-  reg [31:0] regs_13; // @[regfile.scala 30:23]
-  reg [31:0] regs_14; // @[regfile.scala 30:23]
-  reg [31:0] regs_15; // @[regfile.scala 30:23]
-  wire [31:0] _GEN_1 = 4'h1 == io_rf_in_rs1 ? regs_1 : regs_0; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_2 = 4'h2 == io_rf_in_rs1 ? regs_2 : _GEN_1; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_3 = 4'h3 == io_rf_in_rs1 ? regs_3 : _GEN_2; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_4 = 4'h4 == io_rf_in_rs1 ? regs_4 : _GEN_3; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_5 = 4'h5 == io_rf_in_rs1 ? regs_5 : _GEN_4; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_6 = 4'h6 == io_rf_in_rs1 ? regs_6 : _GEN_5; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_7 = 4'h7 == io_rf_in_rs1 ? regs_7 : _GEN_6; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_8 = 4'h8 == io_rf_in_rs1 ? regs_8 : _GEN_7; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_9 = 4'h9 == io_rf_in_rs1 ? regs_9 : _GEN_8; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_10 = 4'ha == io_rf_in_rs1 ? regs_10 : _GEN_9; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_11 = 4'hb == io_rf_in_rs1 ? regs_11 : _GEN_10; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_12 = 4'hc == io_rf_in_rs1 ? regs_12 : _GEN_11; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_13 = 4'hd == io_rf_in_rs1 ? regs_13 : _GEN_12; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_14 = 4'he == io_rf_in_rs1 ? regs_14 : _GEN_13; // @[regfile.scala 32:{25,25}]
-  wire [31:0] _GEN_17 = 4'h1 == io_rf_in_rs2 ? regs_1 : regs_0; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_18 = 4'h2 == io_rf_in_rs2 ? regs_2 : _GEN_17; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_19 = 4'h3 == io_rf_in_rs2 ? regs_3 : _GEN_18; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_20 = 4'h4 == io_rf_in_rs2 ? regs_4 : _GEN_19; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_21 = 4'h5 == io_rf_in_rs2 ? regs_5 : _GEN_20; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_22 = 4'h6 == io_rf_in_rs2 ? regs_6 : _GEN_21; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_23 = 4'h7 == io_rf_in_rs2 ? regs_7 : _GEN_22; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_24 = 4'h8 == io_rf_in_rs2 ? regs_8 : _GEN_23; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_25 = 4'h9 == io_rf_in_rs2 ? regs_9 : _GEN_24; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_26 = 4'ha == io_rf_in_rs2 ? regs_10 : _GEN_25; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_27 = 4'hb == io_rf_in_rs2 ? regs_11 : _GEN_26; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_28 = 4'hc == io_rf_in_rs2 ? regs_12 : _GEN_27; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_29 = 4'hd == io_rf_in_rs2 ? regs_13 : _GEN_28; // @[regfile.scala 33:{25,25}]
-  wire [31:0] _GEN_30 = 4'he == io_rf_in_rs2 ? regs_14 : _GEN_29; // @[regfile.scala 33:{25,25}]
-  assign io_rf_out_rdata1 = 4'hf == io_rf_in_rs1 ? regs_15 : _GEN_14; // @[regfile.scala 32:{25,25}]
-  assign io_rf_out_rdata2 = 4'hf == io_rf_in_rs2 ? regs_15 : _GEN_30; // @[regfile.scala 33:{25,25}]
-  always @(posedge clock) begin
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_0 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'h0 == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_0 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_1 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'h1 == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_1 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_2 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'h2 == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_2 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_3 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'h3 == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_3 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_4 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'h4 == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_4 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_5 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'h5 == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_5 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_6 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'h6 == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_6 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_7 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'h7 == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_7 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_8 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'h8 == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_8 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_9 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'h9 == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_9 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_10 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'ha == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_10 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_11 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'hb == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_11 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_12 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'hc == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_12 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_13 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'hd == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_13 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_14 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'he == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_14 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-    if (reset) begin // @[regfile.scala 30:23]
-      regs_15 <= 32'h0; // @[regfile.scala 30:23]
-    end else if (io_rf_in_reg_wen & io_rf_in_rd != 4'h0) begin // @[regfile.scala 35:52]
-      if (4'hf == io_rf_in_rd) begin // @[regfile.scala 36:29]
-        regs_15 <= io_rf_in_wdata; // @[regfile.scala 36:29]
-      end
-    end
-  end
-// Register and memory initialization
-`ifdef RANDOMIZE_GARBAGE_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_INVALID_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_REG_INIT
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-`define RANDOMIZE
-`endif
-`ifndef RANDOM
-`define RANDOM $random
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-  integer initvar;
-`endif
-`ifndef SYNTHESIS
-`ifdef FIRRTL_BEFORE_INITIAL
-`FIRRTL_BEFORE_INITIAL
-`endif
-initial begin
-  `ifdef RANDOMIZE
-    `ifdef INIT_RANDOM
-      `INIT_RANDOM
-    `endif
-    `ifndef VERILATOR
-      `ifdef RANDOMIZE_DELAY
-        #`RANDOMIZE_DELAY begin end
-      `else
-        #0.002 begin end
-      `endif
-    `endif
-`ifdef RANDOMIZE_REG_INIT
-  _RAND_0 = {1{`RANDOM}};
-  regs_0 = _RAND_0[31:0];
-  _RAND_1 = {1{`RANDOM}};
-  regs_1 = _RAND_1[31:0];
-  _RAND_2 = {1{`RANDOM}};
-  regs_2 = _RAND_2[31:0];
-  _RAND_3 = {1{`RANDOM}};
-  regs_3 = _RAND_3[31:0];
-  _RAND_4 = {1{`RANDOM}};
-  regs_4 = _RAND_4[31:0];
-  _RAND_5 = {1{`RANDOM}};
-  regs_5 = _RAND_5[31:0];
-  _RAND_6 = {1{`RANDOM}};
-  regs_6 = _RAND_6[31:0];
-  _RAND_7 = {1{`RANDOM}};
-  regs_7 = _RAND_7[31:0];
-  _RAND_8 = {1{`RANDOM}};
-  regs_8 = _RAND_8[31:0];
-  _RAND_9 = {1{`RANDOM}};
-  regs_9 = _RAND_9[31:0];
-  _RAND_10 = {1{`RANDOM}};
-  regs_10 = _RAND_10[31:0];
-  _RAND_11 = {1{`RANDOM}};
-  regs_11 = _RAND_11[31:0];
-  _RAND_12 = {1{`RANDOM}};
-  regs_12 = _RAND_12[31:0];
-  _RAND_13 = {1{`RANDOM}};
-  regs_13 = _RAND_13[31:0];
-  _RAND_14 = {1{`RANDOM}};
-  regs_14 = _RAND_14[31:0];
-  _RAND_15 = {1{`RANDOM}};
-  regs_15 = _RAND_15[31:0];
-`endif // RANDOMIZE_REG_INIT
-  `endif // RANDOMIZE
-end // initial
-`ifdef FIRRTL_AFTER_INITIAL
-`FIRRTL_AFTER_INITIAL
-`endif
-`endif // SYNTHESIS
+  wire  regfile_clock; // @[regfile.scala 48:25]
+  wire  regfile_reset; // @[regfile.scala 48:25]
+  wire [3:0] regfile_rs1; // @[regfile.scala 48:25]
+  wire [3:0] regfile_rs2; // @[regfile.scala 48:25]
+  wire [3:0] regfile_rd; // @[regfile.scala 48:25]
+  wire [31:0] regfile_wdata; // @[regfile.scala 48:25]
+  wire  regfile_reg_wen; // @[regfile.scala 48:25]
+  wire [31:0] regfile_rdata1; // @[regfile.scala 48:25]
+  wire [31:0] regfile_rdata2; // @[regfile.scala 48:25]
+  RegisterFile regfile ( // @[regfile.scala 48:25]
+    .clock(regfile_clock),
+    .reset(regfile_reset),
+    .rs1(regfile_rs1),
+    .rs2(regfile_rs2),
+    .rd(regfile_rd),
+    .wdata(regfile_wdata),
+    .reg_wen(regfile_reg_wen),
+    .rdata1(regfile_rdata1),
+    .rdata2(regfile_rdata2)
+  );
+  assign io_out_rdata1 = regfile_rdata1; // @[regfile.scala 58:19]
+  assign io_out_rdata2 = regfile_rdata2; // @[regfile.scala 59:19]
+  assign regfile_clock = clock; // @[regfile.scala 50:24]
+  assign regfile_reset = reset; // @[regfile.scala 51:24]
+  assign regfile_rs1 = io_in_rs1; // @[regfile.scala 52:24]
+  assign regfile_rs2 = io_in_rs2; // @[regfile.scala 53:24]
+  assign regfile_rd = io_in_rd; // @[regfile.scala 54:24]
+  assign regfile_wdata = io_in_wdata; // @[regfile.scala 55:24]
+  assign regfile_reg_wen = io_in_reg_wen; // @[regfile.scala 56:24]
 endmodule
 module Alu(
   input  [31:0] io_alu_in_src1,
@@ -863,10 +633,6 @@ module Ram(
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_MEM_INIT
   reg [31:0] mem [0:1023]; // @[datamem.scala 33:18]
-initial begin
-      $readmemh("/home/zhuyangyang/project/ysyx-workbench/am-kernels/tests/cpu-tests/build/add-riscv32e-npc.ram.hex", 
-      mem);
-end
   wire  mem_rdata_align_4_en; // @[datamem.scala 33:18]
   wire [9:0] mem_rdata_align_4_addr; // @[datamem.scala 33:18]
   wire [31:0] mem_rdata_align_4_data; // @[datamem.scala 33:18]
@@ -918,8 +684,8 @@ end
   wire [31:0] wmask = 4'h8 == io_ram_in_lsu_op ? 32'hffffffff : _wmask_T_3; // @[Mux.scala 81:58]
   wire [31:0] _T = {{2'd0}, io_ram_in_addr[31:2]}; // @[datamem.scala 103:34]
   wire [5:0] _T_1 = 4'h8 * addr_low_2; // @[datamem.scala 104:35]
-  wire [94:0] _GEN_0 = {{63'd0}, io_ram_in_wdata}; // @[datamem.scala 104:27]
-  wire [94:0] _T_2 = _GEN_0 << _T_1; // @[datamem.scala 104:27]
+  wire [94:0] _GEN_8 = {{63'd0}, io_ram_in_wdata}; // @[datamem.scala 104:27]
+  wire [94:0] _T_2 = _GEN_8 << _T_1; // @[datamem.scala 104:27]
   wire [94:0] _GEN_6 = {{63'd0}, wmask}; // @[datamem.scala 104:50]
   wire [94:0] _T_3 = _T_2 & _GEN_6; // @[datamem.scala 104:50]
   wire [31:0] _T_4 = ~wmask; // @[datamem.scala 104:76]
@@ -1014,13 +780,13 @@ module top(
   wire [3:0] Decoder_i_io_out_ctrl_sig_bru_op; // @[top.scala 24:29]
   wire  RegFile_i_clock; // @[top.scala 25:29]
   wire  RegFile_i_reset; // @[top.scala 25:29]
-  wire [3:0] RegFile_i_io_rf_in_rs1; // @[top.scala 25:29]
-  wire [3:0] RegFile_i_io_rf_in_rs2; // @[top.scala 25:29]
-  wire [3:0] RegFile_i_io_rf_in_rd; // @[top.scala 25:29]
-  wire [31:0] RegFile_i_io_rf_in_wdata; // @[top.scala 25:29]
-  wire  RegFile_i_io_rf_in_reg_wen; // @[top.scala 25:29]
-  wire [31:0] RegFile_i_io_rf_out_rdata1; // @[top.scala 25:29]
-  wire [31:0] RegFile_i_io_rf_out_rdata2; // @[top.scala 25:29]
+  wire [3:0] RegFile_i_io_in_rs1; // @[top.scala 25:29]
+  wire [3:0] RegFile_i_io_in_rs2; // @[top.scala 25:29]
+  wire [3:0] RegFile_i_io_in_rd; // @[top.scala 25:29]
+  wire [31:0] RegFile_i_io_in_wdata; // @[top.scala 25:29]
+  wire  RegFile_i_io_in_reg_wen; // @[top.scala 25:29]
+  wire [31:0] RegFile_i_io_out_rdata1; // @[top.scala 25:29]
+  wire [31:0] RegFile_i_io_out_rdata2; // @[top.scala 25:29]
   wire [31:0] Alu_i_io_alu_in_src1; // @[top.scala 26:29]
   wire [31:0] Alu_i_io_alu_in_src2; // @[top.scala 26:29]
   wire [3:0] Alu_i_io_alu_in_alu_op; // @[top.scala 26:29]
@@ -1045,8 +811,8 @@ module top(
   wire  is_load = _is_load_T_6 | _is_load_T_7; // @[top.scala 50:62]
   wire  _is_jump_T_1 = Decoder_i_io_out_ctrl_sig_bru_op == 4'h2; // @[top.scala 55:42]
   wire  is_jump = Decoder_i_io_out_ctrl_sig_bru_op == 4'h1 | _is_jump_T_1; // @[top.scala 54:62]
-  wire [31:0] _RegFile_i_io_rf_in_wdata_T_1 = PCReg_i_io_cur_pc + 32'h4; // @[top.scala 60:55]
-  wire [31:0] _GEN_0 = is_jump ? _RegFile_i_io_rf_in_wdata_T_1 : Alu_i_io_alu_out_alu_result; // @[top.scala 59:26 60:34 62:34]
+  wire [31:0] _RegFile_i_io_in_wdata_T_1 = PCReg_i_io_cur_pc + 32'h4; // @[top.scala 60:52]
+  wire [31:0] _GEN_0 = is_jump ? _RegFile_i_io_in_wdata_T_1 : Alu_i_io_alu_out_alu_result; // @[top.scala 59:26 60:31 62:31]
   wire [31:0] _GEN_2 = Decoder_i_io_out_ctrl_sig_src1_op == 2'h1 ? PCReg_i_io_cur_pc : 32'h0; // @[top.scala 70:71 71:30 73:30]
   wire [31:0] _GEN_4 = Decoder_i_io_out_ctrl_sig_src2_op == 2'h3 ? Decoder_i_io_out_imm : 32'h0; // @[top.scala 78:72 79:30 81:30]
   PCReg PCReg_i ( // @[top.scala 22:29]
@@ -1078,13 +844,13 @@ module top(
   RegFile RegFile_i ( // @[top.scala 25:29]
     .clock(RegFile_i_clock),
     .reset(RegFile_i_reset),
-    .io_rf_in_rs1(RegFile_i_io_rf_in_rs1),
-    .io_rf_in_rs2(RegFile_i_io_rf_in_rs2),
-    .io_rf_in_rd(RegFile_i_io_rf_in_rd),
-    .io_rf_in_wdata(RegFile_i_io_rf_in_wdata),
-    .io_rf_in_reg_wen(RegFile_i_io_rf_in_reg_wen),
-    .io_rf_out_rdata1(RegFile_i_io_rf_out_rdata1),
-    .io_rf_out_rdata2(RegFile_i_io_rf_out_rdata2)
+    .io_in_rs1(RegFile_i_io_in_rs1),
+    .io_in_rs2(RegFile_i_io_in_rs2),
+    .io_in_rd(RegFile_i_io_in_rd),
+    .io_in_wdata(RegFile_i_io_in_wdata),
+    .io_in_reg_wen(RegFile_i_io_in_reg_wen),
+    .io_out_rdata1(RegFile_i_io_out_rdata1),
+    .io_out_rdata2(RegFile_i_io_out_rdata2)
   );
   Alu Alu_i ( // @[top.scala 26:29]
     .io_alu_in_src1(Alu_i_io_alu_in_src1),
@@ -1117,20 +883,20 @@ module top(
   assign Decoder_i_io_inst = Rom_i_io_inst; // @[top.scala 38:23]
   assign RegFile_i_clock = clock;
   assign RegFile_i_reset = reset;
-  assign RegFile_i_io_rf_in_rs1 = Decoder_i_io_out_rs1; // @[top.scala 42:28]
-  assign RegFile_i_io_rf_in_rs2 = Decoder_i_io_out_rs2; // @[top.scala 43:28]
-  assign RegFile_i_io_rf_in_rd = Decoder_i_io_out_rd; // @[top.scala 41:28]
-  assign RegFile_i_io_rf_in_wdata = is_load ? Ram_i_io_ram_out_rdata : _GEN_0; // @[top.scala 57:19 58:34]
-  assign RegFile_i_io_rf_in_reg_wen = Decoder_i_io_out_ctrl_sig_reg_wen; // @[top.scala 44:32]
-  assign Alu_i_io_alu_in_src1 = Decoder_i_io_out_ctrl_sig_src1_op == 2'h2 ? RegFile_i_io_rf_out_rdata1 : _GEN_2; // @[top.scala 68:63 69:30]
-  assign Alu_i_io_alu_in_src2 = Decoder_i_io_out_ctrl_sig_src2_op == 2'h2 ? RegFile_i_io_rf_out_rdata2 : _GEN_4; // @[top.scala 76:63 77:30]
+  assign RegFile_i_io_in_rs1 = Decoder_i_io_out_rs1; // @[top.scala 42:25]
+  assign RegFile_i_io_in_rs2 = Decoder_i_io_out_rs2; // @[top.scala 43:25]
+  assign RegFile_i_io_in_rd = Decoder_i_io_out_rd; // @[top.scala 41:25]
+  assign RegFile_i_io_in_wdata = is_load ? Ram_i_io_ram_out_rdata : _GEN_0; // @[top.scala 57:19 58:31]
+  assign RegFile_i_io_in_reg_wen = Decoder_i_io_out_ctrl_sig_reg_wen; // @[top.scala 44:29]
+  assign Alu_i_io_alu_in_src1 = Decoder_i_io_out_ctrl_sig_src1_op == 2'h2 ? RegFile_i_io_out_rdata1 : _GEN_2; // @[top.scala 68:63 69:30]
+  assign Alu_i_io_alu_in_src2 = Decoder_i_io_out_ctrl_sig_src2_op == 2'h2 ? RegFile_i_io_out_rdata2 : _GEN_4; // @[top.scala 76:63 77:30]
   assign Alu_i_io_alu_in_alu_op = Decoder_i_io_out_ctrl_sig_alu_op; // @[top.scala 66:28]
-  assign Bru_i_io_bru_in_src1 = RegFile_i_io_rf_out_rdata1; // @[top.scala 86:28]
-  assign Bru_i_io_bru_in_src2 = RegFile_i_io_rf_out_rdata2; // @[top.scala 87:28]
+  assign Bru_i_io_bru_in_src1 = RegFile_i_io_out_rdata1; // @[top.scala 86:28]
+  assign Bru_i_io_bru_in_src2 = RegFile_i_io_out_rdata2; // @[top.scala 87:28]
   assign Bru_i_io_bru_in_bru_op = Decoder_i_io_out_ctrl_sig_bru_op; // @[top.scala 85:28]
   assign Ram_i_clock = clock;
   assign Ram_i_io_ram_in_mem_wen = Decoder_i_io_out_ctrl_sig_mem_wen; // @[top.scala 92:29]
   assign Ram_i_io_ram_in_addr = Alu_i_io_alu_out_alu_result; // @[top.scala 90:27]
-  assign Ram_i_io_ram_in_wdata = RegFile_i_io_rf_out_rdata2; // @[top.scala 91:27]
+  assign Ram_i_io_ram_in_wdata = RegFile_i_io_out_rdata2; // @[top.scala 91:27]
   assign Ram_i_io_ram_in_lsu_op = Decoder_i_io_out_ctrl_sig_lsu_op; // @[top.scala 93:29]
 endmodule
