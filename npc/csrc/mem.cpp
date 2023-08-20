@@ -2,6 +2,7 @@
 #include <assert.h>
 
 #include "utils.h"
+#include "isa.h"
 
 /* DPI-C function */
 #include "svdpi.h"
