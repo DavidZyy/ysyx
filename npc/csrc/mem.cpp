@@ -28,6 +28,7 @@ static inline bool in_pmem(paddr_t addr) {
 
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
+  IFDEF(CONFIG_MTRACE, log_write("raddr:%d, rdata:%d\n", raddr, *rdata));
 // extern "C" void pmem_read(int raddr, int *rdata) {
   // assert(in_pmem(raddr));
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
