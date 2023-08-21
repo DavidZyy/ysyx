@@ -24,21 +24,14 @@ static inline bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
 }
 
-void pmem_read(long long raddr, long long *rdata) {
-  // printf(ANSI_FMT("pc_IF: %p\n", ANSI_FG_RED), (void *)top->pc_IF);
-  // printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
-  // printf(ANSI_FMT("raddr: %llx\n\n", ANSI_FG_RED), raddr);
-  if(raddr <= 0x40){
-    *rdata = 0;
-    return;
-  }
-  // if(top->next_pc && top->pc_IF)
-    assert(in_pmem(raddr));
+void pmem_read(word_t raddr, word_t *rdata) {
+  
+  assert(in_pmem(raddr));
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   raddr = raddr & ~0x7; // align to 8
 
-  uint8_t *raddr_temp = guest_to_host(raddr);
-  *rdata = *(uint64_t *)raddr_temp;
+  void*raddr_temp = guest_to_host(raddr);
+  *rdata = *(word_t *)raddr_temp;
 }
 
 void pmem_write(long long waddr, long long wdata, char wmask) {

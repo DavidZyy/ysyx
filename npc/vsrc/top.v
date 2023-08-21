@@ -70,68 +70,17 @@ end // initial
 `endif // SYNTHESIS
 endmodule
 module Rom(
-  input         clock,
   input  [31:0] io_addr,
   output [31:0] io_inst
 );
-`ifdef RANDOMIZE_MEM_INIT
-  reg [31:0] _RAND_0;
-`endif // RANDOMIZE_MEM_INIT
-  reg [31:0] mem [0:1023]; // @[instmem.scala 20:18]
-  wire  mem_io_inst_MPORT_en; // @[instmem.scala 20:18]
-  wire [9:0] mem_io_inst_MPORT_addr; // @[instmem.scala 20:18]
-  wire [31:0] mem_io_inst_MPORT_data; // @[instmem.scala 20:18]
-  wire [31:0] true_addr = io_addr - 32'h80000000; // @[instmem.scala 21:29]
-  assign mem_io_inst_MPORT_en = 1'h1;
-  assign mem_io_inst_MPORT_addr = true_addr[11:2];
-  assign mem_io_inst_MPORT_data = mem[mem_io_inst_MPORT_addr]; // @[instmem.scala 20:18]
-  assign io_inst = mem_io_inst_MPORT_data; // @[instmem.scala 23:13]
-// Register and memory initialization
-`ifdef RANDOMIZE_GARBAGE_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_INVALID_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_REG_INIT
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-`define RANDOMIZE
-`endif
-`ifndef RANDOM
-`define RANDOM $random
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-  integer initvar;
-`endif
-`ifndef SYNTHESIS
-`ifdef FIRRTL_BEFORE_INITIAL
-`FIRRTL_BEFORE_INITIAL
-`endif
-initial begin
-  `ifdef RANDOMIZE
-    `ifdef INIT_RANDOM
-      `INIT_RANDOM
-    `endif
-    `ifndef VERILATOR
-      `ifdef RANDOMIZE_DELAY
-        #`RANDOMIZE_DELAY begin end
-      `else
-        #0.002 begin end
-      `endif
-    `endif
-`ifdef RANDOMIZE_MEM_INIT
-  _RAND_0 = {1{`RANDOM}};
-  for (initvar = 0; initvar < 1024; initvar = initvar+1)
-    mem[initvar] = _RAND_0[31:0];
-`endif // RANDOMIZE_MEM_INIT
-  `endif // RANDOMIZE
-end // initial
-`ifdef FIRRTL_AFTER_INITIAL
-`FIRRTL_AFTER_INITIAL
-`endif
-`endif // SYNTHESIS
+  wire [31:0] RomBB_i1_addr; // @[instmem.scala 33:26]
+  wire [31:0] RomBB_i1_inst; // @[instmem.scala 33:26]
+  RomBB RomBB_i1 ( // @[instmem.scala 33:26]
+    .addr(RomBB_i1_addr),
+    .inst(RomBB_i1_inst)
+  );
+  assign io_inst = RomBB_i1_inst; // @[instmem.scala 37:13]
+  assign RomBB_i1_addr = io_addr; // @[instmem.scala 35:22]
 endmodule
 module Decoder(
   input  [31:0] io_inst,
@@ -764,7 +713,6 @@ module top(
   wire [31:0] PCReg_i_io_cur_pc; // @[top.scala 22:29]
   wire  PCReg_i_io_ctrl_br; // @[top.scala 22:29]
   wire [31:0] PCReg_i_io_addr_target; // @[top.scala 22:29]
-  wire  Rom_i_clock; // @[top.scala 23:29]
   wire [31:0] Rom_i_io_addr; // @[top.scala 23:29]
   wire [31:0] Rom_i_io_inst; // @[top.scala 23:29]
   wire [31:0] Decoder_i_io_inst; // @[top.scala 24:29]
@@ -824,7 +772,6 @@ module top(
     .io_addr_target(PCReg_i_io_addr_target)
   );
   Rom Rom_i ( // @[top.scala 23:29]
-    .clock(Rom_i_clock),
     .io_addr(Rom_i_io_addr),
     .io_inst(Rom_i_io_inst)
   );
@@ -879,7 +826,6 @@ module top(
   assign PCReg_i_reset = reset;
   assign PCReg_i_io_ctrl_br = Bru_i_io_bru_out_ctrl_br; // @[top.scala 31:24]
   assign PCReg_i_io_addr_target = Alu_i_io_alu_out_alu_result; // @[top.scala 32:29]
-  assign Rom_i_clock = clock;
   assign Rom_i_io_addr = PCReg_i_io_cur_pc; // @[top.scala 35:19]
   assign Decoder_i_io_inst = Rom_i_io_inst; // @[top.scala 38:23]
   assign RegFile_i_clock = clock;
