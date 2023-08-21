@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <string.h>
 
+void init_log(const char *log_file);
+
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
 static Vtop* top;
