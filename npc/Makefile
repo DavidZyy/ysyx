@@ -51,6 +51,7 @@ SIM_CPP_FILE = $(abspath ./csrc/dut.cpp)
 SRC_DIR := ./csrc
 
 CPP_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+# C_FILES := $(wildcard $(SRC_DIR)/*.c)
 # $(error $(CPP_FILES))
 
 all:
@@ -61,11 +62,11 @@ all:
 IMG ?= 
 # SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv32-nemu-interpreter-so
 SO = $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
-
 LOG_FILE = $(NPC_HOME)/build/npc-log.txt
 
 sim:
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+# DO NOT REMOVE THIS LINE!!!
+	$(call git_commit, "sim RTL") 
 	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
