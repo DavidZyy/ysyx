@@ -35,7 +35,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 
   void*raddr_temp = guest_to_host(raddr);
   *rdata = *(word_t *)raddr_temp;
-  IFDEF(CONFIG_MTRACE, log_write("raddr:%d, rdata:%d\n", raddr, rdata));
+  IFDEF(CONFIG_MTRACE, log_write("raddr:%d, rdata:%d\n", raddr, *rdata));
 }
 
 void pmem_write(long long waddr, long long wdata, char wmask) {
