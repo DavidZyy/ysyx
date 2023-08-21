@@ -1,0 +1,2 @@
+
+#define CONFIG_MTRACE 1

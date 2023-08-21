@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "isa.h"
 #include "mem.h"
+#include "conf.h"
 
 /* DPI-C function */
 #include "svdpi.h"
@@ -24,6 +25,7 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 static inline bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
 }
+
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 // extern "C" void pmem_read(int raddr, int *rdata) {
