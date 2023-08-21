@@ -25,8 +25,8 @@ static inline bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
 }
 
-// void pmem_read(word_t raddr, word_t *rdata) {
-extern "C" void pmem_read(int raddr, int *rdata) {
+extern "C" void pmem_read(word_t raddr, word_t *rdata) {
+// extern "C" void pmem_read(int raddr, int *rdata) {
   
   assert(in_pmem(raddr));
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
@@ -34,6 +34,7 @@ extern "C" void pmem_read(int raddr, int *rdata) {
 
   void*raddr_temp = guest_to_host(raddr);
   *rdata = *(word_t *)raddr_temp;
+  IFDEF(CONFIG_MTRACE, log_write("raddr:%d, rdata:%d\n", raddr, rdata));
 }
 
 void pmem_write(long long waddr, long long wdata, char wmask) {
