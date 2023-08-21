@@ -48,6 +48,11 @@ COMMON_CPP_FILE = $(abspath ./csrc/mem.cpp)
 # cpp file for only simulation
 SIM_CPP_FILE = $(abspath ./csrc/dut.cpp)
 
+SRC_DIR := ./csrc
+
+CPP_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+# $(error $(CPP_FILES))
+
 all:
 	@echo "Write this Makefile by your self."
 
