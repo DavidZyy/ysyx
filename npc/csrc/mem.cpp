@@ -25,7 +25,7 @@ static inline bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
 }
 
-extern "C" void pmem_read(word_t raddr, word_t *rdata) {
+extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 // extern "C" void pmem_read(int raddr, int *rdata) {
   
   assert(in_pmem(raddr));

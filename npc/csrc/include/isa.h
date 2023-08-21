@@ -11,6 +11,7 @@
 #define paddr_t uint32_t
 #define vaddr_t uint32_t
 #define word_t  uint32_t
+#define sword_t int32_t
 
 typedef struct {
   word_t gpr[32];
