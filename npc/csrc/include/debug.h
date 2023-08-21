@@ -13,7 +13,7 @@
   do { \
     if (!(cond)) { \
       (fflush(stdout), fprintf(stderr, ANSI_FMT(format, ANSI_FG_RED) "\n", ##  __VA_ARGS__)); \
-      extern FILE* log_fp; fflush(log_fp) \
+      extern FILE* log_fp; fflush(log_fp); \
       assert(cond); \
     } \
   } while (0)
