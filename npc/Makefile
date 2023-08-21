@@ -54,7 +54,8 @@ all:
 # the program to be executed on npc, about ?=, 
 # see gnu make 6.2.4 Conditional Variable Assignment
 IMG ?= 
-SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv32-nemu-interpreter-so
+# SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv32-nemu-interpreter-so
+SO = $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
