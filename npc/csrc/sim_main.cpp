@@ -18,32 +18,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
-uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
-
-/* my understanding: paddr is the program in the guest's address, paddr - CONFIG_MBASE 
-is the offset from the beginning of the program, pmem is the beginning of the program in
-the host. */
-uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
-/* haddr is the address in host nemu, - pmem is the offset from the beginning, + CONFIG_MBASE(the
-beginning of the programm in guest) get the address in the guest. */
-paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
-
-
-static inline bool in_pmem(paddr_t addr) {
-  return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
-}
-
-// void pmem_read(word_t raddr, word_t *rdata) {
-void pmem_read(int raddr, int *rdata) {
-  
-  assert(in_pmem(raddr));
-  // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
-  raddr = raddr & ~0x7; // align to 8
-
-  void*raddr_temp = guest_to_host(raddr);
-  *rdata = *(word_t *)raddr_temp;
-}
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
 static Vtop* top;
