@@ -7,6 +7,10 @@
 #include "conf.h"
 #include "debug.h"
 
+#include "verilated.h"
+#include "verilated_vcd_c.h"
+#include "../obj_dir/Vtop.h"
+
 /* DPI-C function */
 #include "svdpi.h"
 // #include "Vtop__Dpi.h"
