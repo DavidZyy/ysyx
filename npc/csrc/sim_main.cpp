@@ -150,6 +150,7 @@ void init_monitor(int argc, char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
+  Assert(0, "hi:%d\n" , 5);
   init_monitor(argc, argv);
 
   sim_init();
