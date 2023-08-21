@@ -142,7 +142,7 @@ void init_isa() {
 void init_monitor(int argc, char *argv[]) {
   print_arg(argc, argv);
   // init_log();
-  init_isa() 
+  init_isa();
   long img_size = load_img(argv[1]);
   init_difftest(argv[2], img_size, 0);
 }
