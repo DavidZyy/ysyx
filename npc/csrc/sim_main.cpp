@@ -115,6 +115,7 @@ void dump_gpr() {
   printf("\n");
 }
 
+/* get npc's register state */
 void get_cpu() {
   assert(cpu_gpr);
   for(int i = 0; i < 32; i++){
@@ -132,13 +133,22 @@ void nemu_exec_once() {
   difftest_step();
 }
 
-int main(int argc, char *argv[]) {
-  // get_cpu();
-  cpu.pc = RESET_VECTOR;
-  print_arg(argc, argv);
-  long size = load_img(argv[1]);
+void init_isa() {
   // long size = load_init_img();
-  init_difftest(argv[2], size, 0);
+  cpu.pc = RESET_VECTOR;
+}
+
+// similar to monitor
+void init_monitor(int argc, char *argv[]) {
+  print_arg(argc, argv);
+  // init_log();
+  init_isa() 
+  long img_size = load_img(argv[1]);
+  init_difftest(argv[2], img_size, 0);
+}
+
+int main(int argc, char *argv[]) {
+  init_monitor();
 
   sim_init();
 
