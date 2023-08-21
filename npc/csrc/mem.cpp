@@ -5,6 +5,7 @@
 #include "isa.h"
 #include "mem.h"
 #include "conf.h"
+#include "debug.h"
 
 /* DPI-C function */
 #include "svdpi.h"
@@ -28,9 +29,7 @@ static inline bool in_pmem(paddr_t addr) {
 
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  IFDEF(CONFIG_MTRACE, log_write("raddr:%d, rdata:%d\n", raddr, *rdata));
-// extern "C" void pmem_read(int raddr, int *rdata) {
-  // assert(in_pmem(raddr));
+  Assert(in_pmem(raddr), "raddr: %d is out of bound, at pc: %d", raddr, top->io_out_pc); 
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   raddr = raddr & ~0x7; // align to 8
 
