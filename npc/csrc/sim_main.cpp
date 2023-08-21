@@ -12,6 +12,7 @@
 #include "macro.h"
 #include "mem.h"
 #include "isa.h"
+#include "debug.h"
 
 // c library
 // #include <iostream>
