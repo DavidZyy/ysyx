@@ -1,3 +1,4 @@
+#include<cstdio>
 
 FILE *log_fp = NULL;
 
