@@ -32,9 +32,14 @@ static inline bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
 }
 
+static void out_of_bound(paddr_t addr) {
+  panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
+      addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
+}
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  Assert(in_pmem(raddr), "raddr: %d is out of bound, at pc: %d", raddr, top->io_out_pc); 
+  // Assert(in_pmem(raddr), "raddr: %d is out of bound, at pc: %d", raddr, top->io_out_pc); 
+  if(!in_pmem(raddr)) out_of_bound(raddr);
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   raddr = raddr & ~0x7; // align to 8
 
