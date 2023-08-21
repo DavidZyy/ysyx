@@ -3,7 +3,7 @@ import "DPI-C" function void pmem_read(
 // import "DPI-C" function void pmem_write(
 //   input int mem_waddr, input int wdata, input byte wmask);
 
-module rom (
+module RomBB (
     input [31:0] addr,
     output [31:0] inst
 );
