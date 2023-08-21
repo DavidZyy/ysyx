@@ -50,8 +50,10 @@ LDFLAGS += -lSDL2 -lSDL2_image
 
 SRC_DIR := ./csrc
 
-CPP_FILES = $(wildcard $(SRC_DIR)/*.cpp)
-# C_FILES := $(wildcard $(SRC_DIR)/*.c)
+# Use find to recursively locate .cpp and .c files in the source directory
+CPP_FILES := $(shell find $(SRC_DIR) -type f -name '*.cpp')
+# C_FILES := $(shell find $(SRC_DIR) -type f -name '*.c')
+
 # $(error $(CPP_FILES))
 
 all:
@@ -86,7 +88,6 @@ sim:
 
 wv:
 	gtkwave dump.vcd
-
 
 include ../Makefile
 
