@@ -12,6 +12,7 @@
 // #include "Vtop__Dpi.h"
 #include "verilated_dpi.h"
 
+extern Vtop* top;
 uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
 /* my understanding: paddr is the program in the guest's address, paddr - CONFIG_MBASE 
