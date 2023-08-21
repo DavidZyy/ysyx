@@ -18,6 +18,16 @@
 #include <stdio.h>
 #include <string.h>
 
+void pmem_read(int raddr, int *rdata) {
+  
+  assert(in_pmem(raddr));
+  // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
+  raddr = raddr & ~0x7; // align to 8
+
+  void*raddr_temp = guest_to_host(raddr);
+  *rdata = *(word_t *)raddr_temp;
+}
+
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
 static Vtop* top;
