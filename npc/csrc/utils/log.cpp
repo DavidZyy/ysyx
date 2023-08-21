@@ -1,4 +1,5 @@
 #include<cstdio>
+#include "debug.h"
 
 FILE *log_fp = NULL;
 
