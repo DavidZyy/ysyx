@@ -57,6 +57,8 @@ IMG ?=
 # SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv32-nemu-interpreter-so
 SO = $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
+LOG_FILE = $(NPC_HOME)/build/npc-log.txt
+
 sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
@@ -64,7 +66,7 @@ sim:
 	-trace --cc --exe --build -Wall \
 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
 	$(SIM_CPP_FILE) $(COMMON_CPP_FILE)
-	obj_dir/Vtop $(IMG) $(SO)
+	obj_dir/Vtop $(IMG) $(SO) 
 	gtkwave dump.vcd
 
 wv:
