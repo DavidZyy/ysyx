@@ -27,7 +27,6 @@ static inline bool in_pmem(paddr_t addr) {
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 // extern "C" void pmem_read(int raddr, int *rdata) {
-  
   assert(in_pmem(raddr));
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   raddr = raddr & ~0x7; // align to 8
