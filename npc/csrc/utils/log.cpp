@@ -3,6 +3,10 @@
 
 FILE *log_fp = NULL;
 
+bool log_enable() {
+    return true;
+}
+
 void init_log(const char *log_file) {
   // printcwd();
   log_fp = stdout;
