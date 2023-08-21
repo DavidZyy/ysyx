@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include "isa.h"
+#include "mem.h"
 
 /* DPI-C function */
 #include "svdpi.h"
