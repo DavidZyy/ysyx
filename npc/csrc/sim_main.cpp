@@ -154,7 +154,8 @@ int main(int argc, char *argv[]) {
   // Assert(0, "hi:%d" , 5);
   init_monitor(argc, argv);
   sword_t *rdata;
-  pmem_read(0x80000004, rdata);
+  sword_t raddr = 0x80000004;
+  pmem_read(raddr, rdata);
   printf("%x\n", *rdata);
 
   sim_init();
