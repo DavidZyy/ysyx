@@ -46,7 +46,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
 }
 
-void pmem_write(long long waddr, long long wdata) {
+extern "C" void pmem_write(long long waddr, long long wdata) {
   // printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
   assert(in_pmem(waddr));
 
