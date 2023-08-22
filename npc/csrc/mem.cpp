@@ -37,19 +37,6 @@ static void out_of_bound(paddr_t addr) {
       addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_pc);
 }
 
-extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
-  pmem_read(raddr, rdata);
-}
-
-extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
-  pmem_read(raddr, rdata);
-  IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
-}
-
-extern "C" void vaddr_write(sword_t waddr, sword_t wdata) {
-  pmem_write(waddr, wdata);
-}
-
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
   if(raddr == 0 && top->io_out_pc == 0) return;
@@ -82,6 +69,19 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
   //   // default: printf("pmem_write!\n"); exit(0); break;
   //   // default: printf("pmem_write!\n"); break;
   // }
+}
+
+extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
+  pmem_read(raddr, rdata);
+}
+
+extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
+  pmem_read(raddr, rdata);
+  IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
+}
+
+extern "C" void vaddr_write(sword_t waddr, sword_t wdata) {
+  pmem_write(waddr, wdata);
 }
 
 long load_img(const char *img_file) {
