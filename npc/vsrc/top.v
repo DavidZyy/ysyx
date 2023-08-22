@@ -644,7 +644,7 @@ module Ram(
     .rdata(RamBB_i1_rdata)
   );
   assign io_out_rdata = 4'h3 == io_in_lsu_op ? lw_rdata : _io_out_rdata_T_9; // @[Mux.scala 81:58]
-  assign RamBB_i1_addr = io_in_addr; // @[datamem.scala 51:25]
+  assign RamBB_i1_addr = {{2'd0}, io_in_addr[31:2]}; // @[datamem.scala 51:25]
   assign RamBB_i1_wdata = wdata_align_4[31:0]; // @[datamem.scala 128:25]
   assign RamBB_i1_mem_wen = io_in_mem_wen; // @[datamem.scala 52:25]
   assign RamBB_i1_valid = io_in_mem_ren | io_in_mem_wen; // @[datamem.scala 47:31]

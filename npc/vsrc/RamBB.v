@@ -6,6 +6,7 @@ import "DPI-C" function void pmem_write(
 `define DATA_WIDTH 32
 `define ADDR_WIDTH 32
 
+// addr is 4 byte aligned
 module RamBB (
     input [`ADDR_WIDTH-1:0] addr,
     input mem_wen,
@@ -21,11 +22,11 @@ always @(*) begin
     pmem_read(addr, rdata);
     if (mem_wen) begin // 有写请求时
         pmem_write(addr, wdata);
+    //   pmem_write(waddr, wdata, wmask);
     end
   end
   else begin
-    rdata = 0;
-    // ;
+    rdata <= 0;
   end
 end
 
