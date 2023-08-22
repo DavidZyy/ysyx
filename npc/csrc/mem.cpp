@@ -34,7 +34,7 @@ static inline bool in_pmem(paddr_t addr) {
 
 static void out_of_bound(paddr_t addr) {
   panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-      addr, PMEM_LEFT, PMEM_RIGHT, cpu.pc);
+      addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_pc);
 }
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
