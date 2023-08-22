@@ -38,7 +38,7 @@ static void out_of_bound(paddr_t addr) {
 }
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  Assert(!(raddr & 0x3), "pmem_read not align to 4 byte!");
+  Assert(!(raddr & 0x3u), "pmem_read not align to 4 byte!");
   if(raddr == 0 && top->io_out_pc == 0) return;
   if(!in_pmem(raddr)) out_of_bound(raddr);
   void*raddr_temp = guest_to_host(raddr);

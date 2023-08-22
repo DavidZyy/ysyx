@@ -168,10 +168,10 @@ int main(int argc, char *argv[]) {
 
   int begin = 1;
 
-  // sword_t *rdata;
-  // sword_t raddr = 0x80000004L;
-  // pmem_read(raddr, rdata);
-  // printf("%x\n", *rdata);
+  sword_t *rdata;
+  sword_t raddr = 0x80000004L;
+  pmem_read(raddr, rdata);
+  printf("%x\n", *rdata);
 
   for(i = 0; i < times; i++){
 
