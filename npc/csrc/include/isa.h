@@ -2,7 +2,7 @@
 #define __ISA_H__
 
 #include <macro.h>
-#include 
+#include "common.h"
 
 typedef struct {
   word_t gpr[32];
