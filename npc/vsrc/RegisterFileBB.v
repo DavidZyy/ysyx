@@ -6,7 +6,7 @@
 
 import "DPI-C" function void set_gpr_ptr(input logic [`DATA_WIDTH:0] a []);
 
-module RegisterFile (
+module RegisterFileBB (
   input clock,
   input reset,
   input [`DATA_WIDTH-1:0] wdata,
