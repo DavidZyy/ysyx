@@ -1,4 +1,5 @@
 
+/* verilator lint_off BLKSEQ */
 import "DPI-C" function void vaddr_read(
   input int raddr, output int rdata);
 import "DPI-C" function void vaddr_write(
