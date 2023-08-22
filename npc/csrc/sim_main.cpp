@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
 
   top->reset = 1;
   single_cycle(0);
-  single_cycle(0);
+  // single_cycle(0);
   // single_cycle(0);
   top->reset = 0;
 
