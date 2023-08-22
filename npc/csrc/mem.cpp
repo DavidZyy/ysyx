@@ -38,7 +38,8 @@ static void out_of_bound(paddr_t addr) {
 }
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  Assert(!(raddr & 0x3u), "pmem_read raddr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, raddr, top->io_out_pc, top->io_out_inst);
+  Assert(!(raddr & 0x3u), "pmem_read raddr: " FMT_WORD" not align to 4 byte!, at pc: " 
+   FMT_WORD " instruction is: " FMT_WORD, raddr, top->io_out_pc, top->io_out_inst);
   if(raddr == 0 && top->io_out_pc == 0) return;
   if(!in_pmem(raddr)) out_of_bound(raddr);
   void*raddr_temp = guest_to_host(raddr);
@@ -47,6 +48,8 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 }
 
 extern "C" void pmem_write(long long waddr, long long wdata) {
+  Assert(!(raddr & 0x3u), "pmem_read raddr: " FMT_WORD" not align to 4 byte!, at pc: " 
+   FMT_WORD " instruction is: " FMT_WORD, raddr, top->io_out_pc, top->io_out_inst);
   // printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
   assert(in_pmem(waddr));
 
