@@ -1,7 +1,8 @@
 
 // import "DPI-C" function void pmem_read(
 //   input int raddr, output int rdata);
-import "DPI-C" function void pmem_write(
+// import "DPI-C" function void pmem_write(
+import "DPI-C" function void vaddr_write(
   input int waddr, input int wdata);
 `define DATA_WIDTH 32
 `define ADDR_WIDTH 32
