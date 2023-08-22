@@ -46,8 +46,8 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
 }
 
-void pmem_write(long long waddr, long long wdata, char wmask) {
-  printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
+void pmem_write(long long waddr, long long wdata) {
+  // printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
   assert(in_pmem(waddr));
 
   // assert(!(waddr & 0x7));
@@ -58,15 +58,16 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
   uint8_t *waddr_temp = guest_to_host(waddr);
-  switch (wmask) {
-    case 0x1:   *(uint8_t  *)waddr_temp = wdata;break;
-    case 0x3:   *(uint16_t *)waddr_temp = wdata;break;
-    case 0xf:   *(uint32_t *)waddr_temp = wdata;break;
-    // case 0xff:  *(uint64_t *)waddr_temp = wdata;break;
-    default:  *(uint64_t *)waddr_temp = wdata;break;
-    // default: printf("pmem_write!\n"); exit(0); break;
-    // default: printf("pmem_write!\n"); break;
-  }
+  *(uint32_t *)waddr_temp = wdata;
+  // switch (wmask) {
+  //   case 0x1:   *(uint8_t  *)waddr_temp = wdata;break;
+  //   case 0x3:   *(uint16_t *)waddr_temp = wdata;break;
+  //   case 0xf:   *(uint32_t *)waddr_temp = wdata;break;
+  //   // case 0xff:  *(uint64_t *)waddr_temp = wdata;break;
+  //   default:  *(uint64_t *)waddr_temp = wdata;break;
+  //   // default: printf("pmem_write!\n"); exit(0); break;
+  //   // default: printf("pmem_write!\n"); break;
+  // }
 }
 
 long load_img(const char *img_file) {
