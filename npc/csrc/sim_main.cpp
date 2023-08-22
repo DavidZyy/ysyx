@@ -153,10 +153,6 @@ void init_monitor(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
   // Assert(0, "hi:%d" , 5);
   init_monitor(argc, argv);
-  sword_t *rdata;
-  sword_t raddr = 0x80000004;
-  pmem_read(raddr, rdata);
-  printf("%x\n", *rdata);
 
   sim_init();
 
@@ -172,6 +168,10 @@ int main(int argc, char *argv[]) {
 
   int begin = 1;
 
+  sword_t *rdata;
+  sword_t raddr = 0x80000004;
+  pmem_read(raddr, rdata);
+  printf("%x\n", *rdata);
   for(i = 0; i < times; i++){
 
     npc_exec_once();

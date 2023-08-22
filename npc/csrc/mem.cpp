@@ -38,7 +38,7 @@ static void out_of_bound(paddr_t addr) {
 }
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  // if(top->io_out_pc == 0) return;
+  if(top->io_out_pc == 0) return;
   if(!in_pmem(raddr)) out_of_bound(raddr);
   // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
   raddr = raddr & ~0x7; // align to 8
