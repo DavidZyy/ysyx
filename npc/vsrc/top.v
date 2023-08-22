@@ -70,20 +70,16 @@ end // initial
 `endif // SYNTHESIS
 endmodule
 module Rom(
-  input         clock,
   input  [31:0] io_addr,
   output [31:0] io_inst
 );
-  wire  RomBB_i1_clock; // @[instmem.scala 34:26]
   wire [31:0] RomBB_i1_addr; // @[instmem.scala 34:26]
   wire [31:0] RomBB_i1_inst; // @[instmem.scala 34:26]
   RomBB RomBB_i1 ( // @[instmem.scala 34:26]
-    .clock(RomBB_i1_clock),
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
   );
   assign io_inst = RomBB_i1_inst; // @[instmem.scala 39:13]
-  assign RomBB_i1_clock = clock; // @[instmem.scala 36:23]
   assign RomBB_i1_addr = io_addr; // @[instmem.scala 37:22]
 endmodule
 module Decoder(
@@ -717,7 +713,6 @@ module top(
   wire [31:0] PCReg_i_io_cur_pc; // @[top.scala 22:29]
   wire  PCReg_i_io_ctrl_br; // @[top.scala 22:29]
   wire [31:0] PCReg_i_io_addr_target; // @[top.scala 22:29]
-  wire  Rom_i_clock; // @[top.scala 23:29]
   wire [31:0] Rom_i_io_addr; // @[top.scala 23:29]
   wire [31:0] Rom_i_io_inst; // @[top.scala 23:29]
   wire [31:0] Decoder_i_io_inst; // @[top.scala 24:29]
@@ -777,7 +772,6 @@ module top(
     .io_addr_target(PCReg_i_io_addr_target)
   );
   Rom Rom_i ( // @[top.scala 23:29]
-    .clock(Rom_i_clock),
     .io_addr(Rom_i_io_addr),
     .io_inst(Rom_i_io_inst)
   );
@@ -832,7 +826,6 @@ module top(
   assign PCReg_i_reset = reset;
   assign PCReg_i_io_ctrl_br = Bru_i_io_bru_out_ctrl_br; // @[top.scala 31:24]
   assign PCReg_i_io_addr_target = Alu_i_io_alu_out_alu_result; // @[top.scala 32:29]
-  assign Rom_i_clock = clock;
   assign Rom_i_io_addr = PCReg_i_io_cur_pc; // @[top.scala 35:19]
   assign Decoder_i_io_inst = Rom_i_io_inst; // @[top.scala 38:23]
   assign RegFile_i_clock = clock;
