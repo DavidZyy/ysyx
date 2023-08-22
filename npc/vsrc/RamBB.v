@@ -1,6 +1,6 @@
 
-// import "DPI-C" function void pmem_read(
-//   input int raddr, output int rdata);
+import "DPI-C" function void vaddr_read(
+  input int raddr, output int rdata);
 // import "DPI-C" function void pmem_write(
 import "DPI-C" function void vaddr_write(
   input int waddr, input int wdata);
@@ -20,9 +20,9 @@ module RamBB (
 // wire [63:0] rdata;
 always @(*) begin
   if (valid) begin // 有读写请求时
-    pmem_read(addr, rdata);
+    vaddr_read(addr, rdata);
     if (mem_wen) begin // 有写请求时
-        pmem_write(addr, wdata);
+        vaddr_write(addr, wdata);
     //   pmem_write(waddr, wdata, wmask);
     end
   end
