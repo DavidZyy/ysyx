@@ -38,7 +38,7 @@ static void out_of_bound(paddr_t addr) {
 }
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  printf("raddr:\n" FMT_WORD, raddr);
+  printf("raddr: " FMT_WORD"\n", raddr);
   IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
   // if(top->io_out_pc == 0) return;
   if(raddr == 0) return;
