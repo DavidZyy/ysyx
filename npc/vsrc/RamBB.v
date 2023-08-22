@@ -12,7 +12,7 @@ module RamBB (
     // input mem_ren,
     input valid,
     input [`DATA_WIDTH-1:0] wdata,
-    output [`DATA_WIDTH-1:0] rdata
+    output reg [`DATA_WIDTH-1:0] rdata
 );
 
 // wire [63:0] rdata;
