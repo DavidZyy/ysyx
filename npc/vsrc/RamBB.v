@@ -26,7 +26,7 @@ always @(*) begin
     end
   end
   else begin
-    rdata <= 0;
+    rdata = 0;
   end
 end
 
