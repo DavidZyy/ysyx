@@ -75,9 +75,9 @@ error:
 void isa_reg_display(CPU_state *ref){
   for(int i = 0; i < 32; i++){
     if(ref->gpr[i] != cpu.gpr[i]) {
-      printf("nemu: gpr[%d] = "FMT_WORD, i, ref->gpr[i]);
+      printf("nemu: gpr[%d] = " FMT_WORD, i, ref->gpr[i]);
       printf("\t");
-      printf("npc: gpr[%d] = "FMT_WORD"\n", i, cpu.gpr[i]);
+      printf("npc: gpr[%d] = " FMT_WORD"\n", i, cpu.gpr[i]);
     }
   }
 
