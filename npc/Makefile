@@ -68,7 +68,7 @@ LOG_FILE = $(NPC_HOME)/build/npc-log.txt
 
 sim:
 # DO NOT REMOVE THIS LINE!!!
-	$(call git_commit, "sim RTL") 
+	$(call git_commit, "sim RTL")
 	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
