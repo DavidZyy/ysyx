@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
 
   sword_t *rdata;
   sword_t raddr = 0x80000004;
-  // pmem_read(raddr, rdata);
+  pmem_read(raddr, rdata);
   // printf("%x\n", *rdata);
   for(i = 0; i < times; i++){
 
