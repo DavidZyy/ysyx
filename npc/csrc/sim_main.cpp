@@ -153,6 +153,9 @@ void init_monitor(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
   // Assert(0, "hi:%d" , 5);
   init_monitor(argc, argv);
+  sword_t *rdata;
+  pmem_read(0x80000004, rdata);
+  printf("%x\n", *rdata);
 
   sim_init();
 
