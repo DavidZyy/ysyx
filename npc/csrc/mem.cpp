@@ -38,17 +38,12 @@ static void out_of_bound(paddr_t addr) {
 }
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  // printf("raddr: " FMT_WORD"\n", raddr);
-  IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
-  // if(top->io_out_pc == 0) return;
-  if(raddr == 0) return;
+  Assert(!(raddr & 0x3), "pmem_read not align to 4 byte!");
+  if(raddr == 0 && top->io_out_pc == 0) return;
   if(!in_pmem(raddr)) out_of_bound(raddr);
-  // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
-  raddr = raddr & ~0x7; // align to 8
-
   void*raddr_temp = guest_to_host(raddr);
   *rdata = *(word_t *)raddr_temp;
-  // IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
+  IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
 }
 
 void pmem_write(long long waddr, long long wdata, char wmask) {
