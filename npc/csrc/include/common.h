@@ -14,6 +14,6 @@ typedef word_t paddr_t;
 
 #define FMT_WORD  MUXDEF(CONFIG_ISA64, "0x%016" PRIx64, "0x%08" PRIx32)
 #define FMT_PADDR MUXDEF(CONFIG_ISA64, "0x%016" PRIx64, "0x%08" PRIx32)
-
+#define align_mask MUXDEF(CONFIG_ISA64, 0b111, 0b11)
 
 #endif
