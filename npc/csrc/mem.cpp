@@ -38,7 +38,8 @@ static void out_of_bound(paddr_t addr) {
 }
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
+  printf("raddr:" FMT_WORD, raddr);
+  // IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
   // if(top->io_out_pc == 0) return;
   if(raddr == 0) return;
   if(!in_pmem(raddr)) out_of_bound(raddr);
@@ -47,7 +48,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 
   void*raddr_temp = guest_to_host(raddr);
   *rdata = *(word_t *)raddr_temp;
-  IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
+  // IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", raddr, *rdata));
 }
 
 void pmem_write(long long waddr, long long wdata, char wmask) {
