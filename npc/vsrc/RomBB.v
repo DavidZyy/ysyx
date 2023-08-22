@@ -6,7 +6,7 @@
 //   input int mem_waddr, input int wdata, input byte wmask);
 
 module RomBB (
-    input clock,
+    // input clock,
     input [31:0] addr,
     output [31:0] inst
 );
