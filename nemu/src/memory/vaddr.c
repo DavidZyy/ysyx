@@ -21,9 +21,11 @@ word_t vaddr_ifetch(vaddr_t addr, int len) {
 }
 
 word_t vaddr_read(vaddr_t addr, int len) {
+  IFDEF(CONFIG_MTRACE, log_write("paddr read\n"));
   return paddr_read(addr, len);
 }
 
 void vaddr_write(vaddr_t addr, int len, word_t data) {
+  IFDEF(CONFIG_MTRACE, log_write("paddr write\n"));
   paddr_write(addr, len, data);
 }
