@@ -9,8 +9,8 @@ module RomBB (
 );
 
     /* We should read instructions immediately when pc changes. */
-    // always @(*) begin
+    always @(addr ) begin
       pmem_read(addr, inst);
-    // end
+    end
 
 endmodule //rom
