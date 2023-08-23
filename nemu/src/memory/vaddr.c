@@ -20,13 +20,17 @@ word_t vaddr_ifetch(vaddr_t addr, int len) {
   return paddr_read(addr, len);
 }
 
+
+extern CPU_state cpu;
 word_t vaddr_read(vaddr_t addr, int len) {
   word_t rdata = paddr_read(addr, len);
+  // IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, top->io_out_inst));
   IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n", addr, rdata));
   return rdata;
 }
 
 void vaddr_write(vaddr_t addr, int len, word_t data) {
+  // IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
   IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n", addr, data));
   paddr_write(addr, len, data);
 }
