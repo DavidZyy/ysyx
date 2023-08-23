@@ -1,7 +1,7 @@
 /* used in this file */
 import "DPI-C" function void exit_code();
 
-module moduleName (
+module EbreakBB (
     input      is_ebreak
 );
 
