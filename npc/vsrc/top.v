@@ -405,12 +405,9 @@ module Decoder(
   wire [3:0] _decode_info_orMatrixOutputs_T_18 = {_decode_info_T_41,_decode_info_T_45,_decode_info_T_77,
     _decode_info_T_81}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_19 = |_decode_info_orMatrixOutputs_T_18; // @[pla.scala 114:39]
-  wire [9:0] _decode_info_orMatrixOutputs_T_20 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_19,
+  wire [9:0] _decode_info_orMatrixOutputs_T_20 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_7,_decode_info_T_29,
     _decode_info_T_33,_decode_info_T_37,_decode_info_T_41,_decode_info_T_51,_decode_info_T_71,_decode_info_T_77}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_21 = |_decode_info_orMatrixOutputs_T_20; // @[pla.scala 114:39]
-  wire [12:0] _decode_info_orMatrixOutputs_T_22 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_11,
-    _decode_info_T_13,_decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo}; // @[Cat.scala 33:92]
-  wire  _decode_info_orMatrixOutputs_T_23 = |_decode_info_orMatrixOutputs_T_22; // @[pla.scala 114:39]
   wire [5:0] decode_info_orMatrixOutputs_lo_11 = {_decode_info_T_33,_decode_info_T_41,_decode_info_T_51,
     _decode_info_T_71,_decode_info_T_77,_decode_info_T_81}; // @[Cat.scala 33:92]
   wire [11:0] _decode_info_orMatrixOutputs_T_24 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_19,
@@ -437,7 +434,7 @@ module Decoder(
     _decode_info_orMatrixOutputs_T_38,_decode_info_orMatrixOutputs_T_36,_decode_info_orMatrixOutputs_T_34,
     _decode_info_orMatrixOutputs_T_32,_decode_info_orMatrixOutputs_T_31,_decode_info_orMatrixOutputs_T_29,
     _decode_info_orMatrixOutputs_T_27,_decode_info_orMatrixOutputs_T_25}; // @[Cat.scala 33:92]
-  wire [23:0] decode_info_orMatrixOutputs = {decode_info_orMatrixOutputs_hi_16,_decode_info_orMatrixOutputs_T_23,
+  wire [23:0] decode_info_orMatrixOutputs = {decode_info_orMatrixOutputs_hi_16,_decode_info_orMatrixOutputs_T_3,
     _decode_info_orMatrixOutputs_T_21,_decode_info_orMatrixOutputs_T_19,_decode_info_orMatrixOutputs_T_17,
     _decode_info_orMatrixOutputs_T_15,_decode_info_orMatrixOutputs_T_13,decode_info_orMatrixOutputs_lo_lo_8}; // @[Cat.scala 33:92]
   wire  _decode_info_invMatrixOutputs_T_12 = ~decode_info_orMatrixOutputs[11]; // @[pla.scala 123:40]
