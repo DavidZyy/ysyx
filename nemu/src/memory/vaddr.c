@@ -75,7 +75,7 @@ void vaddr_write(vaddr_t addr, int len, word_t data) {
   word_t wmask = get_wmask(addr, len);
   word_t wdata = ((data << 8*addr_low_2) & wmask) | (rdata & ~wmask);
   log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, vaddr_ifetch(cpu.pc, 4));
-  log_write("addr_low_2:" FMT_WORD", rdata:" FMT_WORD ", addr:" FMT_WORD ", len:" FMT_WORD ", data:" FMT_WORD"\n", addr_low_2, rdata, addr, len, data);
+  // log_write("addr_low_2:" FMT_WORD", rdata:" FMT_WORD ", addr:" FMT_WORD ", len:" FMT_WORD ", data:" FMT_WORD"\n", addr_low_2, rdata, addr, len, data);
   log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata);
 #endif
   paddr_write(addr, len, data);
