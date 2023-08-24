@@ -20,7 +20,9 @@ module RamBB (
 );
 
 always @(*) begin
-    vaddr_read(addr, rdata_4_w);
+    if (valid) begin
+        vaddr_read(addr, rdata_4_w);
+    end
 end
 
 // always @(*) begin
