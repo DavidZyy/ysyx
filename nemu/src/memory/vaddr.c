@@ -75,11 +75,9 @@ void vaddr_write(vaddr_t addr, int len, word_t data) {
   // word_t rdata = 0;
   word_t wmask = get_wmask(addr, len);
   word_t wdata = ((data << 8*addr_low_2) & wmask) | (rdata & ~wmask);
-
-  IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, vaddr_ifetch(cpu.pc, 4)));
-  IFDEF(CONFIG_MTRACE, log_write("addr_low_2:" FMT_WORD", rdata:" FMT_WORD ", addr:" FMT_WORD ", len:" FMT_WORD ",data:" FMT_WORD"\n", addr_low_2, rdata, addr, len, data));
-  // IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD"\n", cpu.pc));
-  IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
+  log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, vaddr_ifetch(cpu.pc, 4));
+  log_write("addr_low_2:" FMT_WORD", rdata:" FMT_WORD ", addr:" FMT_WORD ", len:" FMT_WORD ",data:" FMT_WORD"\n", addr_low_2, rdata, addr, len, data);
+  log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata);
 #endif
   paddr_write(addr, len, data);
 }
