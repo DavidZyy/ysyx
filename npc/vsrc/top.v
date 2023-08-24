@@ -608,6 +608,7 @@ module Ram(
   input         io_in_mem_ren,
   input         io_in_mem_wen,
   input  [31:0] io_in_addr,
+  input  [31:0] io_in_wdata,
   input  [3:0]  io_in_lsu_op,
   output [31:0] io_out_rdata
 );
@@ -651,6 +652,21 @@ module Ram(
   wire [31:0] _io_out_rdata_T_7 = 4'h2 == io_in_lsu_op ? lh_rdata : _io_out_rdata_T_5; // @[Mux.scala 81:58]
   wire [31:0] _io_out_rdata_T_9 = 4'h5 == io_in_lsu_op ? lhu_rdata : _io_out_rdata_T_7; // @[Mux.scala 81:58]
   wire [31:0] lw_rdata = RamBB_i1_rdata; // @[datamem.scala 66:25 92:14]
+  wire [15:0] _sb_wmask_T_1 = 2'h1 == addr_low_2 ? 16'hff00 : 16'hff; // @[Mux.scala 81:58]
+  wire [23:0] _sb_wmask_T_3 = 2'h2 == addr_low_2 ? 24'hff0000 : {{8'd0}, _sb_wmask_T_1}; // @[Mux.scala 81:58]
+  wire [31:0] sb_wmask = 2'h3 == addr_low_2 ? 32'hff000000 : {{8'd0}, _sb_wmask_T_3}; // @[Mux.scala 81:58]
+  wire [15:0] _sh_wmask_T_1 = 2'h0 == addr_low_2 ? 16'hffff : 16'h0; // @[Mux.scala 81:58]
+  wire [31:0] sh_wmask = 2'h2 == addr_low_2 ? 32'hffff0000 : {{16'd0}, _sh_wmask_T_1}; // @[Mux.scala 81:58]
+  wire [31:0] _wmask_T_1 = 4'h6 == io_in_lsu_op ? sb_wmask : 32'h0; // @[Mux.scala 81:58]
+  wire [31:0] _wmask_T_3 = 4'h7 == io_in_lsu_op ? sh_wmask : _wmask_T_1; // @[Mux.scala 81:58]
+  wire [31:0] wmask = 4'h8 == io_in_lsu_op ? 32'hffffffff : _wmask_T_3; // @[Mux.scala 81:58]
+  wire [5:0] _wdata_align_4_T = 4'h8 * addr_low_2; // @[datamem.scala 128:32]
+  wire [94:0] _GEN_2 = {{63'd0}, io_in_wdata}; // @[datamem.scala 128:24]
+  wire [94:0] _wdata_align_4_T_1 = _GEN_2 << _wdata_align_4_T; // @[datamem.scala 128:24]
+  wire [94:0] _GEN_0 = {{63'd0}, wmask}; // @[datamem.scala 128:47]
+  wire [94:0] _wdata_align_4_T_2 = _wdata_align_4_T_1 & _GEN_0; // @[datamem.scala 128:47]
+  wire [94:0] _GEN_1 = {{63'd0}, RamBB_i1_rdata}; // @[datamem.scala 128:56]
+  wire [94:0] wdata_align_4 = _wdata_align_4_T_2 | _GEN_1; // @[datamem.scala 128:56]
   RamBB RamBB_i1 ( // @[datamem.scala 50:26]
     .clock(RamBB_i1_clock),
     .addr(RamBB_i1_addr),
@@ -662,7 +678,7 @@ module Ram(
   assign io_out_rdata = 4'h3 == io_in_lsu_op ? lw_rdata : _io_out_rdata_T_9; // @[Mux.scala 81:58]
   assign RamBB_i1_clock = clock; // @[datamem.scala 52:25]
   assign RamBB_i1_addr = {io_in_addr[31:2], 2'h0}; // @[datamem.scala 53:46]
-  assign RamBB_i1_wdata = RamBB_i1_rdata; // @[datamem.scala 131:25]
+  assign RamBB_i1_wdata = wdata_align_4[31:0]; // @[datamem.scala 131:25]
   assign RamBB_i1_mem_wen = io_in_mem_wen; // @[datamem.scala 54:25]
   assign RamBB_i1_valid = io_in_mem_ren | io_in_mem_wen; // @[datamem.scala 48:31]
 endmodule
@@ -723,6 +739,7 @@ module top(
   wire  Ram_i_io_in_mem_ren; // @[top.scala 29:33]
   wire  Ram_i_io_in_mem_wen; // @[top.scala 29:33]
   wire [31:0] Ram_i_io_in_addr; // @[top.scala 29:33]
+  wire [31:0] Ram_i_io_in_wdata; // @[top.scala 29:33]
   wire [3:0] Ram_i_io_in_lsu_op; // @[top.scala 29:33]
   wire [31:0] Ram_i_io_out_rdata; // @[top.scala 29:33]
   wire  ebreak_moudle_i_is_ebreak; // @[top.scala 30:33]
@@ -794,6 +811,7 @@ module top(
     .io_in_mem_ren(Ram_i_io_in_mem_ren),
     .io_in_mem_wen(Ram_i_io_in_mem_wen),
     .io_in_addr(Ram_i_io_in_addr),
+    .io_in_wdata(Ram_i_io_in_wdata),
     .io_in_lsu_op(Ram_i_io_in_lsu_op),
     .io_out_rdata(Ram_i_io_out_rdata)
   );
@@ -826,6 +844,7 @@ module top(
   assign Ram_i_io_in_mem_ren = _is_load_T_6 | _is_load_T_7; // @[top.scala 52:62]
   assign Ram_i_io_in_mem_wen = Decoder_i_io_out_ctrl_sig_mem_wen; // @[top.scala 94:25]
   assign Ram_i_io_in_addr = Alu_i_io_alu_out_alu_result; // @[top.scala 92:23]
+  assign Ram_i_io_in_wdata = RegFile_i_io_out_rdata2; // @[top.scala 93:23]
   assign Ram_i_io_in_lsu_op = Decoder_i_io_out_ctrl_sig_lsu_op; // @[top.scala 95:25]
   assign ebreak_moudle_i_is_ebreak = Decoder_i_io_out_ctrl_sig_is_ebreak; // @[top.scala 99:31]
 endmodule
