@@ -44,9 +44,17 @@ CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
 # cpp file for nvboard and simulation
-COMMON_CPP_FILE = $(abspath ./csrc/mem.cpp)
+# COMMON_CPP_FILE = $(abspath ./csrc/mem.cpp)
 # cpp file for only simulation
-SIM_CPP_FILE = $(abspath ./csrc/dut.cpp)
+# SIM_CPP_FILE = $(abspath ./csrc/dut.cpp)
+
+SRC_DIR := ./csrc
+
+# Use find to recursively locate .cpp and .c files in the source directory
+CPP_FILES := $(shell find $(SRC_DIR) -type f -name '*.cpp')
+# C_FILES := $(shell find $(SRC_DIR) -type f -name '*.c')
+
+# $(error $(CPP_FILES))
 
 all:
 	@echo "Write this Makefile by your self."
@@ -54,21 +62,32 @@ all:
 # the program to be executed on npc, about ?=, 
 # see gnu make 6.2.4 Conditional Variable Assignment
 IMG ?= 
-SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv32-nemu-interpreter-so
+# SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv32-nemu-interpreter-so
+SO = $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+LOG_FILE = $(NPC_HOME)/build/npc-log.txt
 
 sim:
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+# DO NOT REMOVE THIS LINE!!!
+	$(call git_commit, "sim RTL")
 	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
-	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
-	$(SIM_CPP_FILE) $(COMMON_CPP_FILE)
-	obj_dir/Vtop $(IMG) $(SO)
-	gtkwave dump.vcd
+	$(CPP_FILES) $(VSRCS) $(SVSRCS)
+	obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
+	# gtkwave dump.vcd
+
+# sim:
+# 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+# 	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
+# 	$(addprefix -CFLAGS , $(CFLAGS)) \
+# 	-trace --cc --exe --build -Wall \
+# 	$(abspath ./csrc/sim_main.cpp) $(VSRCS) $(SVSRCS) \
+# 	$(SIM_CPP_FILE) $(COMMON_CPP_FILE)
+# 	obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
+# 	gtkwave dump.vcd
 
 wv:
 	gtkwave dump.vcd
-
 
 include ../Makefile
 

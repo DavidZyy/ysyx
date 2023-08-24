@@ -37,6 +37,8 @@
 
 // macro testing
 // See https://stackoverflow.com/questions/26099745/test-if-preprocessor-symbol-is-defined-inside-macro
+// 如果定义了 宏， contain_comma展开为逗号，a为第二个，选择a，否则"contain_comma a"为第一个
+// b为第2个，选择b。
 #define CHOOSE2nd(a, b, ...) b
 #define MUX_WITH_COMMA(contain_comma, a, b) CHOOSE2nd(contain_comma a, b)
 #define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)
@@ -67,6 +69,7 @@
 // simplification for conditional compilation
 #define __IGNORE(...)
 #define __KEEP(...) __VA_ARGS__
+// 如果定义了 macro， 选择__KEEP，否则就选择 __IGNORE
 // keep the code if a boolean macro is defined
 #define IFDEF(macro, ...) MUXDEF(macro, __KEEP, __IGNORE)(__VA_ARGS__)
 // keep the code if a boolean macro is undefined

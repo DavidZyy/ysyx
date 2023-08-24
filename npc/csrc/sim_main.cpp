@@ -11,15 +11,19 @@
 #include "utils.h"
 #include "macro.h"
 #include "mem.h"
+#include "isa.h"
+#include "debug.h"
 
 // c library
 // #include <iostream>
 #include <stdio.h>
 #include <string.h>
 
+void init_log(const char *log_file);
+
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
-static Vtop* top;
+Vtop* top;
 
 CPU_state cpu;
 // uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
@@ -28,8 +32,8 @@ void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1);
   tfp->dump(contextp->time());
-  // contextp->timeInc(1);
 }
+
 void sim_init(){
   contextp = new VerilatedContext;
   tfp = new VerilatedVcdC;
@@ -54,14 +58,12 @@ void single_cycle(int rst) {
   step_and_dump_wave();
 }
 
-
 /* ebreak means success! */
 int terminal = 0;
-void exit_code(){
+extern "C" void exit_code(){
   terminal = 1;
   printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
         (void *)top->io_out_pc);
-        // (void *)top->pc_IF);
 }
 
 void print_clkdiv(long long clkdiv){
@@ -99,9 +101,11 @@ void print_arg(int argc, char *argv[]){
   }
 }
 
-uint64_t *cpu_gpr = NULL;
+// uint64_t *cpu_gpr = NULL;
+word_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-  cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+  // cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
+  cpu_gpr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
 // 一个输出RTL中通用寄存器的值的示例
@@ -114,37 +118,49 @@ void dump_gpr() {
   printf("\n");
 }
 
+/* get npc's register state */
 void get_cpu() {
   assert(cpu_gpr);
   for(int i = 0; i < 32; i++){
     cpu.gpr[i] = cpu_gpr[i];
   }
-  // cpu.pc = top->pc_IF;
   cpu.pc = top->io_out_pc;
 }
 
 void npc_exec_once() {
     single_cycle(0);
-    // get_cpu();
+    get_cpu();
 }
 
 void nemu_exec_once() {
   difftest_step();
 }
 
-int main(int argc, char *argv[]) {
-  // get_cpu();
-  // cpu.pc = RESET_VECTOR;
-  // print_arg(argc, argv);
-  // long size = load_img(argv[1]);
+void init_isa() {
   // long size = load_init_img();
-  // init_difftest(argv[2], size, 0);
+  cpu.pc = RESET_VECTOR;
+}
+
+// similar to monitor
+void init_monitor(int argc, char *argv[]) {
+  // print_arg(argc, argv);
+  init_log(argv[3]);
+  init_isa();
+  long img_size = load_img(argv[1]);
+  init_difftest(argv[2], img_size, 0);
+}
+
+int status = 0;
+
+int main(int argc, char *argv[]) {
+  // Assert(0, "hi:%d" , 5);
+  init_monitor(argc, argv);
 
   sim_init();
 
   top->reset = 1;
   single_cycle(0);
-  single_cycle(0);
+  // single_cycle(0);
   // single_cycle(0);
   top->reset = 0;
 
@@ -157,11 +173,12 @@ int main(int argc, char *argv[]) {
   for(i = 0; i < times; i++){
 
     npc_exec_once();
-    // nemu_exec_once(); // execute jmp / branch
+    nemu_exec_once(); // execute jmp / branch
     
     if(terminal)
       break;
   }
 
   sim_exit();
+  return status;
 }

@@ -5,12 +5,15 @@
 
 #include "macro.h"
 #include "utils.h"
+#include "isa.h"
+#include "common.h"
 
 // #define NULL nullptr
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
 extern uint8_t pmem[CONFIG_MSIZE];
-extern riscv64_CPU_state cpu;
+// extern riscv64_CPU_state cpu;
+extern CPU_state cpu;
 extern int terminal;
 
 extern uint8_t* guest_to_host(paddr_t paddr);
@@ -72,24 +75,26 @@ error:
 void isa_reg_display(CPU_state *ref){
   for(int i = 0; i < 32; i++){
     if(ref->gpr[i] != cpu.gpr[i]) {
-      printf("nemu: gpr[%d] = 0x%lx", i, ref->gpr[i]);
+      printf("nemu: gpr[%d] = " FMT_WORD, i, ref->gpr[i]);
       printf("\t");
-      printf("npc: gpr[%d] = 0x%lx\n", i, cpu.gpr[i]);
+      printf("npc: gpr[%d] = " FMT_WORD"\n", i, cpu.gpr[i]);
     }
   }
 
-  printf("nemu: pc = 0x%lx", ref->pc);
+  printf("nemu: pc = " FMT_WORD, ref->pc);
   printf("\t");
   // printf("npc: pc = 0x%lx\n", cpu.pc);
-  printf("npc: pc_WB = 0x%lx\n", cpu.pc);
+  printf("npc: pc = " FMT_WORD"\n", cpu.pc);
 }
 
+extern int status;
 static void checkregs(CPU_state *ref, vaddr_t pc){
   if (!isa_difftest_checkregs(ref, pc)) {
     printf(ANSI_FMT("Regs Error:\n", ANSI_FG_RED));
     // while(1);
     isa_reg_display(ref);
     terminal = 1;
+    status = 1;
   }
 }
 

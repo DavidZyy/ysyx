@@ -2,12 +2,21 @@
 #include <assert.h>
 
 #include "utils.h"
+#include "isa.h"
+#include "mem.h"
+#include "conf.h"
+#include "debug.h"
+
+#include "verilated.h"
+#include "verilated_vcd_c.h"
+#include "../obj_dir/Vtop.h"
 
 /* DPI-C function */
 #include "svdpi.h"
 // #include "Vtop__Dpi.h"
 #include "verilated_dpi.h"
 
+extern Vtop* top;
 uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
 /* my understanding: paddr is the program in the guest's address, paddr - CONFIG_MBASE 
@@ -18,30 +27,27 @@ uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 beginning of the programm in guest) get the address in the guest. */
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
-
 static inline bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
 }
 
-void pmem_read(long long raddr, long long *rdata) {
-  // printf(ANSI_FMT("pc_IF: %p\n", ANSI_FG_RED), (void *)top->pc_IF);
-  // printf(ANSI_FMT("next_pc: %p\n", ANSI_FG_RED), (void *)top->next_pc);
-  // printf(ANSI_FMT("raddr: %llx\n\n", ANSI_FG_RED), raddr);
-  if(raddr <= 0x40){
-    *rdata = 0;
-    return;
-  }
-  // if(top->next_pc && top->pc_IF)
-    assert(in_pmem(raddr));
-  // 总是读取地址为`raddr & ~0x7ull`的8字节返回给`rdata`
-  raddr = raddr & ~0x7; // align to 8
-
-  uint8_t *raddr_temp = guest_to_host(raddr);
-  *rdata = *(uint64_t *)raddr_temp;
+static void out_of_bound(paddr_t addr) {
+  panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
+      addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_pc);
 }
 
-void pmem_write(long long waddr, long long wdata, char wmask) {
-  printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
+extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
+  Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
+  if(raddr == 0 && top->io_out_pc == 0) return;
+  if(!in_pmem(raddr)) out_of_bound(raddr);
+  void*raddr_temp = guest_to_host(raddr);
+  *rdata = *(word_t *)raddr_temp;
+}
+
+// extern "C" void pmem_write(long long waddr, long long wdata) {
+extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
+  Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
+  // printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
   assert(in_pmem(waddr));
 
   // assert(!(waddr & 0x7));
@@ -52,15 +58,35 @@ void pmem_write(long long waddr, long long wdata, char wmask) {
   // `wmask`中每比特表示`wdata`中1个字节的掩码,
   // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
   uint8_t *waddr_temp = guest_to_host(waddr);
-  switch (wmask) {
-    case 0x1:   *(uint8_t  *)waddr_temp = wdata;break;
-    case 0x3:   *(uint16_t *)waddr_temp = wdata;break;
-    case 0xf:   *(uint32_t *)waddr_temp = wdata;break;
-    // case 0xff:  *(uint64_t *)waddr_temp = wdata;break;
-    default:  *(uint64_t *)waddr_temp = wdata;break;
-    // default: printf("pmem_write!\n"); exit(0); break;
-    // default: printf("pmem_write!\n"); break;
-  }
+  *(uint32_t *)waddr_temp = wdata;
+  // switch (wmask) {
+  //   case 0x1:   *(uint8_t  *)waddr_temp = wdata;break;
+  //   case 0x3:   *(uint16_t *)waddr_temp = wdata;break;
+  //   case 0xf:   *(uint32_t *)waddr_temp = wdata;break;
+  //   // case 0xff:  *(uint64_t *)waddr_temp = wdata;break;
+  //   default:  *(uint64_t *)waddr_temp = wdata;break;
+  //   // default: printf("pmem_write!\n"); exit(0); break;
+  //   // default: printf("pmem_write!\n"); break;
+  // }
+}
+
+extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
+  pmem_read(raddr, rdata);
+}
+
+extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
+  pmem_read(raddr, rdata);
+  // store also call read
+  // if(top->io_out_is_load) {
+    IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+    IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, *rdata));
+  // }
+}
+
+extern "C" void vaddr_write(sword_t waddr, sword_t wdata) {
+  pmem_write(waddr, wdata);
+  IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+  IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
 }
 
 long load_img(const char *img_file) {
