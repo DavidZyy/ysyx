@@ -16,12 +16,14 @@ module RamBB (
     input valid,
     input [`DATA_WIDTH-1:0] wdata,
     output reg [`DATA_WIDTH-1:0] rdata,
-    output [`DATA_WIDTH-1:0] rdata_4_w
+    output reg [`DATA_WIDTH-1:0] rdata_4_w
 );
 
 always @(*) begin
     if (valid) begin
         vaddr_read(addr, rdata_4_w);
+    end else begin
+        rdata = 0
     end
 end
 
