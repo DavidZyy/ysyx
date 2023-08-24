@@ -9,7 +9,7 @@ import "DPI-C" function void vaddr_write(
 
 // addr is 4 byte aligned
 module RamBB (
-    input clock,
+    // input clock,
     input [`ADDR_WIDTH-1:0] addr,
     input mem_wen,
     // input mem_ren,
