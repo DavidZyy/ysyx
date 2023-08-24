@@ -56,6 +56,8 @@ typedef uint16_t ioaddr_t;
 /* riscv bit length */
 #define XLEN MUXDEF(CONFIG_ISA64, 64, 32)
 
+#define align_mask MUXDEF(CONFIG_ISA64, 0b111, 0b11)
+
 #include <debug.h>
 
 #endif
