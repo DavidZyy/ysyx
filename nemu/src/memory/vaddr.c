@@ -25,7 +25,8 @@ extern CPU_state cpu;
 // void mtrace_dis
 word_t vaddr_read(vaddr_t addr, int len) {
 #ifdef CONFIG_MTRACE
-  word_t raddr = (addr & !align_mask);
+  // word_t raddr = (addr & !align_mask);
+  word_t raddr = (addr >> 2) << 2;
   word_t rdata = paddr_read(raddr, sizeof(word_t));
   IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, vaddr_ifetch(cpu.pc, 4)));
   // IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD"\n", cpu.pc));
