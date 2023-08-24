@@ -68,7 +68,8 @@ word_t get_wmask(word_t addr, word_t len) {
 void vaddr_write(vaddr_t addr, int len, word_t data) {
 #ifdef CONFIG_MTRACE
   word_t addr_low_2 = addr & 0b11;
-  word_t waddr = (addr & !align_mask);
+  // word_t waddr = (addr & !align_mask);
+  word_t waddr = (addr >> 2) << 2;
   word_t rdata = paddr_read(waddr, sizeof(word_t));
   // word_t rdata = 0;
   word_t wmask = get_wmask(addr, len);
