@@ -18,8 +18,8 @@ module RamBB (
     output reg [`DATA_WIDTH-1:0] rdata
 );
 
-always @(*) begin
-// always @(negedge clock) begin
+// always @(*) begin
+always @(negedge clock) begin
   if (valid) begin // 有读写请求时
     vaddr_read(addr, rdata);
     if (mem_wen) begin // 有写请求时
