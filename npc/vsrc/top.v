@@ -668,7 +668,7 @@ module Ram(
   wire [94:0] _GEN_1 = {{63'd0}, RamBB_i1_rdata}; // @[datamem.scala 128:56]
   wire [94:0] wdata_align_4 = _wdata_align_4_T_2 | _GEN_1; // @[datamem.scala 128:56]
   RamBB RamBB_i1 ( // @[datamem.scala 50:26]
-    // .clock(RamBB_i1_clock),
+    .clock(RamBB_i1_clock),
     .addr(RamBB_i1_addr),
     .wdata(RamBB_i1_wdata),
     .mem_wen(RamBB_i1_mem_wen),
@@ -676,7 +676,7 @@ module Ram(
     .rdata(RamBB_i1_rdata)
   );
   assign io_out_rdata = 4'h3 == io_in_lsu_op ? lw_rdata : _io_out_rdata_T_9; // @[Mux.scala 81:58]
-  // assign RamBB_i1_clock = clock; // @[datamem.scala 52:25]
+  assign RamBB_i1_clock = clock; // @[datamem.scala 52:25]
   assign RamBB_i1_addr = {io_in_addr[31:2], 2'h0}; // @[datamem.scala 53:46]
   assign RamBB_i1_wdata = wdata_align_4[31:0]; // @[datamem.scala 131:25]
   assign RamBB_i1_mem_wen = io_in_mem_wen; // @[datamem.scala 54:25]
