@@ -28,9 +28,8 @@ word_t vaddr_read(vaddr_t addr, int len) {
   // word_t raddr = (addr & !align_mask);
   word_t raddr = (addr >> 2) << 2;
   word_t rdata = paddr_read(raddr, sizeof(word_t));
-  IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, vaddr_ifetch(cpu.pc, 4)));
-  // IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD"\n", cpu.pc));
-  IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, rdata));
+  log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, vaddr_ifetch(cpu.pc, 4));
+  log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, rdata);
 #endif
   return paddr_read(addr, len);
 }
