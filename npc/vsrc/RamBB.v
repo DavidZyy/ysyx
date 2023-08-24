@@ -23,7 +23,7 @@ always @(*) begin
     if (valid) begin
         vaddr_read(addr, rdata_4_w);
     end else begin
-        rdata = 0;
+        rdata_4_w = 0;
     end
 end
 
