@@ -10,9 +10,9 @@ void do_syscall(Context *c) {
   Log("syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
   switch (a[0]) {
     case SYS_exit:
-      
+
     case SYS_yield: 
-      yield(); 
+      // yield(); 
       c->GPRx = 0;
       break;
     default: 
