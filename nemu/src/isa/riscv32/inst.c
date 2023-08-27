@@ -171,7 +171,7 @@ static int decode_exec(Decode *s) {
 }
 
 void mret(Decode *s) {
-  s->dnpc = cpu.csr[cpu_mepc_id];
+  s->dnpc = cpu.csr[cpu_mepc_id] + 4;
   cpu.csr[cpu_mstatus_id] = (word_t)0xa00000080;
 }
 
