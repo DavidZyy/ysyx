@@ -56,7 +56,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   for(int i=0; i < ehdr.e_phnum; i++) {
     Elf_Phdr phdr;
     ramdisk_read(&phdr, ehdr.e_phoff + i*sizeof(Elf_Phdr), sizeof(Elf_Phdr));
-    // print_program_header(phdr);
+    print_program_header(phdr);
   }
 
   // return (uintptr_t )(&ramdisk_start + ehdr.e_entry - 0x80000000);
