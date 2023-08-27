@@ -4,9 +4,11 @@
 #ifdef __LP64__
 # define Elf_Ehdr Elf64_Ehdr
 # define Elf_Phdr Elf64_Phdr
+# define E_ident 0x00010102464c457f
 #else
 # define Elf_Ehdr Elf32_Ehdr
 # define Elf_Phdr Elf32_Phdr
+# define E_ident 0x010101464c457f
 #endif
 
 void print_elf_header(Elf_Ehdr elf_header) {
@@ -49,7 +51,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr ehdr;
   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
   print_elf_header(ehdr);
-  assert(*(uint64_t *)ehdr.e_ident == 0x00010102464c457f);
+  assert(*(uint64_t *)ehdr.e_ident == E_ident);
 
   for(int i=0; i < ehdr.e_phnum; i++) {
     Elf_Phdr phdr;
