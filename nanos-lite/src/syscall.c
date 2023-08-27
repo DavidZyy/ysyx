@@ -9,8 +9,11 @@ void do_syscall(Context *c) {
 
   Log("syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
   switch (a[0]) {
-    case 1: yield(); break;
-    default: panic("Unhandled syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
-    // default: panic("Unhandled syscall ID = %d", a[0]);
+    case SYS_yield: 
+      yield(); 
+      c->GPRx = 0;
+      break;
+    default: 
+      panic("Unhandled syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
   }
 }
