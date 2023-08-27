@@ -50,7 +50,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   // TODO();
   Elf_Ehdr ehdr;
   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
-  print_elf_header(ehdr);
+  // print_elf_header(ehdr);
   assert(*(uint64_t *)ehdr.e_ident == E_ident);
 
   for(int i=0; i < ehdr.e_phnum; i++) {
@@ -68,7 +68,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
-  Log("Jump to entry = %p", entry);
+  // Log("Jump to entry = %p", entry);
   ((void(*)())entry) ();
 }
 
