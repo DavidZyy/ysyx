@@ -195,7 +195,7 @@ void csrrw(word_t csr_id, int rd, word_t src1) {
 
 void ecall(Decode *s) {
   IFDEF(CONFIG_ETRACE, log_write("etrace: ecall in ecall function in inst.c\n"));
-  cpu.csr[cpu_mstatus_id] = (word_t)0xa00021800;
+  cpu.csr[cpu_mstatus_id] = (word_t)0xa00001800;
   cpu.csr[cpu_mepc_id]    = cpu.pc; // see ref
   cpu.csr[cpu_mcause_id]  = 0xb; // environment call from M-mode
   s->dnpc = cpu.csr[cpu_mtvec_id];
