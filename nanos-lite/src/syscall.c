@@ -7,6 +7,7 @@ void do_syscall(Context *c) {
   a[2] = c->GPR3;
   a[3] = c->GPR4;
 
+  Log("syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
   switch (a[0]) {
     case 1: yield(); break;
     default: panic("Unhandled syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
