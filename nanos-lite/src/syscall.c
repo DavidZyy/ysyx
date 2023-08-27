@@ -11,6 +11,9 @@ void do_syscall(Context *c) {
   switch (a[0]) {
     case SYS_yield: 
       yield(); 
+      c->GPR1 = 1;
+      c->GPR2 = 2;
+      c->GPR3 = 3;
       c->GPRx = 0;
       break;
     default: 
