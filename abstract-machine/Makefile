@@ -63,6 +63,8 @@ LINKAGE   = $(OBJS) \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
     $(LIBS) ))
 
+PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(SRCS))))
+
 ## 3. General Compilation Flags
 
 ### (Cross) compilers, e.g., mips-linux-gnu-g++
@@ -104,6 +106,14 @@ endif
 
 ## 5. Compilation Rules
 
+$(DST_DIR)/%.i: %.c
+	@mkdir -p $(dir $@) && echo + PRE $<
+	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
+
+$(DST_DIR)/%.i: %.S
+	@mkdir -p $(dir $@) && echo + PRE $<
+	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
+
 ### Rule (compile): a single `.c` -> `.o` (gcc)
 $(DST_DIR)/%.o: %.c
 	@mkdir -p $(dir $@) && echo + CC $<
@@ -129,12 +139,12 @@ $(LIBS): %:
 	@$(MAKE) -s -C $(AM_HOME)/$* archive
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `IMAGE.elf`, the final ELF binary to be packed into image (ld)
-$(IMAGE).elf: $(OBJS) am $(LIBS)
+$(IMAGE).elf: $(OBJS) am $(LIBS) $(PRES)
 	@echo + LD "->" $(IMAGE_REL).elf
 	@$(LD) $(LDFLAGS) -o $(IMAGE).elf --start-group $(LINKAGE) --end-group
 
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
-$(ARCHIVE): $(OBJS)
+$(ARCHIVE): $(OBJS) $(PRES)
 	@echo + AR "->" $(shell realpath $@ --relative-to .)
 	@$(AR) rcs $(ARCHIVE) $(OBJS)
 
