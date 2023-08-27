@@ -48,8 +48,8 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   // TODO();
   Elf_Ehdr ehdr;
   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
+  print_elf_header(ehdr);
   assert(*(uint64_t *)ehdr.e_ident == 0x00010102464c457f);
-  // print_elf_header(ehdr);
 
   for(int i=0; i < ehdr.e_phnum; i++) {
     Elf_Phdr phdr;
