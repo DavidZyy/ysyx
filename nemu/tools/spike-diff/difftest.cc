@@ -54,6 +54,7 @@ struct diff_context_t {
   word_t gpr[32];
   word_t pc;
   word_t csr[csr_cnt];
+  word_t mstatus;
 };
 
 static sim_t* s = NULL;
@@ -77,8 +78,9 @@ void sim_t::diff_get_regs(void* diff_context) {
   ctx->pc = state->pc;
   ctx->csr[cpu_mtvec_id]   = state->mtvec;
   ctx->csr[cpu_mepc_id]    = state->mepc;
-  ctx->csr[cpu_mstatus_id] = state->mstatus;
+  // ctx->csr[cpu_mstatus_id] = state->mstatus;
   ctx->csr[cpu_mcause_id]  = state->mcause;
+  ctx->mstatus = state->mstatus;
 }
 
 void sim_t::diff_set_regs(void* diff_context) {
@@ -89,8 +91,9 @@ void sim_t::diff_set_regs(void* diff_context) {
   state->pc = ctx->pc;
   state->mtvec   = ctx->csr[cpu_mtvec_id]   ;
   state->mepc    = ctx->csr[cpu_mepc_id]    ;
-  state->mstatus = ctx->csr[cpu_mstatus_id] ;
+  // state->mstatus = ctx->csr[cpu_mstatus_id] ;
   state->mcause  = ctx->csr[cpu_mcause_id]  ;
+  state->mstatus = ctx->mstatus ;
 }
 
 void sim_t::diff_memcpy(reg_t dest, void* src, size_t n) {
