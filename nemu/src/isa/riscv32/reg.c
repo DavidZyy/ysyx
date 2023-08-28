@@ -69,6 +69,10 @@ word_t isa_reg_str2val(const char *s, bool *success) {
     if(!strcmp(regs[i], s+1) || !strcmp(s, "$0"))
       return gpr(i);
   }
+
+  if(!strcmp("mstatus", s+1))
+    return cpu.mstatus.raw;
+
   assert(0);
   return 0;
 }
