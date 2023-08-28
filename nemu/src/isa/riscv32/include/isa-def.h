@@ -30,40 +30,13 @@
 
 #define csr_cnt 4
 
-// union MStatus {
-//     struct {
-//         uint32_t uie : 1;   // User mode interrupt enable
-//         uint32_t sie : 1;   // Supervisor mode interrupt enable
-//         uint32_t wpri1 : 1; // Reserved (write-preserved) bit 1
-//         uint32_t mie : 1;   // Machine mode interrupt enable
-//         uint32_t upie : 1;  // User mode previous interrupt enable
-//         uint32_t spie : 1;  // Supervisor mode previous interrupt enable
-//         uint32_t wpri2 : 1; // Reserved (write-preserved) bit 2
-//         uint32_t mpie : 1;  // Machine mode previous interrupt enable
-//         uint32_t spp : 1;   // Supervisor Previous Privilege mode
-//         uint32_t wpri3 : 2; // Reserved (write-preserved) bits 3-4
-//         uint32_t mpp : 2;   // Machine Previous Privilege mode
-//         uint32_t fs : 2;    // Machine mode FPU state
-//         uint32_t xs : 2;    // Machine mode extension state
-//         uint32_t mprv : 1;  // Modify privilege level when accessing CSRs
-//         uint32_t sum : 1;   // Supervisor User Memory Access (S/U)
-//         uint32_t mxr : 1;   // Execute-only memory in user mode (X)
-//         uint32_t tvm : 1;   // Trap Virtual Memory (TVM)
-//         uint32_t tw : 1;    // Timeout Wait
-//         uint32_t tsr : 1;   // Trap SRET
-//         uint32_t wpri4 : 8; // Reserved (write-preserved) bits 5-12
-//         uint32_t fsr : 2;   // FPU unit flush to zero (FR)
-//         uint32_t xsr : 2;   // Extension unit flush to zero (FX)
-//     } fields;
-//     uint32_t raw; // Access the raw 32-bit representation
-// };
-
 /* zyy: why without flag registers? like NZCV? */
 typedef struct {
   word_t gpr[32];
   vaddr_t pc;
   /* 0:mtvec, 1:mepc, 2:mstatus, 3:mcause */
   word_t csr[4];
+
   union MStatus {
     struct {
         uint32_t uie : 1;   // User mode interrupt enable
@@ -90,7 +63,7 @@ typedef struct {
         uint32_t xsr : 2;   // Extension unit flush to zero (FX)
     } fields;
     uint32_t raw; // Access the raw 32-bit representation
-} mstatus;
+  } mstatus;
   // union Mstatus mstatus;
 } riscv32_CPU_state;
 
