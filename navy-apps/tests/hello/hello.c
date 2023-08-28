@@ -5,7 +5,7 @@ extern _end;
 
 int main() {
   write(1, "Hello World!\n", 13);
-  write(1, "_end is %d", _end);
+  printf("_end is %x", _end);
   // int i = 2;
   // volatile int j = 0;
   // while (1) {
