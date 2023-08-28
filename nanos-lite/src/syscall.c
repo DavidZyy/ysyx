@@ -32,7 +32,8 @@ void do_syscall(Context *c) {
     }
 
     case SYS_brk: {
-
+      c->GPRx = 0;
+      break;
     }
 
     default:
