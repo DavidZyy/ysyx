@@ -18,10 +18,17 @@ void do_syscall(Context *c) {
       c->GPRx = 0;
       break;
     
-    case SYS_write: 
-      {
-        
+    case SYS_write: {    
+      int fd = a[1];
+      void *buf = (void *)a[2];
+      size_t count = a[3];
+      if(fd == 1 || fd == 2) {
+        printf("%s", (char *) buf);
+      } else {
+        panic("write failed!!");
       }
+      c->GPRx = count;
+    }
     default:
       panic("Unhandled syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
   }
