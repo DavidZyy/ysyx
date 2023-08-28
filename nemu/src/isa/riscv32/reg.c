@@ -45,7 +45,7 @@ void isa_reg_display(CPU_state *ref) {
   }
   for (int i = 0; i < csr_cnt; i++) {
     if(i == cpu_mstatus_id) {
-      if(ref->csr[i] != cpu.mstatus.raw) {
+      if(ref->mstatus.raw != cpu.mstatus.raw) {
         printf("%-7s: %016"XX"  ", csrs[i], cpu.mstatus.raw);  // Use width and alignment specifiers in the format string
         printf("%-7s: %016"XX"  ", csrs[i], ref->csr[i]);
         printf("\n");
