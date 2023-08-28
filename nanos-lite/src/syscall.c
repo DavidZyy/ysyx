@@ -23,7 +23,10 @@ void do_syscall(Context *c) {
       void *buf = (void *)a[2];
       size_t count = a[3];
       if(fd == 1 || fd == 2) {
-        printf("%s", (char *) buf);
+        // printf("%s", (char *) buf);
+        for(int i = 0; i < count; i++){
+          putch(*((char *)(buf+i)));
+        }
       } else {
         panic("write failed!!");
       }
