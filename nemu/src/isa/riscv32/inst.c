@@ -211,7 +211,8 @@ void csrrs(word_t csr_id, int rd, word_t src1) {
   } else if (csr_id == mepc_id) {
     R(rd) = cpu.csr[cpu_mepc_id];
   } else if (csr_id == mstatus_id) {
-    R(rd) = cpu.csr[cpu_mstatus_id];
+    R(rd) = cpu.mstatus.raw;
+    // R(rd) = cpu.csr[cpu_mstatus_id];
   } else if (csr_id == mcause_id ) {
     R(rd) = cpu.csr[cpu_mcause_id];
   } else {

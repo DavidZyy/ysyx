@@ -28,8 +28,13 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     goto error;
 
   for(int i = 0; i < csr_cnt; i++){
-    if(ref_r->csr[i] != cpu.csr[i])
-      goto error;
+    if(i == cpu_mstatus_id) {
+      if(ref_r->csr[i] != cpu.mstatus.raw)
+        goto error;
+    } else {
+      if(ref_r->csr[i] != cpu.csr[i])
+        goto error;
+    }
   }
 
   return true;
