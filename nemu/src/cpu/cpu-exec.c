@@ -30,7 +30,7 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
-#define IRINGBUFSIZE 20
+#define IRINGBUFSIZE 10000
 char iringbuf[IRINGBUFSIZE][128];
 int ring_p = 0;
 
@@ -54,12 +54,12 @@ void print_iringbuf() {
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 #ifdef CONFIG_ITRACE_COND
-  if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
-  // if (ITRACE_COND) {
-  //   memset(iringbuf[ring_p % IRINGBUFSIZE], 0, sizeof(iringbuf[ring_p % IRINGBUFSIZE]));
-  //   sprintf(iringbuf[ring_p % IRINGBUFSIZE], "%s\n",_this->logbuf);
-  //   ring_p++;
-  // }
+  // if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
+  if (ITRACE_COND) {
+    memset(iringbuf[ring_p % IRINGBUFSIZE], 0, sizeof(iringbuf[ring_p % IRINGBUFSIZE]));
+    sprintf(iringbuf[ring_p % IRINGBUFSIZE], "%s\n",_this->logbuf);
+    ring_p++;
+  }
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   /* _this->pc is the pc the nemu has executed, dnpc is the next pc it will execute. */
@@ -112,7 +112,7 @@ static void execute(uint64_t n) {
 }
 
 static void statistic() {
-  // print_iringbuf();
+  print_iringbuf();
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
