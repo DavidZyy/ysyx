@@ -29,6 +29,9 @@
 
 #define csr_cnt 3
 
+#define u_mode 0b11
+#define m_mode 0b00
+
 /* zyy: why without flag registers? like NZCV? */
 typedef struct {
   word_t gpr[32];
