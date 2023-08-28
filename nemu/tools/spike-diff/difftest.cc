@@ -80,7 +80,7 @@ void sim_t::diff_get_regs(void* diff_context) {
   ctx->csr[cpu_mepc_id]    = state->mepc;
   // ctx->csr[cpu_mstatus_id] = state->mstatus;
   ctx->csr[cpu_mcause_id]  = state->mcause;
-  // ctx->mstatus = state->mstatus;
+  ctx->mstatus = state->mstatus;
 }
 
 void sim_t::diff_set_regs(void* diff_context) {
