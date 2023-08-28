@@ -63,12 +63,12 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   /* _this->pc is the pc the nemu has executed, dnpc is the next pc it will execute. */
-  IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   if(if_wp_chg()) {
     nemu_state.state = NEMU_STOP;
 
     printf("pc: %"XX"\n", _this->pc);
   }
+  IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
