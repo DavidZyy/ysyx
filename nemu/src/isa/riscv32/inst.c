@@ -185,14 +185,12 @@ void csrrw(word_t csr_id, int rd, word_t src1) {
   } else if (csr_id == mepc_id) {
     R(rd) = cpu.csr[cpu_mepc_id];
     cpu.csr[cpu_mepc_id] = src1;
-  } else if (csr_id == mstatus_id) {
-    // R(rd) = cpu.csr[cpu_mstatus_id];
-    // cpu.csr[cpu_mstatus_id] = src1;
-    R(rd) = cpu.mstatus.raw;
-    cpu.mstatus.raw = src1;
   } else if (csr_id == mcause_id) {
     R(rd) = cpu.csr[cpu_mcause_id];
     cpu.csr[cpu_mcause_id] = src1;
+  } else if (csr_id == mstatus_id) {
+    R(rd) = cpu.mstatus.raw;
+    cpu.mstatus.raw = src1;
   } else {
     panic("here!!");
   }
@@ -205,7 +203,6 @@ void ecall(Decode *s) {
   cpu.csr[cpu_mcause_id]  = 0xb; // environment call from M-mode
   s->dnpc = cpu.csr[cpu_mtvec_id];
   cpu.mstatus.fields.mpp = 3;
-  // cpu.mstatus.raw = (word_t)0xa00001800;
 }
 
 void csrrs(word_t csr_id, int rd, word_t src1) {
@@ -214,11 +211,10 @@ void csrrs(word_t csr_id, int rd, word_t src1) {
     /* no set */
   } else if (csr_id == mepc_id) {
     R(rd) = cpu.csr[cpu_mepc_id];
-  } else if (csr_id == mstatus_id) {
-    R(rd) = cpu.mstatus.raw;
-    // R(rd) = cpu.csr[cpu_mstatus_id];
-  } else if (csr_id == mcause_id ) {
+  } else if (csr_id == mcause_id) {
     R(rd) = cpu.csr[cpu_mcause_id];
+  } else if (csr_id == mstatus_id ) {
+    R(rd) = cpu.mstatus.raw;
   } else {
     panic("here!!");
   }

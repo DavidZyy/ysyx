@@ -45,10 +45,9 @@ static debug_module_config_t difftest_dm_config = {
 
 #define cpu_mtvec_id    0
 #define cpu_mepc_id     1
-#define cpu_mstatus_id  2
-#define cpu_mcause_id   3
+#define cpu_mcause_id   2
 
-#define csr_cnt 4
+#define csr_cnt 3
 
 struct diff_context_t {
   word_t gpr[32];
@@ -78,7 +77,6 @@ void sim_t::diff_get_regs(void* diff_context) {
   ctx->pc = state->pc;
   ctx->csr[cpu_mtvec_id]   = state->mtvec;
   ctx->csr[cpu_mepc_id]    = state->mepc;
-  // ctx->csr[cpu_mstatus_id] = state->mstatus;
   ctx->csr[cpu_mcause_id]  = state->mcause;
   ctx->mstatus = state->mstatus;
 }
@@ -91,10 +89,8 @@ void sim_t::diff_set_regs(void* diff_context) {
   state->pc = ctx->pc;
   state->mtvec   = ctx->csr[cpu_mtvec_id]   ;
   state->mepc    = ctx->csr[cpu_mepc_id]    ;
-  // state->mstatus = ctx->csr[cpu_mstatus_id] ;
   state->mcause  = ctx->csr[cpu_mcause_id]  ;
   state->mstatus = ctx->mstatus ;
-  // state->mstatus = 0;
 }
 
 void sim_t::diff_memcpy(reg_t dest, void* src, size_t n) {

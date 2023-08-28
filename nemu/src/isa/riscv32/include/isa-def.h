@@ -20,22 +20,21 @@
 
 #define mtvec_id    0x305
 #define mepc_id     0x341
-#define mstatus_id  0x300
 #define mcause_id   0x342
+#define mstatus_id  0x300
 
 #define cpu_mtvec_id    0
 #define cpu_mepc_id     1
-#define cpu_mstatus_id  2
-#define cpu_mcause_id   3
+#define cpu_mcause_id   2
 
-#define csr_cnt 4
+#define csr_cnt 3
 
 /* zyy: why without flag registers? like NZCV? */
 typedef struct {
   word_t gpr[32];
   vaddr_t pc;
-  /* 0:mtvec, 1:mepc, 2:mstatus, 3:mcause */
-  word_t csr[4];
+  /* 0:mtvec, 1:mepc, 2:mcause */
+  word_t csr[3];
 
   union MStatus {
     struct {
