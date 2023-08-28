@@ -74,7 +74,6 @@ void *_sbrk(intptr_t increment) {
   program_break += increment;
   _syscall_(SYS_brk, program_break, 0, 0);
   return program_break - increment;
-  // return (void *)-1;
 }
 
 int _read(int fd, void *buf, size_t count) {
