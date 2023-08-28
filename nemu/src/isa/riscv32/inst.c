@@ -201,7 +201,7 @@ void ecall(Decode *s) {
   cpu.csr[cpu_mepc_id]    = cpu.pc; // see ref
   cpu.csr[cpu_mcause_id]  = 0xb; // environment call from M-mode
   s->dnpc = cpu.csr[cpu_mtvec_id];
-  cpu.mstatus.fields.mpp = 3;
+  cpu.mstatus.fields.mpp = 1;
 }
 
 void csrrs(word_t csr_id, int rd, word_t src1) {
