@@ -59,8 +59,7 @@ typedef struct {
         uint32_t tw : 1;    // Timeout Wait
         uint32_t tsr : 1;   // Trap SRET
         uint32_t wpri4 : 8; // Reserved (write-preserved) bits 5-12
-        uint32_t fsr : 2;   // FPU unit flush to zero (FR)
-        uint32_t xsr : 2;   // Extension unit flush to zero (FX)
+        uint32_t sd : 1;    //
     } fields;
     uint32_t raw; // Access the raw 32-bit representation
   } mstatus;
