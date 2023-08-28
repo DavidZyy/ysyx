@@ -172,6 +172,7 @@ static int decode_exec(Decode *s) {
 
 void mret(Decode *s) {
   s->dnpc = cpu.csr[cpu_mepc_id];
+  cpu.mstatus.raw = 0x20080;
   // cpu.mstatus.fields.mprv = 1;
 }
 
