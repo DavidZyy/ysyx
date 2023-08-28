@@ -25,11 +25,13 @@ extern CPU_state cpu;
 // void mtrace_dis
 word_t vaddr_read(vaddr_t addr, int len) {
 #ifdef CONFIG_MTRACE
-  // word_t raddr = (addr & !align_mask);
-  word_t raddr = (addr >> 2) << 2;
-  word_t rdata = paddr_read(raddr, sizeof(word_t));
-  log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, vaddr_ifetch(cpu.pc, 4));
-  log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, rdata);
+  if (likely(in_pmem(addr))) {
+    // word_t raddr = (addr & !align_mask);
+    word_t raddr = (addr >> 2) << 2;
+    word_t rdata = paddr_read(raddr, sizeof(word_t));
+    log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, vaddr_ifetch(cpu.pc, 4));
+    log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, rdata);
+  }
 #endif
   return paddr_read(addr, len);
 }
@@ -67,16 +69,18 @@ word_t get_wmask(word_t addr, word_t len) {
 
 void vaddr_write(vaddr_t addr, int len, word_t data) {
 #ifdef CONFIG_MTRACE
-  word_t addr_low_2 = addr & 0b11;
-  // word_t waddr = (addr & !align_mask);
-  word_t waddr = (addr >> 2) << 2;
-  word_t rdata = paddr_read(waddr, sizeof(word_t));
-  // word_t rdata = 0;
-  word_t wmask = get_wmask(addr, len);
-  word_t wdata = ((data << 8*addr_low_2) & wmask) | (rdata & ~wmask);
-  log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, vaddr_ifetch(cpu.pc, 4));
-  log_write("addr_low_2:" FMT_WORD", rdata:" FMT_WORD ", addr:" FMT_WORD ", len:" FMT_WORD ", data:" FMT_WORD"\n", addr_low_2, rdata, addr, len, data);
-  log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata);
+  if (likely(in_pmem(addr))) {
+    word_t addr_low_2 = addr & 0b11;
+    // word_t waddr = (addr & !align_mask);
+    word_t waddr = (addr >> 2) << 2;
+    word_t rdata = paddr_read(waddr, sizeof(word_t));
+    // word_t rdata = 0;
+    word_t wmask = get_wmask(addr, len);
+    word_t wdata = ((data << 8*addr_low_2) & wmask) | (rdata & ~wmask);
+    log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", cpu.pc, vaddr_ifetch(cpu.pc, 4));
+    log_write("addr_low_2:" FMT_WORD", rdata:" FMT_WORD ", addr:" FMT_WORD ", len:" FMT_WORD ", data:" FMT_WORD"\n", addr_low_2, rdata, addr, len, data);
+    log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata);
+  }
 #endif
   paddr_write(addr, len, data);
 }

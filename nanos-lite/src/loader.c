@@ -4,9 +4,11 @@
 #ifdef __LP64__
 # define Elf_Ehdr Elf64_Ehdr
 # define Elf_Phdr Elf64_Phdr
+# define E_ident 0x00010102464c457f
 #else
 # define Elf_Ehdr Elf32_Ehdr
 # define Elf_Phdr Elf32_Phdr
+# define E_ident 0x010101464c457f
 #endif
 
 void print_elf_header(Elf_Ehdr elf_header) {
@@ -48,21 +50,25 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   // TODO();
   Elf_Ehdr ehdr;
   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
-  assert(*(uint64_t *)ehdr.e_ident == 0x00010102464c457f);
   // print_elf_header(ehdr);
+  assert(*(uint64_t *)ehdr.e_ident == E_ident);
 
   for(int i=0; i < ehdr.e_phnum; i++) {
     Elf_Phdr phdr;
     ramdisk_read(&phdr, ehdr.e_phoff + i*sizeof(Elf_Phdr), sizeof(Elf_Phdr));
     // print_program_header(phdr);
+    if(phdr.p_type == PT_LOAD) {
+      ramdisk_read((void *)phdr.p_vaddr, phdr.p_offset, phdr.p_filesz);
+      memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz-phdr.p_filesz);
+    }
   }
 
-  return (uintptr_t )(&ramdisk_start + ehdr.e_entry - 0x83000000);
+  return ehdr.e_entry;
 }
 
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
-  Log("Jump to entry = %p", entry);
+  // Log("Jump to entry = %p", entry);
   ((void(*)())entry) ();
 }
 

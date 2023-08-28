@@ -27,7 +27,6 @@ const char *regs[] = {
 const char *csrs[] = {
   "mtvec",
   "mepc",
-  "mstatus",
   "mcause"
 };
 
@@ -43,6 +42,7 @@ void isa_reg_display(CPU_state *ref) {
       printf("\n");
     }
   }
+
   for (int i = 0; i < csr_cnt; i++) {
     if(ref->csr[i] != cpu.csr[i]) {
       printf("%-7s: %016"XX"  ", csrs[i], cpu.csr[i]);  // Use width and alignment specifiers in the format string
@@ -50,6 +50,13 @@ void isa_reg_display(CPU_state *ref) {
       printf("\n");
     }
   }
+
+  if(ref->mstatus.raw != cpu.mstatus.raw) {
+    printf("%-7s: %016"XX"  ", "mstatus", cpu.mstatus.raw);  // Use width and alignment specifiers in the format string
+    printf("%-7s: %016"XX"  ", "mstatus", ref->mstatus.raw);
+    printf("\n");
+  }
+
   if (ref->pc != cpu.pc) {
       printf("%-3s: %016"XX"  ", "pc", cpu.pc);  // Use width and alignment specifiers in the format string
       printf("%-3s: %016"XX"  ", "pc", ref->pc);
@@ -62,6 +69,10 @@ word_t isa_reg_str2val(const char *s, bool *success) {
     if(!strcmp(regs[i], s+1) || !strcmp(s, "$0"))
       return gpr(i);
   }
+
+  if(!strcmp("mstatus", s+1))
+    return cpu.mstatus.raw;
+
   assert(0);
   return 0;
 }

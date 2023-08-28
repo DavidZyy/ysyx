@@ -1,6 +1,7 @@
 #include <common.h>
 
 void do_syscall(Context *c);
+
 static Context* do_event(Event e, Context* c) {
   switch (e.event) {
     case EVENT_YIELD: printf("yieled!!!!\n"); break;
@@ -12,6 +13,6 @@ static Context* do_event(Event e, Context* c) {
 }
 
 void init_irq(void) {
-  Log("Initializing interrupt/exception handler...");
+  // Log("Initializing interrupt/exception handler...");
   cte_init(do_event);
 }

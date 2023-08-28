@@ -5,9 +5,17 @@
 static Context* (*user_handler)(Event, Context*) = NULL;
 
 Context* __am_irq_handle(Context *c) {
+  c->mepc += 4;
   if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
+      case 0xb: 
+        if(c->GPR1 == -1) {
+          ev.event = EVENT_YIELD;
+        } else {
+          ev.event = EVENT_SYSCALL;
+        }
+        break;
       default: ev.event = EVENT_ERROR; break;
     }
 

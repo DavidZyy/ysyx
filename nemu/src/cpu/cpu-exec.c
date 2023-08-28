@@ -30,7 +30,7 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
-#define IRINGBUFSIZE 20
+#define IRINGBUFSIZE 10000
 char iringbuf[IRINGBUFSIZE][128];
 int ring_p = 0;
 
@@ -63,12 +63,13 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   /* _this->pc is the pc the nemu has executed, dnpc is the next pc it will execute. */
-  IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   if(if_wp_chg()) {
     nemu_state.state = NEMU_STOP;
 
     printf("pc: %"XX"\n", _this->pc);
   }
+
+  IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
@@ -112,6 +113,7 @@ static void execute(uint64_t n) {
 }
 
 static void statistic() {
+  print_iringbuf();
   IFNDEF(CONFIG_TARGET_AM, setlocale(LC_NUMERIC, ""));
 #define NUMBERIC_FMT MUXDEF(CONFIG_TARGET_AM, "%", "%'") PRIu64
   Log("host time spent = " NUMBERIC_FMT " us", g_timer);
@@ -143,7 +145,7 @@ void cpu_exec(uint64_t n) {
   g_timer += timer_end - timer_start;
 
 
-  print_iringbuf();
+  // print_iringbuf();
   switch (nemu_state.state) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break;
 

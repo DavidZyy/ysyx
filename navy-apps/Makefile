@@ -100,6 +100,10 @@ $(DST_DIR)/%.i: %.c
 	@mkdir -p $(dir $@) && echo + PRE $<
 	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
 
+$(DST_DIR)/%.i: %.cpp
+	@mkdir -p $(dir $@) && echo + PRE $<
+	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
+
 $(DST_DIR)/%.i: %.S
 	@mkdir -p $(dir $@) && echo + PRE $<
 	@$(CC) $(CFLAGS) -E -P -o $@ $(realpath $<)
