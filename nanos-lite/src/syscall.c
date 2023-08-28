@@ -21,13 +21,13 @@ void do_syscall(Context *c) {
     case SYS_write: {
       int fd = a[1];
       void *buf = (void *)a[2];
-      size_t count = a[3];
+      // size_t count = a[3];
       if(fd == 1 || fd == 2) {
         printf("%s", (char *) buf);
       } else {
         panic("write failed!!");
       }
-      c->GPRx = count;
+      // c->GPRx = count;
       break;
     }
     default:
