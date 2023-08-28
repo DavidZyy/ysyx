@@ -30,7 +30,7 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
-#define IRINGBUFSIZE 10000
+#define IRINGBUFSIZE 20
 char iringbuf[IRINGBUFSIZE][128];
 int ring_p = 0;
 
