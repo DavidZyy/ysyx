@@ -172,10 +172,10 @@ static int decode_exec(Decode *s) {
 
 void mret(Decode *s) {
   s->dnpc = cpu.csr[cpu_mepc_id];
-  // cpu.csr[cpu_mstatus_id] = (word_t)0xa00000080;
-  // cpu.mstatus.raw = (word_t)0xa00000080;
-  cpu.mstatus.raw = (word_t)0xa00000080;
-  // cpu.mstatus.fields.mprv = 1;
+  // cpu.mstatus.raw = 0x20080;
+  cpu.mstatus.fields.mpp = 0;
+  cpu.mstatus.fields.mie = cpu.mstatus.fields.mpie;
+  cpu.mstatus.fields.mpie = 1;
 }
 
 void csrrw(word_t csr_id, int rd, word_t src1) {
@@ -203,6 +203,8 @@ void ecall(Decode *s) {
   cpu.csr[cpu_mcause_id]  = 0xb; // environment call from M-mode
   s->dnpc = cpu.csr[cpu_mtvec_id];
   cpu.mstatus.fields.mpp = 0b11;
+  cpu.mstatus.fields.mpie = cpu.mstatus.fields.mie;
+  cpu.mstatus.fields.mie = 0;
 }
 
 void csrrs(word_t csr_id, int rd, word_t src1) {
