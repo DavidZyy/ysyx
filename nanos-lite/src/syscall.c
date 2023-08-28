@@ -14,10 +14,10 @@ void do_syscall(Context *c) {
       break;
 
     case SYS_yield: 
-      yield(); 
+      yield();
       c->GPRx = 0;
       break;
-    default: 
+    default:
       panic("Unhandled syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
   }
 }
