@@ -51,7 +51,7 @@ typedef struct {
         uint32_t mpp : 2;   // Machine Previous Privilege mode
         uint32_t fs : 2;    // Machine mode FPU state
         uint32_t xs : 2;    // Machine mode extension state
-        uint32_t mprv : 1;  // Modify privilege level when accessing CSRs
+        uint32_t mprv : 1;  // Modify privilege level when accessing CSRs, the set and clear see chatgpt
         uint32_t sum : 1;   // Supervisor User Memory Access (S/U)
         uint32_t mxr : 1;   // Execute-only memory in user mode (X)
         uint32_t tvm : 1;   // Trap Virtual Memory (TVM)
