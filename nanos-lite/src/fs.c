@@ -64,6 +64,7 @@ size_t fs_write(int fd, const void *buf, size_t len) {
   return ramdisk_write(buf, offset, len);
 }
 
+
 size_t fs_lseek(int fd, size_t offset, int whence) {
   file_table[fd].open_offset = file_table[fd].disk_offset + offset;
   assert(file_table[fd].open_offset <= file_table[fd].disk_offset + file_table[fd].size);
