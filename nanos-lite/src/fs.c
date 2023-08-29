@@ -47,7 +47,7 @@ int fs_open(const char *pathname, int flags, int mode) {
     }
   }
   // not find
-  assert(0);
+  panic("not find file!");
 }
 
 size_t fs_read(int fd, void *buf, size_t len) {
