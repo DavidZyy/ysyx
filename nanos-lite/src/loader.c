@@ -73,7 +73,7 @@ void seek_and_read(int fd, void *buf, size_t offset, size_t len) {
   fs_read(fd, buf, len);
 }
 
-static uintptr_t loader(PCB *pcb, const char *filename) {
+uintptr_t loader(PCB *pcb, const char *filename) {
   int fd = fs_open(filename, 0, 0);
   Elf_Ehdr ehdr;
   seek_and_read(fd, &ehdr, 0, sizeof(Elf_Ehdr));
