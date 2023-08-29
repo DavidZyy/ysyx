@@ -73,6 +73,8 @@ void seek_and_read(int fd, void *buf, size_t offset, size_t len) {
   fs_read(fd, buf, len);
 }
 
+/* if static is added, the symbol not in elf symbol table, thus ftrace faild */
+// static 
 uintptr_t loader(PCB *pcb, const char *filename) {
   int fd = fs_open(filename, 0, 0);
   Elf_Ehdr ehdr;
