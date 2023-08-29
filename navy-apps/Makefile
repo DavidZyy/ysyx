@@ -44,6 +44,7 @@ $(shell mkdir -p $(DST_DIR))
 APP     ?= $(WORK_DIR)/build/$(NAME)-$(ISA)
 ARCHIVE  = $(WORK_DIR)/build/$(NAME)-$(ISA).a
 
+# $(error $(APP))
 
 ### Add default libraries for ISA != native
 ifneq ($(ISA), native)
@@ -65,11 +66,14 @@ ifeq ($(MAKECMDGOALS),archive)
 LIBS := $(LIB_DEP) # overwrite here to only build and archive the dependent libraries
 endif
 
+# $(error $(LIB_DEP))
+# $(error $(LIBS))
 ### Files to be linked: object files (`.o`) and libraries (`.a`)
 OBJS      = $(addprefix $(DST_DIR)/, $(addsuffix .o, $(basename $(SRCS))))
 LIBS     := $(sort $(LIBS)) # lazy evaluation ("=") causes infinite recursions
 LINKAGE   = $(OBJS) $(foreach l,$(LIBS),$(NAVY_HOME)/libs/$(l)/build/$(l)-$(ISA).a)
 
+# $(error $(LIBS))
 PRES      = $(addprefix $(DST_DIR)/, $(addsuffix .i, $(basename $(SRCS))))
 ## 3. General Compilation Flags
 
@@ -180,7 +184,8 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 APPS =
-TESTS = dummy hello
+TESTS =  timer-test
+# TESTS = dummy hello file-test
 # TESTS = hello
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
@@ -188,7 +193,10 @@ fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 
 RAMDISK = build/ramdisk.img
 RAMDISK_H = build/ramdisk.h
+DUMP_FILE = build/dump.txt
+
 $(RAMDISK): fsimg
+	# @rm -rf fsimg/bin/*
 	$(eval FSIMG_FILES := $(shell find -L ./fsimg -type f))
 	@mkdir -p $(@D)
 	@cat $(FSIMG_FILES) > $@
