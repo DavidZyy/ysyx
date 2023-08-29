@@ -30,7 +30,8 @@ void do_syscall(Context *c) {
           putch(*((char *)(buf+i)));
         }
       } else {
-        panic("write failed!!");
+        // panic("write failed!!");
+        fs_write(fd, buf, count);
       }
       c->GPRx = count;
       break;
