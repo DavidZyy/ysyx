@@ -68,6 +68,7 @@
     "stubs-32.h": "c",
     "stubs-x32.h": "c",
     "memory": "cpp",
-    "unistd.h": "c"
+    "unistd.h": "c",
+    "files.h": "c"
   }
 }
