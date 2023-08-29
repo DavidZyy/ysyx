@@ -8,11 +8,11 @@ int main() {
 
     while (1) {
         gettimeofday(&current_time, NULL); // 获取当前时间
-        double elapsed_time = (current_time.tv_sec - start_time.tv_sec) +
+        int elapsed_time = (current_time.tv_sec - start_time.tv_sec) +
                               (current_time.tv_usec - start_time.tv_usec) / 1e6;
 
-        if (elapsed_time >= 0.5) { // 检查是否过去了 0.5 秒
-            printf("Time elapsed: %.2f seconds\n", elapsed_time);
+        if (elapsed_time >= 1) { // 检查是否过去了 0.5 秒
+            printf("Time elapsed: %d seconds\n", elapsed_time);
             gettimeofday(&start_time, NULL); // 重置初始时间
         }
 
