@@ -73,7 +73,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
 }
 
 size_t fs_write(int fd, const void *buf, size_t len) {
-  if(fd == 1 || fd == 2){
+  if(file_table[fd].write){
     file_table[fd].write(buf, 0, len);
     return len;
   } else {
