@@ -33,6 +33,18 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   return 0;
 }
 
+struct timeval
+{
+  uint32_t tv_sec;		/* Seconds.  */
+  uint32_t tv_usec;	/* Microseconds.  */
+};
+
+int gettimeofday(struct timeval *tv) {
+  tv->tv_sec  = io_read(AM_TIMER_UPTIME).us / 1000000;
+  tv->tv_usec = io_read(AM_TIMER_UPTIME).us % 1000000;
+  return 0;
+}
+
 void init_device() {
   // Log("Initializing devices...");
   ioe_init();

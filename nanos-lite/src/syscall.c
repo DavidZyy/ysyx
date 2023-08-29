@@ -1,6 +1,12 @@
 #include <common.h>
 #include "syscall.h"
 #include "fs.h"
+struct timeval
+{
+  uint32_t tv_sec;		/* Seconds.  */
+  uint32_t tv_usec;	/* Microseconds.  */
+};
+
 
 void do_syscall(Context *c) {
   uintptr_t a[4];
@@ -71,6 +77,13 @@ void do_syscall(Context *c) {
       int offset = a[2];
       int whence = a[3];
       c->GPRx = fs_lseek(fd, offset, whence);
+      break;
+    }
+
+    int gettimeofday(struct timeval *tv);
+    case SYS_gettimeofday: {
+      struct timeval *tv = (struct timeval *)a[1];
+      gettimeofday(tv);
       break;
     }
 
