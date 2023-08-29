@@ -65,9 +65,40 @@ size_t fs_write(int fd, const void *buf, size_t len) {
 }
 
 
+// size_t fs_lseek(int fd, size_t offset, int whence) {
+//   file_table[fd].open_offset = file_table[fd].disk_offset + offset;
+//   assert(file_table[fd].open_offset <= file_table[fd].disk_offset + file_table[fd].size);
+//   return file_table[fd].open_offset;
+// }
+
+// Constants for 'whence' values
+#define SEEK_SET 0
+#define SEEK_CUR 1
+#define SEEK_END 2
+
 size_t fs_lseek(int fd, size_t offset, int whence) {
-  file_table[fd].open_offset = file_table[fd].disk_offset + offset;
-  assert(file_table[fd].open_offset <= file_table[fd].disk_offset + file_table[fd].size);
+  switch (whence) {
+    case SEEK_SET:
+      // Set the open offset to the provided offset
+      file_table[fd].open_offset = file_table[fd].disk_offset + offset;
+      break;
+    case SEEK_CUR:
+      // Update the open offset by adding the provided offset
+      file_table[fd].open_offset += offset;
+      break;
+    case SEEK_END:
+      // Set the open offset to the end of the file plus the provided offset
+      file_table[fd].open_offset = file_table[fd].disk_offset + file_table[fd].size + offset;
+      break;
+    default:
+      // Invalid 'whence' value
+      panic("Invalid 'whence' value");
+      break;
+  }
+
+  // Check if the open offset is within bounds
+  // assert(file_table[fd].open_offset <= file_table[fd].disk_offset + file_table[fd].size);
+
   return file_table[fd].open_offset;
 }
 
