@@ -72,7 +72,7 @@ extern char _end;
 void *program_break = &_end;
 void *_sbrk(intptr_t increment) {
   program_break += increment;
-  _syscall_(SYS_brk, program_break, 0, 0);
+  _syscall_(SYS_brk, (intptr_t)program_break, 0, 0);
   return program_break - increment;
 }
 
