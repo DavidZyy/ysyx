@@ -8,8 +8,7 @@ int main() {
 
     while (1) {
         gettimeofday(&current_time, NULL); // 获取当前时间
-        int elapsed_time = (current_time.tv_sec - start_time.tv_sec) +
-                              (current_time.tv_usec - start_time.tv_usec) / 1e6;
+        int elapsed_time = (current_time.tv_sec - start_time.tv_sec);
 
         if (elapsed_time >= 1) { // 检查是否过去了 0.5 秒
             printf("Time elapsed: %d seconds\n", elapsed_time);
