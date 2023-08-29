@@ -184,8 +184,8 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 APPS =
-TESTS =  timer-test
-# TESTS = dummy hello file-test
+# TESTS =  timer-test
+TESTS = dummy hello file-test timer-test
 # TESTS = hello
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
@@ -196,7 +196,7 @@ RAMDISK_H = build/ramdisk.h
 DUMP_FILE = build/dump.txt
 
 $(RAMDISK): fsimg
-	# @rm -rf fsimg/bin/*
+	@rm -rf fsimg/bin/*
 	$(eval FSIMG_FILES := $(shell find -L ./fsimg -type f))
 	@mkdir -p $(@D)
 	@cat $(FSIMG_FILES) > $@
