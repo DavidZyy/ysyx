@@ -69,8 +69,7 @@ void do_syscall(Context *c) {
       int fd = a[1];
       int offset = a[2];
       int whence = a[3];
-      fs_lseek(fd, offset, whence);
-      c->GPRx = 5000;
+      c->GPRx = fs_lseek(fd, offset, whence);
       break;
     }
 
