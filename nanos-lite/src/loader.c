@@ -1,5 +1,6 @@
 #include <proc.h>
 #include <elf.h>
+#include "fs.h"
 
 #ifdef __LP64__
 # define Elf_Ehdr Elf64_Ehdr
@@ -44,27 +45,54 @@ void print_program_header(Elf_Phdr program_header) {
   printf("Align: 0x%lx\n", program_header.p_align);
 }
 
-extern uint8_t ramdisk_start;
-size_t ramdisk_read(void *buf, size_t offset, size_t len);
+// extern uint8_t ramdisk_start;
+// size_t ramdisk_read(void *buf, size_t offset, size_t len);
+// static uintptr_t loader(PCB *pcb, const char *filename) {
+//   // TODO();
+//   Elf_Ehdr ehdr;
+//   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
+//   // print_elf_header(ehdr);
+//   assert(*(uint64_t *)ehdr.e_ident == E_ident);
+// 
+//   for(int i=0; i < ehdr.e_phnum; i++) {
+//     Elf_Phdr phdr;
+//     ramdisk_read(&phdr, ehdr.e_phoff + i*sizeof(Elf_Phdr), sizeof(Elf_Phdr));
+//     // print_program_header(phdr);
+//     if(phdr.p_type == PT_LOAD) {
+//       ramdisk_read((void *)phdr.p_vaddr, phdr.p_offset, phdr.p_filesz);
+//       memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz-phdr.p_filesz);
+//     }
+//   }
+// 
+//   return ehdr.e_entry;
+// }
+
+/* seek at offset from the file beginning and read len bytes to buffer */
+void seek_and_read(int fd, void *buf, size_t offset, size_t len) {
+  fs_lseek(fd, offset, 0);
+  fs_read(fd, buf, len);
+}
+
 static uintptr_t loader(PCB *pcb, const char *filename) {
-  // TODO();
+  int fd = fs_open(filename, 0, 0);
   Elf_Ehdr ehdr;
-  ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
-  // print_elf_header(ehdr);
+  seek_and_read(fd, &ehdr, 0, sizeof(Elf_Ehdr));
+
   assert(*(uint64_t *)ehdr.e_ident == E_ident);
 
   for(int i=0; i < ehdr.e_phnum; i++) {
     Elf_Phdr phdr;
-    ramdisk_read(&phdr, ehdr.e_phoff + i*sizeof(Elf_Phdr), sizeof(Elf_Phdr));
+    seek_and_read(fd, &phdr, ehdr.e_phoff + i*sizeof(Elf_Phdr), sizeof(Elf_Phdr));
     // print_program_header(phdr);
     if(phdr.p_type == PT_LOAD) {
-      ramdisk_read((void *)phdr.p_vaddr, phdr.p_offset, phdr.p_filesz);
+      seek_and_read(fd, (void *)phdr.p_vaddr, phdr.p_offset, phdr.p_filesz);
       memset((void *)(phdr.p_vaddr + phdr.p_filesz), 0, phdr.p_memsz-phdr.p_filesz);
     }
   }
 
   return ehdr.e_entry;
 }
+
 
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
