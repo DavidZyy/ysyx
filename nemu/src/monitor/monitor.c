@@ -112,9 +112,9 @@ static int parse_args(int argc, char *argv[]) {
 
 Elf_Shdr section_headers[20];
 char section_names[512*8];
-Elf_Sym symbols[200];
+Elf_Sym symbols[2000];
 int func_id = 0;
-ftrace_struct func_info[64];
+ftrace_struct func_info[64*10];
 
 void init_elf(const char* elf_file) {
   assert(elf_file);
