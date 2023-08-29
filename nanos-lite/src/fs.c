@@ -41,7 +41,7 @@ void init_fs() {
 
 int fs_open(const char *pathname, int flags, int mode) {
   for(int i = 0; i < sizeof(file_table) / sizeof(Finfo); i++) {
-    if(strcmp(pathname, file_table[i].name) == 0){
+    if(strcmp(pathname, file_table[i].name) == 0) {
       file_table[i].open_offset = file_table[i].disk_offset;
       return i;
     }
@@ -50,14 +50,25 @@ int fs_open(const char *pathname, int flags, int mode) {
   panic("not find file!");
 }
 
+// size_t fs_read(int fd, void *buf, size_t len) {
+//   size_t offset = file_table[fd].open_offset;
+//   file_table[fd].open_offset += len;
+//   // if(file_table[fd].open_offset !=  file_table[fd].disk_offset + file_table[fd].size){
+//   Log("%d, %d, %d\n", file_table[fd].open_offset, len, file_table[fd].size);
+//     // assert(0);
+//   // }
+//   return ramdisk_read((void *)buf, offset, len);
+// }
+
 size_t fs_read(int fd, void *buf, size_t len) {
   size_t offset = file_table[fd].open_offset;
-  file_table[fd].open_offset += len;
-  // if(file_table[fd].open_offset !=  file_table[fd].disk_offset + file_table[fd].size){
-  Log("%d, %d, %d\n", file_table[fd].open_offset, len, file_table[fd].size);
-    // assert(0);
-  // }
-  return ramdisk_read((void *)buf, offset, len);
+  // Calculate the remaining bytes available to read in the file
+  size_t remaining_bytes = (file_table[fd].size + file_table[fd].disk_offset) - file_table[fd].open_offset;
+  // Calculate the actual number of bytes to read
+  size_t bytes_to_read = (len < remaining_bytes) ? len : remaining_bytes;
+  file_table[fd].open_offset += bytes_to_read;
+  assert(file_table[fd].open_offset <=  file_table[fd].disk_offset + file_table[fd].size);
+  return ramdisk_read((void *)buf, offset, bytes_to_read);
 }
 
 size_t fs_write(int fd, const void *buf, size_t len) {
@@ -66,7 +77,6 @@ size_t fs_write(int fd, const void *buf, size_t len) {
   assert(file_table[fd].open_offset <= file_table[fd].disk_offset + file_table[fd].size);
   return ramdisk_write(buf, offset, len);
 }
-
 
 // size_t fs_lseek(int fd, size_t offset, int whence) {
 //   file_table[fd].open_offset = file_table[fd].disk_offset + offset;
