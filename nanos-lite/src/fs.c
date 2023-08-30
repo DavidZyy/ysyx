@@ -65,8 +65,7 @@ int fs_open(const char *pathname, int flags, int mode) {
 
 size_t fs_read(int fd, void *buf, size_t len) {
   if(file_table[fd].read) {
-    file_table[fd].read(buf, 0, len);
-    return len;
+    return file_table[fd].read(buf, 0, len);
   } else {
     size_t offset = file_table[fd].open_offset;
     // Calculate the remaining bytes available to read in the file
@@ -81,8 +80,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
 
 size_t fs_write(int fd, const void *buf, size_t len) {
   if(file_table[fd].write) {
-    file_table[fd].write(buf, 0, len);
-    return len;
+    return file_table[fd].write(buf, 0, len);
   } else {
     size_t offset = file_table[fd].open_offset;
     file_table[fd].open_offset += len;
