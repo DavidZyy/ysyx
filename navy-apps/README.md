@@ -66,6 +66,7 @@ make ISA=xxx ramdisk
 
 使用`LD_PRELOAD`实现了本地模拟的`/dev/events`, `/dev/fb`和其他一些设备文件, 具体可参考`libs/libos/src/native.cpp`.
 代码模拟了与Navy兼容的运行时环境, 使用以下命令运行native程序:
+
 ```bash
 make ISA=native run mainargs="参数1 参数2 ..."
 ```
