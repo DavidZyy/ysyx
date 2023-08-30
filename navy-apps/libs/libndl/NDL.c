@@ -52,7 +52,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     char buf[64];
     if (read(fd, buf, sizeof(buf)-1)) {
       sscanf(buf, "WIDTH: %d\nHEIGHT: %d\n", &screen_w, &screen_h);
-      printf("%d %d\n", screen_w, screen_h);
+      printf("%d %d %d, %d\n", screen_w, screen_h, *w, *h);
       if(*w && *h) {
         canvas_w = *w;
         canvas_h = *h;
