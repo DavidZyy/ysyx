@@ -8,6 +8,7 @@
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
+static int canvas_w = 0, canvas_h = 0;
 
 /* return seconds, not use us */
 uint32_t NDL_GetTicks() {
@@ -48,12 +49,14 @@ void NDL_OpenCanvas(int *w, int *h) {
     int fd = open("/proc/dispinfo", 0);
     char buf[64];
     if (read(fd, buf, sizeof(buf)-1)) {
-
+      printf("%s\n", buf);
+      while(1);
     }
   }
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {

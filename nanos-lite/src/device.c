@@ -40,11 +40,19 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
+  int w = io_read(AM_GPU_CONFIG).width;
+
+  offset = offset / sizeof(int);
+
+  int y = offset / w;
+  int x = offset % w;
+
+  assert(len/sizeof(int) + x < w);
+  io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf, len/sizeof(int), 1, true);
   return 0;
 }
 
-struct timeval
-{
+struct timeval {
   uint32_t tv_sec;		/* Seconds.  */
   uint32_t tv_usec;	/* Microseconds.  */
 };
