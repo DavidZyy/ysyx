@@ -28,11 +28,13 @@ size_t invalid_write(const void *buf, size_t offset, size_t len) {
   return 0;
 }
 
+size_t events_read(void *buf, size_t offset, size_t len);
 /* This is the information about all files in disk. */
 static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin",  0, 0, 0, invalid_read, invalid_write},
   [FD_STDOUT] = {"stdout", 0, 0, 0, invalid_read, serial_write},
   [FD_STDERR] = {"stderr", 0, 0, 0, invalid_read, serial_write},
+  {"/dev/events", 0, 0, 0, events_read, invalid_write},
 #include "files.h"
 };
 
@@ -62,18 +64,23 @@ int fs_open(const char *pathname, int flags, int mode) {
 // }
 
 size_t fs_read(int fd, void *buf, size_t len) {
-  size_t offset = file_table[fd].open_offset;
-  // Calculate the remaining bytes available to read in the file
-  size_t remaining_bytes = (file_table[fd].size + file_table[fd].disk_offset) - file_table[fd].open_offset;
-  // Calculate the actual number of bytes to read
-  size_t bytes_to_read = (len < remaining_bytes) ? len : remaining_bytes;
-  file_table[fd].open_offset += bytes_to_read;
-  assert(file_table[fd].open_offset <=  file_table[fd].disk_offset + file_table[fd].size);
-  return ramdisk_read((void *)buf, offset, bytes_to_read);
+  if(file_table[fd].read) {
+    file_table[fd].read(buf, 0, len);
+    return len;
+  } else {
+    size_t offset = file_table[fd].open_offset;
+    // Calculate the remaining bytes available to read in the file
+    size_t remaining_bytes = (file_table[fd].size + file_table[fd].disk_offset) - file_table[fd].open_offset;
+    // Calculate the actual number of bytes to read
+    size_t bytes_to_read = (len < remaining_bytes) ? len : remaining_bytes;
+    file_table[fd].open_offset += bytes_to_read;
+    assert(file_table[fd].open_offset <=  file_table[fd].disk_offset + file_table[fd].size);
+    return ramdisk_read((void *)buf, offset, bytes_to_read);
+  }
 }
 
 size_t fs_write(int fd, const void *buf, size_t len) {
-  if(file_table[fd].write){
+  if(file_table[fd].write) {
     file_table[fd].write(buf, 0, len);
     return len;
   } else {

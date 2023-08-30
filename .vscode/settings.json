@@ -71,6 +71,9 @@
     "unistd.h": "c",
     "files.h": "c",
     "fs.h": "c",
-    "ndl.h": "c"
+    "ndl.h": "c",
+    "fstream": "c",
+    "sstream": "c",
+    "regex": "c"
   }
 }
