@@ -4,7 +4,6 @@
 #include <string.h>
 #include <unistd.h>
 
-
 #include <sys/time.h>
 static int evtdev = -1;
 static int fbdev = -1;
@@ -45,6 +44,12 @@ void NDL_OpenCanvas(int *w, int *h) {
       if (strcmp(buf, "mmap ok") == 0) break;
     }
     close(fbctl);
+  } else {
+    int fd = open("/proc/dispinfo", 0);
+    char buf[64];
+    if (read(fd, buf, sizeof(buf)-1)) {
+
+    }
   }
 }
 
