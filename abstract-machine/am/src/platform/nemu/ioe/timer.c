@@ -20,6 +20,7 @@
 static uint64_t boot_time = 0;
 
 /* the clock frequency in nemu */
+/* return the us */
 static uint64_t read_time() {
   uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
   uint32_t hi = *(volatile uint32_t *)(RTC_ADDR + 4);
@@ -31,6 +32,7 @@ void __am_timer_init() {
   boot_time = read_time();
 }
 
+/* return the us */
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uptime->us = read_time() - boot_time;
 }

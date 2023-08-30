@@ -3,7 +3,14 @@
 
 #define KEYDOWN_MASK 0x8000
 
+/* if press a, if key down is 802b, if key up is 2b, not same as ps/2 */
+static uint32_t read_key(){
+  uint32_t key = inl(KBD_ADDR);
+  return key;
+}
+
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
-  kbd->keydown = 0;
-  kbd->keycode = AM_KEY_NONE;
+  uint32_t key = read_key();
+  kbd->keydown = key & KEYDOWN_MASK;
+  kbd->keycode = key & ~KEYDOWN_MASK;
 }

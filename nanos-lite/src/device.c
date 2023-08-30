@@ -22,19 +22,38 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  return 0;
+  AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
+  /* no read */
+  if (ev.keycode == AM_KEY_NONE)
+    return 0;
+  snprintf(buf, len, "%s %s", ev.keydown ? "kd" : "ku", keyname[ev.keycode]);
+  return len;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
-  return 0;
+  int w = io_read(AM_GPU_CONFIG).width;
+  int h = io_read(AM_GPU_CONFIG).height;
+
+  assert(len >= 30);
+  return snprintf(buf, len, "WIDTH: %d\nHEIGHT: %d\n", w, h);
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-  return 0;
+  int w = io_read(AM_GPU_CONFIG).width;
+
+  size_t pixels_offset = offset / sizeof(int);
+  size_t pixels_len = len / sizeof(int);
+
+  int y = pixels_offset / w;
+  int x = pixels_offset % w;
+
+  // assert(x + pixels_len <= w);
+  io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf, pixels_len, 1, true);
+  // Log("x %d y %d w %d off %d, len %d", x, y, w, pixels_offset, pixels_len);
+  return len;
 }
 
-struct timeval
-{
+struct timeval {
   uint32_t tv_sec;		/* Seconds.  */
   uint32_t tv_usec;	/* Microseconds.  */
 };
