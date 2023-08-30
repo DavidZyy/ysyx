@@ -49,7 +49,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
 
   // assert(x + pixels_len <= w);
   io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf, pixels_len, 1, true);
-  Log("w %d off %d, len %d",w, pixels_offset, pixels_len);
+  Log("x %d y %d w %d off %d, len %d", x, y, w, pixels_offset, pixels_len);
   return len;
 }
 
