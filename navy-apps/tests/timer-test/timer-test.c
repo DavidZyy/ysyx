@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include "NDL.h"
+#include <NDL.h>
 
 int main() {
     int start_time, current_time; //seconds
