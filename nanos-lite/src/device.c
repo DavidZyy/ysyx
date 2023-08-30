@@ -48,7 +48,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
 
   assert(len/sizeof(int) + x < w);
   io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf, len/sizeof(int), 1, true);
-  return 0;
+  return len;
 }
 
 struct timeval {
