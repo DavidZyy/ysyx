@@ -198,7 +198,7 @@ DUMP_FILE = build/dump.txt
 
 $(RAMDISK): fsimg
 	$(eval FSIMG_FILES := $(shell find -L ./fsimg -type f))
-	@echo $(FSIMG_FILES)
+	# @echo $(FSIMG_FILES)
 	@mkdir -p $(@D)
 	@cat $(FSIMG_FILES) > $@
 	@truncate -s \%512 $@

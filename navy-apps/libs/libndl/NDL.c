@@ -4,12 +4,17 @@
 #include <string.h>
 #include <unistd.h>
 
+
+#include <sys/time.h>
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 
+/* return seconds, not use us */
 uint32_t NDL_GetTicks() {
-  return 0;
+  struct timeval current_time;
+  gettimeofday(&current_time, NULL);
+  return current_time.tv_sec;
 }
 
 int NDL_PollEvent(char *buf, int len) {
