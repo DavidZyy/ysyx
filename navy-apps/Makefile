@@ -186,7 +186,8 @@ $(CLEAN_ALL):
 APPS =
 # TESTS =  timer-test
 # TESTS = dummy hello file-test timer-test event-test
-TESTS = event-test
+# TESTS = event-test
+TESTS = bmp-test
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 	@rm -rf $(NAVY_HOME)/fsimg/bin/*
