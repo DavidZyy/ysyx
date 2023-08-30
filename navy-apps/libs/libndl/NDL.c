@@ -48,10 +48,10 @@ void NDL_OpenCanvas(int *w, int *h) {
   } else {
     int fd = open("/proc/dispinfo", 0);
     char buf[64];
-    printf("hhhhhhhhhhhhhh\n");
+    // printf("hhhhhhhhhhhhhh\n");
     if (read(fd, buf, sizeof(buf)-1)) {
       printf("%s\n", buf);
-      while(1);
+      // while(1);
     }
   }
 }
