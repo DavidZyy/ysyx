@@ -4,17 +4,73 @@
 #include <string.h>
 #include <stdlib.h>
 
+static int screen_w = 400, screen_h = 300;
+
+/**
+ * The width and height in srcrect determine the size of the copied rectangle. 
+ * Only the position is used in the dstrect (the width and height are ignored).
+ */
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+  if(srcrect == NULL) {
+    SDL_Rect new_srcrect;
+    new_srcrect.w = screen_w;
+    new_srcrect.h = screen_h;
+    srcrect = &new_srcrect;
+  }
+  if(dstrect == NULL) {
+    SDL_Rect new_dstrect;
+    new_dstrect.x = 0;
+    new_dstrect.y = 0;
+    dstrect = &new_dstrect;
+  }
+  uint32_t *dst_px = (uint32_t *)dst->pixels;
+  dst_px += (dstrect->y * screen_w + dstrect->x);
+
+  uint32_t *src_px = (uint32_t *)src->pixels;
+  src_px += (srcrect->y * screen_w + srcrect->x);
+
+  for(int i = 0; i < srcrect->h; i++) {
+    for(int j = 0; j < srcrect->w; j++) {
+      *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
+    }
+  }
+
 }
 
+/**
+ * if dstrect is NULL, the whole surface will be filled with color.
+ */
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
+  if(dstrect == NULL){
+    SDL_Rect full_screen;
+    full_screen.x = 0;
+    full_screen.y = 0;
+    full_screen.w = screen_w;
+    full_screen.h = screen_h;
+    dstrect = &full_screen;
+  }
+  uint32_t *px = (uint32_t *)dst->pixels;
+  px += (dstrect->y * screen_w + dstrect->x);
+  for(int i = 0; i < dstrect->h; i++) {
+    for(int j = 0; j < dstrect->w; j++) {
+      *(px + i*screen_w + j) = color;
+    }
+  }
 }
 
+/**
+ * If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
+ */
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
+  // should get the info of whole screen?
   NDL_OpenCanvas(&w, &h);
-  NDL_DrawRect((uint32_t *)s->pixels, 0, 0, 400, 300);
+  if(x == 0 && y == 0 && w ==0 && h == 0){
+    NDL_DrawRect((uint32_t *)s->pixels, 0, 0, 0, 0);
+  } else {
+    NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
+  }
 }
 
 // APIs below are already implemented.

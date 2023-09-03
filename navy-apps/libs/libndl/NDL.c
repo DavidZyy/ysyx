@@ -53,7 +53,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     char buf[64];
     if (read(fd, buf, sizeof(buf)-1)) {
       sscanf(buf, "WIDTH: %d\nHEIGHT: %d\n", &screen_w, &screen_h);
-      printf("%d %d %d, %d\n", screen_w, screen_h, *w, *h);
+      // printf("%d %d %d, %d\n", screen_w, screen_h, *w, *h);
       if(*w && *h) {
         canvas_w = *w;
         canvas_h = *h;
@@ -65,7 +65,14 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
 }
 
+/**
+ * If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
+ */
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  if(x == 0 && y == 0 && w == 0 && h == 0){
+    w = screen_w;
+    h = screen_h;
+  }
   int fd = open("/dev/fb", 0);
   x += (screen_w - canvas_w) / 2;
   y += (screen_h - canvas_h) / 2;
