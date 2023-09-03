@@ -45,6 +45,7 @@ APP     ?= $(WORK_DIR)/build/$(NAME)-$(ISA)
 ARCHIVE  = $(WORK_DIR)/build/$(NAME)-$(ISA).a
 
 # $(error $(APP))
+# $(error $(ARCHIVE))
 
 ### Add default libraries for ISA != native
 ifneq ($(ISA), native)
@@ -138,11 +139,12 @@ libs:
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `$(APP)`, the final ELF binary to be packed into application (ld)
 $(APP): $(OBJS) libs $(PRES)
+	echo $(APP)
 	@echo + LD "->" $(shell realpath $@ --relative-to .)
 	@$(LD) $(LDFLAGS) -o $@ $(WL)--start-group $(LINKAGE) $(WL)--end-group
 	# @(OBJ)
 
-$(error $(APP))
+# $(error $(APP))
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
 $(ARCHIVE): $(OBJS) libs $(PRES)
 	@echo + AR "->" $(shell realpath $@ --relative-to .)
@@ -190,6 +192,7 @@ APPS = nslider
 # TESTS = dummy hello file-test timer-test event-test
 # TESTS = event-test
 # TESTS = bmp-test
+# $(error $(APPS))
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 	@rm -rf $(NAVY_HOME)/fsimg/bin/*
