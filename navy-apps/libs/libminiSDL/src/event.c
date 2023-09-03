@@ -19,7 +19,13 @@ int SDL_PollEvent(SDL_Event *ev) {
 int SDL_WaitEvent(SDL_Event *event) {
   char buf[64];
   if (NDL_PollEvent(buf, sizeof(buf))) {
-      printf("receive event: %s\n", buf);
+      // printf("receive event: %s\n", buf);
+      if(buf[0] == 'k' && buf[1] == 'd')
+        event->type = SDL_KEYDOWN;
+      for(int i = 0; i < sizeof(keyname)/sizeof(char *); i++) {
+          if(strcmp(keyname[i], buf + 2))
+            event->key.keysym.sym = i;
+      }
   }
   return 1;
 }
