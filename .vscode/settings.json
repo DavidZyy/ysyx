@@ -74,6 +74,7 @@
     "ndl.h": "c",
     "fstream": "c",
     "sstream": "c",
-    "regex": "c"
+    "regex": "c",
+    "cstring": "c"
   }
 }
