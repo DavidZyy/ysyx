@@ -17,7 +17,7 @@ const int N = 10;
 const char *path = "/share/slides/slides-%d.bmp";
 
 static SDL_Surface *slide = NULL;
-static int cur = 0;
+static int cur = 1;
 
 void render() {
   if (slide) {
@@ -25,6 +25,7 @@ void render() {
   }
   char fname[256];
   sprintf(fname, path, cur);
+  // printf("%s\n", fname);
   slide = SDL_LoadBMP(fname);
   assert(slide);
   SDL_UpdateRect(slide, 0, 0, 0, 0);
@@ -54,6 +55,9 @@ int main() {
 
   while (1) {
     SDL_Event e;
+    /* should clear e */
+    e.type = 0;
+    e.key.keysym.sym = 0;
     SDL_WaitEvent(&e);
 
     if (e.type == SDL_KEYDOWN) {

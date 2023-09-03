@@ -45,6 +45,7 @@ APP     ?= $(WORK_DIR)/build/$(NAME)-$(ISA)
 ARCHIVE  = $(WORK_DIR)/build/$(NAME)-$(ISA).a
 
 # $(error $(APP))
+# $(error $(ARCHIVE))
 
 ### Add default libraries for ISA != native
 ifneq ($(ISA), native)
@@ -136,11 +137,18 @@ $(DST_DIR)/%.o: %.S
 libs:
 	@for t in $(LIBS); do $(MAKE) -s -C $(NAVY_HOME)/libs/$$t archive; done
 
+# navy-apps/scripyts have defined this, use this will get error.
+# CROSS_COMPILE := riscv64-linux-gnu-
+# OBJDUMP   = $(CROSS_COMPILE)objdump
+
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `$(APP)`, the final ELF binary to be packed into application (ld)
 $(APP): $(OBJS) libs $(PRES)
+	echo $(APP)
 	@echo + LD "->" $(shell realpath $@ --relative-to .)
 	@$(LD) $(LDFLAGS) -o $@ $(WL)--start-group $(LINKAGE) $(WL)--end-group
+	# @$(OBJDUMP) -d $@ > $@.txt
 
+# $(error $(APP))
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
 $(ARCHIVE): $(OBJS) libs $(PRES)
 	@echo + AR "->" $(shell realpath $@ --relative-to .)
@@ -183,11 +191,12 @@ $(CLEAN_ALL):
 .PHONY: clean-all $(CLEAN_ALL)
 
 ### Build fsimg and ramdisk for Nanos-lite
-APPS =
+APPS = nslider
 # TESTS =  timer-test
 # TESTS = dummy hello file-test timer-test event-test
 # TESTS = event-test
-TESTS = bmp-test
+# TESTS = bmp-test
+# $(error $(APPS))
 
 fsimg: $(addprefix apps/, $(APPS)) $(addprefix tests/, $(TESTS))
 	@rm -rf $(NAVY_HOME)/fsimg/bin/*
