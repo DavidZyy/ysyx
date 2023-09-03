@@ -17,6 +17,10 @@ int SDL_PollEvent(SDL_Event *ev) {
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
+  char buf[4];
+  if (NDL_PollEvent(buf, sizeof(buf))) {
+      printf("receive event: %s\n", buf);
+  }
   return 1;
 }
 
