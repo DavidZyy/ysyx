@@ -36,14 +36,13 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
     }
   }
-
 }
 
 /**
  * if dstrect is NULL, the whole surface will be filled with color.
  */
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
-  if(dstrect == NULL){
+  if (dstrect == NULL) {
     SDL_Rect full_screen;
     full_screen.x = 0;
     full_screen.y = 0;

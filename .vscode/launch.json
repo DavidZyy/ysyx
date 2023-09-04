@@ -52,15 +52,15 @@
       "preLaunchTask": "recompile_nemu"
     },
     {
-      "name": "(gdb) Launch npc",
+      "name": "(gdb) Launch menu",
       "type": "cppdbg",
       "request": "launch",
       // "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
-      "program": "${workspaceFolder}/nemu/build/riscv64-nemu-interpreter",
+      "program": "${workspaceFolder}/navy-apps/apps/menu/build/menu-native",
       "args": [],
       "stopAtEntry": false,
       // "cwd": "${fileDirname}/..",
-      "cwd": "${workspaceFolder}/npc",
+      // "cwd": "${workspaceFolder}/npc",
       "environment": [],
       "externalConsole": false,
       "MIMode": "gdb",
