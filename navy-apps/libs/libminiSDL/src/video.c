@@ -63,7 +63,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
   /* whole screen */
   for(int i=0; i<300; i++){
     for(int j=0; j<400; j++){
-      printf("addr begin: %x, addr end: %x, here: %x\n", px, px +120000, (px + i*screen_w + j));
+      // printf("addr begin: %x, addr end: %x, here: %x\n", px, px +120000, (px + i*screen_w + j));
       *(px + i*screen_w + j) = color;
     }
   }
