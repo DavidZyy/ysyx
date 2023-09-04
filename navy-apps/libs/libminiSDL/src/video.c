@@ -15,8 +15,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
   if(srcrect == NULL) {
     SDL_Rect new_srcrect;
-    new_srcrect.w = screen_w;
-    new_srcrect.h = screen_h;
+    new_srcrect.w = src->w;
+    new_srcrect.h = src->h;
     srcrect = &new_srcrect;
   }
   if(dstrect == NULL) {
@@ -29,11 +29,12 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
   dst_px += (dstrect->y * screen_w + dstrect->x);
 
   uint32_t *src_px = (uint32_t *)src->pixels;
-  src_px += (srcrect->y * screen_w + srcrect->x);
+  // src_px += (srcrect->y * screen_w + srcrect->x);
 
   for(int i = 0; i < srcrect->h; i++) {
     for(int j = 0; j < srcrect->w; j++) {
-      *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
+      // *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
+      *(dst_px + i*screen_w + j) = *(src_px++);
     }
   }
 }
@@ -42,18 +43,27 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
  * if dstrect is NULL, the whole surface will be filled with color.
  */
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
-  if (dstrect == NULL) {
-    SDL_Rect full_screen;
-    full_screen.x = 0;
-    full_screen.y = 0;
-    full_screen.w = screen_w;
-    full_screen.h = screen_h;
-    dstrect = &full_screen;
-  }
+  // if (dstrect == NULL) {
+  //   SDL_Rect full_screen;
+  //   full_screen.x = 0;
+  //   full_screen.y = 0;
+  //   full_screen.w = screen_w;
+  //   full_screen.h = screen_h;
+  //   dstrect = &full_screen;
+  // }
+  // uint32_t *px = (uint32_t *)dst->pixels;
+  // px += (dstrect->y * screen_w + dstrect->x);
+  // for(int i = 0; i < dstrect->h; i++) {
+  //   for(int j = 0; j < dstrect->w; j++) {
+  //     *(px + i*screen_w + j) = color;
+  //   }
+  // }
+
   uint32_t *px = (uint32_t *)dst->pixels;
-  px += (dstrect->y * screen_w + dstrect->x);
-  for(int i = 0; i < dstrect->h; i++) {
-    for(int j = 0; j < dstrect->w; j++) {
+  /* whole screen */
+  for(int i=0; i<300; i++){
+    for(int j=0; j<400; j++){
+      printf("addr begin: %x, addr end: %x, here: %x\n", px, px +120000, (px + i*screen_w + j));
       *(px + i*screen_w + j) = color;
     }
   }
@@ -118,6 +128,7 @@ SDL_Surface* SDL_CreateRGBSurface(uint32_t flags, int width, int height, int dep
 
   if (!(flags & SDL_PREALLOC)) {
     s->pixels = malloc(s->pitch * height);
+    // printf("width %d, height %d, malloc size is %d\n", width, height, s->pitch * height);
     assert(s->pixels);
   }
 

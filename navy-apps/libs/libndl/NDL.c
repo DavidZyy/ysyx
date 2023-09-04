@@ -60,6 +60,9 @@ void NDL_OpenCanvas(int *w, int *h) {
       } else {
         canvas_w = screen_w;
         canvas_h = screen_h;
+        /* forget below */
+        *w = screen_w;
+        *h = screen_h;
       }
     }
   }

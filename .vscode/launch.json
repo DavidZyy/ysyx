@@ -84,7 +84,7 @@
             "ignoreFailures": false
           }
       ],
-      "preLaunchTask": "recompile_nemu"
+      // "preLaunchTask": "recompile_nemu"
     }
   ]
 }
