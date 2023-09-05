@@ -140,8 +140,8 @@ libs:
 	@for t in $(LIBS); do $(MAKE) -s -C $(NAVY_HOME)/libs/$$t archive; done
 
 # navy-apps/scripyts have defined this, use this will get error.
-# CROSS_COMPILE := riscv64-linux-gnu-
-# OBJDUMP   = $(CROSS_COMPILE)objdump
+CROSS_COMPILE := riscv64-linux-gnu-
+OBJDUMP   = $(CROSS_COMPILE)objdump
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `$(APP)`, the final ELF binary to be packed into application (ld)
 $(APP): $(OBJS) libs $(PRES)
