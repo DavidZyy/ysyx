@@ -29,10 +29,10 @@ int main(int argc, char *argv[]) {
 }
 
 static void draw_ch(int x, int y, char ch, uint32_t fg, uint32_t bg) {
-  printf("ch is %d\n", ch);
+  // printf("ch is %d\n", ch);
   // assert(BDF_CreateSurface(font, ch, fg, bg));
   SDL_Surface *s = BDF_CreateSurface(font, ch, fg, bg);
-  printf("in draw ch s: %x\n", s);
+  // printf("in draw ch s: %x\n", s);
   SDL_Rect dstrect = { .x = x, .y = y };
   assert(s);
   assert(screen);
