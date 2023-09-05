@@ -148,7 +148,7 @@ $(APP): $(OBJS) libs $(PRES)
 	echo $(APP)
 	@echo + LD "->" $(shell realpath $@ --relative-to .)
 	@$(LD) $(LDFLAGS) -o $@ $(WL)--start-group $(LINKAGE) $(WL)--end-group
-	# @$(OBJDUMP) -d $@ > $@.txt
+	@$(OBJDUMP) -d $@ > $@.txt
 
 # $(error $(APP))
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
