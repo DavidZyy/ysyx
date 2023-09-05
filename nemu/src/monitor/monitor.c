@@ -111,7 +111,7 @@ static int parse_args(int argc, char *argv[]) {
 #define Elf_Sym  MUXDEF(CONFIG_ISA64, Elf64_Sym,  Elf32_Sym)
 
 Elf_Shdr section_headers[200];
-char section_names[512*8];
+char section_names[512*16];
 Elf_Sym symbols[2000];
 int func_id = 0;
 ftrace_struct func_info[64*10];
