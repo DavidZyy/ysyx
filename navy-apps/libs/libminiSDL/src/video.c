@@ -58,7 +58,6 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
       *(px + i*screen_w + j) = color;
     }
   }
-
 }
 
 /**

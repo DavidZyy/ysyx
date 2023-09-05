@@ -80,6 +80,7 @@ int main(int argc, char *argv[], char *envp[]) {
     display_menu(i_max);
 
     SDL_Event e;
+    e.type = 1; // not equal to 0
     do {
       SDL_WaitEvent(&e);
     } while (e.type != SDL_KEYDOWN);
