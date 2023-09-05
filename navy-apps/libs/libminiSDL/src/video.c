@@ -43,30 +43,22 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
  * if dstrect is NULL, the whole surface will be filled with color.
  */
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
-  // if (dstrect == NULL) {
-  //   SDL_Rect full_screen;
-  //   full_screen.x = 0;
-  //   full_screen.y = 0;
-  //   full_screen.w = screen_w;
-  //   full_screen.h = screen_h;
-  //   dstrect = &full_screen;
-  // }
-  // uint32_t *px = (uint32_t *)dst->pixels;
-  // px += (dstrect->y * screen_w + dstrect->x);
-  // for(int i = 0; i < dstrect->h; i++) {
-  //   for(int j = 0; j < dstrect->w; j++) {
-  //     *(px + i*screen_w + j) = color;
-  //   }
-  // }
-
+  if (dstrect == NULL) {
+    SDL_Rect full_screen;
+    full_screen.x = 0;
+    full_screen.y = 0;
+    full_screen.w = dst->w;
+    full_screen.h = dst->h;
+    dstrect = &full_screen;
+  }
   uint32_t *px = (uint32_t *)dst->pixels;
-  /* whole screen */
-  for(int i=0; i<300; i++){
-    for(int j=0; j<400; j++){
-      // printf("addr begin: %x, addr end: %x, here: %x\n", px, px +120000, (px + i*screen_w + j));
+  px += (dstrect->y * screen_w + dstrect->x);
+  for(int i = 0; i < dstrect->h; i++) {
+    for(int j = 0; j < dstrect->w; j++) {
       *(px + i*screen_w + j) = color;
     }
   }
+
 }
 
 /**
