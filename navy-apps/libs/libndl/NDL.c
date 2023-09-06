@@ -35,6 +35,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     int fbctl = 4;
     fbdev = 5;
     screen_w = *w; screen_h = *h;
+    printf("screen_w %d, screen_h %d", screen_w, screen_h);
     char buf[64];
     int len = sprintf(buf, "%d %d", screen_w, screen_h);
     // let NWM resize the window and create the frame buffer
@@ -52,24 +53,41 @@ void NDL_OpenCanvas(int *w, int *h) {
     char buf[64];
     if (read(fd, buf, sizeof(buf)-1)) {
       sscanf(buf, "WIDTH: %d\nHEIGHT: %d\n", &screen_w, &screen_h);
-      printf("%d %d %d, %d\n", screen_w, screen_h, *w, *h);
+      // printf("%d %d %d, %d\n", screen_w, screen_h, *w, *h);
       if(*w && *h) {
         canvas_w = *w;
         canvas_h = *h;
       } else {
         canvas_w = screen_w;
         canvas_h = screen_h;
+        /* forget below */
+        *w = screen_w;
+        *h = screen_h;
       }
     }
   }
 }
 
+/**
+ * If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
+ */
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  if(x == 0 && y == 0 && w == 0 && h == 0){
+    w = screen_w;
+    h = screen_h;
+  }
   int fd = open("/dev/fb", 0);
   x += (screen_w - canvas_w) / 2;
   y += (screen_h - canvas_h) / 2;
   /* write line by line */
+  // printf("pixels is: %x\n", pixels);
   for(int i = 0; i < h; i++) {
+
+    // for(int j=0; j<w; j++){
+    //   printf("%x ", pixels+j);
+    // }
+    // printf("\n");
+
     lseek(fd, sizeof(int) * ((y+i)*screen_w + x), SEEK_SET);
     write(fd, pixels, w*sizeof(int));
     pixels += w;

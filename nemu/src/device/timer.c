@@ -19,7 +19,7 @@
 
 static uint32_t *rtc_port_base = NULL;
 
-/* return the us , not ms or s */
+/* return the us, not ms or s */
 static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
   assert(offset == 0 || offset == 4);
   if (!is_write && offset == 4) {

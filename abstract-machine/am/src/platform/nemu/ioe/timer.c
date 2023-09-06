@@ -19,22 +19,30 @@
 
 static uint64_t boot_time = 0;
 
+#include<stdio.h>
+/* access can only get old data! so get error!! */
 /* the clock frequency in nemu */
 /* return the us */
 static uint64_t read_time() {
-  uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
+  /* hi should put before before lo, or the rtc_io_handler will not be 
+    called, because it has "if (!is_write && offset == 4) {",  */
   uint32_t hi = *(volatile uint32_t *)(RTC_ADDR + 4);
+  uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
   uint64_t time = ((uint64_t)hi << 32) | lo;
   return time;
 }
 
 void __am_timer_init() {
+  // printf("\nbefore read_time __am_timer_init: %ld\n", boot_time);
   boot_time = read_time();
+  // printf("after __am_timer_init: %ld\n\n", boot_time);
 }
 
-/* return the us */
+// /* return the us */
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
+  // printf("\nbefore read_time __am_timer_uptime: %ld\n", uptime->us);
   uptime->us = read_time() - boot_time;
+  // printf("after __am_timer_uptime: %ld\n\n", uptime->us);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {

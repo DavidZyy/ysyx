@@ -88,9 +88,11 @@ LD        = $(CROSS_COMPILE)ld
 INC_PATH += $(WORK_DIR)/include $(foreach l,$(LIBS_INC),$(NAVY_HOME)/libs/$(l)/include/)
 INCFLAGS += $(addprefix -I, $(INC_PATH))
 
-CFLAGS   += -O2 -MMD $(INCFLAGS) -static -D__NAVY__ \
+# add -g
+# CFLAGS   += -O2 -MMD $(INCFLAGS) -static -D__NAVY__ 
+CFLAGS   += -O0 -MMD $(INCFLAGS) -static -D__NAVY__ \
             -D__ISA__=\"$(ISA)\" -D__ISA_$(shell echo $(ISA) | tr a-z A-Z)__ \
-            -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector
+            -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector -g
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  +=  $(CFLAGS)
 
@@ -146,7 +148,7 @@ $(APP): $(OBJS) libs $(PRES)
 	echo $(APP)
 	@echo + LD "->" $(shell realpath $@ --relative-to .)
 	@$(LD) $(LDFLAGS) -o $@ $(WL)--start-group $(LINKAGE) $(WL)--end-group
-	# @$(OBJDUMP) -d $@ > $@.txt
+	@$(OBJDUMP) -d $@ > $@.txt
 
 # $(error $(APP))
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
@@ -192,6 +194,8 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 APPS = nslider
+# APPS = menu 
+# APPS = nterm
 # TESTS =  timer-test
 # TESTS = dummy hello file-test timer-test event-test
 # TESTS = event-test

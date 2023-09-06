@@ -29,8 +29,14 @@ int main(int argc, char *argv[]) {
 }
 
 static void draw_ch(int x, int y, char ch, uint32_t fg, uint32_t bg) {
+  assert(ch);
+  // printf("ch is %d\n", ch);
+  // assert(BDF_CreateSurface(font, ch, fg, bg));
   SDL_Surface *s = BDF_CreateSurface(font, ch, fg, bg);
+  // printf("in draw ch s: %x\n", s);
   SDL_Rect dstrect = { .x = x, .y = y };
+  assert(s);
+  assert(screen);
   SDL_BlitSurface(s, NULL, screen, &dstrect);
   SDL_FreeSurface(s);
 }
@@ -40,6 +46,7 @@ void refresh_terminal() {
   for (int i = 0; i < W; i ++)
     for (int j = 0; j < H; j ++)
       if (term->is_dirty(i, j)) {
+        // if(!term->getch(i, j)) continue;
         draw_ch(i * font->w, j * font->h, term->getch(i, j), term->foreground(i, j), term->background(i, j));
         needsync = 1;
       }
