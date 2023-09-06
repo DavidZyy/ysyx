@@ -19,17 +19,19 @@
 
 static uint64_t boot_time = 0;
 
+#include<stdio.h>
 /* access can only get old data! so get error!! */
 /* the clock frequency in nemu */
 /* return the us */
 static uint64_t read_time() {
   uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
+  printf("lo: %d\n", lo);
   uint32_t hi = *(volatile uint32_t *)(RTC_ADDR + 4);
+  printf("hi: %d\n", hi);
   uint64_t time = ((uint64_t)hi << 32) | lo;
   return time;
 }
 
-#include<stdio.h>
 void __am_timer_init() {
   printf("\nbefore read_time __am_timer_init: %ld\n", boot_time);
   boot_time = read_time();
