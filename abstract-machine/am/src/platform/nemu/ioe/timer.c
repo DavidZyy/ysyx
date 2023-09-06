@@ -33,14 +33,14 @@ static uint64_t read_time() {
 void __am_timer_init() {
   printf("\nbefore read_time __am_timer_init: %ld\n", boot_time);
   boot_time = read_time();
-  printf("__am_timer_init: %ld\n\n", boot_time);
+  printf("after __am_timer_init: %ld\n\n", boot_time);
 }
 
 // /* return the us */
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   printf("\nbefore read_time __am_timer_uptime: %ld\n", uptime->us);
   uptime->us = read_time() - boot_time;
-  printf("__am_timer_uptime: %ld\n\n", uptime->us);
+  printf("after __am_timer_uptime: %ld\n\n", uptime->us);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
