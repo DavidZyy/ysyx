@@ -24,10 +24,10 @@ static uint64_t boot_time = 0;
 /* the clock frequency in nemu */
 /* return the us */
 static uint64_t read_time() {
-  uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
-  printf("lo: %d\n", lo);
+  /* hi should put before before lo, or the rtc_io_handler will not be 
+    called, because it has "if (!is_write && offset == 4) {",  */
   uint32_t hi = *(volatile uint32_t *)(RTC_ADDR + 4);
-  printf("hi: %d\n", hi);
+  uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
   uint64_t time = ((uint64_t)hi << 32) | lo;
   return time;
 }
