@@ -34,6 +34,7 @@ void send_key(uint8_t, bool);
 void vga_update_screen();
 
 void device_update() {
+  /* what is this mean? */
   static uint64_t last = 0;
   uint64_t now = get_time();
   if (now - last < 1000000 / TIMER_HZ) {
