@@ -19,17 +19,33 @@ const char *path = "/share/slides/slides-%d.bmp";
 static SDL_Surface *slide = NULL;
 static int cur = 1;
 
+char *out_file = "./test.txt";
+void write_slide_pixels_to_file(char *fname, FILE *fp, SDL_Surface *slide) {
+  fprintf(fp, "\n%s\n", fname);
+  for(int i=0; i<slide->h; i++){
+    for(int j=0; j<slide->w; j++){
+      fprintf(fp, "%x ", ((uint32_t *)(slide->pixels))+(i*slide->h)+j);
+    }
+    fprintf(fp, "\n");
+  }
+}
+
 void render() {
+  FILE *fp = fopen(out_file, "a");
+
   if (slide) {
     SDL_FreeSurface(slide);
   }
   char fname[256];
   sprintf(fname, path, cur);
-  printf("\n%s\n", fname);
   slide = SDL_LoadBMP(fname);
-  // printf("slide is %p\n", slide);
+
+  write_slide_pixels_to_file(fname, fp, slide);
+
   assert(slide);
   SDL_UpdateRect(slide, 0, 0, 0, 0);
+
+  fclose(fp);
 }
 
 void prev(int rep) {
