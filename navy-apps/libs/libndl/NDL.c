@@ -17,7 +17,7 @@ static int canvas_w = 0, canvas_h = 0;
 uint32_t NDL_GetTicks() {
   struct timeval current_time;
   gettimeofday(&current_time, NULL);
-  return current_time.tv_sec;
+  return current_time.tv_sec * 1000;
 }
 
 int NDL_PollEvent(char *buf, int len) {
