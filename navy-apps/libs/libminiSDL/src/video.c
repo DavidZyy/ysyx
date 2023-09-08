@@ -26,15 +26,19 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     dstrect = &new_dstrect;
   }
   uint32_t *dst_px = (uint32_t *)dst->pixels;
+  // dst_px += (dstrect->y * dst->w + dstrect->x);
   dst_px += (dstrect->y * screen_w + dstrect->x);
 
   uint32_t *src_px = (uint32_t *)src->pixels;
   // src_px += (srcrect->y * screen_w + srcrect->x);
+  printf("dst->w: %d\n", dst->w);
+  printf("dst->h: %d\n", dst->h);
 
   for(int i = 0; i < srcrect->h; i++) {
     for(int j = 0; j < srcrect->w; j++) {
       // *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
       *(dst_px + i*screen_w + j) = *(src_px++);
+      // *(dst_px + i*dst->w + j) = *(src_px++);
     }
   }
 }
