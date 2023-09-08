@@ -41,7 +41,7 @@ void render() {
   sprintf(fname, path, cur);
   slide = SDL_LoadBMP(fname);
 
-  // write_slide_pixels_to_file(fname, fp, slide);
+  write_slide_pixels_to_file(fname, fp, slide);
 
   assert(slide);
   SDL_UpdateRect(slide, 0, 0, 0, 0);
