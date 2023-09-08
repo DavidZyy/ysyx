@@ -99,7 +99,8 @@ size_t fs_write(int fd, const void *buf, size_t len) {
   } else {
     size_t offset = file_table[fd].open_offset;
     file_table[fd].open_offset += len;
-    // assert(file_table[fd].open_offset <= file_table[fd].disk_offset + file_table[fd].size);
+    /* should not largen file!, or it maybe overwirte the content of other file after it */
+    assert(file_table[fd].open_offset <= file_table[fd].disk_offset + file_table[fd].size);
     return ramdisk_write(buf, offset, len);
   }
 }

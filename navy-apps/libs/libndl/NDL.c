@@ -68,6 +68,22 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
 }
 
+#include<stdio.h>
+char out_file3[] = "./test3.txt";
+char out_file4[] = "./test4.txt";
+char out_file5[] = "./test5.txt";
+void write_slide_pixels_to_file_in_SDL_UpdateRect(FILE *fp, void *pixels, int w, int h) {
+  // fprintf(fp, "\n%s\n", fname);
+  fprintf(fp, "width: %d, height: %d\n", w, h);
+  for(int i=0; i<h; i++){
+    for(int j=0; j<w; j++){
+      fprintf(fp, "%d:%d ", (((uint32_t *)(pixels))+(i*w)+j), *(((uint32_t *)(pixels))+(i*w)+j));
+    }
+    fprintf(fp, "\n");
+  }
+  fprintf(fp, "\n");
+}
+
 /**
  * If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
  */
@@ -79,19 +95,40 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   int fd = open("/dev/fb", 0);
   x += (screen_w - canvas_w) / 2;
   y += (screen_h - canvas_h) / 2;
+
+
+  // FILE *fp1 = fopen(out_file3, "a");
+  // write_slide_pixels_to_file_in_SDL_UpdateRect(fp1, pixels, w, h);
+  // fclose(fp1);
+
+  // FILE *fp = fopen(out_file3, "w");
+
+  uint32_t *ppixels = pixels;
   /* write line by line */
-  // printf("pixels is: %x\n", pixels);
   for(int i = 0; i < h; i++) {
-
-    // for(int j=0; j<w; j++){
-    //   printf("%x ", pixels+j);
-    // }
-    // printf("\n");
-
     lseek(fd, sizeof(int) * ((y+i)*screen_w + x), SEEK_SET);
-    write(fd, pixels, w*sizeof(int));
-    pixels += w;
+    // write(fd, pixels, w*sizeof(int));
+    // pixels += w;
+    for(int j=0; j<w; j++) {
+      write(fd, ppixels+i*w+j, sizeof(int));
+      // fprintf(fp, "%d:%d ", (ppixels + i*w +j), *(ppixels + i*w +j) );
+      // printf("%d:%d ", (ppixels + i*w +j), *(ppixels + i*w +j) );
+      // fprintf(fp, "%d", j);
+      // printf("%d", j);
+      
+      // ppixels++;
+    }
+    // fprintf(fp, "\n");
+    // printf("\n");
   }
+    // printf("\n");
+  // fprintf(fp, "\n");
+  // fclose(fp);
+
+  // FILE *fp2 = fopen(out_file5, "a");
+  // write_slide_pixels_to_file_in_SDL_UpdateRect(fp2, pixels, w, h);
+  // fclose(fp2);
+
   close(fd);
 }
 

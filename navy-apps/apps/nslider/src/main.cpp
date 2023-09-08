@@ -17,23 +17,21 @@ const int N = 10;
 const char *path = "/share/slides/slides-%d.bmp";
 
 static SDL_Surface *slide = NULL;
-static int cur = 1;
+static int cur = 2;
 
-// char out_file[] = "./test.txt";
-char out_file[] = "/test.txt";
+char out_file1[] = "./test1.txt";
 void write_slide_pixels_to_file(char *fname, FILE *fp, SDL_Surface *slide) {
   fprintf(fp, "\n%s\n", fname);
+  fprintf(fp, "width: %d, height: %d\n", slide->w, slide->h);
   for(int i=0; i<slide->h; i++){
     for(int j=0; j<slide->w; j++){
-      fprintf(fp, "%x ", *(((uint32_t *)(slide->pixels))+(i*slide->h)+j));
+      fprintf(fp, "%x ", *(((uint32_t *)(slide->pixels))+(i*slide->w)+j));
     }
     fprintf(fp, "\n");
   }
 }
 
 void render() {
-  FILE *fp = fopen(out_file, "a");
-
   if (slide) {
     SDL_FreeSurface(slide);
   }
@@ -41,12 +39,12 @@ void render() {
   sprintf(fname, path, cur);
   slide = SDL_LoadBMP(fname);
 
-  write_slide_pixels_to_file(fname, fp, slide);
+  // FILE *fp = fopen(out_file1, "a");
+  // write_slide_pixels_to_file(fname, fp, slide);
+  // fclose(fp);
 
   assert(slide);
   SDL_UpdateRect(slide, 0, 0, 0, 0);
-
-  fclose(fp);
 }
 
 void prev(int rep) {
