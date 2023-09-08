@@ -32,7 +32,7 @@ void write_slide_pixels_to_file(char *fname, FILE *fp, SDL_Surface *slide) {
 }
 
 void render() {
-  FILE *fp = fopen(out_file, "a");
+  // FILE *fp = fopen(out_file, "a");
 
   if (slide) {
     SDL_FreeSurface(slide);
@@ -41,12 +41,12 @@ void render() {
   sprintf(fname, path, cur);
   slide = SDL_LoadBMP(fname);
 
-  write_slide_pixels_to_file(fname, fp, slide);
+  // write_slide_pixels_to_file(fname, fp, slide);
 
   assert(slide);
   SDL_UpdateRect(slide, 0, 0, 0, 0);
 
-  fclose(fp);
+  // fclose(fp);
 }
 
 void prev(int rep) {
