@@ -24,7 +24,7 @@ void write_slide_pixels_to_file(char *fname, FILE *fp, SDL_Surface *slide) {
   fprintf(fp, "\n%s\n", fname);
   for(int i=0; i<slide->h; i++){
     for(int j=0; j<slide->w; j++){
-      fprintf(fp, "%x ", ((uint32_t *)(slide->pixels))+(i*slide->h)+j);
+      fprintf(fp, "%x ", *(((uint32_t *)(slide->pixels))+(i*slide->h)+j));
     }
     fprintf(fp, "\n");
   }
