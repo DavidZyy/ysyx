@@ -6,6 +6,7 @@
 
 #include <sys/time.h>
 #include <stdio.h>
+#include <fcntl.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
@@ -94,7 +95,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     w = screen_w;
     h = screen_h;
   }
-  int fd = open("/dev/fb", 2);
+  int fd = open("/dev/fb", O_RDWR);
   x += (screen_w - canvas_w) / 2;
   y += (screen_h - canvas_h) / 2;
 
