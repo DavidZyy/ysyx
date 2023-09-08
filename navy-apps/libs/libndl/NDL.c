@@ -105,7 +105,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
 
   // FILE *fp1 = fopen(out_file4, "a");
   // FILE *fp = fopen(out_file3, "a");
-  int fp = open(out_file4, 2);
+  // int fp = open(out_file4, 2);
 
   /* write line by line */
   for(int i=0; i<h; i++) {
