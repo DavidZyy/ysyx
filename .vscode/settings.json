@@ -75,6 +75,10 @@
     "fstream": "c",
     "sstream": "c",
     "regex": "c",
-    "cstring": "c"
+    "cstring": "c",
+    "unordered_map": "cpp",
+    "istream": "cpp",
+    "numeric": "cpp",
+    "ostream": "cpp"
   }
 }

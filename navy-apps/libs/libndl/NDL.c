@@ -20,7 +20,7 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-  int fd = open("/dev/events", 0);
+  int fd = open("/dev/events", 2);
   int return_val = 0;
 
   if(read(fd, buf, len))
@@ -49,7 +49,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     close(fbctl);
   } else {
-    int fd = open("/proc/dispinfo", 0);
+    int fd = open("/proc/dispinfo", 2);
     char buf[64];
     if (read(fd, buf, sizeof(buf)-1)) {
       sscanf(buf, "WIDTH: %d\nHEIGHT: %d\n", &screen_w, &screen_h);
@@ -65,6 +65,7 @@ void NDL_OpenCanvas(int *w, int *h) {
         *h = screen_h;
       }
     }
+    close(fd);
   }
 }
 
@@ -84,6 +85,7 @@ void write_slide_pixels_to_file_in_SDL_UpdateRect(FILE *fp, void *pixels, int w,
   fprintf(fp, "\n");
 }
 
+// #include <fcntl.h>
 /**
  * If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
  */
@@ -92,7 +94,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
     w = screen_w;
     h = screen_h;
   }
-  int fd = open("/dev/fb", 0);
+  int fd = open("/dev/fb", 2);
   x += (screen_w - canvas_w) / 2;
   y += (screen_h - canvas_h) / 2;
 
@@ -101,24 +103,29 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   // write_slide_pixels_to_file_in_SDL_UpdateRect(fp1, pixels, w, h);
   // fclose(fp1);
 
-  // FILE *fp = fopen(out_file3, "w");
+  // FILE *fp1 = fopen(out_file4, "a");
+  // FILE *fp = fopen(out_file3, "a");
+  int fp = open(out_file4, 2);
 
   /* write line by line */
-  for(int i = 0; i < h; i++) {
-    // lseek(fd, sizeof(int) * ((y+i)*screen_w + x), SEEK_SET);
-    // write(fd, pixels+i*w, w*sizeof(int));
+  for(int i=0; i<h; i++) {
+    lseek(fd, sizeof(int) * ((y+i)*screen_w + x), SEEK_SET);
+    write(fd, pixels+i*w, w*sizeof(int));
     // pixels += w;
 
-    for(int j=0; j<w; j++) {
-    lseek(fd, sizeof(int) * ((y+i)*w + x + j), SEEK_SET);
-      write(fd, pixels+i*w+j, sizeof(int));
-      // fprintf(fp, "%d:%d ", (ppixels + i*w +j), *(ppixels + i*w +j) );
-      // printf("%d:%d ", (ppixels + i*w +j), *(ppixels + i*w +j) );
+//     for(int j=0; j<w; j++) {
+//       lseek(fd, sizeof(int) * ((y+i)*w + x + j), SEEK_SET);
+//       write(fd, pixels+i*w+j, sizeof(int));
+// 
+//       write(fp, pixels+i*w+j, sizeof(int));
+      
+      // fprintf(fp, "%d:%d ", (pixels + i*w +j), *(pixels + i*w +j) );
+      // printf("%d:%d ", (pixels + i*w +j), *(pixels + i*w +j) );
       // fprintf(fp, "%d", j);
       // printf("%d", j);
       
       // ppixels++;
-    }
+    // }
     // fprintf(fp, "\n");
     // printf("\n");
   }
