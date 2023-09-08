@@ -19,8 +19,8 @@ const char *path = "/share/slides/slides-%d.bmp";
 static SDL_Surface *slide = NULL;
 static int cur = 1;
 
-char out_file[] = "./test.txt";
-// char out_file[] = "/test.txt";
+// char out_file[] = "./test.txt";
+char out_file[] = "/test.txt";
 void write_slide_pixels_to_file(char *fname, FILE *fp, SDL_Surface *slide) {
   fprintf(fp, "\n%s\n", fname);
   for(int i=0; i<slide->h; i++){
