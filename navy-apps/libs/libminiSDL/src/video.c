@@ -51,7 +51,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
 
       // *(dst_px + i*screen_w + j) = *(src_px);
       
-      uint32_t *vmem_addr = dst_px + i*screen_w + j;
+      uint32_t *vmem_addr = dst_px + i*dst->w + j;
       check_vmem(dst, vmem_addr);
       *vmem_addr = *(src_px);
       src_px++;
