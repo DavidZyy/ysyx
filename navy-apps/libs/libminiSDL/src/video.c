@@ -39,7 +39,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       // *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
       // *(dst_px + i*screen_w + j) = *(src_px++);
 
-      *(dst_px + i*screen_w + j) = *(src_px);
+      // *(dst_px + i*screen_w + j) = *(src_px);
       src_px++;
 
       // printf("addr is %p\n", (void *)(dst_px + i*screen_w + j));
