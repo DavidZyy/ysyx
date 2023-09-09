@@ -6,6 +6,22 @@
 
 static int screen_w = 400, screen_h = 300;
 
+
+/* check if addr is in src's vmem */
+void check_vmem(SDL_Surface *src, void *addr) {
+  assert(src->format->BitsPerPixel == 32);
+  if(addr < (void *)src->pixels || 
+    addr >= (void *)((uint32_t *)(src->pixels) + src->w * src->h)) {
+      assert(0);
+  }
+}
+
+/* safely assign addr to value */
+void safe_assign(SDL_Surface *src, uint32_t *addr, uint32_t value) {
+  check_vmem(src, (void *)addr);
+  *addr = value;
+}
+
 /**
  * The width and height in srcrect determine the size of the copied rectangle. 
  * Only the position is used in the dstrect (the width and height are ignored).
@@ -26,18 +42,32 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     dstrect = &new_dstrect;
   }
   uint32_t *dst_px = (uint32_t *)dst->pixels;
-  dst_px += (dstrect->y * screen_w + dstrect->x);
+  dst_px += (dstrect->y * dst->w + dstrect->x);
+  // dst_px += (dstrect->y * screen_w + dstrect->x);
 
   uint32_t *src_px = (uint32_t *)src->pixels;
   // src_px += (srcrect->y * screen_w + srcrect->x);
+  // printf("dst->w: %d\n", dst->w);
+  // printf("dst->h: %d\n", dst->h);
 
   for(int i = 0; i < srcrect->h; i++) {
     for(int j = 0; j < srcrect->w; j++) {
       // *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
-      *(dst_px + i*screen_w + j) = *(src_px++);
+      // *(dst_px + i*screen_w + j) = *(src_px++);
+
+      // *(dst_px + i*screen_w + j) = *(src_px);
+      
+      uint32_t *vmem_addr = dst_px + i*dst->w + j;
+      safe_assign(dst, vmem_addr, *src_px);
+      src_px++;
+
+      // printf("addr is %p\n", (void *)(dst_px + i*screen_w + j));
+      // *(dst_px + i*dst->w + j) = *(src_px++);
     }
   }
 }
+
+
 
 /**
  * if dstrect is NULL, the whole surface will be filled with color.
@@ -52,10 +82,11 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     dstrect = &full_screen;
   }
   uint32_t *px = (uint32_t *)dst->pixels;
-  px += (dstrect->y * screen_w + dstrect->x);
+  px += (dstrect->y * dst->w + dstrect->x);
   for(int i = 0; i < dstrect->h; i++) {
     for(int j = 0; j < dstrect->w; j++) {
-      *(px + i*screen_w + j) = color;
+      uint32_t *vmem_addr = px +i*dst->w + j;
+      safe_assign(dst, vmem_addr, color);
     }
   }
 }
@@ -64,13 +95,14 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
  * If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
  */
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
-  // should get the info of whole screen?
   NDL_OpenCanvas(&w, &h);
-  if(x == 0 && y == 0 && w ==0 && h == 0){
-    NDL_DrawRect((uint32_t *)s->pixels, 0, 0, 0, 0);
-  } else {
-    NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
-  }
+  // should get the info of whole screen?
+  // if(x == 0 && y == 0 && w ==0 && h == 0){
+    // NDL_DrawRect((uint32_t *)s->pixels, 0, 0, 0, 0);
+  // } else {
+  // printf("in SDL_UpdateRect x: %d, y: %d, w: %d, h:%d\n", x, y, w, h);
+  NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
+  // }
 }
 
 // APIs below are already implemented.
@@ -88,6 +120,8 @@ static inline int maskToShift(uint32_t mask) {
 
 SDL_Surface* SDL_CreateRGBSurface(uint32_t flags, int width, int height, int depth,
     uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask) {
+  /* only support 32 now */
+  assert(depth == 32);
   assert(depth == 8 || depth == 32);
   SDL_Surface *s = malloc(sizeof(SDL_Surface));
   assert(s);

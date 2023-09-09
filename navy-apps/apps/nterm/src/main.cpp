@@ -46,7 +46,9 @@ void refresh_terminal() {
   for (int i = 0; i < W; i ++)
     for (int j = 0; j < H; j ++)
       if (term->is_dirty(i, j)) {
+        // printf("i: %d, j: %d\n", i, j);
         // if(!term->getch(i, j)) continue;
+        // term->getch(i, j);
         draw_ch(i * font->w, j * font->h, term->getch(i, j), term->foreground(i, j), term->background(i, j));
         needsync = 1;
       }
@@ -59,7 +61,11 @@ void refresh_terminal() {
     int x = term->cursor.x, y = term->cursor.y;
     uint32_t color = (flip ? term->foreground(x, y) : term->background(x, y));
     draw_ch(x * font->w, y * font->h, ' ', 0, color);
-    SDL_UpdateRect(screen, 0, 0, 0, 0);
+    /* only allocate small memory to screen vmem, but use this full screen
+      will access memory out of it */
+    // SDL_UpdateRect(screen, 0, 0, 0, 0);
+    /* modify this to make the */
+    SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
     if (now - last > 500) {
       flip = !flip;
       last = now;
