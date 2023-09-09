@@ -11,7 +11,7 @@ static int screen_w = 400, screen_h = 300;
 void check_vmem(SDL_Surface *src, void *addr) {
   assert(src->format->BitsPerPixel == 32);
   if(addr < (void *)src->pixels || 
-    addr >= (void *)((uint32_t *)src->pixels + src->w * src->h)) {
+    addr >= (void *)((uint32_t *)(src->pixels) + src->w * src->h)) {
       assert(0);
   }
 }
@@ -77,10 +77,12 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     dstrect = &full_screen;
   }
   uint32_t *px = (uint32_t *)dst->pixels;
-  px += (dstrect->y * screen_w + dstrect->x);
+  px += (dstrect->y * dst->w + dstrect->x);
   for(int i = 0; i < dstrect->h; i++) {
     for(int j = 0; j < dstrect->w; j++) {
-      *(px + i*screen_w + j) = color;
+      uint32_t *vmem_addr = px +i*dst->w + j;
+      check_vmem(dst, vmem_addr);
+      *vmem_addr = color;
     }
   }
 }
