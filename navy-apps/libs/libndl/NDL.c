@@ -64,6 +64,7 @@ void NDL_OpenCanvas(int *w, int *h) {
       canvas_h = *h;
 
       close(fd);
+    }
   }
 }
 
