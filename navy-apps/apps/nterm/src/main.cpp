@@ -48,7 +48,8 @@ void refresh_terminal() {
       if (term->is_dirty(i, j)) {
         printf("i: %d, j: %d\n", i, j);
         // if(!term->getch(i, j)) continue;
-        draw_ch(i * font->w, j * font->h, term->getch(i, j), term->foreground(i, j), term->background(i, j));
+        term->getch(i, j);
+        // draw_ch(i * font->w, j * font->h, term->getch(i, j), term->foreground(i, j), term->background(i, j));
         needsync = 1;
       }
   term->clear();
