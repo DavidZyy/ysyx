@@ -103,6 +103,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
 
   /* write line by line */
   for(int i=0; i<h; i++) {
+    /* 需要往整个screen上面填像素，所以这里乘screen_w */
     lseek(fd, sizeof(int) * ((y+i)*screen_w + x), SEEK_SET);
     write(fd, pixels+i*w, w*sizeof(int));
 

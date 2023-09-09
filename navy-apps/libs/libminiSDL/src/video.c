@@ -26,8 +26,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     dstrect = &new_dstrect;
   }
   uint32_t *dst_px = (uint32_t *)dst->pixels;
-  // dst_px += (dstrect->y * dst->w + dstrect->x);
-  dst_px += (dstrect->y * screen_w + dstrect->x);
+  dst_px += (dstrect->y * dst->w + dstrect->x);
+  // dst_px += (dstrect->y * screen_w + dstrect->x);
 
   uint32_t *src_px = (uint32_t *)src->pixels;
   // src_px += (srcrect->y * screen_w + srcrect->x);
@@ -39,7 +39,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       // *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
       // *(dst_px + i*screen_w + j) = *(src_px++);
 
-      *(dst_px + i*screen_w + j) = *(src_px);
+      // *(dst_px + i*screen_w + j) = *(src_px);
+      *(dst_px + i*dst->w + j) = *(src_px);
       src_px++;
 
       // printf("addr is %p\n", (void *)(dst_px + i*screen_w + j));
@@ -71,15 +72,11 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
   }
 }
 
-
-
 /**
  * If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
  */
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   NDL_OpenCanvas(&w, &h);
-
-  
   // should get the info of whole screen?
   // if(x == 0 && y == 0 && w ==0 && h == 0){
     // NDL_DrawRect((uint32_t *)s->pixels, 0, 0, 0, 0);
