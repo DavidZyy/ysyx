@@ -37,7 +37,7 @@ static void draw_ch(int x, int y, char ch, uint32_t fg, uint32_t bg) {
   SDL_Rect dstrect = { .x = x, .y = y };
   assert(s);
   assert(screen);
-  // SDL_BlitSurface(s, NULL, screen, &dstrect);
+  SDL_BlitSurface(s, NULL, screen, &dstrect);
   SDL_FreeSurface(s);
 }
 
@@ -49,7 +49,7 @@ void refresh_terminal() {
         printf("i: %d, j: %d\n", i, j);
         // if(!term->getch(i, j)) continue;
         // term->getch(i, j);
-        draw_ch(i * font->w, j * font->h, term->getch(i, j), term->foreground(i, j), term->background(i, j));
+        // draw_ch(i * font->w, j * font->h, term->getch(i, j), term->foreground(i, j), term->background(i, j));
         needsync = 1;
       }
   term->clear();
