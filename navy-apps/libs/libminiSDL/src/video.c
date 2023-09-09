@@ -10,40 +10,116 @@ static int screen_w = 400, screen_h = 300;
  * The width and height in srcrect determine the size of the copied rectangle. 
  * Only the position is used in the dstrect (the width and height are ignored).
  */
-void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
-  assert(dst && src);
-  assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
-  if(srcrect == NULL) {
-    SDL_Rect new_srcrect;
-    new_srcrect.w = src->w;
-    new_srcrect.h = src->h;
-    srcrect = &new_srcrect;
-  }
-  if(dstrect == NULL) {
-    SDL_Rect new_dstrect;
-    new_dstrect.x = 0;
-    new_dstrect.y = 0;
-    dstrect = &new_dstrect;
-  }
-  uint32_t *dst_px = (uint32_t *)dst->pixels;
-  // dst_px += (dstrect->y * dst->w + dstrect->x);
-  dst_px += (dstrect->y * screen_w + dstrect->x);
+// void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
+//   assert(dst && src);
+//   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+//   if(srcrect == NULL) {
+//     SDL_Rect new_srcrect;
+//     new_srcrect.w = src->w;
+//     new_srcrect.h = src->h;
+//     srcrect = &new_srcrect;
+//   }
+//   if(dstrect == NULL) {
+//     SDL_Rect new_dstrect;
+//     new_dstrect.x = 0;
+//     new_dstrect.y = 0;
+//     dstrect = &new_dstrect;
+//   }
+//   uint32_t *dst_px = (uint32_t *)dst->pixels;
+//   // dst_px += (dstrect->y * dst->w + dstrect->x);
+//   dst_px += (dstrect->y * screen_w + dstrect->x);
+// 
+//   uint32_t *src_px = (uint32_t *)src->pixels;
+//   // src_px += (srcrect->y * screen_w + srcrect->x);
+//   // printf("dst->w: %d\n", dst->w);
+//   // printf("dst->h: %d\n", dst->h);
+// 
+//   for(int i = 0; i < srcrect->h; i++) {
+//     for(int j = 0; j < srcrect->w; j++) {
+//       // *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
+//       *(dst_px + i*screen_w + j) = *(src_px);
+//       src_px++;
+// 
+//       // printf("addr is %p\n", (void *)(dst_px + i*screen_w + j));
+//       // *(dst_px + i*dst->w + j) = *(src_px++);
+//     }
+//   }
+// }
 
-  uint32_t *src_px = (uint32_t *)src->pixels;
-  // src_px += (srcrect->y * screen_w + srcrect->x);
-  // printf("dst->w: %d\n", dst->w);
-  // printf("dst->h: %d\n", dst->h);
+void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect)
+{
+    assert(dst && src);
+    assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
 
-  for(int i = 0; i < srcrect->h; i++) {
-    for(int j = 0; j < srcrect->w; j++) {
-      // *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
-      *(dst_px + i*screen_w + j) = *(src_px);
-      src_px++;
-
-      // printf("addr is %p\n", (void *)(dst_px + i*screen_w + j));
-      // *(dst_px + i*dst->w + j) = *(src_px++);
+    int s_x, s_y, d_x, d_y, w, h;
+    if (srcrect == NULL)
+    {
+        s_x = 0;
+        s_y = 0;
+        w = src->w;
+        h = src->h;
     }
-  }
+    else
+    {
+        s_x = srcrect->x;
+        s_y = srcrect->y;
+        w = srcrect->w;
+        h = srcrect->h;
+    }
+
+    if (dstrect == NULL)
+    {
+        d_x = 0;
+        d_y = 0;
+    }
+    else
+    {
+        d_x = dstrect->x;
+        d_y = dstrect->y;
+    }
+
+    /*  src: src->w * src->h
+                  s_x         s_x + w
+        ********************************
+        ********************************
+s_y     ***********&&&&&&&&&&&&&&&******
+        ***********&&&&&&&&&&&&&&&******
+        ***********&&&&&&&&&&&&&&&******
+s_y + h ***********&&&&&&&&&&&&&&&******
+        ********************************
+        ********************************
+*/
+    /*  dst: dst->w * dst->h
+             d_x         d_x + w
+        ***********************************
+        ***********************************
+d_y     ******&&&&&&&&&&&&&&&**************
+        ******&&&&&&&&&&&&&&&**************
+        ******&&&&&&&&&&&&&&&**************
+d_y + h ******&&&&&&&&&&&&&&&**************
+        ***********************************
+        ***********************************
+        ***********************************
+        ***********************************
+*/
+    for (int i = 0; i < h; i++)
+    {
+        for (int j = 0; j < w; j++)
+        {
+            if (src->format->BitsPerPixel == 32)
+            {
+                ((uint32_t *)dst->pixels)[(d_y + i) * dst->w + d_x + j] = ((uint32_t *)src->pixels)[(s_y + i) * src->w + s_x + j];
+            }
+            else if (src->format->BitsPerPixel == 8)
+            {
+                ((uint8_t *)dst->pixels)[(d_y + i) * dst->w + d_x + j] = ((uint8_t *)src->pixels)[(s_y + i) * src->w + s_x + j];
+            }
+            else
+            {
+                assert(0);
+            }
+        }
+    }
 }
 
 /**
