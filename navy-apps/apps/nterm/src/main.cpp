@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
   // setup display
   int win_w = font->w * W;
   int win_h = font->h * H;
-  // screen = SDL_SetVideoMode(win_w, win_h, 32, SDL_HWSURFACE);
+  screen = SDL_SetVideoMode(win_w, win_h, 32, SDL_HWSURFACE);
 
   term = new Terminal(W, H);
 
@@ -49,7 +49,7 @@ void refresh_terminal() {
         // printf("i: %d, j: %d\n", i, j);
         // if(!term->getch(i, j)) continue;
         // term->getch(i, j);
-        // draw_ch(i * font->w, j * font->h, term->getch(i, j), term->foreground(i, j), term->background(i, j));
+        draw_ch(i * font->w, j * font->h, term->getch(i, j), term->foreground(i, j), term->background(i, j));
         needsync = 1;
       }
   term->clear();
