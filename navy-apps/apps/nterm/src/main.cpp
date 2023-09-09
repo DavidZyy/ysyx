@@ -37,7 +37,7 @@ static void draw_ch(int x, int y, char ch, uint32_t fg, uint32_t bg) {
   SDL_Rect dstrect = { .x = x, .y = y };
   assert(s);
   assert(screen);
-  // SDL_BlitSurface(s, NULL, screen, &dstrect);
+  SDL_BlitSurface(s, NULL, screen, &dstrect);
   SDL_FreeSurface(s);
 }
 
