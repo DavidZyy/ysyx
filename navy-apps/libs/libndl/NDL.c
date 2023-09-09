@@ -50,6 +50,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     close(fbctl);
   } else {
+    printf("HHHHHHHHHHHHHHHHHHHH\n");
     int fd = open("/proc/dispinfo", 2);
     char buf[64];
     if (read(fd, buf, sizeof(buf)-1)) {
@@ -86,7 +87,7 @@ void write_slide_pixels_to_file_in_SDL_UpdateRect(FILE *fp, void *pixels, int w,
 
 // #include <fcntl.h>
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
-  printf("x: %d, y: %d, w: %d, h:%d\n", x, y, w, h);
+  // printf("x: %d, y: %d, w: %d, h:%d\n", x, y, w, h);
   // if(x == 0 && y == 0 && w == 0 && h == 0){
   //   w = screen_w;
   //   h = screen_h;
