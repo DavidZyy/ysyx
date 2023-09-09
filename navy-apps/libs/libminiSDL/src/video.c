@@ -40,7 +40,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       // *(dst_px + i*screen_w + j) = *(src_px++);
 
       // *(dst_px + i*screen_w + j) = *(src_px);
-      printf("%d\n", sizeof(dst_px));
+      printf("%d\n", strlen(dst_px));
       *(dst_px + i*dst->w + j) = *(src_px);
       src_px++;
 
