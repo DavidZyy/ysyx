@@ -55,9 +55,9 @@ void NDL_OpenCanvas(int *w, int *h) {
     if (read(fd, buf, sizeof(buf)-1)) {
       sscanf(buf, "WIDTH: %d\nHEIGHT: %d\n", &screen_w, &screen_h);
 
-        printf("HHHHHHHHHHHHHHHHHHHH\n");
       /* full screen */
-      if(w==0 && h==0) {
+      if(*w==0 && *h==0) {
+        printf("HHHHHHHHHHHHHHHHHHHH\n");
         *w = screen_w;
         *h = screen_h;
       }
