@@ -6,6 +6,16 @@
 
 static int screen_w = 400, screen_h = 300;
 
+
+/* check if addr is in src's vmem */
+void check_vmem(SDL_Surface *src, void *addr) {
+  assert(src->format->BitsPerPixel == 32);
+  if(addr < (void *)src->pixels || 
+    addr >= (void *)((uint32_t *)src->pixels + src->w * src->h)) {
+      assert(0);
+  }
+}
+
 /**
  * The width and height in srcrect determine the size of the copied rectangle. 
  * Only the position is used in the dstrect (the width and height are ignored).
@@ -40,7 +50,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       // *(dst_px + i*screen_w + j) = *(src_px++);
 
       // *(dst_px + i*screen_w + j) = *(src_px);
-      printf("%d\n", strlen(dst_px));
+      
+      check_vmem(dst, dst_px + i*dst->w + j);
       *(dst_px + i*dst->w + j) = *(src_px);
       src_px++;
 
@@ -102,6 +113,8 @@ static inline int maskToShift(uint32_t mask) {
 
 SDL_Surface* SDL_CreateRGBSurface(uint32_t flags, int width, int height, int depth,
     uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask) {
+  /* only support 32 now */
+  assert(depth == 32);
   assert(depth == 8 || depth == 32);
   SDL_Surface *s = malloc(sizeof(SDL_Surface));
   assert(s);

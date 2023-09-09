@@ -61,6 +61,8 @@ void refresh_terminal() {
     int x = term->cursor.x, y = term->cursor.y;
     uint32_t color = (flip ? term->foreground(x, y) : term->background(x, y));
     draw_ch(x * font->w, y * font->h, ' ', 0, color);
+    /* only allocate small memory to screen vmem, but use this full screen
+      will access memory out of it */
     // SDL_UpdateRect(screen, 0, 0, 0, 0);
     /* modify this to make the */
     SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
