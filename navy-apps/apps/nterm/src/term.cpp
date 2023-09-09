@@ -301,12 +301,12 @@ const char *Terminal::keypress(char ch) {
 }
 
 char Terminal::getch(int x, int y) {
-  printf("in getch, x: %d, y: %d, ch: %c\n", x, y, buf[x+y*w]);
+  printf("in getch, x: %d, y: %d, ch: %d\n", x, y, buf[x+y*w]);
   return buf[x + y * w];
 }
 
 void Terminal::putch(int x, int y, char ch) {
-  printf("in putch, x: %d, y: %d, ch: %c\n", x, y, ch);
+  printf("in putch, x: %d, y: %d, ch: %d\n", x, y, ch);
   buf[x + y * w] = ch;
   color[x + y * w] = (col_f << 4) | col_b;
   dirty[x + y * w] = true;
