@@ -24,7 +24,7 @@ SDL_Surface* IMG_Load(const char *filename) {
     fseek(file, 0, SEEK_END);
     long size = ftell(file);
     fseek(file, 0, SEEK_SET);
-    printf("size: %d\n", size);
+    printf("size: %ld\n", size);
 
     // Step 3: Allocate memory for the entire file
     uint8_t* buf = (uint8_t*)malloc(size);
