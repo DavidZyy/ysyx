@@ -93,16 +93,16 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 
 /**
  * If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
+ * only use for screen?
  */
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
-  NDL_OpenCanvas(&w, &h);
-  // should get the info of whole screen?
-  // if(x == 0 && y == 0 && w ==0 && h == 0){
-    // NDL_DrawRect((uint32_t *)s->pixels, 0, 0, 0, 0);
-  // } else {
-  // printf("in SDL_UpdateRect x: %d, y: %d, w: %d, h:%d\n", x, y, w, h);
+  assert(s->w);
+  assert(s->h);
+  if(x==0 && y==0 && w==0 && h==0){
+    w = s->w;
+    h = s->h;
+  }
   NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
-  // }
 }
 
 // APIs below are already implemented.

@@ -31,6 +31,7 @@ int NDL_PollEvent(char *buf, int len) {
   return return_val;
 }
 
+/* should only be called in SDL_SetVideoMode */
 void NDL_OpenCanvas(int *w, int *h) {
   if (getenv("NWM_APP")) {
     int fbctl = 4;
@@ -68,61 +69,26 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
 }
 
-#include<stdio.h>
-char out_file3[] = "./test3.txt";
-char out_file4[] = "./test4.txt";
-char out_file5[] = "./test5.txt";
-void write_slide_pixels_to_file_in_SDL_UpdateRect(FILE *fp, void *pixels, int w, int h) {
-  // fprintf(fp, "\n%s\n", fname);
-  fprintf(fp, "width: %d, height: %d\n", w, h);
-  for(int i=0; i<h; i++){
-    for(int j=0; j<w; j++){
-      // fprintf(fp, "%d:%d ", (((uint32_t *)(pixels))+(i*w)+j), *(((uint32_t *)(pixels))+(i*w)+j));
-      fprintf(fp, "%x ", *(((uint32_t *)(pixels))+(i*w)+j));
-    }
-    fprintf(fp, "\n");
+void check_in_vmem(uint32_t addr) {
+  if(addr > sizeof(int)*screen_h*screen_w) {
+    printf("out of vmem!\n");
+    while(1);
   }
-  fprintf(fp, "\n");
 }
 
-// #include <fcntl.h>
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
-  // printf("x: %d, y: %d, w: %d, h:%d\n", x, y, w, h);
   int fd = open("/dev/fb", O_RDWR);
   x += (screen_w - canvas_w) / 2;
   y += (screen_h - canvas_h) / 2;
 
-
-  // FILE *fp1 = fopen(out_file3, "a");
-  // write_slide_pixels_to_file_in_SDL_UpdateRect(fp1, pixels, w, h);
-  // fclose(fp1);
-
-  // FILE *fp1 = fopen(out_file4, "a");
-  // FILE *fp = fopen(out_file3, "a");
-  // int fp = open(out_file4, 2);
-
   /* write line by line */
   for(int i=0; i<h; i++) {
     /* 需要往整个screen上面填像素，所以这里乘screen_w */
-    lseek(fd, sizeof(int) * ((y+i)*screen_w + x), SEEK_SET);
+    uint32_t addr = sizeof(int) * ((y+i)*screen_w + x);
+    check_in_vmem(addr);
+    lseek(fd, addr, SEEK_SET);
     write(fd, pixels+i*w, w*sizeof(int));
-
-    // for(int j=0; j<w; j++) {
-    //   lseek(fd, sizeof(int) * ((y+i)*screen_w + x + j), SEEK_SET);
-    //   write(fd, pixels+i*w+j, sizeof(int));
-    //   
-      // fprintf(fp1, "%x ", *(pixels + i*w +j) );
-    // }
-    // fprintf(fp1, "\n");
-    // printf("\n");
   }
-
-  // fprintf(fp1, "\n");
-  // fclose(fp1);
-
-  // FILE *fp2 = fopen(out_file5, "a");
-  // write_slide_pixels_to_file_in_SDL_UpdateRect(fp2, pixels, w, h);
-  // fclose(fp2);
 
   close(fd);
 }
