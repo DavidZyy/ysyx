@@ -38,7 +38,7 @@ SDL_Surface* IMG_Load(const char *filename) {
     // Step 4: Read the entire file into memory
     int rdsz;
     if ((rdsz = fread(buf, 1, size, file)) != size) {
-        printf("read size is: %d, expect size is: %d\n", rdsz, size);
+        printf("read size is: %d, expect size is: %ld\n", rdsz, size);
         fclose(file);
         free(buf);
         fprintf(stderr, "Error: Failed to read file '%s'\n", filename);
