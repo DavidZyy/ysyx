@@ -79,6 +79,7 @@
     "unordered_map": "cpp",
     "istream": "cpp",
     "numeric": "cpp",
-    "ostream": "cpp"
+    "ostream": "cpp",
+    "cassert": "c"
   }
 }

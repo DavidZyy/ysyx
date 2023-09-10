@@ -129,6 +129,7 @@ size_t fs_lseek(int fd, size_t offset, int whence) {
     case SEEK_END:
       // Set the open offset to the end of the file plus the provided offset
       file_table[fd].open_offset = file_table[fd].disk_offset + file_table[fd].size + offset;
+      // file_table[fd].open_offset = file_table[fd].disk_offset + file_table[fd].size;
       break;
     default:
       // Invalid 'whence' value
@@ -137,9 +138,8 @@ size_t fs_lseek(int fd, size_t offset, int whence) {
   }
 
   // Check if the open offset is within bounds
-  // assert(file_table[fd].open_offset <= file_table[fd].disk_offset + file_table[fd].size);
-
-  return file_table[fd].open_offset;
+  assert(file_table[fd].open_offset <= file_table[fd].disk_offset + file_table[fd].size);
+  return file_table[fd].open_offset - file_table[fd].disk_offset;
 }
 
 int fs_close(int fd) {

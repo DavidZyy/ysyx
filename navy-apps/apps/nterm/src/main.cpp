@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
   int win_w = font->w * W;
   int win_h = font->h * H;
   screen = SDL_SetVideoMode(win_w, win_h, 32, SDL_HWSURFACE);
+  // screen = SDL_SetVideoMode(0, 0, 32, SDL_HWSURFACE);
 
   term = new Terminal(W, H);
 
@@ -63,9 +64,9 @@ void refresh_terminal() {
     draw_ch(x * font->w, y * font->h, ' ', 0, color);
     /* only allocate small memory to screen vmem, but use this full screen
       will access memory out of it */
-    // SDL_UpdateRect(screen, 0, 0, 0, 0);
+    SDL_UpdateRect(screen, 0, 0, 0, 0);
     /* modify this to make the */
-    SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
+    // SDL_UpdateRect(screen, 0, 0, screen->w, screen->h);
     if (now - last > 500) {
       flip = !flip;
       last = now;
@@ -154,10 +155,12 @@ char handle_key(const char *buf) {
   return '\0';
 }
 
+/* return char (according to shift ) */
 char handle_key(SDL_Event *ev) {
   static int shift = 0;
   int key = ev->key.keysym.sym;
   if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) { shift ^= 1; return '\0'; }
+  // printf("key: %d\n", key);
 
   if (ev->type == SDL_KEYDOWN) {
     for (auto item: SHIFT) {
