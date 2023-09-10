@@ -28,7 +28,7 @@ int SDL_PollEvent(SDL_Event *event) {
           // printf("%s, %s, %d\n", keyname[i], key_name, len);
           if (!strncmp(keyname[i], key_name, len)) {
             event->key.keysym.sym = i;
-            printf("keyname: %s\n", key_name);
+            printf("i: %d, keyname: %s, keyname_i: %s\n", i, key_name, key_name[i]);
             // printf("%s vs %s\n", keyname[i], key_name);
           }
       }
