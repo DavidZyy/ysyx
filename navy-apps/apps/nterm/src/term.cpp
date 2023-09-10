@@ -283,6 +283,7 @@ const char *Terminal::keypress(char ch) {
         inp_len = 0;
         break;
       case '\b':
+      printf("]]]]]]]]]]]]]]]]]]]]]]]]]\n");
         if (inp_len > 0) {
           inp_len --;
           backspace();
