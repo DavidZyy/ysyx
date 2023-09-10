@@ -302,29 +302,10 @@ const char *Terminal::keypress(char ch) {
 
 
 char Terminal::getch(int x, int y) {
-  // if(x==3 && y==10)
-  // printf("in getch, x: %d, y: %d, ch: %d\n", x, y, buf[x+y*w]);
-  // printf("in getch, x: 3, y: 10, ch: %d\n\n", buf[3+10*w]);
-  // printf("addr bur is %p\n", (void *)&buf[3+10*w]);
-  // for(int i=0; i<h; i++){
-  //   for(int j=0; j<w; j++){
-  //     printf("in getch, x: %d, y: %d, ch: %d\n", x, y, buf[x+y*w]);
-  //   }
-  //   printf("\n");
-  // }
   return buf[x + y * w];
 }
 
 void Terminal::putch(int x, int y, char ch) {
-  // if(x==3 && y==10)
-  // printf("in putch, x: %d, y: %d, ch: %d\n", x, y, ch);
-  // printf("in putch, x: 3, y: 10, ch: %d\n\n", buf[3+10*w]);
-  // for(int i=0; i<h; i++){
-  //   for(int j=0; j<w; j++){
-  //     printf("in putch, x: %d, y: %d, ch: %d\n", x, y, buf[x+y*w]);
-  //   }
-  //   printf("\n");
-  // }
   buf[x + y * w] = ch;
   color[x + y * w] = (col_f << 4) | col_b;
   dirty[x + y * w] = true;
