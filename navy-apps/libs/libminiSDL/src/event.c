@@ -29,8 +29,8 @@ int SDL_PollEvent(SDL_Event *event) {
             // printf("%s vs %s\n", keyname[i], key_name);
           }
       }
-    }
     RETN_VAL = 1;
+    }
   } else {
     RETN_VAL = 0;
   }
