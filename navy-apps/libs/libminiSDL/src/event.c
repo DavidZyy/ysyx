@@ -16,6 +16,7 @@ int SDL_PollEvent(SDL_Event *event) {
   char buf[64];
   int RETN_VAL;
   memset(buf, 0, sizeof(buf));
+  memset(event, 0, sizeof(event));
   if (NDL_PollEvent(buf, sizeof(buf))) {
     // printf("%s", buf);
     if(buf[0] == 'k' && buf[1] == 'd') {
@@ -29,8 +30,11 @@ int SDL_PollEvent(SDL_Event *event) {
             // printf("%s vs %s\n", keyname[i], key_name);
           }
       }
-    RETN_VAL = 1;
+    } else if(buf[0] == 'k' && buf[1] == 'u') {
+      event->type = SDL_KEYUP;
     }
+
+    RETN_VAL = 1;
   } else {
     RETN_VAL = 0;
   }
