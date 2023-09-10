@@ -31,7 +31,7 @@ int SDL_PollEvent(SDL_Event *event) {
           // printf("%s, %s, %d\n", keyname[i], key_name, len);
           if (len1 == len2 && !strncmp(keyname[i], key_name, len1)) {
             event->key.keysym.sym = i;
-            printf("i: %d, keyname: %s, keyname_i: %s\n", i, key_name, keyname[i]);
+            // printf("i: %d, keyname: %s, keyname_i: %s\n", i, key_name, keyname[i]);
             // printf("%s vs %s\n", keyname[i], key_name);
           }
       }
