@@ -155,6 +155,7 @@ char handle_key(const char *buf) {
   return '\0';
 }
 
+/* return char (according to shift ) */
 char handle_key(SDL_Event *ev) {
   static int shift = 0;
   int key = ev->key.keysym.sym;

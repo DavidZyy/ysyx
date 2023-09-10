@@ -1,5 +1,6 @@
 #include <NDL.h>
 #include <SDL.h>
+#include <assert.h>
 
 #define keyname(k) #k,
 
@@ -32,6 +33,8 @@ int SDL_PollEvent(SDL_Event *event) {
       }
     } else if(buf[0] == 'k' && buf[1] == 'u') {
       event->type = SDL_KEYUP;
+    } else {
+      assert(0);
     }
 
     RETN_VAL = 1;
@@ -60,7 +63,10 @@ int SDL_WaitEvent(SDL_Event *event) {
     }
   } else if(buf[0] == 'k' && buf[1] == 'u') {
     event->type = SDL_KEYUP;
+  } else {
+    assert(0);
   }
+
   return 1;
 }
 
