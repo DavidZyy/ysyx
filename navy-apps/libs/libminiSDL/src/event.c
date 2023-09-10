@@ -23,12 +23,13 @@ int SDL_PollEvent(SDL_Event *event) {
     if(buf[0] == 'k' && buf[1] == 'd') {
       event->type = SDL_KEYDOWN;
       for(int i = 0; i < sizeof(keyname)/sizeof(char *); i++) {
-          int len = strlen(keyname[i]);
+          // int len = strlen(keyname[i]);
           char *key_name = buf+3;
+          int len = strlen(key_name);
           // printf("%s, %s, %d\n", keyname[i], key_name, len);
           if (!strncmp(keyname[i], key_name, len)) {
             event->key.keysym.sym = i;
-            printf("i: %d, keyname: %s, keyname_i: %s\n", i, key_name, key_name[i]);
+            printf("i: %d, keyname: %s, keyname_i: %s\n", i, key_name, keyname[i]);
             // printf("%s vs %s\n", keyname[i], key_name);
           }
       }
