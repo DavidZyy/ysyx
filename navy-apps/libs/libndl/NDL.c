@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <assert.h>
 #include <sys/time.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -71,15 +72,20 @@ void NDL_OpenCanvas(int *w, int *h) {
 
 void check_in_vmem(uint32_t addr) {
   if(addr > sizeof(int)*screen_h*screen_w) {
-    printf("out of vmem!\n");
+    printf("screen_h is %d, screen_w is %d, total mem is %d, addr is %d, out of vmem!\n",
+      screen_h, screen_w, sizeof(int)*screen_h*screen_w, addr);
     while(1);
   }
 }
 
+/* only used in SDL_UpdateRect */
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  // printf("x: %d, y: %d, w: %d, h: %d\n", x, y, w, h);
   int fd = open("/dev/fb", O_RDWR);
   x += (screen_w - canvas_w) / 2;
   y += (screen_h - canvas_h) / 2;
+  assert(x >= 0);
+  assert(y >= 0);
 
   /* write line by line */
   for(int i=0; i<h; i++) {
