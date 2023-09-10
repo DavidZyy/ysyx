@@ -140,7 +140,8 @@ size_t fs_lseek(int fd, size_t offset, int whence) {
   // Check if the open offset is within bounds
   // assert(file_table[fd].open_offset <= file_table[fd].disk_offset + file_table[fd].size);
 
-  return file_table[fd].open_offset;
+  // return file_table[fd].open_offset;
+  return file_table[fd].size;
 }
 
 int fs_close(int fd) {
