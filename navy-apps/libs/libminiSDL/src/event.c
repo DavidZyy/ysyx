@@ -43,23 +43,24 @@ int SDL_PollEvent(SDL_Event *event) {
 
 int SDL_WaitEvent(SDL_Event *event) {
   char buf[64];
+  int RETN_VAL;
   memset(buf, 0, sizeof(buf));
+  memset(event, 0, sizeof(event));
   while(!NDL_PollEvent(buf, sizeof(buf)));
-  // if (NDL_PollEvent(buf, sizeof(buf))) {
-    // printf("%s", buf);
-    if(buf[0] == 'k' && buf[1] == 'd') {
-      event->type = SDL_KEYDOWN;
-      for(int i = 0; i < sizeof(keyname)/sizeof(char *); i++) {
-          int len = strlen(keyname[i]);
-          char *key_name = buf+3;
-          // printf("%s, %s, %d\n", keyname[i], key_name, len);
-          if (!strncmp(keyname[i], key_name, len)) {
-            event->key.keysym.sym = i;
-            // printf("%s vs %s\n", keyname[i], key_name);
-          }
-      }
+  if(buf[0] == 'k' && buf[1] == 'd') {
+    event->type = SDL_KEYDOWN;
+    for(int i = 0; i < sizeof(keyname)/sizeof(char *); i++) {
+        int len = strlen(keyname[i]);
+        char *key_name = buf+3;
+        // printf("%s, %s, %d\n", keyname[i], key_name, len);
+        if (!strncmp(keyname[i], key_name, len)) {
+          event->key.keysym.sym = i;
+          // printf("%s vs %s\n", keyname[i], key_name);
+        }
     }
-  // }
+  } else if(buf[0] == 'k' && buf[1] == 'u') {
+    event->type = SDL_KEYUP;
+  }
   return 1;
 }
 
