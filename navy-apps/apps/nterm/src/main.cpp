@@ -160,7 +160,7 @@ char handle_key(SDL_Event *ev) {
   static int shift = 0;
   int key = ev->key.keysym.sym;
   if (key == SDLK_LSHIFT || key == SDLK_RSHIFT) { shift ^= 1; return '\0'; }
-  printf("key: %d\n", key);
+  // printf("key: %d\n", key);
 
   if (ev->type == SDL_KEYDOWN) {
     for (auto item: SHIFT) {
