@@ -91,7 +91,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   for(int i=0; i<h; i++) {
     /* 需要往整个screen上面填像素，所以这里乘screen_w */
     uint32_t addr = sizeof(int) * ((y+i)*screen_w + x);
-    // check_in_vmem(addr);
+    check_in_vmem(addr);
     lseek(fd, addr, SEEK_SET);
     write(fd, pixels+i*w, w*sizeof(int));
   }
