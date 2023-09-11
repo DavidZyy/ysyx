@@ -41,29 +41,35 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     new_dstrect.y = 0;
     dstrect = &new_dstrect;
   }
-  uint32_t *dst_px = (uint32_t *)dst->pixels;
-  dst_px += (dstrect->y * dst->w + dstrect->x);
-  // dst_px += (dstrect->y * screen_w + dstrect->x);
+  if(dst->format->BitsPerPixel == 32) {
+    uint32_t *dst_px = (uint32_t *)dst->pixels;
+    dst_px += (dstrect->y * dst->w + dstrect->x);
 
-  uint32_t *src_px = (uint32_t *)src->pixels;
-  // src_px += (srcrect->y * screen_w + srcrect->x);
-  // printf("dst->w: %d\n", dst->w);
-  // printf("dst->h: %d\n", dst->h);
+    uint32_t *src_px = (uint32_t *)src->pixels;
 
-  for(int i = 0; i < srcrect->h; i++) {
-    for(int j = 0; j < srcrect->w; j++) {
-      // *(dst_px + i*screen_w + j) = *(src_px + i*screen_w + j);
-      // *(dst_px + i*screen_w + j) = *(src_px++);
-
-      // *(dst_px + i*screen_w + j) = *(src_px);
-      
-      uint32_t *vmem_addr = dst_px + i*dst->w + j;
-      safe_assign(dst, vmem_addr, *src_px);
-      src_px++;
-
-      // printf("addr is %p\n", (void *)(dst_px + i*screen_w + j));
-      // *(dst_px + i*dst->w + j) = *(src_px++);
+    for(int i = 0; i < srcrect->h; i++) {
+      for(int j = 0; j < srcrect->w; j++) {
+        uint32_t *vmem_addr = dst_px + i*dst->w + j;
+        safe_assign(dst, vmem_addr, *src_px);
+        src_px++;
+      }
     }
+  } else if (dst->format->BitsPerPixel == 8) {
+    uint8_t *dst_px = (uint8_t *)dst->pixels;
+    dst_px += (dstrect->y * dst->w + dstrect->x);
+
+    uint8_t *src_px = (uint8_t *)src->pixels;
+
+    for(int i = 0; i < srcrect->h; i++) {
+      for(int j = 0; j < srcrect->w; j++) {
+        uint8_t *vmem_addr = dst_px + i*dst->w + j;
+        // safe_assign(dst, vmem_addr, *src_px);
+        *vmem_addr = *src_px;
+        src_px++;
+      }
+    }
+  } else {
+    assert(0);
   }
 }
 
