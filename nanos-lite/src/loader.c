@@ -80,6 +80,7 @@ uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr ehdr;
   seek_and_read(fd, &ehdr, 0, sizeof(Elf_Ehdr));
 
+  /* the ISA of nanos and elf run it should be equal */
   assert(*(uint64_t *)ehdr.e_ident == E_ident);
 
   for(int i=0; i < ehdr.e_phnum; i++) {
