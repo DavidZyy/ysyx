@@ -145,10 +145,10 @@ libs:
 
 ### Rule (link): objects (`*.o`) and libraries (`*.a`) -> `$(APP)`, the final ELF binary to be packed into application (ld)
 $(APP): $(OBJS) libs $(PRES)
-	echo $(APP)
+# echo $(APP)
 	@echo + LD "->" $(shell realpath $@ --relative-to .)
 	@$(LD) $(LDFLAGS) -o $@ $(WL)--start-group $(LINKAGE) $(WL)--end-group
-	@$(OBJDUMP) -d $@ > $@.txt
+# @$(OBJDUMP) -d $@ > $@.txt
 
 # $(error $(APP))
 ### Rule (archive): objects (`*.o`) -> `ARCHIVE.a` (ar)
@@ -196,7 +196,8 @@ $(CLEAN_ALL):
 # APPS = nslider
 # APPS = menu 
 # APPS = nterm
-APPS = bird
+# APPS = bird
+APPS = pal
 # TESTS =  timer-test
 # TESTS = dummy hello file-test timer-test event-test
 # TESTS = event-test

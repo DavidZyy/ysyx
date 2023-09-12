@@ -87,13 +87,24 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     full_screen.h = dst->h;
     dstrect = &full_screen;
   }
-  uint32_t *px = (uint32_t *)dst->pixels;
-  px += (dstrect->y * dst->w + dstrect->x);
-  for(int i = 0; i < dstrect->h; i++) {
-    for(int j = 0; j < dstrect->w; j++) {
-      uint32_t *vmem_addr = px +i*dst->w + j;
-      safe_assign(dst, vmem_addr, color);
+
+  if(dst->format->BitsPerPixel == 32) {
+    uint32_t *px = (uint32_t *)dst->pixels;
+    px += (dstrect->y * dst->w + dstrect->x);
+    for(int i = 0; i < dstrect->h; i++) {
+      for(int j = 0; j < dstrect->w; j++) {
+        uint32_t *vmem_addr = px +i*dst->w + j;
+        safe_assign(dst, vmem_addr, color);
+      }
     }
+  } else if(dst->format->BitsPerPixel == 8) {
+    assert(0);
+    assert(dst->format->palette->ncolors == 256);
+    for(int i=0; i<dst->format->palette->ncolors; i++){
+
+    }
+  } else {
+    assert(0);
   }
 }
 
@@ -109,8 +120,21 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
     w = s->w;
     h = s->h;
   }
-  // printf("x: %d, y: %d, w: %d, h: %d\n", x, y, w, h);
-  NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
+
+  if (s->format->BitsPerPixel == 32) {
+    NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
+  } else if (s->format->BitsPerPixel == 8) {
+    // assert(0);
+    uint32_t *pixels = malloc(sizeof(int) * w * h);
+    for(int i=0; i<w*h; i++) {
+      uint8_t idx = (uint8_t *)s->pixels[i];
+      pixels[i] = s->format->palette->colors[idx].val;
+    }
+    NDL_DrawRect(pixels, x, y, w, h);
+    free(pixels);
+  } else {
+    assert(0);
+  }
 }
 
 // APIs below are already implemented.
@@ -128,8 +152,6 @@ static inline int maskToShift(uint32_t mask) {
 
 SDL_Surface* SDL_CreateRGBSurface(uint32_t flags, int width, int height, int depth,
     uint32_t Rmask, uint32_t Gmask, uint32_t Bmask, uint32_t Amask) {
-  /* only support 32 now */
-  assert(depth == 32);
   assert(depth == 8 || depth == 32);
   SDL_Surface *s = malloc(sizeof(SDL_Surface));
   assert(s);
