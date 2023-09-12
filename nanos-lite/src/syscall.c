@@ -80,10 +80,10 @@ void do_syscall(Context *c) {
       break;
     }
 
-    int gettimeofday(struct timeval *tv);
+    int mygettimeofday(struct timeval *tv);
     case SYS_gettimeofday: {
       struct timeval *tv = (struct timeval *)a[1];
-      gettimeofday(tv);
+      mygettimeofday(tv);
       break;
     }
 

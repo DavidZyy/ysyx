@@ -59,7 +59,7 @@ struct timeval {
   uint32_t tv_usec;	/* Microseconds.  */
 };
 
-int gettimeofday(struct timeval *tv) {
+int mygettimeofday(struct timeval *tv) {
   tv->tv_sec  = io_read(AM_TIMER_UPTIME).us / 1000000;
   tv->tv_usec = io_read(AM_TIMER_UPTIME).us % 1000000;
   return 0;
