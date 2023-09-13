@@ -16,9 +16,10 @@ static int canvas_w = 0, canvas_h = 0;
 
 /* return seconds, not use us */
 uint32_t NDL_GetTicks() {
-  struct timeval current_time;
-  gettimeofday(&current_time, NULL);
-  return current_time.tv_sec * 1000;
+  // struct timeval current_time;
+  // gettimeofday(&current_time, NULL);
+  // printf("tv_sec: %d, tv_usec: %d\n", current_time.tv_sec, current_time.tv_usec);
+  // return current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
 }
 
 int NDL_PollEvent(char *buf, int len) {
@@ -72,7 +73,7 @@ void NDL_OpenCanvas(int *w, int *h) {
 
 void check_in_vmem(uint32_t addr) {
   if(addr > sizeof(int)*screen_h*screen_w) {
-    printf("screen_h is %d, screen_w is %d, total mem is %d, addr is %d, out of vmem!\n",
+    printf("screen_h is %d, screen_w is %d, total mem is %ld, addr is %d, out of vmem!\n",
       screen_h, screen_w, sizeof(int)*screen_h*screen_w, addr);
     while(1);
   }

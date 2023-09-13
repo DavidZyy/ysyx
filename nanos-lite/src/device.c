@@ -1,4 +1,5 @@
 #include <common.h>
+#include <sys/time.h>
 
 #if defined(MULTIPROGRAM) && !defined(TIME_SHARING)
 # define MULTIPROGRAM_YIELD() yield()
@@ -54,10 +55,10 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   return len;
 }
 
-struct timeval {
-  uint32_t tv_sec;		/* Seconds.  */
-  uint32_t tv_usec;	/* Microseconds.  */
-};
+// struct timeval {
+//   uint32_t tv_sec;		/* Seconds.  */
+//   uint32_t tv_usec;	/* Microseconds.  */
+// };
 
 int mygettimeofday(struct timeval *tv) {
   tv->tv_sec  = io_read(AM_TIMER_UPTIME).us / 1000000;
