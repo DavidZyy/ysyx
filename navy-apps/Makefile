@@ -196,7 +196,8 @@ $(CLEAN_ALL):
 # APPS = nslider
 # APPS = menu 
 # APPS = nterm
-APPS = bird pal nterm nslider menu
+# APPS = bird pal nterm nslider menu
+APPS = bird
 # APPS = pal
 # TESTS =  timer-test
 # TESTS = dummy hello file-test timer-test event-test
