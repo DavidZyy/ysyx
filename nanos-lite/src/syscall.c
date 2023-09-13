@@ -1,12 +1,14 @@
 #include <common.h>
 #include "syscall.h"
 #include "fs.h"
-struct timeval
-{
-  uint32_t tv_sec;		/* Seconds.  */
-  uint32_t tv_usec;	/* Microseconds.  */
-};
-
+#include <sys/time.h>
+// struct timeval
+// {
+//   // uint32_t tv_sec;		/* Seconds.  */
+//   // uint32_t tv_usec;	/* Microseconds.  */
+//   uint64_t tv_sec;		/* Seconds.  */
+//   uint64_t tv_usec;	/* Microseconds.  */
+// };
 
 void do_syscall(Context *c) {
   uintptr_t a[4];
@@ -80,10 +82,12 @@ void do_syscall(Context *c) {
       break;
     }
 
-    int gettimeofday(struct timeval *tv);
+    int mygettimeofday(struct timeval *tv);
     case SYS_gettimeofday: {
       struct timeval *tv = (struct timeval *)a[1];
-      gettimeofday(tv);
+      mygettimeofday(tv);
+      // printf("int do_syscall tv_sec: %d, tv_usec: %d\n", tv->tv_sec, tv->tv_usec);
+      // printf("int do_syscall tv_sec: %p, tv_usec: %p\n", &(tv->tv_sec), &(tv->tv_usec));
       break;
     }
 

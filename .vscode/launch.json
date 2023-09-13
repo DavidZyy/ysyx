@@ -52,11 +52,11 @@
     //   "preLaunchTask": "recompile_nemu"
     // },
     {
-      "name": "(gdb) Launch menu",
+      "name": "debug native pal",
       "type": "cppdbg",
       "request": "launch",
       // "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
-      "program": "${workspaceFolder}/navy-apps/apps/menu/build/menu-native",
+      "program": "${workspaceFolder}/navy-apps/apps/pal/build/pal-native",
       "args": [],
       "stopAtEntry": false,
       // "cwd": "${fileDirname}/..",
@@ -84,7 +84,7 @@
             "ignoreFailures": false
           }
       ],
-      // "preLaunchTask": "recompile_nemu"
+      "preLaunchTask": "recompile_pal"
     }
   ]
 }

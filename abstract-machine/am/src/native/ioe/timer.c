@@ -19,8 +19,10 @@ void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
   rtc->year   = tm->tm_year + 1900;
 }
 
+#include <stdio.h>
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   struct timeval now;
+  // printf("sizeof(now): %d\n", sizeof(now));
   gettimeofday(&now, NULL);
   long seconds = now.tv_sec - boot_time.tv_sec;
   long useconds = now.tv_usec - boot_time.tv_usec;
