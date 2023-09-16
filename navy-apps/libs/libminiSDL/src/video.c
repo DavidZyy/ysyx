@@ -22,6 +22,19 @@ void safe_assign(SDL_Surface *src, uint32_t *addr, uint32_t value) {
   *addr = value;
 }
 
+void check_vmem_8(SDL_Surface *src, void *addr) {
+  assert(src->format->BitsPerPixel == 8);
+  if(addr < (void *)src->pixels || 
+    addr >= (void *)((uint8_t *)(src->pixels) + src->w * src->h)) {
+      assert(0);
+  }
+}
+
+void safe_assign_8(SDL_Surface *src, uint8_t *addr, uint8_t value) {
+  check_vmem_8(src, (void *)addr);
+  *addr = value;
+}
+
 /**
  * The width and height in srcrect determine the size of the copied rectangle. 
  * Only the position is used in the dstrect (the width and height are ignored).
@@ -65,7 +78,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       for(int j = 0; j < srcrect->w; j++) {
         uint8_t *vmem_addr = dst_px + i*dst->w + j;
         // safe_assign(dst, vmem_addr, *src_px);
-        *vmem_addr = *src_px;
+        // *vmem_addr = *src_px;
+        safe_assign_8(dst, vmem_addr, *src_px);
         src_px++;
       }
     }
