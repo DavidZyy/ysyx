@@ -127,6 +127,8 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   } else if (s->format->BitsPerPixel == 8) {
     // assert(0);
     uint32_t *pixels = malloc(sizeof(int) * w * h);
+    // inportant!
+    memset(pixels, 0, sizeof(int)*w*h);
     for(int i=0; i<w*h; i++) {
       uint8_t idx = s->pixels[i];
       uint8_t r = s->format->palette->colors[idx].r;
