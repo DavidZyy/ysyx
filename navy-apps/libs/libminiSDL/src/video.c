@@ -109,9 +109,11 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 }
 
 static inline int maskToShift(uint32_t mask);
+
 /**
  * If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
  * only use for screen? so do not worry.
+ * 从s上取x,y,w,h位置的像素，更新到屏幕的同样的位置？(x,y,w,h)
  */
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   // printf("x: %d, y: %d, w: %d, h: %d\n", x, y, w, h);
@@ -125,20 +127,23 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   if (s->format->BitsPerPixel == 32) {
     NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
   } else if (s->format->BitsPerPixel == 8) {
-    // assert(0);
     uint32_t *pixels = malloc(sizeof(int) * w * h);
-    // important!
     memset(pixels, 0, sizeof(int)*w*h);
+    // assert(s->w == w && s->h == h);
+    // if(s->w != w && s->h != h) {
+    //   printf("x: %d, y: %d, s->w: %d, w: %d, s->h: %d, h:%d\n", x, y, s->w, w, s->h, h);
+    // }
 
-    // for(int )
-    for(int i=0; i<w*h; i++) {
-      uint8_t idx = s->pixels[i];
-      uint32_t r = s->format->palette->colors[idx].r;
-      uint32_t g = s->format->palette->colors[idx].g;
-      uint32_t b = s->format->palette->colors[idx].b;
-      uint32_t a = s->format->palette->colors[idx].a;
+    for (int i=0; i<h; i++) {
+      for (int j=0; j<w; j++) {
+        uint8_t idx = s->pixels[(y+i)*s->w+x+j];
+        uint32_t r = s->format->palette->colors[idx].r;
+        uint32_t g = s->format->palette->colors[idx].g;
+        uint32_t b = s->format->palette->colors[idx].b;
+        uint32_t a = s->format->palette->colors[idx].a;
 
-      pixels[i] = a<<24 | r<<16 | g<<8 | b;
+        pixels[i*w+j] = a<<24 | r<<16 | g<<8 | b;
+      }
     }
 
     NDL_DrawRect(pixels, x, y, w, h);
