@@ -65,7 +65,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       for(int j = 0; j < srcrect->w; j++) {
         uint8_t *vmem_addr = dst_px + i*dst->w + j;
         // safe_assign(dst, vmem_addr, *src_px);
-        *vmem_addr = *src_px;
+        // *vmem_addr = *src_px;
         src_px++;
       }
     }
