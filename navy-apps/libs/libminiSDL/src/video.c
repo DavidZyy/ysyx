@@ -134,9 +134,9 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
       uint8_t r = s->format->palette->colors[idx].r;
       uint8_t g = s->format->palette->colors[idx].g;
       uint8_t b = s->format->palette->colors[idx].b;
-      // uint8_t a = s->format->palette->colors[idx].a;
+      uint8_t a = s->format->palette->colors[idx].a;
 
-      pixels[i] = r<<16 | g<<8 | b;
+      pixels[i] = a<<24 | r<<16 | g<<8 | b;
     }
     NDL_DrawRect(pixels, x, y, w, h);
     free(pixels);
