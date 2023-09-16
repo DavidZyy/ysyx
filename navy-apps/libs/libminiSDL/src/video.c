@@ -39,53 +39,129 @@ void safe_assign_8(SDL_Surface *src, uint8_t *addr, uint8_t value) {
  * The width and height in srcrect determine the size of the copied rectangle. 
  * Only the position is used in the dstrect (the width and height are ignored).
  */
-void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
-  assert(dst && src);
-  assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
-  if(srcrect == NULL) {
-    SDL_Rect new_srcrect;
-    new_srcrect.w = src->w;
-    new_srcrect.h = src->h;
-    srcrect = &new_srcrect;
-  }
-  if(dstrect == NULL) {
-    SDL_Rect new_dstrect;
-    new_dstrect.x = 0;
-    new_dstrect.y = 0;
-    dstrect = &new_dstrect;
-  }
-  if(dst->format->BitsPerPixel == 32) {
-    uint32_t *dst_px = (uint32_t *)dst->pixels;
-    dst_px += (dstrect->y * dst->w + dstrect->x);
+// void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
+//   assert(dst && src);
+//   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+//   if(srcrect == NULL) {
+//     SDL_Rect new_srcrect;
+//     new_srcrect.w = src->w;
+//     new_srcrect.h = src->h;
+//     srcrect = &new_srcrect;
+//   }
+//   if(dstrect == NULL) {
+//     SDL_Rect new_dstrect;
+//     new_dstrect.x = 0;
+//     new_dstrect.y = 0;
+//     dstrect = &new_dstrect;
+//   }
+//   if(dst->format->BitsPerPixel == 32) {
+//     uint32_t *dst_px = (uint32_t *)dst->pixels;
+//     dst_px += (dstrect->y * dst->w + dstrect->x);
+// 
+//     uint32_t *src_px = (uint32_t *)src->pixels;
+// 
+//     for(int i = 0; i < srcrect->h; i++) {
+//       for(int j = 0; j < srcrect->w; j++) {
+//         uint32_t *vmem_addr = dst_px + i*dst->w + j;
+//         safe_assign(dst, vmem_addr, *src_px);
+//         src_px++;
+//       }
+//     }
+//   } else if (dst->format->BitsPerPixel == 8) {
+//     // assert(0);
+//     uint8_t *dst_px = (uint8_t *)dst->pixels;
+//     dst_px += (dstrect->y * dst->w + dstrect->x);
+// 
+//     uint8_t *src_px = (uint8_t *)src->pixels;
+// 
+//     for(int i = 0; i < srcrect->h; i++) {
+//       for(int j = 0; j < srcrect->w; j++) {
+//         uint8_t *vmem_addr = dst_px + i*dst->w + j;
+//         // safe_assign(dst, vmem_addr, *src_px);
+//         // *vmem_addr = *src_px;
+//         safe_assign_8(dst, vmem_addr, *src_px);
+//         src_px++;
+//       }
+//     }
+//   } else {
+//     assert(0);
+//   }
+// }
 
-    uint32_t *src_px = (uint32_t *)src->pixels;
+void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect)
+{
+    assert(dst && src);
+    assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
 
-    for(int i = 0; i < srcrect->h; i++) {
-      for(int j = 0; j < srcrect->w; j++) {
-        uint32_t *vmem_addr = dst_px + i*dst->w + j;
-        safe_assign(dst, vmem_addr, *src_px);
-        src_px++;
-      }
+    int s_x, s_y, d_x, d_y, w, h;
+    if (srcrect == NULL)
+    {
+        s_x = 0;
+        s_y = 0;
+        w = src->w;
+        h = src->h;
     }
-  } else if (dst->format->BitsPerPixel == 8) {
-    // assert(0);
-    uint8_t *dst_px = (uint8_t *)dst->pixels;
-    dst_px += (dstrect->y * dst->w + dstrect->x);
-
-    uint8_t *src_px = (uint8_t *)src->pixels;
-
-    for(int i = 0; i < srcrect->h; i++) {
-      for(int j = 0; j < srcrect->w; j++) {
-        uint8_t *vmem_addr = dst_px + i*dst->w + j;
-        // safe_assign(dst, vmem_addr, *src_px);
-        // *vmem_addr = *src_px;
-        safe_assign_8(dst, vmem_addr, *src_px);
-        src_px++;
-      }
+    else
+    {
+        s_x = srcrect->x;
+        s_y = srcrect->y;
+        w = srcrect->w;
+        h = srcrect->h;
     }
-  } else {
-    assert(0);
-  }
+
+    if (dstrect == NULL)
+    {
+        d_x = 0;
+        d_y = 0;
+    }
+    else
+    {
+        d_x = dstrect->x;
+        d_y = dstrect->y;
+    }
+
+    /*  src: src->w * src->h
+                  s_x         s_x + w
+        ********************************
+        ********************************
+s_y     ***********&&&&&&&&&&&&&&&******
+        ***********&&&&&&&&&&&&&&&******
+        ***********&&&&&&&&&&&&&&&******
+s_y + h ***********&&&&&&&&&&&&&&&******
+        ********************************
+        ********************************
+*/
+    /*  dst: dst->w * dst->h
+             d_x         d_x + w
+        ***********************************
+        ***********************************
+d_y     ******&&&&&&&&&&&&&&&**************
+        ******&&&&&&&&&&&&&&&**************
+        ******&&&&&&&&&&&&&&&**************
+d_y + h ******&&&&&&&&&&&&&&&**************
+        ***********************************
+        ***********************************
+        ***********************************
+        ***********************************
+*/
+    for (int i = 0; i < h; i++)
+    {
+        for (int j = 0; j < w; j++)
+        {
+            if (src->format->BitsPerPixel == 32)
+            {
+                ((uint32_t *)dst->pixels)[(d_y + i) * dst->w + d_x + j] = ((uint32_t *)src->pixels)[(s_y + i) * src->w + s_x + j];
+            }
+            else if (src->format->BitsPerPixel == 8)
+            {
+                ((uint8_t *)dst->pixels)[(d_y + i) * dst->w + d_x + j] = ((uint8_t *)src->pixels)[(s_y + i) * src->w + s_x + j];
+            }
+            else
+            {
+                assert(0);
+            }
+        }
+    }
 }
 
 
