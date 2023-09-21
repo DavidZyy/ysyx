@@ -64,7 +64,10 @@ int fs_open(const char *pathname, int flags, int mode) {
     }
   }
   // not find
-  panic("Not Find File: %s, name length is %d", pathname, strlen(pathname));
+  for(int i=0; i<strlen(pathname); i++) {
+    printf("%d ", pathname[i]);
+  }
+  panic("Not Find File: %s, name length is %d\n", pathname, strlen(pathname));
 }
 
 // size_t fs_read(int fd, void *buf, size_t len) {

@@ -81,6 +81,7 @@
     "numeric": "cpp",
     "ostream": "cpp",
     "cassert": "c",
-    "reent.h": "c"
+    "reent.h": "c",
+    "system_error": "c"
   }
 }
