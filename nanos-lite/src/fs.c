@@ -63,7 +63,7 @@ int fs_open(const char *pathname, int flags, int mode) {
     }
   }
   // not find
-  panic("Not Find File: %s", pathname);
+  panic("Not Find File: %s, name length is %d", pathname, strlen(pathname));
 }
 
 // size_t fs_read(int fd, void *buf, size_t len) {
