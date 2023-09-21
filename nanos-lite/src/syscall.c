@@ -2,6 +2,7 @@
 #include "syscall.h"
 #include "fs.h"
 #include <sys/time.h>
+#include "proc.h"
 // struct timeval
 // {
 //   // uint32_t tv_sec;		/* Seconds.  */
@@ -91,9 +92,10 @@ void do_syscall(Context *c) {
       break;
     }
 
+    void naive_uload(PCB *pcb, const char *filename);
     case SYS_execve: {
       char *path_name = (char *)a[1];
-      printf("SYS_execve: %s\n", path_name);
+      naive_uload(NULL, path_name);
       break;
     }
 
