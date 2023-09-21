@@ -56,10 +56,12 @@ void init_fs() {
 }
 
 int fs_open(const char *pathname, int flags, int mode) {
-  for(int i=0; i<strlen(pathname); i++) {
-    printf("%d ", pathname[i]);
+  if(strcmp(pathname, "/dev/fb") != 0 && strcmp(pathname, "/dev/events") != 0) {
+    for(int i=0; i<strlen(pathname); i++) {
+      printf("%d ", pathname[i]);
+    }
+    printf("Not Find File: %s, name length is %d\n", pathname, strlen(pathname));
   }
-  printf("Not Find File: %s, name length is %d\n", pathname, strlen(pathname));
 
   for(int i = 0; i < sizeof(file_table) / sizeof(Finfo); i++) {
     int length = strlen(file_table[i].name);
