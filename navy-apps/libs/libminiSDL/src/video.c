@@ -17,7 +17,7 @@ void check_vmem_32(SDL_Surface *src, void *addr) {
 
 void check_vmem_8(SDL_Surface *src, void *addr) {
   assert(src->format->BitsPerPixel == 8);
-  if(addr < (void *)src->pixels || 
+  if(addr < (void *)src->pixels ||
     addr >= (void *)((uint8_t *)(src->pixels) + src->w * src->h)) {
       assert(0);
   }
@@ -98,11 +98,18 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
       }
     }
   } else if(dst->format->BitsPerPixel == 8) {
-    assert(0);
     assert(dst->format->palette->ncolors == 256);
-    for(int i=0; i<dst->format->palette->ncolors; i++){
 
+    uint8_t *px = (uint8_t *)dst->pixels;
+    px += (dstrect->y * dst->w + dstrect->x);
+    for(int i = 0; i < dstrect->h; i++) {
+      for(int j = 0; j < dstrect->w; j++) {
+        uint8_t *vmem_addr = px +i*dst->w + j;
+        check_vmem_8(dst, vmem_addr);
+        *vmem_addr = color;
+      }
     }
+
   } else {
     assert(0);
   }
