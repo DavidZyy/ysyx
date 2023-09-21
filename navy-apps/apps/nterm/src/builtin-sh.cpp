@@ -23,6 +23,7 @@ static void sh_prompt() {
 }
 
 static void sh_handle_cmd(const char *cmd) {
+  // should git rid of the '\n' of cmd?
   execve(cmd, NULL, NULL);
   // printf("sh_handle_cmd: %s\n", cmd);
 }
