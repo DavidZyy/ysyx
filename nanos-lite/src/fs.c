@@ -56,24 +56,29 @@ void init_fs() {
 }
 
 int fs_open(const char *pathname, int flags, int mode) {
-  if(strcmp(pathname, "/dev/fb") != 0 && strcmp(pathname, "/dev/events") != 0) {
-    for(int i=0; i<strlen(pathname); i++) {
-      printf("%d ", pathname[i]);
-    }
-    printf("Not Find File: %s, name length is %d\n", pathname, strlen(pathname));
-  }
+  // if(strcmp(pathname, "/dev/fb") != 0 && strcmp(pathname, "/dev/events") != 0) {
+  //   for(int i=0; i<strlen(pathname); i++) {
+  //     printf("%d ", pathname[i]);
+  //   }
+  //   printf("Not Find File: %s, name length is %d\n", pathname, strlen(pathname));
+  // }
+  char new_pathname[64];
+  int len = strlen(pathname);
+  assert(len < 64);
+  strcpy(new_pathname, pathname);
+  if(new_pathname[len-1] == '\n')
+    new_pathname[len-1] = '\0';
 
   for(int i = 0; i < sizeof(file_table) / sizeof(Finfo); i++) {
-    int length = strlen(file_table[i].name);
-    if(strncmp(pathname, file_table[i].name, length) == 0) {
+    if(strcmp(new_pathname, file_table[i].name) == 0) {
       file_table[i].open_offset = file_table[i].disk_offset;
       return i;
     }
   }
   // not find
-  for(int i=0; i<strlen(pathname); i++) {
-    printf("%d ", pathname[i]);
-  }
+  // for(int i=0; i<strlen(pathname); i++) {
+  //   printf("%d ", pathname[i]);
+  // }
   panic("Not Find File: %s, name length is %d\n", pathname, strlen(pathname));
 }
 
