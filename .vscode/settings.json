@@ -80,6 +80,7 @@
     "istream": "cpp",
     "numeric": "cpp",
     "ostream": "cpp",
-    "cassert": "c"
+    "cassert": "c",
+    "reent.h": "c"
   }
 }

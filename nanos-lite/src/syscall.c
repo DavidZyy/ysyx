@@ -91,6 +91,12 @@ void do_syscall(Context *c) {
       break;
     }
 
+    case SYS_execve: {
+      char *path_name = (char *)a[1];
+      printf("SYS_execve: %s\n", path_name);
+      break;
+    }
+
     default:
       panic("Unhandled syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
   }
