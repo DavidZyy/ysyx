@@ -22,7 +22,7 @@ void do_syscall(Context *c) {
   // Log("syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
   switch (a[0]) {
     case SYS_exit:
-      naive_uload(NULL, "bin/menu");
+      naive_uload(NULL, "bin/nterm");
       // halt(0);
       break;
 
