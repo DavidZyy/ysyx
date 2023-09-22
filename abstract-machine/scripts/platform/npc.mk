@@ -34,4 +34,4 @@ image: $(IMAGE).elf
 # 	@od -w4 -An --endian little -v -t x4 "$(IMAGE).ram.bin" > "$(IMAGE).ram.hex"
 
 run: image
-	$(MAKE) -C $(NPC_HOME) sim IMG=$(IMAGE).bin
+	@$(MAKE) -C $(NPC_HOME) sim IMG=$(IMAGE).bin
