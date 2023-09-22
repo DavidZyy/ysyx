@@ -69,12 +69,12 @@ LOG_FILE = $(NPC_HOME)/build/npc-log.txt
 sim:
 # DO NOT REMOVE THIS LINE!!!
 	$(call git_commit, "sim RTL")
-	verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
+	@verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(CPP_FILES) $(VSRCS) $(SVSRCS)
-	obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
-	# gtkwave dump.vcd
+	@obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
+# gtkwave dump.vcd
 
 # sim:
 # 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
