@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) {
   for(i = 0; i < times; i++){
 
     npc_exec_once();
-    nemu_exec_once();
+    // nemu_exec_once();
     
     if(terminal)
       break;
