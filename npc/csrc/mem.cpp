@@ -53,6 +53,8 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     // must be called after above
     *rdata = us;
     // printf("HH\n");
+  } else if (raddr == SERIAL_PORT){
+
   } else {
     // memory
     if(!in_pmem(raddr)) out_of_bound(raddr);
@@ -65,7 +67,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
   Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
   // printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
-  // assert(in_pmem(waddr));
+  assert(in_pmem(waddr));
 
   // assert(!(waddr & 0x7));
   // printf("waddr: %lx\n", waddr);
