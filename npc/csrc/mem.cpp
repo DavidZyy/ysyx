@@ -38,10 +38,19 @@ static void out_of_bound(paddr_t addr) {
 
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
-  if(raddr == 0 && top->io_out_pc == 0) return;
-  if(!in_pmem(raddr)) out_of_bound(raddr);
-  void*raddr_temp = guest_to_host(raddr);
-  *rdata = *(word_t *)raddr_temp;
+  if (raddr == 0 && top->io_out_pc == 0) {
+    // not ready for inst fetch
+    return;
+  } else if (raddr == ) {
+
+  } else if () {
+
+  } else {
+    // memory
+    if(!in_pmem(raddr)) out_of_bound(raddr);
+    void*raddr_temp = guest_to_host(raddr);
+    *rdata = *(word_t *)raddr_temp;
+  }
 }
 
 // extern "C" void pmem_write(long long waddr, long long wdata) {

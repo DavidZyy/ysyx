@@ -7,8 +7,10 @@ static uint64_t boot_time = 0;
 /* the clock frequency in nemu */
 /* return the us */
 static uint64_t read_time() {
-  /* hi should put before before lo, or the rtc_io_handler will not be 
-    called, because it has "if (!is_write && offset == 4) {",  */
+  /*hi should put before before lo, or the rtc_io_handler will not be 
+    called, and the time in register will not ber updated,
+    because it has "if (!is_write && offset == 4) {",
+    the offset of hi is 4 form RTC_ADDR.  */
   uint32_t hi = *(volatile uint32_t *)(RTC_ADDR + 4);
   uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
   uint64_t time = ((uint64_t)hi << 32) | lo;
