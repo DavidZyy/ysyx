@@ -56,17 +56,12 @@ void init_fs() {
 }
 
 int fs_open(const char *pathname, int flags, int mode) {
-  // if(strcmp(pathname, "/dev/fb") != 0 && strcmp(pathname, "/dev/events") != 0) {
-  //   for(int i=0; i<strlen(pathname); i++) {
-  //     printf("%d ", pathname[i]);
-  //   }
-  //   printf("Not Find File: %s, name length is %d\n", pathname, strlen(pathname));
-  // }
+  // from shell may contain '\n', get rid of it
   char new_pathname[64];
   int len = strlen(pathname);
   assert(len < 64);
   strcpy(new_pathname, pathname);
-  if(new_pathname[len-1] == '\n')
+  if(new_pathname[len-1] == '\n') 
     new_pathname[len-1] = '\0';
 
   for(int i = 0; i < sizeof(file_table) / sizeof(Finfo); i++) {
@@ -75,10 +70,7 @@ int fs_open(const char *pathname, int flags, int mode) {
       return i;
     }
   }
-  // not find
-  // for(int i=0; i<strlen(pathname); i++) {
-  //   printf("%d ", pathname[i]);
-  // }
+
   panic("Not Find File: %s, name length is %d\n", pathname, strlen(pathname));
 }
 
