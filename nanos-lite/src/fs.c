@@ -56,14 +56,22 @@ void init_fs() {
 }
 
 int fs_open(const char *pathname, int flags, int mode) {
+  // from shell may contain '\n', get rid of it
+  char new_pathname[64];
+  int len = strlen(pathname);
+  assert(len < 64);
+  strcpy(new_pathname, pathname);
+  if(new_pathname[len-1] == '\n') 
+    new_pathname[len-1] = '\0';
+
   for(int i = 0; i < sizeof(file_table) / sizeof(Finfo); i++) {
-    if(strcmp(pathname, file_table[i].name) == 0) {
+    if(strcmp(new_pathname, file_table[i].name) == 0) {
       file_table[i].open_offset = file_table[i].disk_offset;
       return i;
     }
   }
-  // not find
-  panic("Not Find File: %s", pathname);
+
+  panic("Not Find File: %s, name length is %d\n", pathname, strlen(pathname));
 }
 
 // size_t fs_read(int fd, void *buf, size_t len) {

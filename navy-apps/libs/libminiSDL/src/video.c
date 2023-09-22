@@ -6,9 +6,8 @@
 
 static int screen_w = 400, screen_h = 300;
 
-
 /* check if addr is in src's vmem */
-void check_vmem(SDL_Surface *src, void *addr) {
+void check_vmem_32(SDL_Surface *src, void *addr) {
   assert(src->format->BitsPerPixel == 32);
   if(addr < (void *)src->pixels || 
     addr >= (void *)((uint32_t *)(src->pixels) + src->w * src->h)) {
@@ -16,64 +15,64 @@ void check_vmem(SDL_Surface *src, void *addr) {
   }
 }
 
-/* safely assign addr to value */
-void safe_assign(SDL_Surface *src, uint32_t *addr, uint32_t value) {
-  check_vmem(src, (void *)addr);
-  *addr = value;
+void check_vmem_8(SDL_Surface *src, void *addr) {
+  assert(src->format->BitsPerPixel == 8);
+  if(addr < (void *)src->pixels ||
+    addr >= (void *)((uint8_t *)(src->pixels) + src->w * src->h)) {
+      assert(0);
+  }
 }
 
 /**
+ * get the rectangle of srcrect on src, and put it at the (x, y) of dst.
  * The width and height in srcrect determine the size of the copied rectangle. 
  * Only the position is used in the dstrect (the width and height are ignored).
  */
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
-  if(srcrect == NULL) {
-    SDL_Rect new_srcrect;
-    new_srcrect.w = src->w;
-    new_srcrect.h = src->h;
-    srcrect = &new_srcrect;
-  }
-  if(dstrect == NULL) {
-    SDL_Rect new_dstrect;
-    new_dstrect.x = 0;
-    new_dstrect.y = 0;
-    dstrect = &new_dstrect;
-  }
-  if(dst->format->BitsPerPixel == 32) {
-    uint32_t *dst_px = (uint32_t *)dst->pixels;
-    dst_px += (dstrect->y * dst->w + dstrect->x);
-
-    uint32_t *src_px = (uint32_t *)src->pixels;
-
-    for(int i = 0; i < srcrect->h; i++) {
-      for(int j = 0; j < srcrect->w; j++) {
-        uint32_t *vmem_addr = dst_px + i*dst->w + j;
-        safe_assign(dst, vmem_addr, *src_px);
-        src_px++;
-      }
-    }
-  } else if (dst->format->BitsPerPixel == 8) {
-    uint8_t *dst_px = (uint8_t *)dst->pixels;
-    dst_px += (dstrect->y * dst->w + dstrect->x);
-
-    uint8_t *src_px = (uint8_t *)src->pixels;
-
-    for(int i = 0; i < srcrect->h; i++) {
-      for(int j = 0; j < srcrect->w; j++) {
-        uint8_t *vmem_addr = dst_px + i*dst->w + j;
-        // safe_assign(dst, vmem_addr, *src_px);
-        *vmem_addr = *src_px;
-        src_px++;
-      }
-    }
+  int sx, sy, sw, sh, dx, dy;
+  if (srcrect == NULL) {
+    // put all src
+    sx = 0;
+    sy = 0;
+    sw = src->w;
+    sh = src->h;
   } else {
-    assert(0);
+    sx = srcrect->x;
+    sy = srcrect->y;
+    sw = srcrect->w;
+    sh = srcrect->h;
+  }
+
+  if (dstrect == NULL) {
+    dx = 0;
+    dy = 0;
+  } else {
+    dx = dstrect->x;
+    dy = dstrect->y;
+  }
+
+  for (int i=0; i<sh; i++) {
+    for (int j=0; j<sw; j++) {
+      if (dst->format->BitsPerPixel == 8) {
+        uint8_t *src_addr = (uint8_t *)src->pixels + (i + sy)*src->w + sx + j;
+        uint8_t *dst_addr = (uint8_t *)dst->pixels + (i + dy)*dst->w + dx + j;
+        check_vmem_8(src, src_addr);
+        check_vmem_8(dst, dst_addr);
+        *dst_addr = *src_addr;
+      } else if(dst->format->BitsPerPixel == 32) {
+        uint32_t *src_addr = (uint32_t *)src->pixels + (i + sy)*src->w + sx + j;
+        uint32_t *dst_addr = (uint32_t *)dst->pixels + (i + dy)*dst->w + dx + j;
+        check_vmem_32(src, src_addr);
+        check_vmem_32(dst, dst_addr);
+        *dst_addr = *src_addr;
+      } else {
+        assert(0);
+      }
+    }
   }
 }
-
-
 
 /**
  * if dstrect is NULL, the whole surface will be filled with color.
@@ -94,23 +93,34 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     for(int i = 0; i < dstrect->h; i++) {
       for(int j = 0; j < dstrect->w; j++) {
         uint32_t *vmem_addr = px +i*dst->w + j;
-        safe_assign(dst, vmem_addr, color);
+        check_vmem_32(dst, vmem_addr);
+        *vmem_addr = color;
       }
     }
   } else if(dst->format->BitsPerPixel == 8) {
-    assert(0);
     assert(dst->format->palette->ncolors == 256);
-    for(int i=0; i<dst->format->palette->ncolors; i++){
 
+    uint8_t *px = (uint8_t *)dst->pixels;
+    px += (dstrect->y * dst->w + dstrect->x);
+    for(int i = 0; i < dstrect->h; i++) {
+      for(int j = 0; j < dstrect->w; j++) {
+        uint8_t *vmem_addr = px +i*dst->w + j;
+        check_vmem_8(dst, vmem_addr);
+        *vmem_addr = color;
+      }
     }
+
   } else {
     assert(0);
   }
 }
 
+static inline int maskToShift(uint32_t mask);
+
 /**
  * If 'x', 'y', 'w' and 'h' are all 0, SDL_UpdateRect will update the entire screen.
  * only use for screen? so do not worry.
+ * 从s上取x,y,w,h位置的像素，更新到屏幕的同样的位置？(x,y,w,h)
  */
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   // printf("x: %d, y: %d, w: %d, h: %d\n", x, y, w, h);
@@ -124,12 +134,25 @@ void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
   if (s->format->BitsPerPixel == 32) {
     NDL_DrawRect((uint32_t *)s->pixels, x, y, w, h);
   } else if (s->format->BitsPerPixel == 8) {
-    // assert(0);
     uint32_t *pixels = malloc(sizeof(int) * w * h);
-    for(int i=0; i<w*h; i++) {
-      uint8_t idx = (uint8_t *)s->pixels[i];
-      pixels[i] = s->format->palette->colors[idx].val;
+    memset(pixels, 0, sizeof(int)*w*h);
+    // assert(s->w == w && s->h == h);
+    // if(s->w != w && s->h != h) {
+    //   printf("x: %d, y: %d, s->w: %d, w: %d, s->h: %d, h:%d\n", x, y, s->w, w, s->h, h);
+    // }
+
+    for (int i=0; i<h; i++) {
+      for (int j=0; j<w; j++) {
+        uint8_t idx = s->pixels[(y+i)*s->w+x+j];
+        uint32_t r = s->format->palette->colors[idx].r;
+        uint32_t g = s->format->palette->colors[idx].g;
+        uint32_t b = s->format->palette->colors[idx].b;
+        uint32_t a = s->format->palette->colors[idx].a;
+
+        pixels[i*w+j] = a<<24 | r<<16 | g<<8 | b;
+      }
     }
+
     NDL_DrawRect(pixels, x, y, w, h);
     free(pixels);
   } else {

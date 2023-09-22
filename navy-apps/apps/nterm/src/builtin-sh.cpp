@@ -23,11 +23,16 @@ static void sh_prompt() {
 }
 
 static void sh_handle_cmd(const char *cmd) {
+  // should git rid of the '\n' of cmd?
+  // execve(cmd, NULL, NULL);
+  // printf("sh_handle_cmd: %s\n", cmd);
+  execvp(cmd, NULL);
 }
 
 void builtin_sh_run() {
   sh_banner();
   sh_prompt();
+  setenv("PATH", "/bin", 1); // overwrite the current PATH
 
   while (1) {
     SDL_Event ev;

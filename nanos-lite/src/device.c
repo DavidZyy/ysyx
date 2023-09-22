@@ -28,6 +28,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   if (ev.keycode == AM_KEY_NONE)
     return 0;
   snprintf(buf, len, "%s %s\0", ev.keydown ? "kd" : "ku", keyname[ev.keycode]);
+  // printf("%s\n", buf);
   // snprintf(buf, len, "%s %d", ev.keydown ? "kd" : "ku", ev.keycode);
   return len;
 }

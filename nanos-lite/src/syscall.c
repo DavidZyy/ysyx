@@ -2,6 +2,7 @@
 #include "syscall.h"
 #include "fs.h"
 #include <sys/time.h>
+#include "proc.h"
 // struct timeval
 // {
 //   // uint32_t tv_sec;		/* Seconds.  */
@@ -10,6 +11,7 @@
 //   uint64_t tv_usec;	/* Microseconds.  */
 // };
 
+void naive_uload(PCB *pcb, const char *filename);
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
@@ -20,7 +22,8 @@ void do_syscall(Context *c) {
   // Log("syscall ID = %d %d %d %d", a[0], a[1], a[2], a[3]);
   switch (a[0]) {
     case SYS_exit:
-      halt(0);
+      naive_uload(NULL, "bin/nterm");
+      // halt(0);
       break;
 
     case SYS_yield: 
@@ -88,6 +91,12 @@ void do_syscall(Context *c) {
       mygettimeofday(tv);
       // printf("int do_syscall tv_sec: %d, tv_usec: %d\n", tv->tv_sec, tv->tv_usec);
       // printf("int do_syscall tv_sec: %p, tv_usec: %p\n", &(tv->tv_sec), &(tv->tv_usec));
+      break;
+    }
+
+    case SYS_execve: {
+      char *path_name = (char *)a[1];
+      naive_uload(NULL, path_name);
       break;
     }
 
