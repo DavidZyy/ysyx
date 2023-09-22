@@ -3,6 +3,7 @@
 
 static uint64_t boot_time = 0;
 
+static uint64_t read_time() __attribute__((noinline));
 /* access can only get old data! so get error!! */
 /* the clock frequency in nemu */
 /* return the us */
