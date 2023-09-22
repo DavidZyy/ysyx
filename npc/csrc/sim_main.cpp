@@ -174,6 +174,8 @@ int main(int argc, char *argv[]) {
 
     npc_exec_once();
     // nemu_exec_once();
+    // log_write
+    log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
     
     if(terminal)
       break;
