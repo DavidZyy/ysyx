@@ -52,6 +52,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   } else if (raddr == RTC_ADDR) {
     // must be called after above
     *rdata = us;
+    printf("HH\n");
   } else {
     // memory
     if(!in_pmem(raddr)) out_of_bound(raddr);
