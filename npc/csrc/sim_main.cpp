@@ -165,8 +165,8 @@ int main(int argc, char *argv[]) {
   top->reset = 0;
 
   uint64_t i;
-  uint64_t times = -1;
-  // uint64_t times = 10000;
+  // uint64_t times = -1;
+  uint64_t times = 1000000;
 
   int begin = 1;
 
