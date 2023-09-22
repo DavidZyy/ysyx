@@ -6,6 +6,7 @@
 #include "mem.h"
 #include "conf.h"
 #include "debug.h"
+#include "npc.h"
 
 #include "verilated.h"
 #include "verilated_vcd_c.h"
@@ -36,15 +37,20 @@ static void out_of_bound(paddr_t addr) {
       addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_pc);
 }
 
+uint64_t us;
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
   if (raddr == 0 && top->io_out_pc == 0) {
     // not ready for inst fetch
     return;
-  } else if (raddr == ) {
-
-  } else if () {
-
+  } else if (raddr == RTC_ADDR+4) {
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    uint64_t us = now.tv_sec * 1000000 + now.tv_usec;
+    *rdata = us>>32;
+  } else if (raddr == RTC_ADDR) {
+    // must be called after above
+    *rdata = us;
   } else {
     // memory
     if(!in_pmem(raddr)) out_of_bound(raddr);
