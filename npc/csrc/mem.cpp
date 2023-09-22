@@ -69,8 +69,7 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
 
   if (waddr == SERIAL_PORT) {
     printf("%c", (char)wdata);
-  }
-  else {
+  } else {
     if(!in_pmem(waddr)) out_of_bound(waddr);;
     uint8_t *waddr_temp = guest_to_host(waddr);
     *(uint32_t *)waddr_temp = wdata;
