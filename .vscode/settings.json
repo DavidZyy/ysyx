@@ -83,6 +83,7 @@
     "cassert": "c",
     "reent.h": "c",
     "system_error": "c",
-    "limits": "cpp"
+    "limits": "cpp",
+    "streambuf": "c"
   }
 }
