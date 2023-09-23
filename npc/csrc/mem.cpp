@@ -79,7 +79,7 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
     // printf("%d: %c", waddr, (char)wdata);
     printf("%c", (char)wdata);
   } else if(in_vmem(waddr)) {
-    uint8_t *vmem_addr = waddr - FB_ADDR + (uint8_t *)vmem;
+    // uint8_t *vmem_addr = waddr - FB_ADDR + (uint8_t *)vmem;
     // *(uint32_t *)vmem_addr = wdata;
   } else {
     if(!in_pmem(waddr)) out_of_bound(waddr);;
