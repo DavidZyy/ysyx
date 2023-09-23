@@ -153,11 +153,16 @@ void init_monitor(int argc, char *argv[]) {
   init_difftest(argv[2], img_size, 0);
 }
 
+void init_device() {
+  init_vga();
+}
+
 int status = 0;
 
 int main(int argc, char *argv[]) {
   // Assert(0, "hi:%d" , 5);
   init_monitor(argc, argv);
+  init_device();
   Log("wave has closed to make it sim faster");
 
   sim_init();

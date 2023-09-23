@@ -7,6 +7,7 @@
 #include "conf.h"
 #include "debug.h"
 #include "npc.h"
+#include "vga.h"
 
 #include "verilated.h"
 #include "verilated_vcd_c.h"
@@ -32,14 +33,16 @@ static inline bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
 }
 
+static inline bool in_vmem(paddr_t addr) {
+
+}
+
 static void out_of_bound(paddr_t addr) {
   panic("npc: address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_pc);
 }
 
 uint64_t us;
-uint32_t screen_width = 400;
-uint32_t screen_height = 300;
 #include<sys/time.h>
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
@@ -56,7 +59,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   } else if (raddr == SERIAL_PORT) {
 
   } else if (raddr == VGACTL_ADDR) {
-    *rdata = screen_width << 16 | screen_height;
+    *rdata = SCREEN_W << 16 | SCREEN_H;
   } else {
     // memory
     if(!in_pmem(raddr)) out_of_bound(raddr);
