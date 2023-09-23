@@ -55,7 +55,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     // must be called after above
     // printf("read us : %lx\n", us);
     *rdata = (uint32_t)us;
-    printf("read: %x\n", *rdata);
+    // printf("read: %x\n", *rdata);
     // printf("HH\n");
   } else if (raddr == SERIAL_PORT){
 
