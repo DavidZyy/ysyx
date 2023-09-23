@@ -33,7 +33,6 @@ CPU_state cpu;
  */
 void step_and_dump_wave(){
   top->eval();
-  log_write("wave has closed to make it sim faster");
   // contextp->timeInc(1);
   // tfp->dump(contextp->time());
 }
@@ -159,6 +158,7 @@ int status = 0;
 int main(int argc, char *argv[]) {
   // Assert(0, "hi:%d" , 5);
   init_monitor(argc, argv);
+  log_write("wave has closed to make it sim faster");
 
   sim_init();
 
