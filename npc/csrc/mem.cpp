@@ -48,7 +48,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     struct timeval now;
     gettimeofday(&now, NULL);
     us = now.tv_sec * 1000000 + now.tv_usec;
-    // printf("read us : %lx\n", us);
+    printf("read us : %lx\n", us);
     *rdata = (uint32_t)(us>>32);
     printf("read 4: %x\n", *rdata);
   } else if (raddr == RTC_ADDR) {
