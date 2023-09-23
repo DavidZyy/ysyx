@@ -14,7 +14,7 @@ static uint64_t read_time() {
   uint32_t hi = *(volatile uint32_t *)(RTC_ADDR + 4);
   // printf("read hi: %x\n", hi);
   uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
-  printf("read lo: %x\n", lo);
+  // printf("read lo: %x\n", lo);
   uint64_t time = ((uint64_t)hi << 32) | lo;
   return time;
 }
@@ -25,7 +25,7 @@ void __am_timer_init() {
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uptime->us = read_time() - boot_time;
-  printf("uptime->us: %x\n", uptime->us);
+  // printf("uptime->us: %x\n", uptime->us);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
