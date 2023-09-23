@@ -96,9 +96,9 @@ void isa_reg_display(CPU_state *ref){
     }
   }
 
-  printf("%-3s" FMT_WORD ,"pc", cpu.pc);
+  printf("%-3s: " FMT_WORD ,"pc", cpu.pc);
   printf("\t");
-  printf("%-3s" FMT_WORD"\n", "pc", ref->pc);
+  printf("%-3s: " FMT_WORD"\n", "pc", ref->pc);
 }
 
 extern int status;
