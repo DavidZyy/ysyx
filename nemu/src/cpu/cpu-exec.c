@@ -139,6 +139,10 @@ void cpu_exec(uint64_t n) {
 
   uint64_t timer_start = get_time();
 
+  uint64_t addr = 0x8000dfe0;
+  word_t vaddr_read(vaddr_t addr, int len);
+  printf("%p: " FMT_WORD "\n", (void *)addr, vaddr_read(addr, 4));
+
   execute(n);
 
   uint64_t timer_end = get_time();
