@@ -52,7 +52,7 @@ SRC_DIR := ./csrc
 
 # Use find to recursively locate .cpp and .c files in the source directory
 CPP_FILES := $(shell find $(SRC_DIR) -type f -name '*.cpp')
-# C_FILES := $(shell find $(SRC_DIR) -type f -name '*.c')
+C_FILES := $(shell find $(SRC_DIR) -type f -name '*.c')
 
 # $(error $(CPP_FILES))
 
@@ -72,7 +72,7 @@ sim:
 	@verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
 	-trace --cc --exe --build -Wall \
-	$(CPP_FILES) $(VSRCS) $(SVSRCS)
+	$(CPP_FILES) $(C_FILES) $(VSRCS) $(SVSRCS)
 	@obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
 # gtkwave dump.vcd
 
