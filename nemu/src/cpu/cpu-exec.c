@@ -130,6 +130,7 @@ void assert_fail_msg() {
 uint64_t addr = 0x8000dfe0;
 word_t vaddr_read(vaddr_t addr, int len);
 int old = -1;
+int first = 0;
 /* Simulate how the CPU works. */
 void cpu_exec(uint64_t n) {
   g_print_step = (n < MAX_INST_TO_PRINT);
@@ -142,11 +143,19 @@ void cpu_exec(uint64_t n) {
 
   uint64_t timer_start = get_time();
 
+// new added
+  if(!first) {
+  int new = vaddr_read(addr, 4);
+  printf("%p: " FMT_WORD "\n", (void *)addr, new);
+  first = 1;
+  }
   int new = vaddr_read(addr, 4);
   if(new != old) {
     printf("%p: " FMT_WORD "\n", (void *)addr, new);
     old = new;
   }
+// new added
+
 
   execute(n);
 
