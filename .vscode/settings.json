@@ -82,6 +82,7 @@
     "ostream": "cpp",
     "cassert": "c",
     "reent.h": "c",
-    "system_error": "c"
+    "system_error": "c",
+    "limits": "cpp"
   }
 }
