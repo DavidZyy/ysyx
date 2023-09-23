@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
   // memset(pmem, 0, sizeof(pmem));
   init_monitor(argc, argv);
   init_device();
-  printf("%x\n", *(uint32_t *)guest_to_host(0x8000dffc));
+  printf("%x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
   Log("wave has closed to make it sim faster");
 
   sim_init();
