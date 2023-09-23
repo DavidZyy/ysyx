@@ -102,15 +102,15 @@ extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
   pmem_read(raddr, rdata);
   // store also call read
   // if(top->io_out_is_load) {
-    IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
-    IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, *rdata));
+    // IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+    // IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, *rdata));
   // }
 }
 
 extern "C" void vaddr_write(sword_t waddr, sword_t wdata) {
   pmem_write(waddr, wdata);
-  // IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
-  // IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
+  IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+  IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
 }
 
 long load_img(const char *img_file) {
