@@ -23,6 +23,8 @@
 #define rd(str) 	"\e[31;1m"str"\e[0m"
 #define bl(str) 	"\e[34;1m"str"\e[0m"
 
+uint64_t addr = 0x8000dfe0;
+word_t vaddr_read(vaddr_t addr, int len);
 void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if(direction == DIFFTEST_TO_REF){
     for (int i = 0; i < n; i++) {
@@ -31,6 +33,8 @@ void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   } else {
     assert(0);
   }
+  int new = vaddr_read(addr, 4);
+  printf("%p: " FMT_WORD "\n", (void *)addr, new);
 }
 
 void difftest_regcpy(void *dut, bool direction) {
