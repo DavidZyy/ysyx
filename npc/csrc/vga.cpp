@@ -11,7 +11,7 @@
 #include "vga.h"
 
 
-uint32_t vmem[screen_height * screen_width];
+uint32_t vmem[SCREEN_W * SCREEN_H];
 
 #include <SDL2/SDL.h>
 
