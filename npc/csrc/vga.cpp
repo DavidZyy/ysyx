@@ -14,6 +14,8 @@
 uint32_t vmem[SCREEN_W * SCREEN_H];
 
 #include <SDL2/SDL.h>
+#include <SDL.h>
+
 
 static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
