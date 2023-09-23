@@ -12,8 +12,9 @@ static uint64_t read_time() {
   /* hi should put before before lo, or the rtc_io_handler will not be 
     called, because it has "if (!is_write && offset == 4) {",  */
   uint32_t hi = *(volatile uint32_t *)(RTC_ADDR + 4);
-  printf("read hi: %x\n", hi);
+  // printf("read hi: %x\n", hi);
   uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
+  printf("read lo: %x\n", hi);
   uint64_t time = ((uint64_t)hi << 32) | lo;
   return time;
 }
