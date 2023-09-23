@@ -99,7 +99,7 @@ extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
 }
 
 extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
-  printf("%x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
+  // printf("%x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
   pmem_read(raddr, rdata);
   // store also call read
   // if(top->io_out_is_load) {
