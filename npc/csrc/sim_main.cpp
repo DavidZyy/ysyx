@@ -165,7 +165,7 @@ uint8_t* guest_to_host(paddr_t paddr);
 extern uint8_t pmem[CONFIG_MSIZE];
 int main(int argc, char *argv[]) {
   // Assert(0, "hi:%d" , 5);
-  memset(pmem, 0, sizeof(pmem));
+  // memset(pmem, 0, sizeof(pmem));
   init_monitor(argc, argv);
   init_device();
   printf("%x\n", (uint32_t *)guest_to_host(0x8000dffc));
