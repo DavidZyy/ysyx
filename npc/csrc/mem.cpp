@@ -38,6 +38,8 @@ static void out_of_bound(paddr_t addr) {
 }
 
 uint64_t us;
+uint32_t screen_width = 400;
+uint32_t screen_height = 300;
 #include<sys/time.h>
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
@@ -48,17 +50,13 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     struct timeval now;
     gettimeofday(&now, NULL);
     us = now.tv_sec * 1000000 + now.tv_usec;
-    // printf("read us : %lx\n", us);
     *rdata = (uint32_t)(us>>32);
-    // printf("read 4: %x\n", *rdata);
   } else if (raddr == RTC_ADDR) {
-    // must be called after above
-    // printf("read us : %lx\n", us);
     *rdata = (uint32_t)us;
-    // printf("read: %x\n", *rdata);
-    // printf("HH\n");
-  } else if (raddr == SERIAL_PORT){
+  } else if (raddr == SERIAL_PORT) {
 
+  } else if (raddr = VGACTL_ADDR) {
+    *rdata = screen_width << 16 | screen_height;
   } else {
     // memory
     if(!in_pmem(raddr)) out_of_bound(raddr);
