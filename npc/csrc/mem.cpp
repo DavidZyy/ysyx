@@ -6,6 +6,7 @@
 #include "mem.h"
 #include "conf.h"
 #include "debug.h"
+#include "npc.h"
 
 #include "verilated.h"
 #include "verilated_vcd_c.h"
@@ -32,18 +33,31 @@ static inline bool in_pmem(paddr_t addr) {
 }
 
 static void out_of_bound(paddr_t addr) {
-  panic("address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
+  panic("npc: address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_pc);
 }
 
+uint64_t us;
+#include<sys/time.h>
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
   if (raddr == 0 && top->io_out_pc == 0) {
     // not ready for inst fetch
     return;
-  } else if (raddr == ) {
-
-  } else if () {
+  } else if (raddr == RTC_ADDR+4) {
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    us = now.tv_sec * 1000000 + now.tv_usec;
+    // printf("read us : %lx\n", us);
+    *rdata = (uint32_t)(us>>32);
+    // printf("read 4: %x\n", *rdata);
+  } else if (raddr == RTC_ADDR) {
+    // must be called after above
+    // printf("read us : %lx\n", us);
+    *rdata = (uint32_t)us;
+    // printf("read: %x\n", *rdata);
+    // printf("HH\n");
+  } else if (raddr == SERIAL_PORT){
 
   } else {
     // memory
@@ -56,27 +70,15 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 // extern "C" void pmem_write(long long waddr, long long wdata) {
 extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
   Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
-  // printf(ANSI_FMT("waddr: %llx\n\n", ANSI_FG_GREEN), waddr);
-  assert(in_pmem(waddr));
 
-  // assert(!(waddr & 0x7));
-  // printf("waddr: %lx\n", waddr);
-  // printf("wdata: %lx\n", wdata);
-  // printf("wmask: %lx\n", wmask);
-  // 总是往地址为`waddr & ~0x7ull`的8字节按写掩码`wmask`写入`wdata`
-  // `wmask`中每比特表示`wdata`中1个字节的掩码,
-  // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
-  uint8_t *waddr_temp = guest_to_host(waddr);
-  *(uint32_t *)waddr_temp = wdata;
-  // switch (wmask) {
-  //   case 0x1:   *(uint8_t  *)waddr_temp = wdata;break;
-  //   case 0x3:   *(uint16_t *)waddr_temp = wdata;break;
-  //   case 0xf:   *(uint32_t *)waddr_temp = wdata;break;
-  //   // case 0xff:  *(uint64_t *)waddr_temp = wdata;break;
-  //   default:  *(uint64_t *)waddr_temp = wdata;break;
-  //   // default: printf("pmem_write!\n"); exit(0); break;
-  //   // default: printf("pmem_write!\n"); break;
-  // }
+  if (waddr == SERIAL_PORT) {
+    // printf("%d: %c", waddr, (char)wdata);
+    printf("%c", (char)wdata);
+  } else {
+    if(!in_pmem(waddr)) out_of_bound(waddr);;
+    uint8_t *waddr_temp = guest_to_host(waddr);
+    *(uint32_t *)waddr_temp = wdata;
+  }
 }
 
 extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
