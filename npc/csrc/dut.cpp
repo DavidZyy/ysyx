@@ -73,18 +73,25 @@ error:
 }
 
 void isa_reg_display(CPU_state *ref){
-  for(int i = 0; i < 32; i++){
-    if(ref->gpr[i] != cpu.gpr[i]) {
-      printf("nemu: gpr[%d] = " FMT_WORD, i, ref->gpr[i]);
-      printf("\t");
-      printf("npc: gpr[%d] = " FMT_WORD"\n", i, cpu.gpr[i]);
+  // for(int i = 0; i < 32; i++){
+  //   if(ref->gpr[i] != cpu.gpr[i]) {
+  //     printf("nemu: gpr[%d] = " FMT_WORD, i, ref->gpr[i]);
+  //     printf("\t");
+  //     printf("npc: gpr[%d] = " FMT_WORD"\n", i, cpu.gpr[i]);
+  //   }
+  // }
+  printf("npc(dut)     nemu(ref)\n");
+  for (int i = 0; i < 32; i++) {
+    if(ref->gpr[i] != gpr(i)) {
+      printf("%-3s: " FMT_WORD "  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
+      printf("%-3s: " FMT_WORD "  ", regs[i], ref->gpr[i]);
+      printf("\n");
     }
   }
 
-  printf("nemu: pc = " FMT_WORD, ref->pc);
-  printf("\t");
-  // printf("npc: pc = 0x%lx\n", cpu.pc);
   printf("npc: pc = " FMT_WORD"\n", cpu.pc);
+  printf("\t");
+  printf("nemu: pc = " FMT_WORD, ref->pc);
 }
 
 extern int status;
