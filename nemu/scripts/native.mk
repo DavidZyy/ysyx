@@ -34,7 +34,7 @@ override ARGS += $(ARGS_DIFF)
 
 override ARGS += -e $(ELF)
 # add for batch mode
-override ARGS += -b
+# override ARGS += -b
 
 
 # $(info $(ELF))
