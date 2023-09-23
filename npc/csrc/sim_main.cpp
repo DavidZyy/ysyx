@@ -13,6 +13,7 @@
 #include "mem.h"
 #include "isa.h"
 #include "debug.h"
+#include "vga.h"
 
 // c library
 // #include <iostream>
