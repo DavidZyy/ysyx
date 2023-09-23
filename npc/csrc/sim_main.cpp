@@ -181,7 +181,7 @@ int main(int argc, char *argv[]) {
 
   int begin = 1;
 
-  for(i = 0; i < times; i++){
+  for (i = 0; i < times; i++) {
 
     npc_exec_once();
     // if(i&7 == 0) 
