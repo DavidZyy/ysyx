@@ -52,7 +52,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   } else if (raddr == RTC_ADDR) {
     // must be called after above
     *rdata = us;
-    printf("read: %d\n" *rdata);
+    printf("read: %d\n", *rdata);
     // printf("HH\n");
   } else if (raddr == SERIAL_PORT){
 
