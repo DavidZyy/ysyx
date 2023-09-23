@@ -98,7 +98,7 @@ void isa_reg_display(CPU_state *ref){
 
   printf("npc: pc = " FMT_WORD , cpu.pc);
   printf("\t");
-  printf("nemu: pc = " FMT_WORD, ref->pc);
+  printf("nemu: pc = " FMT_WORD"\n", ref->pc);
 }
 
 extern int status;
