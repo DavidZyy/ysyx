@@ -55,6 +55,7 @@ CPP_FILES := $(shell find $(SRC_DIR) -type f -name '*.cpp')
 C_FILES := $(shell find $(SRC_DIR) -type f -name '*.c')
 
 # $(error $(CPP_FILES))
+# $(error $(C_FILES))
 
 all:
 	@echo "Write this Makefile by your self."
