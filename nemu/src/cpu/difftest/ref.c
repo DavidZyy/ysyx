@@ -23,7 +23,6 @@
 #define rd(str) 	"\e[31;1m"str"\e[0m"
 #define bl(str) 	"\e[34;1m"str"\e[0m"
 
-uint32_t addr = 0x8000dfe0;
 word_t vaddr_read(vaddr_t addr, int len);
 void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if(direction == DIFFTEST_TO_REF){
