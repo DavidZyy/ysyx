@@ -164,9 +164,9 @@ void vga_update_screen();
 extern uint8_t pmem[CONFIG_MSIZE];
 int main(int argc, char *argv[]) {
   // Assert(0, "hi:%d" , 5);
+  memset(pmem, 0, sizeof(pmem));
   init_monitor(argc, argv);
   init_device();
-  memset(pmem, 0, sizeof(pmem));
   Log("wave has closed to make it sim faster");
 
   sim_init();
