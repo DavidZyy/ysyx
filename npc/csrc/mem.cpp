@@ -49,10 +49,10 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     gettimeofday(&now, NULL);
     uint64_t us = now.tv_sec * 1000000 + now.tv_usec;
     printf("read us : %ld\n", us);
-    *rdata = us>>32;
+    *rdata = (uint32_t)us>>32;
   } else if (raddr == RTC_ADDR) {
     // must be called after above
-    *rdata = us;
+    *rdata = (uint32_t)us;
     printf("read: %d\n", *rdata);
     // printf("HH\n");
   } else if (raddr == SERIAL_PORT){
