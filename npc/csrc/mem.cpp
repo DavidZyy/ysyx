@@ -87,7 +87,7 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
   } else if (waddr == VGACTL_ADDR+4) {
     vgactl_port_base[1] = wdata;
   } else {
-    if(!in_pmem(waddr)) out_of_bound(waddr);;
+    if(!in_pmem(waddr)) out_of_bound(waddr);
     uint8_t *waddr_temp = guest_to_host(waddr);
     *(uint32_t *)waddr_temp = wdata;
   }
