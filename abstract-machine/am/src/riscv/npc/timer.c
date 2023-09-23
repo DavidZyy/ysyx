@@ -3,6 +3,7 @@
 
 static uint64_t boot_time = 0;
  
+#include <stdio.h>
 static uint64_t read_time() __attribute__((noinline));
 /* access can only get old data! so get error!! */
 /* the clock frequency in nemu */
@@ -11,6 +12,7 @@ static uint64_t read_time() {
   /* hi should put before before lo, or the rtc_io_handler will not be 
     called, because it has "if (!is_write && offset == 4) {",  */
   uint32_t hi = *(volatile uint32_t *)(RTC_ADDR + 4);
+  printf("read hi: %x\n", hi);
   uint32_t lo = *(volatile uint32_t *)(RTC_ADDR + 0);
   uint64_t time = ((uint64_t)hi << 32) | lo;
   return time;
