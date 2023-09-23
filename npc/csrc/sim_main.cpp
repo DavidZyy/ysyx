@@ -184,7 +184,7 @@ int main(int argc, char *argv[]) {
   for(i = 0; i < times; i++){
 
     npc_exec_once();
-    // vga_update_screen();
+    vga_update_screen();
     // nemu_exec_once();
     // log_write
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);

@@ -12,6 +12,7 @@
 
 
 uint32_t vmem[SCREEN_W * SCREEN_H];
+uint32_t vgactl_port_base[2];
 
 #include <SDL2/SDL.h>
 
@@ -40,13 +41,14 @@ static inline void update_screen() {
 }
 
 void vga_update_screen() {
-  if(*(uint32_t *)(VGACTL_ADDR + 4)){
+  if(vgactl_port_base[1]){
     update_screen();
-    *(uint32_t *)(VGACTL_ADDR + 4) = 0;
+    vgactl_port_base[1] = 0;
   }
 }
 
 void init_vga() {
+    vgactl_port_base[0] = (SCREEN_W << 16) | SCREEN_H;
     init_screen();
     memset(vmem, 0, sizeof(vmem));
 }

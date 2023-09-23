@@ -44,6 +44,8 @@ static void out_of_bound(paddr_t addr) {
 }
 
 uint64_t us;
+extern uint32_t vmem[SCREEN_W * SCREEN_H];
+extern uint32_t vgactl_port_base[2];
 #include<sys/time.h>
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
@@ -60,7 +62,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   } else if (raddr == SERIAL_PORT) {
 
   } else if (raddr == VGACTL_ADDR) {
-    *rdata = SCREEN_W << 16 | SCREEN_H;
+    *rdata = vgactl_port_base[0];
   } else if (in_vmem(raddr)) {
 
   } else {
@@ -71,7 +73,6 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   }
 }
 
-extern uint32_t vmem[SCREEN_W * SCREEN_H];
 extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
   Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
 
