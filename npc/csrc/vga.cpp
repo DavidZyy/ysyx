@@ -11,7 +11,7 @@
 #include "vga.h"
 
 
-uint32_t vmem[SCREEN_W * SCREEN_H];
+uint8_t vmem[SCREEN_W * SCREEN_H * sizeof(uint32_t)];
 uint32_t vgactl_port_base[2];
 
 #include <SDL2/SDL.h>
