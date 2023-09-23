@@ -32,6 +32,20 @@ static void init_screen() {
         SDL_TEXTUREACCESS_STATIC, SCREEN_W, SCREEN_H);
 }
 
+static inline void update_screen() {
+  SDL_UpdateTexture(texture, NULL, vmem, SCREEN_W * sizeof(uint32_t));
+  SDL_RenderClear(renderer);
+  SDL_RenderCopy(renderer, texture, NULL, NULL);
+  SDL_RenderPresent(renderer);
+}
+
+void vga_update_screen() {
+  if(*(uint32_t *)(VGACTL_ADDR + 4)){
+    update_screen();
+    *(uint32_t *)(VGACTL_ADDR + 4) = 0;
+  }
+}
+
 void init_vga() {
     init_screen();
     memset(vmem, 0, sizeof(vmem));

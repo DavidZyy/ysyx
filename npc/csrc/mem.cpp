@@ -33,8 +33,9 @@ static inline bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
 }
 
-static inline bool in_vmem(paddr_t addr) {
 
+static inline bool in_vmem(paddr_t addr) {
+  return (addr >= FB_ADDR) && (addr < FB_ADDR+SCREEN_SZ);
 }
 
 static void out_of_bound(paddr_t addr) {
@@ -60,6 +61,8 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 
   } else if (raddr == VGACTL_ADDR) {
     *rdata = SCREEN_W << 16 | SCREEN_H;
+  } else if (in_vmem(raddr)) {
+
   } else {
     // memory
     if(!in_pmem(raddr)) out_of_bound(raddr);
@@ -68,13 +71,16 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   }
 }
 
-// extern "C" void pmem_write(long long waddr, long long wdata) {
+extern uint32_t vmem[SCREEN_W * SCREEN_H];
 extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
   Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
 
   if (waddr == SERIAL_PORT) {
     // printf("%d: %c", waddr, (char)wdata);
     printf("%c", (char)wdata);
+  } else if(int_vmem(waddr)) {
+    uint8_t *vmem_addr = waddr - FB_ADDR + vmem;
+    *(uint32_t *)vmem_addr = wdata;
   } else {
     if(!in_pmem(waddr)) out_of_bound(waddr);;
     uint8_t *waddr_temp = guest_to_host(waddr);
