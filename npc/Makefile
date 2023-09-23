@@ -40,7 +40,7 @@ include $(NVBOARD_HOME)/scripts/nvboard.mk
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 # $(error $(INC_PATH))
-CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
+CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" -O2
 LDFLAGS += -lSDL2 -lSDL2_image
 
 # cpp file for nvboard and simulation
