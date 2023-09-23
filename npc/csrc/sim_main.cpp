@@ -28,10 +28,13 @@ Vtop* top;
 CPU_state cpu;
 // uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
+/**
+ * close vcd will much faster!
+ */
 void step_and_dump_wave(){
   top->eval();
-  contextp->timeInc(1);
-  tfp->dump(contextp->time());
+  // contextp->timeInc(1);
+  // tfp->dump(contextp->time());
 }
 
 void sim_init(){
