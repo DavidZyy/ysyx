@@ -161,6 +161,7 @@ void init_device() {
 int status = 0;
 
 void vga_update_screen();
+uint8_t* guest_to_host(paddr_t paddr);
 extern uint8_t pmem[CONFIG_MSIZE];
 int main(int argc, char *argv[]) {
   // Assert(0, "hi:%d" , 5);
