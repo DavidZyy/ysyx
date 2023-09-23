@@ -48,13 +48,13 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     struct timeval now;
     gettimeofday(&now, NULL);
     uint64_t us = now.tv_sec * 1000000 + now.tv_usec;
-    printf("read us : %ld\n", us);
+    printf("read us : %lx\n", us);
     *rdata = (uint32_t)(us>>32);
-    printf("read 4: %d\n", *rdata);
+    printf("read 4: %x\n", *rdata);
   } else if (raddr == RTC_ADDR) {
     // must be called after above
     *rdata = (uint32_t)us;
-    printf("read: %d\n", *rdata);
+    printf("read: %x\n", *rdata);
     // printf("HH\n");
   } else if (raddr == SERIAL_PORT){
 
