@@ -95,7 +95,6 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
 }
 
 extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
-  printf("%x\n", (uint32_t *)guest_to_host(0x8000dffc));
   pmem_read(raddr, rdata);
 }
 
