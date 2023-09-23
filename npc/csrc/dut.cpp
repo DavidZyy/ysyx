@@ -72,6 +72,13 @@ error:
   return false;
 }
 
+const char *regs[] = {
+  "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
+  "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
+  "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
+  "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
+};
+
 void isa_reg_display(CPU_state *ref){
   // for(int i = 0; i < 32; i++){
   //   if(ref->gpr[i] != cpu.gpr[i]) {
@@ -82,8 +89,8 @@ void isa_reg_display(CPU_state *ref){
   // }
   printf("npc(dut)     nemu(ref)\n");
   for (int i = 0; i < 32; i++) {
-    if(ref->gpr[i] != gpr(i)) {
-      printf("%-3s: " FMT_WORD "  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
+    if(ref->gpr[i] != cpu.gpr[i]) {
+      printf("%-3s: " FMT_WORD "  ", regs[i], cpu.gpr[i]);  // Use width and alignment specifiers in the format string
       printf("%-3s: " FMT_WORD "  ", regs[i], ref->gpr[i]);
       printf("\n");
     }
