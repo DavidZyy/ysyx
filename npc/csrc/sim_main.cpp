@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
 
   uint64_t i;
   // uint64_t times = -1;
-  uint64_t times = 100000;
+  uint64_t times = 1000000;
 
   int begin = 1;
 
@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
     npc_exec_once();
     // nemu_exec_once();
     // log_write
-    log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
+    // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
     
     if(terminal)
       break;
