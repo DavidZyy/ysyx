@@ -55,7 +55,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     *rdata = (uint32_t)us;
   } else if (raddr == SERIAL_PORT) {
 
-  } else if (raddr == VGACTL_ADDR) {
+  } else if (raddr == 0) {
     *rdata = screen_width << 16 | screen_height;
   } else {
     // memory
