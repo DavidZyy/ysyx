@@ -72,6 +72,7 @@ sim:
 	$(call git_commit, "sim RTL")
 	@verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
+	$(addprefix -LDFLAGS , $(LDFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(CPP_FILES) $(C_FILES) $(VSRCS) $(SVSRCS)
 	@obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
