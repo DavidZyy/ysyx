@@ -34,8 +34,8 @@ CPU_state cpu;
  */
 void step_and_dump_wave(){
   top->eval();
-  contextp->timeInc(1);
-  tfp->dump(contextp->time());
+  // contextp->timeInc(1);
+  // tfp->dump(contextp->time());
 }
 
 void sim_init(){
