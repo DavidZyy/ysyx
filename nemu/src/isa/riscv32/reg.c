@@ -37,29 +37,35 @@ void isa_reg_display(CPU_state *ref) {
     if(ref->gpr[i] != gpr(i)) {
       // printf("%-3s: %016"XX"  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
       // printf("%-3s: %016"XX"  ", regs[i], ref->gpr[i]);
-      printf("%-3s: %"XX"  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
-      printf("%-3s: %"XX"  ", regs[i], ref->gpr[i]);
+      // printf("%-3s: %"XX"  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
+      // printf("%-3s: %"XX"  ", regs[i], ref->gpr[i]);
+      printf("%-3s: " FMT_WORD "  ", regs[i], gpr(i));  // Use width and alignment specifiers in the format string
+      printf("%-3s: " FMT_WORD "  ", regs[i], ref->gpr[i]);
       printf("\n");
     }
   }
 
   for (int i = 0; i < csr_cnt; i++) {
     if(ref->csr[i] != cpu.csr[i]) {
-      printf("%-7s: %016"XX"  ", csrs[i], cpu.csr[i]);  // Use width and alignment specifiers in the format string
-      printf("%-7s: %016"XX"  ", csrs[i], ref->csr[i]);
+      // printf("%-7s: %016"XX"  ", csrs[i], cpu.csr[i]);  // Use width and alignment specifiers in the format string
+      // printf("%-7s: %016"XX"  ", csrs[i], ref->csr[i]);
+      printf("%-7s: " FMT_WORD "  ", csrs[i], cpu.csr[i]);  // Use width and alignment specifiers in the format string
+      printf("%-7s: " FMT_WORD "  ", csrs[i], ref->csr[i]);
       printf("\n");
     }
   }
 
   if(ref->mstatus.raw != cpu.mstatus.raw) {
-    printf("%-7s: %016"XX"  ", "mstatus", cpu.mstatus.raw);  // Use width and alignment specifiers in the format string
-    printf("%-7s: %016"XX"  ", "mstatus", ref->mstatus.raw);
+    // printf("%-7s: %016"XX"  ", "mstatus", cpu.mstatus.raw);  // Use width and alignment specifiers in the format string
+    // printf("%-7s: %016"XX"  ", "mstatus", ref->mstatus.raw);
+    printf("%-7s: " FMT_WORD "  ", "mstatus", cpu.mstatus.raw);  // Use width and alignment specifiers in the format string
+    printf("%-7s: " FMT_WORD "  ", "mstatus", ref->mstatus.raw);
     printf("\n");
   }
 
   if (ref->pc != cpu.pc) {
-      printf("%-3s: %016"XX"  ", "pc", cpu.pc);  // Use width and alignment specifiers in the format string
-      printf("%-3s: %016"XX"  ", "pc", ref->pc);
+      printf("%-3s: " FMT_WORD "  ", "pc", cpu.pc);  // Use width and alignment specifiers in the format string
+      printf("%-3s: " FMT_WORD "  ", "pc", ref->pc);
       printf("\n");
   }
 }

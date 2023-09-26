@@ -13,6 +13,7 @@
 #include "mem.h"
 #include "isa.h"
 #include "debug.h"
+#include "vga.h"
 
 // c library
 // #include <iostream>
@@ -28,10 +29,13 @@ Vtop* top;
 CPU_state cpu;
 // uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
+/**
+ * close vcd will much faster!
+ */
 void step_and_dump_wave(){
   top->eval();
-  contextp->timeInc(1);
-  tfp->dump(contextp->time());
+  // contextp->timeInc(1);
+  // tfp->dump(contextp->time());
 }
 
 void sim_init(){
@@ -141,6 +145,7 @@ void init_isa() {
   cpu.pc = RESET_VECTOR;
 }
 
+uint8_t* guest_to_host(paddr_t paddr);
 // similar to monitor
 void init_monitor(int argc, char *argv[]) {
   // print_arg(argc, argv);
@@ -150,11 +155,20 @@ void init_monitor(int argc, char *argv[]) {
   init_difftest(argv[2], img_size, 0);
 }
 
+void init_device() {
+  init_vga();
+}
+
 int status = 0;
 
+void vga_update_screen();
+extern uint8_t pmem[CONFIG_MSIZE];
 int main(int argc, char *argv[]) {
   // Assert(0, "hi:%d" , 5);
+  // memset(pmem, 0, sizeof(pmem));
   init_monitor(argc, argv);
+  init_device();
+  Log("wave has closed to make it sim faster");
 
   sim_init();
 
@@ -170,9 +184,11 @@ int main(int argc, char *argv[]) {
 
   int begin = 1;
 
-  for(i = 0; i < times; i++){
+  for (i = 0; i < times; i++) {
 
     npc_exec_once();
+    // if(i&7 == 0) 
+    vga_update_screen();
     // nemu_exec_once();
     // log_write
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);

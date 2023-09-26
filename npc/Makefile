@@ -40,7 +40,7 @@ include $(NVBOARD_HOME)/scripts/nvboard.mk
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 # $(error $(INC_PATH))
-CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
+CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\"" -O2 -g
 LDFLAGS += -lSDL2 -lSDL2_image
 
 # cpp file for nvboard and simulation
@@ -52,9 +52,10 @@ SRC_DIR := ./csrc
 
 # Use find to recursively locate .cpp and .c files in the source directory
 CPP_FILES := $(shell find $(SRC_DIR) -type f -name '*.cpp')
-# C_FILES := $(shell find $(SRC_DIR) -type f -name '*.c')
+C_FILES := $(shell find $(SRC_DIR) -type f -name '*.c')
 
 # $(error $(CPP_FILES))
+# $(error $(C_FILES))
 
 all:
 	@echo "Write this Makefile by your self."
@@ -71,10 +72,11 @@ sim:
 	$(call git_commit, "sim RTL")
 	@verilator --top-module $(TOPNAME) -I$(INCLUDE) -I$(INCLUDE2) -I$(INCLUDE3) \
 	$(addprefix -CFLAGS , $(CFLAGS)) \
+	$(addprefix -LDFLAGS , $(LDFLAGS)) \
 	-trace --cc --exe --build -Wall \
-	$(CPP_FILES) $(VSRCS) $(SVSRCS)
+	$(CPP_FILES) $(C_FILES) $(VSRCS) $(SVSRCS)
 	@obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
-# gtkwave dump.vcd
+	@gtkwave dump.vcd
 
 # sim:
 # 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!

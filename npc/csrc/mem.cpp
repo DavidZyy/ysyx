@@ -7,6 +7,7 @@
 #include "conf.h"
 #include "debug.h"
 #include "npc.h"
+#include "vga.h"
 
 #include "verilated.h"
 #include "verilated_vcd_c.h"
@@ -32,12 +33,19 @@ static inline bool in_pmem(paddr_t addr) {
   return (addr >= CONFIG_MBASE) && (addr - CONFIG_MBASE < CONFIG_MSIZE);
 }
 
+
+static inline bool in_vmem(paddr_t addr) {
+  return (addr >= FB_ADDR) && (addr < FB_ADDR+SCREEN_SZ);
+}
+
 static void out_of_bound(paddr_t addr) {
   panic("npc: address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_pc);
 }
 
 uint64_t us;
+extern uint32_t vmem[SCREEN_W * SCREEN_H];
+extern uint32_t vgactl_port_base[2];
 #include<sys/time.h>
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
@@ -48,16 +56,16 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     struct timeval now;
     gettimeofday(&now, NULL);
     us = now.tv_sec * 1000000 + now.tv_usec;
-    // printf("read us : %lx\n", us);
     *rdata = (uint32_t)(us>>32);
-    // printf("read 4: %x\n", *rdata);
   } else if (raddr == RTC_ADDR) {
-    // must be called after above
-    // printf("read us : %lx\n", us);
     *rdata = (uint32_t)us;
-    // printf("read: %x\n", *rdata);
-    // printf("HH\n");
-  } else if (raddr == SERIAL_PORT){
+  } else if (raddr == SERIAL_PORT) {
+
+  } else if (raddr == VGACTL_ADDR) {
+    *rdata = vgactl_port_base[0];
+  } else if (raddr == VGACTL_ADDR+4) {
+
+  } else if (in_vmem(raddr)) {
 
   } else {
     // memory
@@ -67,15 +75,21 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   }
 }
 
-// extern "C" void pmem_write(long long waddr, long long wdata) {
 extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
   Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
 
   if (waddr == SERIAL_PORT) {
     // printf("%d: %c", waddr, (char)wdata);
     printf("%c", (char)wdata);
+  } else if(in_vmem(waddr)) {
+    // log_write("addr: %x, data: %x\n", waddr, wdata);
+    // uint8_t *vmem_addr = waddr - FB_ADDR + (uint8_t *)vmem + 1600 * 100;
+    uint8_t *vmem_addr = waddr - FB_ADDR + (uint8_t *)vmem;
+    *(uint32_t *)vmem_addr = wdata;
+  } else if (waddr == VGACTL_ADDR+4) {
+    vgactl_port_base[1] = wdata;
   } else {
-    if(!in_pmem(waddr)) out_of_bound(waddr);;
+    if(!in_pmem(waddr)) out_of_bound(waddr);
     uint8_t *waddr_temp = guest_to_host(waddr);
     *(uint32_t *)waddr_temp = wdata;
   }
@@ -86,6 +100,7 @@ extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
 }
 
 extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
+  // printf("%x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
   pmem_read(raddr, rdata);
   // store also call read
   // if(top->io_out_is_load) {
@@ -101,7 +116,8 @@ extern "C" void vaddr_write(sword_t waddr, sword_t wdata) {
 }
 
 long load_img(const char *img_file) {
-  memset(pmem, 1, sizeof(pmem));
+  // !!!!!!!!!!!!!!!!!!! memset 1 ???? what shit?
+  memset(pmem, 0, sizeof(pmem));
   assert(img_file != NULL);
 
   FILE *fp = fopen(img_file, "rb");
