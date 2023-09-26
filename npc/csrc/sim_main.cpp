@@ -151,9 +151,7 @@ void init_monitor(int argc, char *argv[]) {
   // print_arg(argc, argv);
   init_log(argv[3]);
   init_isa();
-  // printf("mem is: %x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
   long img_size = load_img(argv[1]);
-  // printf("mem is: %x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
   init_difftest(argv[2], img_size, 0);
 }
 
@@ -190,7 +188,7 @@ int main(int argc, char *argv[]) {
 
     npc_exec_once();
     // if(i&7 == 0) 
-    // vga_update_screen();
+    vga_update_screen();
     // nemu_exec_once();
     // log_write
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
