@@ -2,7 +2,8 @@
 #include <klib-macros.h>
 
 void __am_timer_init();
-
+void __am_gpu_init();
+// void __am_audio_init();
 void __am_timer_rtc(AM_TIMER_RTC_T *);
 void __am_timer_uptime(AM_TIMER_UPTIME_T *);
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *);
@@ -30,7 +31,10 @@ static void fail(void *buf) { panic("access nonexist register"); }
 bool ioe_init() {
   for (int i = 0; i < LENGTH(lut); i++)
     if (!lut[i]) lut[i] = fail;
+  /* forget this !!init of gpu!*/
+  __am_gpu_init();
   __am_timer_init();
+  // __am_audio_init();
   return true;
 }
 
