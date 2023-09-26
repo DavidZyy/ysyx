@@ -116,7 +116,7 @@ extern "C" void vaddr_write(sword_t waddr, sword_t wdata) {
 
 long load_img(const char *img_file) {
   // !!!!!!!!!!!!!!!!!!! memset 1 ???? what shit?
-  memset(pmem, 0, sizeof(pmem));
+  memset(pmem, 1, sizeof(pmem));
   assert(img_file != NULL);
 
   FILE *fp = fopen(img_file, "rb");
