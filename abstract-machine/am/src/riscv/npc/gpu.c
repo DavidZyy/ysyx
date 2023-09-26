@@ -21,7 +21,6 @@ void __am_gpu_init() {
   int a = inl(VGACTL_ADDR);
   w = a >> 16;
   h = a & 0xffff;
-  printf("w: %d, h: %d\n", w, h);
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
