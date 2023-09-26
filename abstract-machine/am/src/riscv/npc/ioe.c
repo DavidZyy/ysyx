@@ -33,7 +33,7 @@ bool ioe_init() {
     if (!lut[i]) lut[i] = fail;
   /* forget this !!init of gpu!*/
   __am_gpu_init();
-  __am_timer_init();
+  // __am_timer_init();
   // __am_audio_init();
   return true;
 }
