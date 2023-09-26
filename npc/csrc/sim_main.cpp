@@ -151,9 +151,9 @@ void init_monitor(int argc, char *argv[]) {
   // print_arg(argc, argv);
   init_log(argv[3]);
   init_isa();
-  printf("mem is: %x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
+  // printf("mem is: %x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
   long img_size = load_img(argv[1]);
-  printf("mem is: %x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
+  // printf("mem is: %x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
   init_difftest(argv[2], img_size, 0);
 }
 
