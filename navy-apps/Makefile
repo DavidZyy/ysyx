@@ -96,7 +96,7 @@ CFLAGS   += -O0 -MMD $(INCFLAGS) -static -D__NAVY__ \
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  +=  $(CFLAGS)
 
-$(error $(CFLAGS))
+# $(error $(CFLAGS))
 ## 4. ISA-Specific Configurations
 
 ### Paste in ISA-specific configurations (e.g., from `scripts/x86.mk`)
