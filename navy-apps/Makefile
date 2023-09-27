@@ -176,6 +176,7 @@ archive: $(ARCHIVE)
 ### Install an application to fsimg
 install: app
 	@echo + INSTALL "->" $(NAME)
+	objdump -d $(APP) > $(APP).txt
 	@mkdir -p $(NAVY_HOME)/fsimg/bin
 	@cp $(APP) $(NAVY_HOME)/fsimg/bin/$(NAME)
 
