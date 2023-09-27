@@ -92,6 +92,7 @@ module Decoder(
   output        io_out_ctrl_sig_mem_wen,
   output        io_out_ctrl_sig_reg_wen,
   output        io_out_ctrl_sig_is_ebreak,
+  output        io_out_ctrl_sig_not_impl,
   output [1:0]  io_out_ctrl_sig_src1_op,
   output [1:0]  io_out_ctrl_sig_src2_op,
   output [3:0]  io_out_ctrl_sig_alu_op,
@@ -395,113 +396,120 @@ module Decoder(
     decode_info_andMatrixInput_5_8,decode_info_andMatrixInput_6,decode_info_andMatrixInput_6_18,
     decode_info_andMatrixInput_7,decode_info_lo_47}; // @[Cat.scala 33:92]
   wire  _decode_info_T_95 = &_decode_info_T_94; // @[pla.scala 98:74]
-  wire  _decode_info_orMatrixOutputs_T = |_decode_info_T_89; // @[pla.scala 114:39]
-  wire [1:0] _decode_info_orMatrixOutputs_T_1 = {_decode_info_T_17,_decode_info_T_21}; // @[Cat.scala 33:92]
-  wire  _decode_info_orMatrixOutputs_T_2 = |_decode_info_orMatrixOutputs_T_1; // @[pla.scala 114:39]
-  wire [5:0] decode_info_orMatrixOutputs_lo = {_decode_info_T_35,_decode_info_T_37,_decode_info_T_41,_decode_info_T_51,
-    _decode_info_T_77,_decode_info_T_81}; // @[Cat.scala 33:92]
-  wire [11:0] _decode_info_orMatrixOutputs_T_3 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_7,_decode_info_T_13,
-    _decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo}; // @[Cat.scala 33:92]
+  wire [6:0] decode_info_orMatrixOutputs_lo = {_decode_info_T_37,_decode_info_T_41,_decode_info_T_51,_decode_info_T_71,
+    _decode_info_T_77,_decode_info_T_81,_decode_info_T_89}; // @[Cat.scala 33:92]
+  wire [14:0] _decode_info_orMatrixOutputs_T = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_13,
+    _decode_info_T_19,_decode_info_T_23,_decode_info_T_25,_decode_info_T_33,decode_info_orMatrixOutputs_lo}; // @[Cat.scala 33:92]
+  wire  _decode_info_orMatrixOutputs_T_1 = |_decode_info_orMatrixOutputs_T; // @[pla.scala 114:39]
+  wire  _decode_info_orMatrixOutputs_T_2 = |_decode_info_T_89; // @[pla.scala 114:39]
+  wire [1:0] _decode_info_orMatrixOutputs_T_3 = {_decode_info_T_17,_decode_info_T_21}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_4 = |_decode_info_orMatrixOutputs_T_3; // @[pla.scala 114:39]
-  wire [4:0] decode_info_orMatrixOutputs_lo_1 = {_decode_info_T_37,_decode_info_T_41,_decode_info_T_51,_decode_info_T_71
-    ,_decode_info_T_77}; // @[Cat.scala 33:92]
-  wire [10:0] _decode_info_orMatrixOutputs_T_5 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_13,
-    _decode_info_T_19,_decode_info_T_33,decode_info_orMatrixOutputs_lo_1}; // @[Cat.scala 33:92]
+  wire [5:0] decode_info_orMatrixOutputs_lo_1 = {_decode_info_T_35,_decode_info_T_37,_decode_info_T_41,_decode_info_T_51
+    ,_decode_info_T_77,_decode_info_T_81}; // @[Cat.scala 33:92]
+  wire [11:0] _decode_info_orMatrixOutputs_T_5 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_7,_decode_info_T_13,
+    _decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo_1}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_6 = |_decode_info_orMatrixOutputs_T_5; // @[pla.scala 114:39]
-  wire [6:0] decode_info_orMatrixOutputs_lo_2 = {_decode_info_T_33,_decode_info_T_37,_decode_info_T_41,_decode_info_T_51
-    ,_decode_info_T_71,_decode_info_T_77,_decode_info_T_81}; // @[Cat.scala 33:92]
-  wire [13:0] _decode_info_orMatrixOutputs_T_7 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_13,
-    _decode_info_T_19,_decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo_2}; // @[Cat.scala 33:92]
+  wire [4:0] decode_info_orMatrixOutputs_lo_2 = {_decode_info_T_37,_decode_info_T_41,_decode_info_T_51,_decode_info_T_71
+    ,_decode_info_T_77}; // @[Cat.scala 33:92]
+  wire [10:0] _decode_info_orMatrixOutputs_T_7 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_13,
+    _decode_info_T_19,_decode_info_T_33,decode_info_orMatrixOutputs_lo_2}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_8 = |_decode_info_orMatrixOutputs_T_7; // @[pla.scala 114:39]
-  wire [3:0] _decode_info_orMatrixOutputs_T_9 = {_decode_info_T_15,_decode_info_T_29,_decode_info_T_37,_decode_info_T_71
-    }; // @[Cat.scala 33:92]
+  wire [6:0] decode_info_orMatrixOutputs_lo_3 = {_decode_info_T_33,_decode_info_T_37,_decode_info_T_41,_decode_info_T_51
+    ,_decode_info_T_71,_decode_info_T_77,_decode_info_T_81}; // @[Cat.scala 33:92]
+  wire [13:0] _decode_info_orMatrixOutputs_T_9 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_13,
+    _decode_info_T_19,_decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo_3}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_10 = |_decode_info_orMatrixOutputs_T_9; // @[pla.scala 114:39]
-  wire [4:0] decode_info_orMatrixOutputs_lo_4 = {_decode_info_T_35,_decode_info_T_41,_decode_info_T_51,_decode_info_T_77
-    ,_decode_info_T_81}; // @[Cat.scala 33:92]
-  wire [10:0] _decode_info_orMatrixOutputs_T_11 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_11,
-    _decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo_4}; // @[Cat.scala 33:92]
+  wire [3:0] _decode_info_orMatrixOutputs_T_11 = {_decode_info_T_15,_decode_info_T_29,_decode_info_T_37,
+    _decode_info_T_71}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_12 = |_decode_info_orMatrixOutputs_T_11; // @[pla.scala 114:39]
-  wire [5:0] decode_info_orMatrixOutputs_lo_5 = {_decode_info_T_37,_decode_info_T_59,_decode_info_T_61,_decode_info_T_69
-    ,_decode_info_T_71,_decode_info_T_79}; // @[Cat.scala 33:92]
-  wire [12:0] _decode_info_orMatrixOutputs_T_13 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_13,
-    _decode_info_T_19,_decode_info_T_27,_decode_info_T_33,decode_info_orMatrixOutputs_lo_5}; // @[Cat.scala 33:92]
+  wire [4:0] decode_info_orMatrixOutputs_lo_5 = {_decode_info_T_35,_decode_info_T_41,_decode_info_T_51,_decode_info_T_77
+    ,_decode_info_T_81}; // @[Cat.scala 33:92]
+  wire [10:0] _decode_info_orMatrixOutputs_T_13 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_11,
+    _decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo_5}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_14 = |_decode_info_orMatrixOutputs_T_13; // @[pla.scala 114:39]
-  wire [6:0] _decode_info_orMatrixOutputs_T_15 = {_decode_info_T_53,_decode_info_T_57,_decode_info_T_59,
-    _decode_info_T_61,_decode_info_T_91,_decode_info_T_93,_decode_info_T_95}; // @[Cat.scala 33:92]
+  wire [5:0] decode_info_orMatrixOutputs_lo_6 = {_decode_info_T_37,_decode_info_T_59,_decode_info_T_61,_decode_info_T_69
+    ,_decode_info_T_71,_decode_info_T_79}; // @[Cat.scala 33:92]
+  wire [12:0] _decode_info_orMatrixOutputs_T_15 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_13,
+    _decode_info_T_19,_decode_info_T_27,_decode_info_T_33,decode_info_orMatrixOutputs_lo_6}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_16 = |_decode_info_orMatrixOutputs_T_15; // @[pla.scala 114:39]
-  wire [3:0] _decode_info_orMatrixOutputs_T_17 = {_decode_info_T_53,_decode_info_T_57,_decode_info_T_65,
-    _decode_info_T_67}; // @[Cat.scala 33:92]
+  wire [6:0] _decode_info_orMatrixOutputs_T_17 = {_decode_info_T_53,_decode_info_T_57,_decode_info_T_59,
+    _decode_info_T_61,_decode_info_T_91,_decode_info_T_93,_decode_info_T_95}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_18 = |_decode_info_orMatrixOutputs_T_17; // @[pla.scala 114:39]
-  wire [3:0] _decode_info_orMatrixOutputs_T_19 = {_decode_info_T_41,_decode_info_T_45,_decode_info_T_77,
-    _decode_info_T_81}; // @[Cat.scala 33:92]
+  wire [3:0] _decode_info_orMatrixOutputs_T_19 = {_decode_info_T_53,_decode_info_T_57,_decode_info_T_65,
+    _decode_info_T_67}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_20 = |_decode_info_orMatrixOutputs_T_19; // @[pla.scala 114:39]
-  wire [9:0] _decode_info_orMatrixOutputs_T_21 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_7,_decode_info_T_29,
-    _decode_info_T_33,_decode_info_T_37,_decode_info_T_41,_decode_info_T_51,_decode_info_T_71,_decode_info_T_77}; // @[Cat.scala 33:92]
+  wire [3:0] _decode_info_orMatrixOutputs_T_21 = {_decode_info_T_41,_decode_info_T_45,_decode_info_T_77,
+    _decode_info_T_81}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_22 = |_decode_info_orMatrixOutputs_T_21; // @[pla.scala 114:39]
-  wire [5:0] decode_info_orMatrixOutputs_lo_11 = {_decode_info_T_33,_decode_info_T_41,_decode_info_T_51,
+  wire [9:0] _decode_info_orMatrixOutputs_T_23 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_7,_decode_info_T_29,
+    _decode_info_T_33,_decode_info_T_37,_decode_info_T_41,_decode_info_T_51,_decode_info_T_71,_decode_info_T_77}; // @[Cat.scala 33:92]
+  wire  _decode_info_orMatrixOutputs_T_24 = |_decode_info_orMatrixOutputs_T_23; // @[pla.scala 114:39]
+  wire [5:0] decode_info_orMatrixOutputs_lo_12 = {_decode_info_T_33,_decode_info_T_41,_decode_info_T_51,
     _decode_info_T_71,_decode_info_T_77,_decode_info_T_81}; // @[Cat.scala 33:92]
-  wire [11:0] _decode_info_orMatrixOutputs_T_25 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_19,
-    _decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo_11}; // @[Cat.scala 33:92]
-  wire  _decode_info_orMatrixOutputs_T_26 = |_decode_info_orMatrixOutputs_T_25; // @[pla.scala 114:39]
-  wire [2:0] _decode_info_orMatrixOutputs_T_27 = {_decode_info_T_31,_decode_info_T_37,_decode_info_T_73}; // @[Cat.scala 33:92]
+  wire [11:0] _decode_info_orMatrixOutputs_T_27 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_19,
+    _decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo_12}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_28 = |_decode_info_orMatrixOutputs_T_27; // @[pla.scala 114:39]
-  wire [2:0] _decode_info_orMatrixOutputs_T_29 = {_decode_info_T_33,_decode_info_T_83,_decode_info_T_85}; // @[Cat.scala 33:92]
+  wire [2:0] _decode_info_orMatrixOutputs_T_29 = {_decode_info_T_31,_decode_info_T_37,_decode_info_T_73}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_30 = |_decode_info_orMatrixOutputs_T_29; // @[pla.scala 114:39]
-  wire [1:0] _decode_info_orMatrixOutputs_T_31 = {_decode_info_T_47,_decode_info_T_73}; // @[Cat.scala 33:92]
+  wire [2:0] _decode_info_orMatrixOutputs_T_31 = {_decode_info_T_33,_decode_info_T_83,_decode_info_T_85}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_32 = |_decode_info_orMatrixOutputs_T_31; // @[pla.scala 114:39]
-  wire  _decode_info_orMatrixOutputs_T_33 = |_decode_info_T_87; // @[pla.scala 114:39]
-  wire [2:0] _decode_info_orMatrixOutputs_T_34 = {_decode_info_T_9,_decode_info_T_43,_decode_info_T_75}; // @[Cat.scala 33:92]
-  wire  _decode_info_orMatrixOutputs_T_35 = |_decode_info_orMatrixOutputs_T_34; // @[pla.scala 114:39]
-  wire [2:0] _decode_info_orMatrixOutputs_T_36 = {_decode_info_T_21,_decode_info_T_39,_decode_info_T_49}; // @[Cat.scala 33:92]
+  wire [1:0] _decode_info_orMatrixOutputs_T_33 = {_decode_info_T_47,_decode_info_T_73}; // @[Cat.scala 33:92]
+  wire  _decode_info_orMatrixOutputs_T_34 = |_decode_info_orMatrixOutputs_T_33; // @[pla.scala 114:39]
+  wire  _decode_info_orMatrixOutputs_T_35 = |_decode_info_T_87; // @[pla.scala 114:39]
+  wire [2:0] _decode_info_orMatrixOutputs_T_36 = {_decode_info_T_9,_decode_info_T_43,_decode_info_T_75}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_37 = |_decode_info_orMatrixOutputs_T_36; // @[pla.scala 114:39]
-  wire [1:0] _decode_info_orMatrixOutputs_T_38 = {_decode_info_T_21,_decode_info_T_63}; // @[Cat.scala 33:92]
+  wire [2:0] _decode_info_orMatrixOutputs_T_38 = {_decode_info_T_21,_decode_info_T_39,_decode_info_T_49}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_39 = |_decode_info_orMatrixOutputs_T_38; // @[pla.scala 114:39]
-  wire  _decode_info_orMatrixOutputs_T_40 = |_decode_info_T_55; // @[pla.scala 114:39]
-  wire [5:0] decode_info_orMatrixOutputs_lo_lo_8 = {_decode_info_orMatrixOutputs_T_10,_decode_info_orMatrixOutputs_T_8,
+  wire [1:0] _decode_info_orMatrixOutputs_T_40 = {_decode_info_T_21,_decode_info_T_63}; // @[Cat.scala 33:92]
+  wire  _decode_info_orMatrixOutputs_T_41 = |_decode_info_orMatrixOutputs_T_40; // @[pla.scala 114:39]
+  wire  _decode_info_orMatrixOutputs_T_42 = |_decode_info_T_55; // @[pla.scala 114:39]
+  wire [5:0] decode_info_orMatrixOutputs_lo_lo_9 = {_decode_info_orMatrixOutputs_T_10,_decode_info_orMatrixOutputs_T_8,
     _decode_info_orMatrixOutputs_T_6,_decode_info_orMatrixOutputs_T_4,_decode_info_orMatrixOutputs_T_2,
-    _decode_info_orMatrixOutputs_T}; // @[Cat.scala 33:92]
-  wire [11:0] decode_info_orMatrixOutputs_lo_12 = {_decode_info_orMatrixOutputs_T_22,_decode_info_orMatrixOutputs_T_20,
-    _decode_info_orMatrixOutputs_T_18,_decode_info_orMatrixOutputs_T_16,_decode_info_orMatrixOutputs_T_14,
-    _decode_info_orMatrixOutputs_T_12,decode_info_orMatrixOutputs_lo_lo_8}; // @[Cat.scala 33:92]
-  wire [5:0] decode_info_orMatrixOutputs_hi_lo_9 = {_decode_info_orMatrixOutputs_T_33,_decode_info_orMatrixOutputs_T_32,
-    _decode_info_orMatrixOutputs_T_30,_decode_info_orMatrixOutputs_T_28,_decode_info_orMatrixOutputs_T_26,
-    _decode_info_orMatrixOutputs_T_4}; // @[Cat.scala 33:92]
-  wire [24:0] decode_info_orMatrixOutputs = {2'h0,1'h0,_decode_info_orMatrixOutputs_T_40,
-    _decode_info_orMatrixOutputs_T_39,_decode_info_orMatrixOutputs_T_37,_decode_info_orMatrixOutputs_T_35,
-    decode_info_orMatrixOutputs_hi_lo_9,decode_info_orMatrixOutputs_lo_12}; // @[Cat.scala 33:92]
-  wire  _decode_info_invMatrixOutputs_T_13 = ~decode_info_orMatrixOutputs[12]; // @[pla.scala 123:40]
+    _decode_info_orMatrixOutputs_T_1}; // @[Cat.scala 33:92]
+  wire [12:0] decode_info_orMatrixOutputs_lo_13 = {_decode_info_orMatrixOutputs_T_24,_decode_info_orMatrixOutputs_T_22,
+    _decode_info_orMatrixOutputs_T_20,_decode_info_orMatrixOutputs_T_18,_decode_info_orMatrixOutputs_T_16,
+    _decode_info_orMatrixOutputs_T_14,_decode_info_orMatrixOutputs_T_12,decode_info_orMatrixOutputs_lo_lo_9}; // @[Cat.scala 33:92]
+  wire [5:0] decode_info_orMatrixOutputs_hi_lo_10 = {_decode_info_orMatrixOutputs_T_35,_decode_info_orMatrixOutputs_T_34
+    ,_decode_info_orMatrixOutputs_T_32,_decode_info_orMatrixOutputs_T_30,_decode_info_orMatrixOutputs_T_28,
+    _decode_info_orMatrixOutputs_T_6}; // @[Cat.scala 33:92]
+  wire [25:0] decode_info_orMatrixOutputs = {2'h0,1'h0,_decode_info_orMatrixOutputs_T_42,
+    _decode_info_orMatrixOutputs_T_41,_decode_info_orMatrixOutputs_T_39,_decode_info_orMatrixOutputs_T_37,
+    decode_info_orMatrixOutputs_hi_lo_10,decode_info_orMatrixOutputs_lo_13}; // @[Cat.scala 33:92]
+  wire  _decode_info_invMatrixOutputs_T_1 = ~decode_info_orMatrixOutputs[0]; // @[pla.scala 123:40]
   wire  _decode_info_invMatrixOutputs_T_15 = ~decode_info_orMatrixOutputs[13]; // @[pla.scala 123:40]
+  wire  _decode_info_invMatrixOutputs_T_17 = ~decode_info_orMatrixOutputs[14]; // @[pla.scala 123:40]
   wire [5:0] decode_info_invMatrixOutputs_lo_lo = {decode_info_orMatrixOutputs[5],decode_info_orMatrixOutputs[4],
     decode_info_orMatrixOutputs[3],decode_info_orMatrixOutputs[2],decode_info_orMatrixOutputs[1],
-    decode_info_orMatrixOutputs[0]}; // @[Cat.scala 33:92]
-  wire [11:0] decode_info_invMatrixOutputs_lo = {decode_info_orMatrixOutputs[11],decode_info_orMatrixOutputs[10],
-    decode_info_orMatrixOutputs[9],decode_info_orMatrixOutputs[8],decode_info_orMatrixOutputs[7],
-    decode_info_orMatrixOutputs[6],decode_info_invMatrixOutputs_lo_lo}; // @[Cat.scala 33:92]
-  wire [5:0] decode_info_invMatrixOutputs_hi_lo = {decode_info_orMatrixOutputs[17],decode_info_orMatrixOutputs[16],
-    decode_info_orMatrixOutputs[15],decode_info_orMatrixOutputs[14],_decode_info_invMatrixOutputs_T_15,
-    _decode_info_invMatrixOutputs_T_13}; // @[Cat.scala 33:92]
-  wire [24:0] decode_info_invMatrixOutputs = {decode_info_orMatrixOutputs[24],decode_info_orMatrixOutputs[23],
-    decode_info_orMatrixOutputs[22],decode_info_orMatrixOutputs[21],decode_info_orMatrixOutputs[20],
-    decode_info_orMatrixOutputs[19],decode_info_orMatrixOutputs[18],decode_info_invMatrixOutputs_hi_lo,
+    _decode_info_invMatrixOutputs_T_1}; // @[Cat.scala 33:92]
+  wire [12:0] decode_info_invMatrixOutputs_lo = {decode_info_orMatrixOutputs[12],decode_info_orMatrixOutputs[11],
+    decode_info_orMatrixOutputs[10],decode_info_orMatrixOutputs[9],decode_info_orMatrixOutputs[8],
+    decode_info_orMatrixOutputs[7],decode_info_orMatrixOutputs[6],decode_info_invMatrixOutputs_lo_lo}; // @[Cat.scala 33:92]
+  wire [5:0] decode_info_invMatrixOutputs_hi_lo = {decode_info_orMatrixOutputs[18],decode_info_orMatrixOutputs[17],
+    decode_info_orMatrixOutputs[16],decode_info_orMatrixOutputs[15],_decode_info_invMatrixOutputs_T_17,
+    _decode_info_invMatrixOutputs_T_15}; // @[Cat.scala 33:92]
+  wire [25:0] decode_info_invMatrixOutputs = {decode_info_orMatrixOutputs[25],decode_info_orMatrixOutputs[24],
+    decode_info_orMatrixOutputs[23],decode_info_orMatrixOutputs[22],decode_info_orMatrixOutputs[21],
+    decode_info_orMatrixOutputs[20],decode_info_orMatrixOutputs[19],decode_info_invMatrixOutputs_hi_lo,
     decode_info_invMatrixOutputs_lo}; // @[Cat.scala 33:92]
-  wire [2:0] inst_type = decode_info_invMatrixOutputs[13:11]; // @[decoder.scala 108:36]
+  wire [2:0] inst_type = decode_info_invMatrixOutputs[14:12]; // @[decoder.scala 109:36]
   wire [31:0] _io_out_imm_T_1 = 3'h1 == inst_type ? imm_i : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _io_out_imm_T_3 = 3'h2 == inst_type ? imm_s : _io_out_imm_T_1; // @[Mux.scala 81:58]
   wire [31:0] _io_out_imm_T_5 = 3'h3 == inst_type ? imm_b : _io_out_imm_T_3; // @[Mux.scala 81:58]
   wire [31:0] _io_out_imm_T_7 = 3'h4 == inst_type ? imm_u : _io_out_imm_T_5; // @[Mux.scala 81:58]
   wire [32:0] _io_out_imm_T_9 = 3'h5 == inst_type ? imm_j : {{1'd0}, _io_out_imm_T_7}; // @[Mux.scala 81:58]
-  assign io_out_imm = _io_out_imm_T_9[31:0]; // @[decoder.scala 109:16]
-  assign io_out_rs1 = io_inst[19:15]; // @[decoder.scala 128:26]
-  assign io_out_rs2 = io_inst[24:20]; // @[decoder.scala 129:26]
-  assign io_out_rd = io_inst[11:7]; // @[decoder.scala 130:26]
-  assign io_out_ctrl_sig_mem_wen = decode_info_invMatrixOutputs[1]; // @[decoder.scala 118:45]
-  assign io_out_ctrl_sig_reg_wen = decode_info_invMatrixOutputs[2]; // @[decoder.scala 119:45]
-  assign io_out_ctrl_sig_is_ebreak = decode_info_invMatrixOutputs[0]; // @[decoder.scala 117:45]
-  assign io_out_ctrl_sig_src1_op = decode_info_invMatrixOutputs[6:5]; // @[decoder.scala 121:45]
-  assign io_out_ctrl_sig_src2_op = decode_info_invMatrixOutputs[4:3]; // @[decoder.scala 120:45]
-  assign io_out_ctrl_sig_alu_op = decode_info_invMatrixOutputs[10:7]; // @[decoder.scala 122:45]
-  assign io_out_ctrl_sig_lsu_op = decode_info_invMatrixOutputs[21:18]; // @[decoder.scala 124:45]
-  assign io_out_ctrl_sig_bru_op = decode_info_invMatrixOutputs[17:14]; // @[decoder.scala 123:45]
+  assign io_out_imm = _io_out_imm_T_9[31:0]; // @[decoder.scala 110:16]
+  assign io_out_rs1 = io_inst[19:15]; // @[decoder.scala 130:26]
+  assign io_out_rs2 = io_inst[24:20]; // @[decoder.scala 131:26]
+  assign io_out_rd = io_inst[11:7]; // @[decoder.scala 132:26]
+  assign io_out_ctrl_sig_mem_wen = decode_info_invMatrixOutputs[2]; // @[decoder.scala 120:45]
+  assign io_out_ctrl_sig_reg_wen = decode_info_invMatrixOutputs[3]; // @[decoder.scala 121:45]
+  assign io_out_ctrl_sig_is_ebreak = decode_info_invMatrixOutputs[1]; // @[decoder.scala 119:45]
+  assign io_out_ctrl_sig_not_impl = decode_info_invMatrixOutputs[0]; // @[decoder.scala 118:45]
+  assign io_out_ctrl_sig_src1_op = decode_info_invMatrixOutputs[7:6]; // @[decoder.scala 123:45]
+  assign io_out_ctrl_sig_src2_op = decode_info_invMatrixOutputs[5:4]; // @[decoder.scala 122:45]
+  assign io_out_ctrl_sig_alu_op = decode_info_invMatrixOutputs[11:8]; // @[decoder.scala 124:45]
+  assign io_out_ctrl_sig_lsu_op = decode_info_invMatrixOutputs[22:19]; // @[decoder.scala 126:45]
+  assign io_out_ctrl_sig_bru_op = decode_info_invMatrixOutputs[18:15]; // @[decoder.scala 125:45]
 endmodule
 module RegFile(
   input         clock,
@@ -695,6 +703,15 @@ module ebreak_moudle(
   );
   assign EbreakBB_i1_is_ebreak = is_ebreak; // @[ebreak.scala 23:30]
 endmodule
+module not_impl_moudle(
+  input   not_impl
+);
+  wire  NotImplBB_i1_not_impl; // @[not_impl.scala 21:30]
+  NotImplBB NotImplBB_i1 ( // @[not_impl.scala 21:30]
+    .not_impl(NotImplBB_i1_not_impl)
+  );
+  assign NotImplBB_i1_not_impl = not_impl; // @[not_impl.scala 23:30]
+endmodule
 module top(
   input         clock,
   input         reset,
@@ -717,6 +734,7 @@ module top(
   wire  Decoder_i_io_out_ctrl_sig_mem_wen; // @[top.scala 25:33]
   wire  Decoder_i_io_out_ctrl_sig_reg_wen; // @[top.scala 25:33]
   wire  Decoder_i_io_out_ctrl_sig_is_ebreak; // @[top.scala 25:33]
+  wire  Decoder_i_io_out_ctrl_sig_not_impl; // @[top.scala 25:33]
   wire [1:0] Decoder_i_io_out_ctrl_sig_src1_op; // @[top.scala 25:33]
   wire [1:0] Decoder_i_io_out_ctrl_sig_src2_op; // @[top.scala 25:33]
   wire [3:0] Decoder_i_io_out_ctrl_sig_alu_op; // @[top.scala 25:33]
@@ -747,20 +765,21 @@ module top(
   wire [3:0] Ram_i_io_in_lsu_op; // @[top.scala 29:33]
   wire [31:0] Ram_i_io_out_rdata; // @[top.scala 29:33]
   wire  ebreak_moudle_i_is_ebreak; // @[top.scala 30:33]
-  wire  _is_load_T_1 = Decoder_i_io_out_ctrl_sig_lsu_op == 4'h4; // @[top.scala 50:42]
-  wire  _is_load_T_2 = Decoder_i_io_out_ctrl_sig_lsu_op == 4'h1 | _is_load_T_1; // @[top.scala 49:61]
-  wire  _is_load_T_3 = Decoder_i_io_out_ctrl_sig_lsu_op == 4'h2; // @[top.scala 51:42]
-  wire  _is_load_T_4 = _is_load_T_2 | _is_load_T_3; // @[top.scala 50:62]
-  wire  _is_load_T_5 = Decoder_i_io_out_ctrl_sig_lsu_op == 4'h5; // @[top.scala 52:42]
-  wire  _is_load_T_6 = _is_load_T_4 | _is_load_T_5; // @[top.scala 51:61]
-  wire  _is_load_T_7 = Decoder_i_io_out_ctrl_sig_lsu_op == 4'h3; // @[top.scala 53:42]
-  wire  is_load = _is_load_T_6 | _is_load_T_7; // @[top.scala 52:62]
-  wire  _is_jump_T_1 = Decoder_i_io_out_ctrl_sig_bru_op == 4'h2; // @[top.scala 57:42]
-  wire  is_jump = Decoder_i_io_out_ctrl_sig_bru_op == 4'h1 | _is_jump_T_1; // @[top.scala 56:62]
-  wire [31:0] _RegFile_i_io_in_wdata_T_1 = PCReg_i_io_cur_pc + 32'h4; // @[top.scala 62:52]
-  wire [31:0] _GEN_0 = is_jump ? _RegFile_i_io_in_wdata_T_1 : Alu_i_io_alu_out_alu_result; // @[top.scala 61:26 62:31 64:31]
-  wire [31:0] _GEN_2 = Decoder_i_io_out_ctrl_sig_src1_op == 2'h1 ? PCReg_i_io_cur_pc : 32'h0; // @[top.scala 72:71 73:30 75:30]
-  wire [31:0] _GEN_4 = Decoder_i_io_out_ctrl_sig_src2_op == 2'h3 ? Decoder_i_io_out_imm : 32'h0; // @[top.scala 80:72 81:30 83:30]
+  wire  not_impl_moudle_i_not_impl; // @[top.scala 31:40]
+  wire  _is_load_T_1 = Decoder_i_io_out_ctrl_sig_lsu_op == 4'h4; // @[top.scala 51:42]
+  wire  _is_load_T_2 = Decoder_i_io_out_ctrl_sig_lsu_op == 4'h1 | _is_load_T_1; // @[top.scala 50:61]
+  wire  _is_load_T_3 = Decoder_i_io_out_ctrl_sig_lsu_op == 4'h2; // @[top.scala 52:42]
+  wire  _is_load_T_4 = _is_load_T_2 | _is_load_T_3; // @[top.scala 51:62]
+  wire  _is_load_T_5 = Decoder_i_io_out_ctrl_sig_lsu_op == 4'h5; // @[top.scala 53:42]
+  wire  _is_load_T_6 = _is_load_T_4 | _is_load_T_5; // @[top.scala 52:61]
+  wire  _is_load_T_7 = Decoder_i_io_out_ctrl_sig_lsu_op == 4'h3; // @[top.scala 54:42]
+  wire  is_load = _is_load_T_6 | _is_load_T_7; // @[top.scala 53:62]
+  wire  _is_jump_T_1 = Decoder_i_io_out_ctrl_sig_bru_op == 4'h2; // @[top.scala 58:42]
+  wire  is_jump = Decoder_i_io_out_ctrl_sig_bru_op == 4'h1 | _is_jump_T_1; // @[top.scala 57:62]
+  wire [31:0] _RegFile_i_io_in_wdata_T_1 = PCReg_i_io_cur_pc + 32'h4; // @[top.scala 63:52]
+  wire [31:0] _GEN_0 = is_jump ? _RegFile_i_io_in_wdata_T_1 : Alu_i_io_alu_out_alu_result; // @[top.scala 62:26 63:31 65:31]
+  wire [31:0] _GEN_2 = Decoder_i_io_out_ctrl_sig_src1_op == 2'h1 ? PCReg_i_io_cur_pc : 32'h0; // @[top.scala 73:71 74:30 76:30]
+  wire [31:0] _GEN_4 = Decoder_i_io_out_ctrl_sig_src2_op == 2'h3 ? Decoder_i_io_out_imm : 32'h0; // @[top.scala 81:72 82:30 84:30]
   PCReg PCReg_i ( // @[top.scala 23:33]
     .clock(PCReg_i_clock),
     .reset(PCReg_i_reset),
@@ -781,6 +800,7 @@ module top(
     .io_out_ctrl_sig_mem_wen(Decoder_i_io_out_ctrl_sig_mem_wen),
     .io_out_ctrl_sig_reg_wen(Decoder_i_io_out_ctrl_sig_reg_wen),
     .io_out_ctrl_sig_is_ebreak(Decoder_i_io_out_ctrl_sig_is_ebreak),
+    .io_out_ctrl_sig_not_impl(Decoder_i_io_out_ctrl_sig_not_impl),
     .io_out_ctrl_sig_src1_op(Decoder_i_io_out_ctrl_sig_src1_op),
     .io_out_ctrl_sig_src2_op(Decoder_i_io_out_ctrl_sig_src2_op),
     .io_out_ctrl_sig_alu_op(Decoder_i_io_out_ctrl_sig_alu_op),
@@ -822,33 +842,37 @@ module top(
   ebreak_moudle ebreak_moudle_i ( // @[top.scala 30:33]
     .is_ebreak(ebreak_moudle_i_is_ebreak)
   );
-  assign io_out_inst = Rom_i_io_inst; // @[top.scala 101:20]
-  assign io_out_pc = PCReg_i_io_cur_pc; // @[top.scala 102:20]
-  assign io_out_is_load = _is_load_T_6 | _is_load_T_7; // @[top.scala 52:62]
+  not_impl_moudle not_impl_moudle_i ( // @[top.scala 31:40]
+    .not_impl(not_impl_moudle_i_not_impl)
+  );
+  assign io_out_inst = Rom_i_io_inst; // @[top.scala 105:20]
+  assign io_out_pc = PCReg_i_io_cur_pc; // @[top.scala 106:20]
+  assign io_out_is_load = _is_load_T_6 | _is_load_T_7; // @[top.scala 53:62]
   assign PCReg_i_clock = clock;
   assign PCReg_i_reset = reset;
-  assign PCReg_i_io_ctrl_br = Bru_i_io_bru_out_ctrl_br; // @[top.scala 33:24]
-  assign PCReg_i_io_addr_target = Alu_i_io_alu_out_alu_result; // @[top.scala 34:29]
-  assign Rom_i_io_addr = PCReg_i_io_cur_pc; // @[top.scala 37:19]
-  assign Decoder_i_io_inst = Rom_i_io_inst; // @[top.scala 40:23]
+  assign PCReg_i_io_ctrl_br = Bru_i_io_bru_out_ctrl_br; // @[top.scala 34:24]
+  assign PCReg_i_io_addr_target = Alu_i_io_alu_out_alu_result; // @[top.scala 35:29]
+  assign Rom_i_io_addr = PCReg_i_io_cur_pc; // @[top.scala 38:19]
+  assign Decoder_i_io_inst = Rom_i_io_inst; // @[top.scala 41:23]
   assign RegFile_i_clock = clock;
   assign RegFile_i_reset = reset;
-  assign RegFile_i_io_in_rs1 = Decoder_i_io_out_rs1; // @[top.scala 44:25]
-  assign RegFile_i_io_in_rs2 = Decoder_i_io_out_rs2; // @[top.scala 45:25]
-  assign RegFile_i_io_in_rd = Decoder_i_io_out_rd; // @[top.scala 43:25]
-  assign RegFile_i_io_in_wdata = is_load ? Ram_i_io_out_rdata : _GEN_0; // @[top.scala 59:19 60:31]
-  assign RegFile_i_io_in_reg_wen = Decoder_i_io_out_ctrl_sig_reg_wen; // @[top.scala 46:29]
-  assign Alu_i_io_alu_in_src1 = Decoder_i_io_out_ctrl_sig_src1_op == 2'h2 ? RegFile_i_io_out_rdata1 : _GEN_2; // @[top.scala 70:63 71:30]
-  assign Alu_i_io_alu_in_src2 = Decoder_i_io_out_ctrl_sig_src2_op == 2'h2 ? RegFile_i_io_out_rdata2 : _GEN_4; // @[top.scala 78:63 79:30]
-  assign Alu_i_io_alu_in_alu_op = Decoder_i_io_out_ctrl_sig_alu_op; // @[top.scala 68:28]
-  assign Bru_i_io_bru_in_src1 = RegFile_i_io_out_rdata1; // @[top.scala 88:28]
-  assign Bru_i_io_bru_in_src2 = RegFile_i_io_out_rdata2; // @[top.scala 89:28]
-  assign Bru_i_io_bru_in_bru_op = Decoder_i_io_out_ctrl_sig_bru_op; // @[top.scala 87:28]
+  assign RegFile_i_io_in_rs1 = Decoder_i_io_out_rs1; // @[top.scala 45:25]
+  assign RegFile_i_io_in_rs2 = Decoder_i_io_out_rs2; // @[top.scala 46:25]
+  assign RegFile_i_io_in_rd = Decoder_i_io_out_rd; // @[top.scala 44:25]
+  assign RegFile_i_io_in_wdata = is_load ? Ram_i_io_out_rdata : _GEN_0; // @[top.scala 60:19 61:31]
+  assign RegFile_i_io_in_reg_wen = Decoder_i_io_out_ctrl_sig_reg_wen; // @[top.scala 47:29]
+  assign Alu_i_io_alu_in_src1 = Decoder_i_io_out_ctrl_sig_src1_op == 2'h2 ? RegFile_i_io_out_rdata1 : _GEN_2; // @[top.scala 71:63 72:30]
+  assign Alu_i_io_alu_in_src2 = Decoder_i_io_out_ctrl_sig_src2_op == 2'h2 ? RegFile_i_io_out_rdata2 : _GEN_4; // @[top.scala 79:63 80:30]
+  assign Alu_i_io_alu_in_alu_op = Decoder_i_io_out_ctrl_sig_alu_op; // @[top.scala 69:28]
+  assign Bru_i_io_bru_in_src1 = RegFile_i_io_out_rdata1; // @[top.scala 89:28]
+  assign Bru_i_io_bru_in_src2 = RegFile_i_io_out_rdata2; // @[top.scala 90:28]
+  assign Bru_i_io_bru_in_bru_op = Decoder_i_io_out_ctrl_sig_bru_op; // @[top.scala 88:28]
   assign Ram_i_clock = clock;
-  assign Ram_i_io_in_mem_ren = _is_load_T_6 | _is_load_T_7; // @[top.scala 52:62]
-  assign Ram_i_io_in_mem_wen = Decoder_i_io_out_ctrl_sig_mem_wen; // @[top.scala 94:25]
-  assign Ram_i_io_in_addr = Alu_i_io_alu_out_alu_result; // @[top.scala 92:23]
-  assign Ram_i_io_in_wdata = RegFile_i_io_out_rdata2; // @[top.scala 93:23]
-  assign Ram_i_io_in_lsu_op = Decoder_i_io_out_ctrl_sig_lsu_op; // @[top.scala 95:25]
-  assign ebreak_moudle_i_is_ebreak = Decoder_i_io_out_ctrl_sig_is_ebreak; // @[top.scala 99:31]
+  assign Ram_i_io_in_mem_ren = _is_load_T_6 | _is_load_T_7; // @[top.scala 53:62]
+  assign Ram_i_io_in_mem_wen = Decoder_i_io_out_ctrl_sig_mem_wen; // @[top.scala 95:25]
+  assign Ram_i_io_in_addr = Alu_i_io_alu_out_alu_result; // @[top.scala 93:23]
+  assign Ram_i_io_in_wdata = RegFile_i_io_out_rdata2; // @[top.scala 94:23]
+  assign Ram_i_io_in_lsu_op = Decoder_i_io_out_ctrl_sig_lsu_op; // @[top.scala 96:25]
+  assign ebreak_moudle_i_is_ebreak = Decoder_i_io_out_ctrl_sig_is_ebreak; // @[top.scala 100:31]
+  assign not_impl_moudle_i_not_impl = Decoder_i_io_out_ctrl_sig_not_impl; // @[top.scala 103:32]
 endmodule
