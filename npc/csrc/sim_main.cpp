@@ -85,14 +85,15 @@ void print_serial(long long ch){
  * I add the condition "top->pc > 0".
  */
 extern "C" void not_impl_exception(){
-  if(top->pc_IF){
+  // if(top->pc_IF){
   terminal = 1;
   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
-  printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
-    (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
+  printf("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
+  // printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
+    // (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
     // (void *)top->pc, top->inst);
   // printf(ANSI_FMT(""))
-  }
+  // }
 }
 
 /**
