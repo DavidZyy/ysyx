@@ -57,12 +57,19 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
+bool check_status_reg() {
+
+}
+
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   for(int i = 0; i < 32; i++){
     if(ref_r->gpr[i] != cpu.gpr[i])
       goto error;
   }
   if(ref_r->pc != cpu.pc)
+    goto error;
+
+  if(!check_status_reg())
     goto error;
 
   return true;
