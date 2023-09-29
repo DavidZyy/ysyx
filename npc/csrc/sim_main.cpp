@@ -106,10 +106,8 @@ void print_arg(int argc, char *argv[]){
   }
 }
 
-// uint64_t *cpu_gpr = NULL;
 word_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-  // cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
   cpu_gpr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
@@ -142,14 +140,12 @@ void nemu_exec_once() {
 }
 
 void init_isa() {
-  // long size = load_init_img();
   cpu.pc = RESET_VECTOR;
 }
 
 uint8_t* guest_to_host(paddr_t paddr);
 // similar to monitor
 void init_monitor(int argc, char *argv[]) {
-  // print_arg(argc, argv);
   init_log(argv[3]);
   init_isa();
   long img_size = load_img(argv[1]);
@@ -165,8 +161,6 @@ int status = 0;
 void vga_update_screen();
 extern uint8_t pmem[CONFIG_MSIZE];
 int main(int argc, char *argv[]) {
-  // Assert(0, "hi:%d" , 5);
-  // memset(pmem, 0, sizeof(pmem));
   init_monitor(argc, argv);
   init_device();
   Log("wave has closed to make it sim faster");
@@ -175,8 +169,6 @@ int main(int argc, char *argv[]) {
 
   top->reset = 1;
   single_cycle(0);
-  // single_cycle(0);
-  // single_cycle(0);
   top->reset = 0;
 
   uint64_t i;
@@ -188,10 +180,8 @@ int main(int argc, char *argv[]) {
   for (i = 0; i < times; i++) {
 
     npc_exec_once();
-    // if(i&7 == 0) 
     // vga_update_screen();
     nemu_exec_once();
-    // log_write
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
     
     if(terminal)

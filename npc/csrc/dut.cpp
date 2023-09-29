@@ -116,13 +116,28 @@ static void checkmem(){
 
 }
 
-void difftest_step(){
+int npc_read_device = 0;
+int npc_write_device = 0;
+
+void difftest_step() {
   CPU_state ref_f;
   int pc = 0;
 
-  ref_difftest_exec(1);
-  ref_difftest_regcpy(&ref_f, DIFFTEST_TO_DUT);
-  checkregs(&ref_f, pc);
+  if (npc_read_device) {
+    // not exec, copy regs to ref
+    ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+    // reset
+    npc_read_device = 0;
+  } else if(npc_write_device) {
+    // do noting
+    // reset
+    npc_write_device = 0;
+  } else {
+    ref_difftest_exec(1);
+    ref_difftest_regcpy(&ref_f, DIFFTEST_TO_DUT);
+    checkregs(&ref_f, pc);
+  }
+
   /* if the instructions is store, check the memory 
     around the destination address */
   // if(is_store())

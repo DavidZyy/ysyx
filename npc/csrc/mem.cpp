@@ -43,12 +43,17 @@ static void out_of_bound(paddr_t addr) {
       addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_pc);
 }
 
+extern int npc_read_device;
+extern int npc_write_device;
+
 uint64_t us;
 extern uint32_t vmem[SCREEN_W * SCREEN_H];
 extern uint32_t vgactl_port_base[2];
 #include<sys/time.h>
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
+
+  npc_read_device = 1;
   if (raddr == 0 && top->io_out_pc == 0) {
     // not ready for inst fetch
     return;
@@ -72,12 +77,14 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     if(!in_pmem(raddr)) out_of_bound(raddr);
     void*raddr_temp = guest_to_host(raddr);
     *rdata = *(word_t *)raddr_temp;
+    npc_read_device = 0;
   }
 }
 
 extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
   Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
 
+  npc_write_device = 1;
   if (waddr == SERIAL_PORT) {
     // printf("%d: %c", waddr, (char)wdata);
     printf("%c", (char)wdata);
@@ -92,6 +99,7 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
     if(!in_pmem(waddr)) out_of_bound(waddr);
     uint8_t *waddr_temp = guest_to_host(waddr);
     *(uint32_t *)waddr_temp = wdata;
+    npc_write_device = 0;
   }
 }
 
