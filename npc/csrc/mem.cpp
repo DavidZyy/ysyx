@@ -53,7 +53,6 @@ extern uint32_t vgactl_port_base[2];
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
 
-  npc_read_device = 1;
   if (raddr == 0 && top->io_out_pc == 0) {
     // not ready for inst fetch
     return;
@@ -62,12 +61,15 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     gettimeofday(&now, NULL);
     us = now.tv_sec * 1000000 + now.tv_usec;
     *rdata = (uint32_t)(us>>32);
+    npc_read_device = 1;
   } else if (raddr == RTC_ADDR) {
     *rdata = (uint32_t)us;
+    npc_read_device = 1;
   } else if (raddr == SERIAL_PORT) {
 
   } else if (raddr == VGACTL_ADDR) {
     *rdata = vgactl_port_base[0];
+    npc_read_device = 1;
   } else if (raddr == VGACTL_ADDR+4) {
 
   } else if (in_vmem(raddr)) {
@@ -77,29 +79,29 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     if(!in_pmem(raddr)) out_of_bound(raddr);
     void*raddr_temp = guest_to_host(raddr);
     *rdata = *(word_t *)raddr_temp;
-    npc_read_device = 0;
   }
 }
 
 extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
   Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
 
-  npc_write_device = 1;
   if (waddr == SERIAL_PORT) {
     // printf("%d: %c", waddr, (char)wdata);
     printf("%c", (char)wdata);
+    npc_write_device = 1;
   } else if(in_vmem(waddr)) {
     // log_write("addr: %x, data: %x\n", waddr, wdata);
     // uint8_t *vmem_addr = waddr - FB_ADDR + (uint8_t *)vmem + 1600 * 100;
     uint8_t *vmem_addr = waddr - FB_ADDR + (uint8_t *)vmem;
     *(uint32_t *)vmem_addr = wdata;
+    npc_write_device = 1;
   } else if (waddr == VGACTL_ADDR+4) {
     vgactl_port_base[1] = wdata;
+    npc_write_device = 1;
   } else {
     if(!in_pmem(waddr)) out_of_bound(waddr);
     uint8_t *waddr_temp = guest_to_host(waddr);
     *(uint32_t *)waddr_temp = wdata;
-    npc_write_device = 0;
   }
 }
 
