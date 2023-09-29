@@ -174,6 +174,8 @@ int main(int argc, char *argv[]) {
   for (i = 0; i < times; i++) {
 
     npc_exec_once();
+    printf("%-3s: " FMT_WORD ,"pc", cpu.pc);
+    printf("\n");
     dump_gpr();
     // vga_update_screen();
     // nemu_exec_once();
