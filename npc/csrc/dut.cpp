@@ -58,7 +58,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 }
 
 bool check_status_reg() {
-
+  return true;
 }
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
