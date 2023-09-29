@@ -129,7 +129,7 @@ void difftest_step() {
     ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), sizeof(pmem), DIFFTEST_TO_REF);
     // reset
     npc_read_device = 0;
-  } else if(0) {
+  } else if(npc_write_device) {
     // do noting
     // reset
     npc_write_device = 0;
