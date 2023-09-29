@@ -80,7 +80,6 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     void*raddr_temp = guest_to_host(raddr);
     *rdata = *(word_t *)raddr_temp;
   }
-    npc_read_device = 0;
 }
 
 extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
