@@ -88,7 +88,7 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
   if (waddr == SERIAL_PORT) {
     // printf("%d: %c", waddr, (char)wdata);
     printf("%c", (char)wdata);
-    // npc_write_device = 1;
+    npc_write_device = 1;
   } else if(in_vmem(waddr)) {
     // log_write("addr: %x, data: %x\n", waddr, wdata);
     // uint8_t *vmem_addr = waddr - FB_ADDR + (uint8_t *)vmem + 1600 * 100;
