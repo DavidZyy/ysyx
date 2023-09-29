@@ -173,6 +173,7 @@ int main(int argc, char *argv[]) {
 
   for (i = 0; i < times; i++) {
 
+    printf("%-3s: " FMT_WORD"\n" ,"pc", cpu.pc);
     npc_exec_once();
     printf("%-3s: " FMT_WORD"\n" ,"pc", cpu.pc);
     dump_gpr();
