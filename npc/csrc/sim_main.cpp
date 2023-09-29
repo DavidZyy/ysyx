@@ -111,15 +111,6 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
   cpu_gpr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
-// 一个输出RTL中通用寄存器的值的示例
-void dump_gpr() {
-  int i;
-  for (i = 0; i < 32; i++) {
-    if(cpu.gpr[i])
-      printf("gpr[%d] = 0x%lx\n", i, cpu.gpr[i]);
-  }
-  printf("\n");
-}
 
 /* get npc's register state */
 void get_cpu() {
@@ -160,6 +151,8 @@ int status = 0;
 
 void vga_update_screen();
 extern uint8_t pmem[CONFIG_MSIZE];
+
+void dump_gpr();
 int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
   init_device();
@@ -174,14 +167,16 @@ int main(int argc, char *argv[]) {
   uint64_t i;
   uint64_t times = -1;
   // uint64_t times = 1000000;
+  uint64_t times = 4;
 
   int begin = 1;
 
   for (i = 0; i < times; i++) {
 
     npc_exec_once();
+    dump_gpr();
     // vga_update_screen();
-    nemu_exec_once();
+    // nemu_exec_once();
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
     
     if(terminal)

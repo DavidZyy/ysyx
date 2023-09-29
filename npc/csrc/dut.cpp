@@ -86,6 +86,17 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
+// 一个输出RTL中通用寄存器的值的示例
+void dump_gpr() {
+  int i;
+  for (i = 0; i < 32; i++) {
+    printf("%-3s: " FMT_WORD "  ", regs[i], cpu.gpr[i]);  // Use width and alignment specifiers in the format string
+    // if(cpu.gpr[i])
+      // printf("gpr[%d] = 0x%lx\n", i, cpu.gpr[i]);
+    printf("\n");
+  }
+}
+
 void isa_reg_display(CPU_state *ref){
   // for(int i = 0; i < 32; i++){
   //   if(ref->gpr[i] != cpu.gpr[i]) {
