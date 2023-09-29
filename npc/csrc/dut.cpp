@@ -90,10 +90,9 @@ const char *regs[] = {
 void dump_gpr() {
   int i;
   for (i = 0; i < 32; i++) {
-    printf("%-3s: " FMT_WORD "  ", regs[i], cpu.gpr[i]);  // Use width and alignment specifiers in the format string
-    // if(cpu.gpr[i])
-      // printf("gpr[%d] = 0x%lx\n", i, cpu.gpr[i]);
-    printf("\n");
+    if(cpu.gpr[i]) {
+      printf("%-3s: " FMT_WORD "\n", regs[i], cpu.gpr[i]);  // Use width and alignment specifiers in the format string
+    }
   }
 }
 
