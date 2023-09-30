@@ -34,8 +34,8 @@ CPU_state cpu;
  */
 void step_and_dump_wave(){
   top->eval();
-  // contextp->timeInc(1);
-  // tfp->dump(contextp->time());
+  contextp->timeInc(1);
+  tfp->dump(contextp->time());
 }
 
 void sim_init(){
@@ -179,7 +179,7 @@ int main(int argc, char *argv[]) {
     // dump_gpr();
     // printf("\n\n");
     // vga_update_screen();
-    // nemu_exec_once();
+    nemu_exec_once();
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
     
     if(terminal)
