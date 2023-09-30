@@ -57,7 +57,16 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
-bool check_status_reg() {
+bool check_status_reg(CPU_state *ref_r) {
+  if(top->io_out_difftest_mcause != ref_r->csr[cpu_mcause_id])
+    return false;
+  if(top->io_out_difftest_mepc != ref_r->csr[cpu_mepc_id])
+    return false;
+  if(top->io_out_difftest_mstatus != ref_r->mstatus)
+    return false;
+  if(top->io_out_difftest_mtvec != ref_r->csr[cpu_mtvec_id])
+    return false;
+    // return false;
   return true;
 }
 
@@ -69,7 +78,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   if(ref_r->pc != cpu.pc)
     goto error;
 
-  if(!check_status_reg())
+  if(!check_status_reg(ref_r))
     goto error;
 
   return true;

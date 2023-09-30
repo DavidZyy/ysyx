@@ -23,6 +23,7 @@ module RegisterFileBB (
 
   initial set_gpr_ptr(regs);  // rf为通用寄存器的二维数组变量
 
+  /* posedge will update regs in the same inst cycle? */
   always @(posedge clock) begin
     if(reset)
       regs[0] <= 0;
