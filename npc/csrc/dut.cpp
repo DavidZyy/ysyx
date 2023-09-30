@@ -68,7 +68,6 @@ bool check_status_reg(CPU_state *ref_r) {
     return false;
   if(top->io_out_difftest_mtvec != ref_r->csr[cpu_mtvec_id])
     return false;
-    // return false;
   return true;
 }
 
@@ -108,13 +107,6 @@ void dump_gpr() {
 }
 
 void isa_reg_display(CPU_state *ref){
-  // for(int i = 0; i < 32; i++){
-  //   if(ref->gpr[i] != cpu.gpr[i]) {
-  //     printf("nemu: gpr[%d] = " FMT_WORD, i, ref->gpr[i]);
-  //     printf("\t");
-  //     printf("npc: gpr[%d] = " FMT_WORD"\n", i, cpu.gpr[i]);
-  //   }
-  // }
   printf("npc(dut)     nemu(ref)\n");
   for (int i = 0; i < 32; i++) {
     if(ref->gpr[i] != cpu.gpr[i]) {
@@ -122,6 +114,27 @@ void isa_reg_display(CPU_state *ref){
       printf("%-3s: " FMT_WORD "  ", regs[i], ref->gpr[i]);
       printf("\n");
     }
+  }
+
+  if(top->io_out_difftest_mcause != ref_r->csr[cpu_mcause_id]) {
+      printf("%-3s: " FMT_WORD "  ", "mcause", top->io_out_difftest_mcause);
+      printf("%-3s: " FMT_WORD "  ", "mcause", ref_r->csr[cpu_mcause_id]);
+      printf("\n");
+  }
+  if(top->io_out_difftest_mepc != ref_r->csr[cpu_mepc_id]) {
+      printf("%-3s: " FMT_WORD "  ", "mepc", top->io_out_difftest_mepc);
+      printf("%-3s: " FMT_WORD "  ", "mepc", ref_r->csr[cpu_mepc_id]);
+      printf("\n");
+  }
+  if(top->io_out_difftest_mstatus != ref_r->mstatus) {
+      printf("%-3s: " FMT_WORD "  ", "mstatus", top->io_out_difftest_mstatus);
+      printf("%-3s: " FMT_WORD "  ", "mstatus", ref_r->csr[cpu_mstatus_id]);
+      printf("\n");
+  }
+  if(top->io_out_difftest_mtvec != ref_r->csr[cpu_mtvec_id]) {
+      printf("%-3s: " FMT_WORD "  ", "mtvec", top->io_out_difftest_mtvec);
+      printf("%-3s: " FMT_WORD "  ", "mtvec", ref_r->csr[cpu_mtvec_id]);
+      printf("\n");
   }
 
   printf("%-3s: " FMT_WORD ,"pc", cpu.pc);
