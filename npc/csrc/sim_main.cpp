@@ -165,21 +165,21 @@ int main(int argc, char *argv[]) {
   top->reset = 0;
 
   uint64_t i;
-  // uint64_t times = -1;
+  uint64_t times = -1;
   // uint64_t times = 1000000;
-  uint64_t times = 4;
+  // uint64_t times = 4;
 
   int begin = 1;
 
   for (i = 0; i < times; i++) {
 
-    printf("%-3s: " FMT_WORD"\n" ,"before exec pc", cpu.pc);
+    // printf("%-3s: " FMT_WORD"\n" ,"before exec pc", cpu.pc);
     npc_exec_once();
-    printf("%-3s: " FMT_WORD"\n" ,"after exec pc", cpu.pc);
-    dump_gpr();
-    printf("\n\n");
+    // printf("%-3s: " FMT_WORD"\n" ,"after exec pc", cpu.pc);
+    // dump_gpr();
+    // printf("\n\n");
     // vga_update_screen();
-    // nemu_exec_once();
+    nemu_exec_once();
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
     
     if(terminal)
