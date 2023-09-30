@@ -497,13 +497,20 @@ module Decoder(
   wire [3:0] _decode_info_orMatrixOutputs_T_26 = {_decode_info_T_45,_decode_info_T_49,_decode_info_T_87,
     _decode_info_T_91}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_27 = |_decode_info_orMatrixOutputs_T_26; // @[pla.scala 114:39]
-  wire [9:0] _decode_info_orMatrixOutputs_T_28 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_7,_decode_info_T_29,
-    _decode_info_T_33,_decode_info_T_37,_decode_info_T_45,_decode_info_T_59,_decode_info_T_81,_decode_info_T_87}; // @[Cat.scala 33:92]
+  wire [5:0] decode_info_orMatrixOutputs_lo_10 = {_decode_info_T_53,_decode_info_T_59,_decode_info_T_67,
+    _decode_info_T_81,_decode_info_T_87,_decode_info_T_101}; // @[Cat.scala 33:92]
+  wire [11:0] _decode_info_orMatrixOutputs_T_28 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_7,_decode_info_T_33,
+    _decode_info_T_37,_decode_info_T_45,decode_info_orMatrixOutputs_lo_10}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_29 = |_decode_info_orMatrixOutputs_T_28; // @[pla.scala 114:39]
-  wire [5:0] decode_info_orMatrixOutputs_lo_12 = {_decode_info_T_33,_decode_info_T_45,_decode_info_T_59,
-    _decode_info_T_81,_decode_info_T_87,_decode_info_T_91}; // @[Cat.scala 33:92]
-  wire [11:0] _decode_info_orMatrixOutputs_T_32 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_19,
-    _decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo_12}; // @[Cat.scala 33:92]
+  wire [6:0] decode_info_orMatrixOutputs_lo_11 = {_decode_info_T_45,_decode_info_T_55,_decode_info_T_59,
+    _decode_info_T_67,_decode_info_T_87,_decode_info_T_91,_decode_info_T_101}; // @[Cat.scala 33:92]
+  wire [14:0] _decode_info_orMatrixOutputs_T_30 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_7,_decode_info_T_13,
+    _decode_info_T_23,_decode_info_T_25,_decode_info_T_35,_decode_info_T_37,decode_info_orMatrixOutputs_lo_11}; // @[Cat.scala 33:92]
+  wire  _decode_info_orMatrixOutputs_T_31 = |_decode_info_orMatrixOutputs_T_30; // @[pla.scala 114:39]
+  wire [6:0] decode_info_orMatrixOutputs_lo_12 = {_decode_info_T_53,_decode_info_T_59,_decode_info_T_67,
+    _decode_info_T_81,_decode_info_T_87,_decode_info_T_91,_decode_info_T_101}; // @[Cat.scala 33:92]
+  wire [14:0] _decode_info_orMatrixOutputs_T_32 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_5,_decode_info_T_11,
+    _decode_info_T_23,_decode_info_T_25,_decode_info_T_33,_decode_info_T_45,decode_info_orMatrixOutputs_lo_12}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_33 = |_decode_info_orMatrixOutputs_T_32; // @[pla.scala 114:39]
   wire [2:0] _decode_info_orMatrixOutputs_T_34 = {_decode_info_T_31,_decode_info_T_37,_decode_info_T_83}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_35 = |_decode_info_orMatrixOutputs_T_34; // @[pla.scala 114:39]
@@ -526,7 +533,7 @@ module Decoder(
     _decode_info_orMatrixOutputs_T_21,_decode_info_orMatrixOutputs_T_19,_decode_info_orMatrixOutputs_T_17,
     _decode_info_orMatrixOutputs_T_15,_decode_info_orMatrixOutputs_T_13,decode_info_orMatrixOutputs_lo_lo_9}; // @[Cat.scala 33:92]
   wire [6:0] decode_info_orMatrixOutputs_hi_lo_10 = {_decode_info_orMatrixOutputs_T_39,_decode_info_orMatrixOutputs_T_37
-    ,_decode_info_orMatrixOutputs_T_35,_decode_info_orMatrixOutputs_T_33,_decode_info_orMatrixOutputs_T_11,
+    ,_decode_info_orMatrixOutputs_T_35,_decode_info_orMatrixOutputs_T_33,_decode_info_orMatrixOutputs_T_31,
     _decode_info_orMatrixOutputs_T_29,_decode_info_orMatrixOutputs_T_27}; // @[Cat.scala 33:92]
   wire [28:0] decode_info_orMatrixOutputs = {2'h0,1'h0,_decode_info_orMatrixOutputs_T_47,
     _decode_info_orMatrixOutputs_T_46,_decode_info_orMatrixOutputs_T_44,_decode_info_orMatrixOutputs_T_42,
@@ -790,19 +797,19 @@ module CSR(
   reg [31:0] _RAND_2;
   reg [31:0] _RAND_3;
 `endif // RANDOMIZE_REG_INIT
-  reg [31:0] reg_mepc; // @[csr.scala 40:28]
-  reg [31:0] reg_mcause; // @[csr.scala 41:28]
-  reg [31:0] reg_mstatus; // @[csr.scala 42:28]
-  reg [31:0] reg_mtvec; // @[csr.scala 43:28]
-  wire [31:0] _reg_mcause_csrrs_T = io_in_wdata | reg_mcause; // @[csr.scala 59:32]
-  wire [31:0] _reg_mepc_csrrs_T = io_in_wdata | reg_mepc; // @[csr.scala 71:30]
-  wire [31:0] _reg_mstatus_csrrs_T = io_in_wdata | reg_mstatus; // @[csr.scala 83:33]
+  reg [31:0] reg_mepc; // @[csr.scala 42:28]
+  reg [31:0] reg_mcause; // @[csr.scala 43:28]
+  reg [31:0] reg_mstatus; // @[csr.scala 44:28]
+  reg [31:0] reg_mtvec; // @[csr.scala 45:28]
+  wire [31:0] _reg_mcause_csrrs_T = io_in_wdata | reg_mcause; // @[csr.scala 61:32]
+  wire [31:0] _reg_mepc_csrrs_T = io_in_wdata | reg_mepc; // @[csr.scala 73:30]
+  wire [31:0] _reg_mstatus_csrrs_T = io_in_wdata | reg_mstatus; // @[csr.scala 85:33]
   wire [31:0] _reg_mstatus_T_5 = {reg_mstatus[31:13],2'h3,reg_mstatus[10:8],reg_mstatus[3],reg_mstatus[6:4],1'h0,
     reg_mstatus[2:0]}; // @[Cat.scala 33:92]
   wire [30:0] _reg_mstatus_T_11 = {reg_mstatus[31:13],1'h0,reg_mstatus[10:8],1'h0,reg_mstatus[6:4],reg_mstatus[7],
     reg_mstatus[2:0]}; // @[Cat.scala 33:92]
   wire [31:0] _reg_mstatus_T_13 = 3'h1 == io_in_csr_op ? _reg_mstatus_T_5 : reg_mstatus; // @[Mux.scala 81:58]
-  wire [31:0] _reg_mtvec_csrrs_T = io_in_wdata | reg_mtvec; // @[csr.scala 108:31]
+  wire [31:0] _reg_mtvec_csrrs_T = io_in_wdata | reg_mtvec; // @[csr.scala 110:31]
   wire [31:0] _io_out_csr_pc_T_1 = 3'h1 == io_in_csr_op ? reg_mtvec : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _io_out_r_csr_T_1 = 32'h305 == io_in_csr_id ? reg_mtvec : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _io_out_r_csr_T_3 = 32'h341 == io_in_csr_id ? reg_mepc : _io_out_r_csr_T_1; // @[Mux.scala 81:58]
@@ -810,14 +817,13 @@ module CSR(
   assign io_out_ctrl_csr = 3'h2 == io_in_csr_op | 3'h1 == io_in_csr_op; // @[Mux.scala 81:58]
   assign io_out_csr_pc = 3'h2 == io_in_csr_op ? reg_mepc : _io_out_csr_pc_T_1; // @[Mux.scala 81:58]
   assign io_out_r_csr = 32'h300 == io_in_csr_id ? reg_mstatus : _io_out_r_csr_T_5; // @[Mux.scala 81:58]
-  assign io_out_difftest_mcause = reg_mcause; // @[csr.scala 133:27]
-  assign io_out_difftest_mepc = reg_mepc; // @[csr.scala 134:27]
-  assign io_out_difftest_mstatus = reg_mstatus; // @[csr.scala 135:27]
-  assign io_out_difftest_mtvec = reg_mtvec; // @[csr.scala 136:27]
-  // always @(posedge clock) begin
-  always @(negedge clock) begin
-    if (reset) begin // @[csr.scala 40:28]
-      reg_mepc <= 32'h0; // @[csr.scala 40:28]
+  assign io_out_difftest_mcause = reg_mcause; // @[csr.scala 135:27]
+  assign io_out_difftest_mepc = reg_mepc; // @[csr.scala 136:27]
+  assign io_out_difftest_mstatus = reg_mstatus; // @[csr.scala 137:27]
+  assign io_out_difftest_mtvec = reg_mtvec; // @[csr.scala 138:27]
+  always @(posedge clock) begin
+    if (reset) begin // @[csr.scala 42:28]
+      reg_mepc <= 32'h0; // @[csr.scala 42:28]
     end else if (3'h4 == io_in_csr_op) begin // @[Mux.scala 81:58]
       if (32'h341 == io_in_csr_id) begin // @[Mux.scala 81:58]
         reg_mepc <= _reg_mepc_csrrs_T;
@@ -829,8 +835,8 @@ module CSR(
     end else if (3'h1 == io_in_csr_op) begin // @[Mux.scala 81:58]
       reg_mepc <= io_in_cur_pc;
     end
-    if (reset) begin // @[csr.scala 41:28]
-      reg_mcause <= 32'h0; // @[csr.scala 41:28]
+    if (reset) begin // @[csr.scala 43:28]
+      reg_mcause <= 32'h0; // @[csr.scala 43:28]
     end else if (3'h4 == io_in_csr_op) begin // @[Mux.scala 81:58]
       if (32'h342 == io_in_csr_id) begin // @[Mux.scala 81:58]
         reg_mcause <= _reg_mcause_csrrs_T;
@@ -842,8 +848,8 @@ module CSR(
     end else if (3'h1 == io_in_csr_op) begin // @[Mux.scala 81:58]
       reg_mcause <= 32'hb;
     end
-    if (reset) begin // @[csr.scala 42:28]
-      reg_mstatus <= 32'h0; // @[csr.scala 42:28]
+    if (reset) begin // @[csr.scala 44:28]
+      reg_mstatus <= 32'h0; // @[csr.scala 44:28]
     end else if (3'h4 == io_in_csr_op) begin // @[Mux.scala 81:58]
       if (32'h300 == io_in_csr_id) begin // @[Mux.scala 81:58]
         reg_mstatus <= _reg_mstatus_csrrs_T;
@@ -857,8 +863,8 @@ module CSR(
     end else begin
       reg_mstatus <= _reg_mstatus_T_13;
     end
-    if (reset) begin // @[csr.scala 43:28]
-      reg_mtvec <= 32'h0; // @[csr.scala 43:28]
+    if (reset) begin // @[csr.scala 45:28]
+      reg_mtvec <= 32'h0; // @[csr.scala 45:28]
     end else if (3'h4 == io_in_csr_op) begin // @[Mux.scala 81:58]
       if (32'h305 == io_in_csr_id) begin // @[Mux.scala 81:58]
         reg_mtvec <= _reg_mtvec_csrrs_T;
