@@ -460,10 +460,10 @@ module Decoder(
   wire  _decode_info_orMatrixOutputs_T_7 = |_decode_info_T_99; // @[pla.scala 114:39]
   wire [1:0] _decode_info_orMatrixOutputs_T_8 = {_decode_info_T_17,_decode_info_T_21}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_9 = |_decode_info_orMatrixOutputs_T_8; // @[pla.scala 114:39]
-  wire [5:0] decode_info_orMatrixOutputs_lo_1 = {_decode_info_T_35,_decode_info_T_37,_decode_info_T_45,_decode_info_T_59
-    ,_decode_info_T_87,_decode_info_T_91}; // @[Cat.scala 33:92]
-  wire [11:0] _decode_info_orMatrixOutputs_T_10 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_7,_decode_info_T_13,
-    _decode_info_T_23,_decode_info_T_25,decode_info_orMatrixOutputs_lo_1}; // @[Cat.scala 33:92]
+  wire [6:0] decode_info_orMatrixOutputs_lo_1 = {_decode_info_T_37,_decode_info_T_45,_decode_info_T_55,_decode_info_T_59
+    ,_decode_info_T_67,_decode_info_T_87,_decode_info_T_91}; // @[Cat.scala 33:92]
+  wire [13:0] _decode_info_orMatrixOutputs_T_10 = {_decode_info_T_1,_decode_info_T_3,_decode_info_T_7,_decode_info_T_13,
+    _decode_info_T_23,_decode_info_T_25,_decode_info_T_35,decode_info_orMatrixOutputs_lo_1}; // @[Cat.scala 33:92]
   wire  _decode_info_orMatrixOutputs_T_11 = |_decode_info_orMatrixOutputs_T_10; // @[pla.scala 114:39]
   wire [4:0] decode_info_orMatrixOutputs_lo_2 = {_decode_info_T_37,_decode_info_T_45,_decode_info_T_59,_decode_info_T_81
     ,_decode_info_T_87}; // @[Cat.scala 33:92]
