@@ -106,12 +106,12 @@ void dump_gpr() {
   }
 }
 
-void isa_reg_display(CPU_state *ref){
+void isa_reg_display(CPU_state *ref_r){
   printf("npc(dut)     nemu(ref)\n");
   for (int i = 0; i < 32; i++) {
-    if(ref->gpr[i] != cpu.gpr[i]) {
+    if(ref_r->gpr[i] != cpu.gpr[i]) {
       printf("%-3s: " FMT_WORD "  ", regs[i], cpu.gpr[i]);  // Use width and alignment specifiers in the format string
-      printf("%-3s: " FMT_WORD "  ", regs[i], ref->gpr[i]);
+      printf("%-3s: " FMT_WORD "  ", regs[i], ref_r->gpr[i]);
       printf("\n");
     }
   }
