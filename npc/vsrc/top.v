@@ -814,7 +814,8 @@ module CSR(
   assign io_out_difftest_mepc = reg_mepc; // @[csr.scala 134:27]
   assign io_out_difftest_mstatus = reg_mstatus; // @[csr.scala 135:27]
   assign io_out_difftest_mtvec = reg_mtvec; // @[csr.scala 136:27]
-  always @(posedge clock) begin
+  // always @(posedge clock) begin
+  always @(negedge clock) begin
     if (reset) begin // @[csr.scala 40:28]
       reg_mepc <= 32'h0; // @[csr.scala 40:28]
     end else if (3'h4 == io_in_csr_op) begin // @[Mux.scala 81:58]
