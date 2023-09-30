@@ -57,6 +57,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
+extern Vtop* top;
 bool check_status_reg(CPU_state *ref_r) {
   if(top->io_out_difftest_mcause != ref_r->csr[cpu_mcause_id])
     return false;
