@@ -121,10 +121,10 @@ void get_cpu() {
   }
 
   // get csr
-  // cpu.gpr[cpu_mcause_id] = top->io_out_difftest_mcause;
-  // cpu.gpr[cpu_mepc_id] = top->io_out_difftest_mepc;
-  // cpu.gpr[cpu_mtvec_id] = top->io_out_difftest_mtvec;
-  // cpu.mstatus = top->io_out_difftest_mstatus;
+  cpu.gpr[cpu_mcause_id] = top->io_out_difftest_mcause;
+  cpu.gpr[cpu_mepc_id] = top->io_out_difftest_mepc;
+  cpu.gpr[cpu_mtvec_id] = top->io_out_difftest_mtvec;
+  cpu.mstatus = top->io_out_difftest_mstatus;
 
   // get pc
   cpu.pc = top->io_out_pc;
