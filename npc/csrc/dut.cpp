@@ -8,6 +8,7 @@
 #include "isa.h"
 #include "common.h"
 
+#include "../obj_dir/Vtop.h"
 // #define NULL nullptr
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
