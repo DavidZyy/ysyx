@@ -128,7 +128,7 @@ void isa_reg_display(CPU_state *ref_r){
   }
   if(top->io_out_difftest_mstatus != ref_r->mstatus) {
       printf("%-3s: " FMT_WORD "  ", "mstatus", top->io_out_difftest_mstatus);
-      printf("%-3s: " FMT_WORD "  ", "mstatus", ref_r->csr[cpu_mstatus_id]);
+      printf("%-3s: " FMT_WORD "  ", "mstatus", ref_r->mstatus);
       printf("\n");
   }
   if(top->io_out_difftest_mtvec != ref_r->csr[cpu_mtvec_id]) {
@@ -139,7 +139,7 @@ void isa_reg_display(CPU_state *ref_r){
 
   printf("%-3s: " FMT_WORD ,"pc", cpu.pc);
   printf("\t");
-  printf("%-3s: " FMT_WORD"\n", "pc", ref->pc);
+  printf("%-3s: " FMT_WORD"\n", "pc", ref_r->pc);
 }
 
 extern int status;
