@@ -115,9 +115,18 @@ extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
 /* get npc's register state */
 void get_cpu() {
   assert(cpu_gpr);
+  // get gpr
   for(int i = 0; i < 32; i++){
     cpu.gpr[i] = cpu_gpr[i];
   }
+
+  // get csr
+  cpu.gpr[cpu_mcause_id] = top->io_out_difftest_mcause;
+  cpu.gpr[cpu_mepc_id] = top->io_out_difftest_mepc;
+  cpu.gpr[cpu_mtvec_id] = top->io_out_difftest_mtvec;
+  cpu.mstatus = top->io_out_difftest_mstatus;
+
+  // get pc
   cpu.pc = top->io_out_pc;
 }
 
