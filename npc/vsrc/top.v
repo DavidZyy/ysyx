@@ -1255,7 +1255,7 @@ module top(
   assign RegFile_i_io_in_reg_wen = Decoder_i_io_out_ctrl_sig_reg_wen; // @[top.scala 62:29]
   assign Alu_i_io_alu_in_src1 = 2'h1 == Decoder_i_io_out_ctrl_sig_src1_op ? PCReg_i_io_out_cur_pc :
     _Alu_i_io_alu_in_src1_T_1; // @[Mux.scala 81:58]
-  assign Alu_i_io_alu_in_src2 = 2'h1 == Decoder_i_io_out_ctrl_sig_src2_op ? Decoder_i_io_out_imm :
+  assign Alu_i_io_alu_in_src2 = 2'h3 == Decoder_i_io_out_ctrl_sig_src2_op ? Decoder_i_io_out_imm :
     _Alu_i_io_alu_in_src2_T_1; // @[Mux.scala 81:58]
   assign Alu_i_io_alu_in_alu_op = Decoder_i_io_out_ctrl_sig_alu_op; // @[top.scala 72:28]
   assign Bru_i_io_bru_in_src1 = RegFile_i_io_out_rdata1; // @[top.scala 89:28]
