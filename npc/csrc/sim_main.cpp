@@ -186,8 +186,8 @@ int main(int argc, char *argv[]) {
     // printf("%-3s: " FMT_WORD"\n" ,"after exec pc", cpu.pc);
     // dump_gpr();
     // printf("\n\n");
-    vga_update_screen();
-    // nemu_exec_once();
+    // vga_update_screen();
+    nemu_exec_once();
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
     
     if(terminal)
