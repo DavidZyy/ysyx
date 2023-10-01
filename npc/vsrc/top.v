@@ -712,7 +712,7 @@ module Alu(
   output [31:0] io_alu_out_alu_result
 );
   wire [4:0] shamt = io_alu_in_src2[4:0]; // @[alu.scala 32:25]
-  wire [31:0] _io_alu_out_alu_result_T_1 = io_alu_in_src1 + io_alu_in_src2; // @[alu.scala 37:42]
+  wire [31:0] _io_alu_out_alu_result_T_1 = io_alu_in_src1 - io_alu_in_src2; // @[alu.scala 37:42]
   wire [31:0] _io_alu_out_alu_result_T_3 = io_alu_in_src1 - io_alu_in_src2; // @[alu.scala 38:42]
   wire [31:0] _io_alu_out_alu_result_T_4 = io_alu_in_src1 & io_alu_in_src2; // @[alu.scala 39:42]
   wire [31:0] _io_alu_out_alu_result_T_5 = io_alu_in_src1 | io_alu_in_src2; // @[alu.scala 40:42]
