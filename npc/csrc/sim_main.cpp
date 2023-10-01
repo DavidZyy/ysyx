@@ -175,9 +175,9 @@ int main(int argc, char *argv[]) {
   top->reset = 0;
 
   uint64_t i;
-  uint64_t times = -1;
+  // uint64_t times = -1;
   // uint64_t times = 1000000;
-  // uint64_t times = 4;
+  uint64_t times = 1;
 
   int begin = 1;
 
