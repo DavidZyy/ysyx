@@ -53,11 +53,9 @@ void sim_exit(){
   tfp->close();
 }
 
-void single_cycle(int rst) {
+void single_cycle() {
   top->clock = 0;
-  if(rst) top->reset = 1;
   step_and_dump_wave();
-  if(rst) top->reset = 0;
   top->clock = 1;
   step_and_dump_wave();
 }
@@ -131,7 +129,7 @@ void get_cpu() {
 }
 
 void npc_exec_once() {
-    single_cycle(0);
+    single_cycle();
     get_cpu();
 }
 
@@ -171,7 +169,7 @@ int main(int argc, char *argv[]) {
   sim_init();
 
   top->reset = 1;
-  single_cycle(0);
+  single_cycle();
   top->reset = 0;
 
   uint64_t i;
