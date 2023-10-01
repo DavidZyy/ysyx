@@ -148,7 +148,8 @@ uint8_t* guest_to_host(paddr_t paddr);
 void init_monitor(int argc, char *argv[]) {
   init_log(argv[3]);
   init_isa();
-  long img_size = load_img(argv[1]);
+  // long img_size = load_img(argv[1]);
+  long img_size = load_init_img();
   init_difftest(argv[2], img_size, 0);
 }
 

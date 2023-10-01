@@ -161,7 +161,6 @@ int npc_read_device = 0;
 int npc_write_device = 0;
 
 void difftest_step() {
-  printf("HHHHHHHHHHH\n");
   CPU_state ref_f;
   int pc = 0;
 
