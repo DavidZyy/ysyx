@@ -19,34 +19,34 @@ module IFU(
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  wire [31:0] RomBB_i1_addr; // @[IFU.scala 44:26]
-  wire [31:0] RomBB_i1_inst; // @[IFU.scala 44:26]
-  reg [31:0] reg_PC; // @[IFU.scala 46:26]
-  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 53:27]
+  wire [31:0] RomBB_i1_addr; // @[IFU.scala 45:26]
+  wire [31:0] RomBB_i1_inst; // @[IFU.scala 45:26]
+  reg [31:0] reg_PC; // @[IFU.scala 47:26]
+  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 54:27]
   wire  _to_IDU_bits_inst_T = to_IDU_ready & to_IDU_valid; // @[Decoupled.scala 51:35]
-  reg  state; // @[IFU.scala 66:24]
-  RomBB RomBB_i1 ( // @[IFU.scala 44:26]
+  reg  state; // @[IFU.scala 67:24]
+  RomBB RomBB_i1 ( // @[IFU.scala 45:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
   );
-  assign io_out_cur_pc = reg_PC; // @[IFU.scala 60:25]
+  assign io_out_cur_pc = reg_PC; // @[IFU.scala 61:25]
   assign to_IDU_valid = state; // @[Mux.scala 81:58]
-  assign to_IDU_bits_inst = _to_IDU_bits_inst_T ? RomBB_i1_inst : 32'h0; // @[IFU.scala 63:31]
-  assign RomBB_i1_addr = reg_PC; // @[IFU.scala 59:25]
+  assign to_IDU_bits_inst = _to_IDU_bits_inst_T ? RomBB_i1_inst : 32'h13; // @[IFU.scala 64:31]
+  assign RomBB_i1_addr = reg_PC; // @[IFU.scala 60:25]
   always @(posedge clock) begin
-    if (reset) begin // @[IFU.scala 46:26]
-      reg_PC <= 32'h80000000; // @[IFU.scala 46:26]
-    end else if (io_in_ctrl_br) begin // @[IFU.scala 48:26]
-      reg_PC <= io_in_addr_target; // @[IFU.scala 49:17]
-    end else if (io_in_ctrl_csr) begin // @[IFU.scala 50:34]
-      reg_PC <= io_in_excpt_addr; // @[IFU.scala 51:17]
+    if (reset) begin // @[IFU.scala 47:26]
+      reg_PC <= 32'h80000000; // @[IFU.scala 47:26]
+    end else if (io_in_ctrl_br) begin // @[IFU.scala 49:26]
+      reg_PC <= io_in_addr_target; // @[IFU.scala 50:17]
+    end else if (io_in_ctrl_csr) begin // @[IFU.scala 51:34]
+      reg_PC <= io_in_excpt_addr; // @[IFU.scala 52:17]
     end else begin
-      reg_PC <= _next_PC_T_1; // @[IFU.scala 53:17]
+      reg_PC <= _next_PC_T_1; // @[IFU.scala 54:17]
     end
-    if (reset) begin // @[IFU.scala 66:24]
-      state <= 1'h0; // @[IFU.scala 66:24]
+    if (reset) begin // @[IFU.scala 67:24]
+      state <= 1'h0; // @[IFU.scala 67:24]
     end else if (state) begin // @[Mux.scala 81:58]
-      if (to_IDU_ready) begin // @[IFU.scala 69:31]
+      if (to_IDU_ready) begin // @[IFU.scala 70:31]
         state <= 1'h0;
       end else begin
         state <= 1'h1;
