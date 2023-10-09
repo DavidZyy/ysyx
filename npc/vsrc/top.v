@@ -23,32 +23,30 @@ module IFU(
   wire [31:0] RomBB_i1_inst; // @[IFU.scala 44:26]
   reg [31:0] reg_PC; // @[IFU.scala 46:26]
   wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 53:27]
-  wire  _reg_PC_T = to_IDU_ready & to_IDU_valid; // @[Decoupled.scala 51:35]
-  reg  state; // @[IFU.scala 65:24]
+  wire  _to_IDU_bits_inst_T = to_IDU_ready & to_IDU_valid; // @[Decoupled.scala 51:35]
+  reg  state; // @[IFU.scala 66:24]
   RomBB RomBB_i1 ( // @[IFU.scala 44:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
   );
   assign io_out_cur_pc = reg_PC; // @[IFU.scala 60:25]
   assign to_IDU_valid = state; // @[Mux.scala 81:58]
-  assign to_IDU_bits_inst = RomBB_i1_inst; // @[IFU.scala 62:25]
+  assign to_IDU_bits_inst = _to_IDU_bits_inst_T ? RomBB_i1_inst : 32'h0; // @[IFU.scala 63:31]
   assign RomBB_i1_addr = reg_PC; // @[IFU.scala 59:25]
   always @(posedge clock) begin
     if (reset) begin // @[IFU.scala 46:26]
       reg_PC <= 32'h80000000; // @[IFU.scala 46:26]
-    end else if (_reg_PC_T) begin // @[IFU.scala 56:18]
-      if (io_in_ctrl_br) begin // @[IFU.scala 48:26]
-        reg_PC <= io_in_addr_target; // @[IFU.scala 49:17]
-      end else if (io_in_ctrl_csr) begin // @[IFU.scala 50:34]
-        reg_PC <= io_in_excpt_addr; // @[IFU.scala 51:17]
-      end else begin
-        reg_PC <= _next_PC_T_1; // @[IFU.scala 53:17]
-      end
+    end else if (io_in_ctrl_br) begin // @[IFU.scala 48:26]
+      reg_PC <= io_in_addr_target; // @[IFU.scala 49:17]
+    end else if (io_in_ctrl_csr) begin // @[IFU.scala 50:34]
+      reg_PC <= io_in_excpt_addr; // @[IFU.scala 51:17]
+    end else begin
+      reg_PC <= _next_PC_T_1; // @[IFU.scala 53:17]
     end
-    if (reset) begin // @[IFU.scala 65:24]
-      state <= 1'h0; // @[IFU.scala 65:24]
+    if (reset) begin // @[IFU.scala 66:24]
+      state <= 1'h0; // @[IFU.scala 66:24]
     end else if (state) begin // @[Mux.scala 81:58]
-      if (to_IDU_ready) begin // @[IFU.scala 68:31]
+      if (to_IDU_ready) begin // @[IFU.scala 69:31]
         state <= 1'h0;
       end else begin
         state <= 1'h1;
