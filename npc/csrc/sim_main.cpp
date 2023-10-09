@@ -163,7 +163,7 @@ extern uint8_t pmem[CONFIG_MSIZE];
 void dump_gpr();
 int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
-  init_device();
+  // init_device();
   Log("wave has closed to make it sim faster");
 
   sim_init();
