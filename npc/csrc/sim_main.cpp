@@ -54,9 +54,9 @@ void sim_exit(){
 }
 
 void single_cycle() {
-  top->clock = 0;
-  step_and_dump_wave();
   top->clock = 1;
+  step_and_dump_wave();
+  top->clock = 0;
   step_and_dump_wave();
 }
 
@@ -128,6 +128,7 @@ void get_cpu() {
   cpu.pc = top->io_out_pc;
 }
 
+// execute on inst, until WB stage
 void npc_exec_once() {
     single_cycle();
     get_cpu();
