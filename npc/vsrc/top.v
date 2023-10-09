@@ -1141,81 +1141,81 @@ module top(
   output [31:0] io_out_difftest_mstatus,
   output [31:0] io_out_difftest_mtvec
 );
-  wire  IFU_i_clock; // @[top.scala 37:37]
-  wire  IFU_i_reset; // @[top.scala 37:37]
-  wire  IFU_i_io_in_ctrl_br; // @[top.scala 37:37]
-  wire [31:0] IFU_i_io_in_addr_target; // @[top.scala 37:37]
-  wire  IFU_i_io_in_ctrl_csr; // @[top.scala 37:37]
-  wire [31:0] IFU_i_io_in_excpt_addr; // @[top.scala 37:37]
-  wire [31:0] IFU_i_io_out_cur_pc; // @[top.scala 37:37]
-  wire  IFU_i_to_IDU_ready; // @[top.scala 37:37]
-  wire  IFU_i_to_IDU_valid; // @[top.scala 37:37]
-  wire [31:0] IFU_i_to_IDU_bits_inst; // @[top.scala 37:37]
-  wire  IDU_i_clock; // @[top.scala 38:37]
-  wire  IDU_i_reset; // @[top.scala 38:37]
-  wire [31:0] IDU_i_io_out_imm; // @[top.scala 38:37]
-  wire [4:0] IDU_i_io_out_rs1; // @[top.scala 38:37]
-  wire [4:0] IDU_i_io_out_rs2; // @[top.scala 38:37]
-  wire [4:0] IDU_i_io_out_rd; // @[top.scala 38:37]
-  wire  IDU_i_io_out_ctrl_sig_mem_wen; // @[top.scala 38:37]
-  wire  IDU_i_io_out_ctrl_sig_reg_wen; // @[top.scala 38:37]
-  wire  IDU_i_io_out_ctrl_sig_is_ebreak; // @[top.scala 38:37]
-  wire  IDU_i_io_out_ctrl_sig_not_impl; // @[top.scala 38:37]
-  wire [1:0] IDU_i_io_out_ctrl_sig_src1_op; // @[top.scala 38:37]
-  wire [1:0] IDU_i_io_out_ctrl_sig_src2_op; // @[top.scala 38:37]
-  wire [3:0] IDU_i_io_out_ctrl_sig_alu_op; // @[top.scala 38:37]
-  wire [2:0] IDU_i_io_out_ctrl_sig_fu_op; // @[top.scala 38:37]
-  wire [3:0] IDU_i_io_out_ctrl_sig_lsu_op; // @[top.scala 38:37]
-  wire [3:0] IDU_i_io_out_ctrl_sig_bru_op; // @[top.scala 38:37]
-  wire [2:0] IDU_i_io_out_ctrl_sig_csr_op; // @[top.scala 38:37]
-  wire [3:0] IDU_i_io_out_ctrl_sig_mdu_op; // @[top.scala 38:37]
-  wire  IDU_i_from_IFU_ready; // @[top.scala 38:37]
-  wire  IDU_i_from_IFU_valid; // @[top.scala 38:37]
-  wire [31:0] IDU_i_from_IFU_bits_inst; // @[top.scala 38:37]
-  wire  RegFile_i_clock; // @[top.scala 39:37]
-  wire  RegFile_i_reset; // @[top.scala 39:37]
-  wire [4:0] RegFile_i_io_in_rs1; // @[top.scala 39:37]
-  wire [4:0] RegFile_i_io_in_rs2; // @[top.scala 39:37]
-  wire [4:0] RegFile_i_io_in_rd; // @[top.scala 39:37]
-  wire [31:0] RegFile_i_io_in_wdata; // @[top.scala 39:37]
-  wire  RegFile_i_io_in_reg_wen; // @[top.scala 39:37]
-  wire [31:0] RegFile_i_io_out_rdata1; // @[top.scala 39:37]
-  wire [31:0] RegFile_i_io_out_rdata2; // @[top.scala 39:37]
-  wire [31:0] Alu_i_io_alu_in_src1; // @[top.scala 40:37]
-  wire [31:0] Alu_i_io_alu_in_src2; // @[top.scala 40:37]
-  wire [3:0] Alu_i_io_alu_in_alu_op; // @[top.scala 40:37]
-  wire [31:0] Alu_i_io_alu_out_alu_result; // @[top.scala 40:37]
-  wire [31:0] Bru_i_io_bru_in_src1; // @[top.scala 41:37]
-  wire [31:0] Bru_i_io_bru_in_src2; // @[top.scala 41:37]
-  wire [3:0] Bru_i_io_bru_in_bru_op; // @[top.scala 41:37]
-  wire  Bru_i_io_bru_out_ctrl_br; // @[top.scala 41:37]
-  wire  Lsu_i_clock; // @[top.scala 42:37]
-  wire  Lsu_i_io_in_valid; // @[top.scala 42:37]
-  wire  Lsu_i_io_in_mem_wen; // @[top.scala 42:37]
-  wire [31:0] Lsu_i_io_in_addr; // @[top.scala 42:37]
-  wire [31:0] Lsu_i_io_in_wdata; // @[top.scala 42:37]
-  wire [3:0] Lsu_i_io_in_lsu_op; // @[top.scala 42:37]
-  wire [31:0] Lsu_i_io_out_rdata; // @[top.scala 42:37]
-  wire  ebreak_moudle_i_is_ebreak; // @[top.scala 43:37]
-  wire  not_impl_moudle_i_not_impl; // @[top.scala 44:37]
-  wire  csr_i_clock; // @[top.scala 45:37]
-  wire  csr_i_reset; // @[top.scala 45:37]
-  wire [2:0] csr_i_io_in_csr_op; // @[top.scala 45:37]
-  wire [31:0] csr_i_io_in_cur_pc; // @[top.scala 45:37]
-  wire [31:0] csr_i_io_in_csr_id; // @[top.scala 45:37]
-  wire [31:0] csr_i_io_in_wdata; // @[top.scala 45:37]
-  wire  csr_i_io_out_ctrl_csr; // @[top.scala 45:37]
-  wire [31:0] csr_i_io_out_csr_pc; // @[top.scala 45:37]
-  wire [31:0] csr_i_io_out_r_csr; // @[top.scala 45:37]
-  wire [31:0] csr_i_io_out_difftest_mcause; // @[top.scala 45:37]
-  wire [31:0] csr_i_io_out_difftest_mepc; // @[top.scala 45:37]
-  wire [31:0] csr_i_io_out_difftest_mstatus; // @[top.scala 45:37]
-  wire [31:0] csr_i_io_out_difftest_mtvec; // @[top.scala 45:37]
-  wire [31:0] Mdu_i_io_in_src1; // @[top.scala 46:37]
-  wire [31:0] Mdu_i_io_in_src2; // @[top.scala 46:37]
-  wire [3:0] Mdu_i_io_in_mdu_op; // @[top.scala 46:37]
-  wire [31:0] Mdu_i_io_out_mdu_result; // @[top.scala 46:37]
-  wire [31:0] _RegFile_i_io_in_wdata_T_1 = IFU_i_io_out_cur_pc + 32'h4; // @[top.scala 66:50]
+  wire  IFU_i_clock; // @[top.scala 38:37]
+  wire  IFU_i_reset; // @[top.scala 38:37]
+  wire  IFU_i_io_in_ctrl_br; // @[top.scala 38:37]
+  wire [31:0] IFU_i_io_in_addr_target; // @[top.scala 38:37]
+  wire  IFU_i_io_in_ctrl_csr; // @[top.scala 38:37]
+  wire [31:0] IFU_i_io_in_excpt_addr; // @[top.scala 38:37]
+  wire [31:0] IFU_i_io_out_cur_pc; // @[top.scala 38:37]
+  wire  IFU_i_to_IDU_ready; // @[top.scala 38:37]
+  wire  IFU_i_to_IDU_valid; // @[top.scala 38:37]
+  wire [31:0] IFU_i_to_IDU_bits_inst; // @[top.scala 38:37]
+  wire  IDU_i_clock; // @[top.scala 39:37]
+  wire  IDU_i_reset; // @[top.scala 39:37]
+  wire [31:0] IDU_i_io_out_imm; // @[top.scala 39:37]
+  wire [4:0] IDU_i_io_out_rs1; // @[top.scala 39:37]
+  wire [4:0] IDU_i_io_out_rs2; // @[top.scala 39:37]
+  wire [4:0] IDU_i_io_out_rd; // @[top.scala 39:37]
+  wire  IDU_i_io_out_ctrl_sig_mem_wen; // @[top.scala 39:37]
+  wire  IDU_i_io_out_ctrl_sig_reg_wen; // @[top.scala 39:37]
+  wire  IDU_i_io_out_ctrl_sig_is_ebreak; // @[top.scala 39:37]
+  wire  IDU_i_io_out_ctrl_sig_not_impl; // @[top.scala 39:37]
+  wire [1:0] IDU_i_io_out_ctrl_sig_src1_op; // @[top.scala 39:37]
+  wire [1:0] IDU_i_io_out_ctrl_sig_src2_op; // @[top.scala 39:37]
+  wire [3:0] IDU_i_io_out_ctrl_sig_alu_op; // @[top.scala 39:37]
+  wire [2:0] IDU_i_io_out_ctrl_sig_fu_op; // @[top.scala 39:37]
+  wire [3:0] IDU_i_io_out_ctrl_sig_lsu_op; // @[top.scala 39:37]
+  wire [3:0] IDU_i_io_out_ctrl_sig_bru_op; // @[top.scala 39:37]
+  wire [2:0] IDU_i_io_out_ctrl_sig_csr_op; // @[top.scala 39:37]
+  wire [3:0] IDU_i_io_out_ctrl_sig_mdu_op; // @[top.scala 39:37]
+  wire  IDU_i_from_IFU_ready; // @[top.scala 39:37]
+  wire  IDU_i_from_IFU_valid; // @[top.scala 39:37]
+  wire [31:0] IDU_i_from_IFU_bits_inst; // @[top.scala 39:37]
+  wire  RegFile_i_clock; // @[top.scala 40:37]
+  wire  RegFile_i_reset; // @[top.scala 40:37]
+  wire [4:0] RegFile_i_io_in_rs1; // @[top.scala 40:37]
+  wire [4:0] RegFile_i_io_in_rs2; // @[top.scala 40:37]
+  wire [4:0] RegFile_i_io_in_rd; // @[top.scala 40:37]
+  wire [31:0] RegFile_i_io_in_wdata; // @[top.scala 40:37]
+  wire  RegFile_i_io_in_reg_wen; // @[top.scala 40:37]
+  wire [31:0] RegFile_i_io_out_rdata1; // @[top.scala 40:37]
+  wire [31:0] RegFile_i_io_out_rdata2; // @[top.scala 40:37]
+  wire [31:0] Alu_i_io_alu_in_src1; // @[top.scala 41:37]
+  wire [31:0] Alu_i_io_alu_in_src2; // @[top.scala 41:37]
+  wire [3:0] Alu_i_io_alu_in_alu_op; // @[top.scala 41:37]
+  wire [31:0] Alu_i_io_alu_out_alu_result; // @[top.scala 41:37]
+  wire [31:0] Bru_i_io_bru_in_src1; // @[top.scala 42:37]
+  wire [31:0] Bru_i_io_bru_in_src2; // @[top.scala 42:37]
+  wire [3:0] Bru_i_io_bru_in_bru_op; // @[top.scala 42:37]
+  wire  Bru_i_io_bru_out_ctrl_br; // @[top.scala 42:37]
+  wire  Lsu_i_clock; // @[top.scala 43:37]
+  wire  Lsu_i_io_in_valid; // @[top.scala 43:37]
+  wire  Lsu_i_io_in_mem_wen; // @[top.scala 43:37]
+  wire [31:0] Lsu_i_io_in_addr; // @[top.scala 43:37]
+  wire [31:0] Lsu_i_io_in_wdata; // @[top.scala 43:37]
+  wire [3:0] Lsu_i_io_in_lsu_op; // @[top.scala 43:37]
+  wire [31:0] Lsu_i_io_out_rdata; // @[top.scala 43:37]
+  wire  ebreak_moudle_i_is_ebreak; // @[top.scala 44:37]
+  wire  not_impl_moudle_i_not_impl; // @[top.scala 45:37]
+  wire  csr_i_clock; // @[top.scala 46:37]
+  wire  csr_i_reset; // @[top.scala 46:37]
+  wire [2:0] csr_i_io_in_csr_op; // @[top.scala 46:37]
+  wire [31:0] csr_i_io_in_cur_pc; // @[top.scala 46:37]
+  wire [31:0] csr_i_io_in_csr_id; // @[top.scala 46:37]
+  wire [31:0] csr_i_io_in_wdata; // @[top.scala 46:37]
+  wire  csr_i_io_out_ctrl_csr; // @[top.scala 46:37]
+  wire [31:0] csr_i_io_out_csr_pc; // @[top.scala 46:37]
+  wire [31:0] csr_i_io_out_r_csr; // @[top.scala 46:37]
+  wire [31:0] csr_i_io_out_difftest_mcause; // @[top.scala 46:37]
+  wire [31:0] csr_i_io_out_difftest_mepc; // @[top.scala 46:37]
+  wire [31:0] csr_i_io_out_difftest_mstatus; // @[top.scala 46:37]
+  wire [31:0] csr_i_io_out_difftest_mtvec; // @[top.scala 46:37]
+  wire [31:0] Mdu_i_io_in_src1; // @[top.scala 47:37]
+  wire [31:0] Mdu_i_io_in_src2; // @[top.scala 47:37]
+  wire [3:0] Mdu_i_io_in_mdu_op; // @[top.scala 47:37]
+  wire [31:0] Mdu_i_io_out_mdu_result; // @[top.scala 47:37]
+  wire [31:0] _RegFile_i_io_in_wdata_T_1 = IFU_i_io_out_cur_pc + 32'h4; // @[top.scala 68:50]
   wire [31:0] _RegFile_i_io_in_wdata_T_3 = 3'h1 == IDU_i_io_out_ctrl_sig_fu_op ? Alu_i_io_alu_out_alu_result : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _RegFile_i_io_in_wdata_T_5 = 3'h4 == IDU_i_io_out_ctrl_sig_fu_op ? Lsu_i_io_out_rdata :
     _RegFile_i_io_in_wdata_T_3; // @[Mux.scala 81:58]
@@ -1225,7 +1225,7 @@ module top(
     _RegFile_i_io_in_wdata_T_7; // @[Mux.scala 81:58]
   wire [31:0] _Alu_i_io_alu_in_src1_T_1 = 2'h2 == IDU_i_io_out_ctrl_sig_src1_op ? RegFile_i_io_out_rdata1 : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _Alu_i_io_alu_in_src2_T_1 = 2'h2 == IDU_i_io_out_ctrl_sig_src2_op ? RegFile_i_io_out_rdata2 : 32'h0; // @[Mux.scala 81:58]
-  IFU IFU_i ( // @[top.scala 37:37]
+  IFU IFU_i ( // @[top.scala 38:37]
     .clock(IFU_i_clock),
     .reset(IFU_i_reset),
     .io_in_ctrl_br(IFU_i_io_in_ctrl_br),
@@ -1237,7 +1237,7 @@ module top(
     .to_IDU_valid(IFU_i_to_IDU_valid),
     .to_IDU_bits_inst(IFU_i_to_IDU_bits_inst)
   );
-  IDU IDU_i ( // @[top.scala 38:37]
+  IDU IDU_i ( // @[top.scala 39:37]
     .clock(IDU_i_clock),
     .reset(IDU_i_reset),
     .io_out_imm(IDU_i_io_out_imm),
@@ -1260,7 +1260,7 @@ module top(
     .from_IFU_valid(IDU_i_from_IFU_valid),
     .from_IFU_bits_inst(IDU_i_from_IFU_bits_inst)
   );
-  RegFile RegFile_i ( // @[top.scala 39:37]
+  RegFile RegFile_i ( // @[top.scala 40:37]
     .clock(RegFile_i_clock),
     .reset(RegFile_i_reset),
     .io_in_rs1(RegFile_i_io_in_rs1),
@@ -1271,19 +1271,19 @@ module top(
     .io_out_rdata1(RegFile_i_io_out_rdata1),
     .io_out_rdata2(RegFile_i_io_out_rdata2)
   );
-  Alu Alu_i ( // @[top.scala 40:37]
+  Alu Alu_i ( // @[top.scala 41:37]
     .io_alu_in_src1(Alu_i_io_alu_in_src1),
     .io_alu_in_src2(Alu_i_io_alu_in_src2),
     .io_alu_in_alu_op(Alu_i_io_alu_in_alu_op),
     .io_alu_out_alu_result(Alu_i_io_alu_out_alu_result)
   );
-  Bru Bru_i ( // @[top.scala 41:37]
+  Bru Bru_i ( // @[top.scala 42:37]
     .io_bru_in_src1(Bru_i_io_bru_in_src1),
     .io_bru_in_src2(Bru_i_io_bru_in_src2),
     .io_bru_in_bru_op(Bru_i_io_bru_in_bru_op),
     .io_bru_out_ctrl_br(Bru_i_io_bru_out_ctrl_br)
   );
-  Lsu Lsu_i ( // @[top.scala 42:37]
+  Lsu Lsu_i ( // @[top.scala 43:37]
     .clock(Lsu_i_clock),
     .io_in_valid(Lsu_i_io_in_valid),
     .io_in_mem_wen(Lsu_i_io_in_mem_wen),
@@ -1292,13 +1292,13 @@ module top(
     .io_in_lsu_op(Lsu_i_io_in_lsu_op),
     .io_out_rdata(Lsu_i_io_out_rdata)
   );
-  ebreak_moudle ebreak_moudle_i ( // @[top.scala 43:37]
+  ebreak_moudle ebreak_moudle_i ( // @[top.scala 44:37]
     .is_ebreak(ebreak_moudle_i_is_ebreak)
   );
-  not_impl_moudle not_impl_moudle_i ( // @[top.scala 44:37]
+  not_impl_moudle not_impl_moudle_i ( // @[top.scala 45:37]
     .not_impl(not_impl_moudle_i_not_impl)
   );
-  CSR csr_i ( // @[top.scala 45:37]
+  CSR csr_i ( // @[top.scala 46:37]
     .clock(csr_i_clock),
     .reset(csr_i_reset),
     .io_in_csr_op(csr_i_io_in_csr_op),
@@ -1313,58 +1313,58 @@ module top(
     .io_out_difftest_mstatus(csr_i_io_out_difftest_mstatus),
     .io_out_difftest_mtvec(csr_i_io_out_difftest_mtvec)
   );
-  Mdu Mdu_i ( // @[top.scala 46:37]
+  Mdu Mdu_i ( // @[top.scala 47:37]
     .io_in_src1(Mdu_i_io_in_src1),
     .io_in_src2(Mdu_i_io_in_src2),
     .io_in_mdu_op(Mdu_i_io_in_mdu_op),
     .io_out_mdu_result(Mdu_i_io_out_mdu_result)
   );
-  assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[top.scala 111:20]
-  assign io_out_pc = IFU_i_io_out_cur_pc; // @[top.scala 112:20]
-  assign io_out_difftest_mcause = csr_i_io_out_difftest_mcause; // @[top.scala 114:29]
-  assign io_out_difftest_mepc = csr_i_io_out_difftest_mepc; // @[top.scala 115:29]
-  assign io_out_difftest_mstatus = csr_i_io_out_difftest_mstatus; // @[top.scala 116:29]
-  assign io_out_difftest_mtvec = csr_i_io_out_difftest_mtvec; // @[top.scala 117:29]
+  assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[top.scala 112:20]
+  assign io_out_pc = IFU_i_io_out_cur_pc; // @[top.scala 113:20]
+  assign io_out_difftest_mcause = csr_i_io_out_difftest_mcause; // @[top.scala 115:29]
+  assign io_out_difftest_mepc = csr_i_io_out_difftest_mepc; // @[top.scala 116:29]
+  assign io_out_difftest_mstatus = csr_i_io_out_difftest_mstatus; // @[top.scala 117:29]
+  assign io_out_difftest_mtvec = csr_i_io_out_difftest_mtvec; // @[top.scala 118:29]
   assign IFU_i_clock = clock;
   assign IFU_i_reset = reset;
-  assign IFU_i_io_in_ctrl_br = Bru_i_io_bru_out_ctrl_br; // @[top.scala 49:30]
-  assign IFU_i_io_in_addr_target = Alu_i_io_alu_out_alu_result; // @[top.scala 50:30]
-  assign IFU_i_io_in_ctrl_csr = csr_i_io_out_ctrl_csr; // @[top.scala 51:30]
-  assign IFU_i_io_in_excpt_addr = csr_i_io_out_csr_pc; // @[top.scala 52:30]
-  assign IFU_i_to_IDU_ready = IDU_i_from_IFU_ready; // @[top.scala 56:26]
+  assign IFU_i_io_in_ctrl_br = Bru_i_io_bru_out_ctrl_br; // @[top.scala 50:30]
+  assign IFU_i_io_in_addr_target = Alu_i_io_alu_out_alu_result; // @[top.scala 51:30]
+  assign IFU_i_io_in_ctrl_csr = csr_i_io_out_ctrl_csr; // @[top.scala 52:30]
+  assign IFU_i_io_in_excpt_addr = csr_i_io_out_csr_pc; // @[top.scala 53:30]
+  assign IFU_i_to_IDU_ready = IDU_i_from_IFU_ready; // @[Connect.scala 10:22]
   assign IDU_i_clock = clock;
   assign IDU_i_reset = reset;
-  assign IDU_i_from_IFU_valid = IFU_i_to_IDU_valid; // @[top.scala 55:26]
-  assign IDU_i_from_IFU_bits_inst = IFU_i_to_IDU_bits_inst; // @[top.scala 54:26]
+  assign IDU_i_from_IFU_valid = IFU_i_to_IDU_valid; // @[Connect.scala 9:22]
+  assign IDU_i_from_IFU_bits_inst = IFU_i_to_IDU_bits_inst; // @[Connect.scala 8:22]
   assign RegFile_i_clock = clock;
   assign RegFile_i_reset = reset;
-  assign RegFile_i_io_in_rs1 = IDU_i_io_out_rs1; // @[top.scala 60:29]
-  assign RegFile_i_io_in_rs2 = IDU_i_io_out_rs2; // @[top.scala 61:29]
-  assign RegFile_i_io_in_rd = IDU_i_io_out_rd; // @[top.scala 59:29]
+  assign RegFile_i_io_in_rs1 = IDU_i_io_out_rs1; // @[top.scala 62:29]
+  assign RegFile_i_io_in_rs2 = IDU_i_io_out_rs2; // @[top.scala 63:29]
+  assign RegFile_i_io_in_rd = IDU_i_io_out_rd; // @[top.scala 61:29]
   assign RegFile_i_io_in_wdata = 3'h2 == IDU_i_io_out_ctrl_sig_fu_op ? Mdu_i_io_out_mdu_result :
     _RegFile_i_io_in_wdata_T_9; // @[Mux.scala 81:58]
-  assign RegFile_i_io_in_reg_wen = IDU_i_io_out_ctrl_sig_reg_wen; // @[top.scala 62:29]
+  assign RegFile_i_io_in_reg_wen = IDU_i_io_out_ctrl_sig_reg_wen; // @[top.scala 64:29]
   assign Alu_i_io_alu_in_src1 = 2'h1 == IDU_i_io_out_ctrl_sig_src1_op ? IFU_i_io_out_cur_pc : _Alu_i_io_alu_in_src1_T_1; // @[Mux.scala 81:58]
   assign Alu_i_io_alu_in_src2 = 2'h3 == IDU_i_io_out_ctrl_sig_src2_op ? IDU_i_io_out_imm : _Alu_i_io_alu_in_src2_T_1; // @[Mux.scala 81:58]
-  assign Alu_i_io_alu_in_alu_op = IDU_i_io_out_ctrl_sig_alu_op; // @[top.scala 72:28]
-  assign Bru_i_io_bru_in_src1 = RegFile_i_io_out_rdata1; // @[top.scala 89:28]
-  assign Bru_i_io_bru_in_src2 = RegFile_i_io_out_rdata2; // @[top.scala 90:28]
-  assign Bru_i_io_bru_in_bru_op = IDU_i_io_out_ctrl_sig_bru_op; // @[top.scala 88:28]
+  assign Alu_i_io_alu_in_alu_op = IDU_i_io_out_ctrl_sig_alu_op; // @[top.scala 74:28]
+  assign Bru_i_io_bru_in_src1 = RegFile_i_io_out_rdata1; // @[top.scala 91:28]
+  assign Bru_i_io_bru_in_src2 = RegFile_i_io_out_rdata2; // @[top.scala 92:28]
+  assign Bru_i_io_bru_in_bru_op = IDU_i_io_out_ctrl_sig_bru_op; // @[top.scala 90:28]
   assign Lsu_i_clock = clock;
-  assign Lsu_i_io_in_valid = IDU_i_io_out_ctrl_sig_fu_op == 3'h4; // @[top.scala 97:56]
-  assign Lsu_i_io_in_mem_wen = IDU_i_io_out_ctrl_sig_mem_wen; // @[top.scala 95:25]
-  assign Lsu_i_io_in_addr = Alu_i_io_alu_out_alu_result; // @[top.scala 93:25]
-  assign Lsu_i_io_in_wdata = RegFile_i_io_out_rdata2; // @[top.scala 94:25]
-  assign Lsu_i_io_in_lsu_op = IDU_i_io_out_ctrl_sig_lsu_op; // @[top.scala 96:25]
-  assign ebreak_moudle_i_is_ebreak = IDU_i_io_out_ctrl_sig_is_ebreak; // @[top.scala 106:32]
-  assign not_impl_moudle_i_not_impl = IDU_i_io_out_ctrl_sig_not_impl; // @[top.scala 109:32]
+  assign Lsu_i_io_in_valid = IDU_i_io_out_ctrl_sig_fu_op == 3'h4; // @[top.scala 99:56]
+  assign Lsu_i_io_in_mem_wen = IDU_i_io_out_ctrl_sig_mem_wen; // @[top.scala 97:25]
+  assign Lsu_i_io_in_addr = Alu_i_io_alu_out_alu_result; // @[top.scala 95:25]
+  assign Lsu_i_io_in_wdata = RegFile_i_io_out_rdata2; // @[top.scala 96:25]
+  assign Lsu_i_io_in_lsu_op = IDU_i_io_out_ctrl_sig_lsu_op; // @[top.scala 98:25]
+  assign ebreak_moudle_i_is_ebreak = IDU_i_io_out_ctrl_sig_is_ebreak; // @[top.scala 108:32]
+  assign not_impl_moudle_i_not_impl = IDU_i_io_out_ctrl_sig_not_impl; // @[top.scala 110:32]
   assign csr_i_clock = clock;
   assign csr_i_reset = reset;
-  assign csr_i_io_in_csr_op = IDU_i_io_out_ctrl_sig_csr_op; // @[top.scala 100:25]
-  assign csr_i_io_in_cur_pc = IFU_i_io_out_cur_pc; // @[top.scala 101:25]
-  assign csr_i_io_in_csr_id = IDU_i_io_out_imm; // @[top.scala 102:25]
-  assign csr_i_io_in_wdata = RegFile_i_io_out_rdata1; // @[top.scala 103:25]
-  assign Mdu_i_io_in_src1 = RegFile_i_io_out_rdata1; // @[top.scala 84:24]
-  assign Mdu_i_io_in_src2 = RegFile_i_io_out_rdata2; // @[top.scala 85:24]
-  assign Mdu_i_io_in_mdu_op = IDU_i_io_out_ctrl_sig_mdu_op; // @[top.scala 83:24]
+  assign csr_i_io_in_csr_op = IDU_i_io_out_ctrl_sig_csr_op; // @[top.scala 102:25]
+  assign csr_i_io_in_cur_pc = IFU_i_io_out_cur_pc; // @[top.scala 103:25]
+  assign csr_i_io_in_csr_id = IDU_i_io_out_imm; // @[top.scala 104:25]
+  assign csr_i_io_in_wdata = RegFile_i_io_out_rdata1; // @[top.scala 105:25]
+  assign Mdu_i_io_in_src1 = RegFile_i_io_out_rdata1; // @[top.scala 86:24]
+  assign Mdu_i_io_in_src2 = RegFile_i_io_out_rdata2; // @[top.scala 87:24]
+  assign Mdu_i_io_in_mdu_op = IDU_i_io_out_ctrl_sig_mdu_op; // @[top.scala 85:24]
 endmodule
