@@ -11,50 +11,31 @@ module IFU(
   input         io_in_ctrl_csr,
   input  [31:0] io_in_excpt_addr,
   output [31:0] io_out_cur_pc,
-  input         to_IDU_ready,
-  output        to_IDU_valid,
   output [31:0] to_IDU_bits_inst
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
-  reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
   wire [31:0] RomBB_i1_addr; // @[IFU.scala 44:26]
   wire [31:0] RomBB_i1_inst; // @[IFU.scala 44:26]
   reg [31:0] reg_PC; // @[IFU.scala 46:26]
   wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 53:27]
-  wire  _reg_PC_T = to_IDU_ready & to_IDU_valid; // @[Decoupled.scala 51:35]
-  reg  state; // @[IFU.scala 64:24]
   RomBB RomBB_i1 ( // @[IFU.scala 44:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
   );
-  assign io_out_cur_pc = reg_PC; // @[IFU.scala 59:25]
-  assign to_IDU_valid = state; // @[Mux.scala 81:58]
-  assign to_IDU_bits_inst = RomBB_i1_inst; // @[IFU.scala 61:25]
-  assign RomBB_i1_addr = reg_PC; // @[IFU.scala 58:25]
+  assign io_out_cur_pc = reg_PC; // @[IFU.scala 60:25]
+  assign to_IDU_bits_inst = RomBB_i1_inst; // @[IFU.scala 62:25]
+  assign RomBB_i1_addr = reg_PC; // @[IFU.scala 59:25]
   always @(posedge clock) begin
     if (reset) begin // @[IFU.scala 46:26]
       reg_PC <= 32'h80000000; // @[IFU.scala 46:26]
-    end else if (_reg_PC_T) begin // @[IFU.scala 56:18]
-      if (io_in_ctrl_br) begin // @[IFU.scala 48:26]
-        reg_PC <= io_in_addr_target; // @[IFU.scala 49:17]
-      end else if (io_in_ctrl_csr) begin // @[IFU.scala 50:34]
-        reg_PC <= io_in_excpt_addr; // @[IFU.scala 51:17]
-      end else begin
-        reg_PC <= _next_PC_T_1; // @[IFU.scala 53:17]
-      end
-    end
-    if (reset) begin // @[IFU.scala 64:24]
-      state <= 1'h0; // @[IFU.scala 64:24]
-    end else if (state) begin // @[Mux.scala 81:58]
-      if (to_IDU_ready) begin // @[IFU.scala 67:31]
-        state <= 1'h0;
-      end else begin
-        state <= 1'h1;
-      end
+    end else if (io_in_ctrl_br) begin // @[IFU.scala 48:26]
+      reg_PC <= io_in_addr_target; // @[IFU.scala 49:17]
+    end else if (io_in_ctrl_csr) begin // @[IFU.scala 50:34]
+      reg_PC <= io_in_excpt_addr; // @[IFU.scala 51:17]
     end else begin
-      state <= 1'h1;
+      reg_PC <= _next_PC_T_1; // @[IFU.scala 53:17]
     end
   end
 // Register and memory initialization
@@ -95,8 +76,6 @@ initial begin
 `ifdef RANDOMIZE_REG_INIT
   _RAND_0 = {1{`RANDOM}};
   reg_PC = _RAND_0[31:0];
-  _RAND_1 = {1{`RANDOM}};
-  state = _RAND_1[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -106,8 +85,6 @@ end // initial
 `endif // SYNTHESIS
 endmodule
 module IDU(
-  input         clock,
-  input         reset,
   output [31:0] io_out_imm,
   output [4:0]  io_out_rs1,
   output [4:0]  io_out_rs2,
@@ -124,14 +101,8 @@ module IDU(
   output [3:0]  io_out_ctrl_sig_bru_op,
   output [2:0]  io_out_ctrl_sig_csr_op,
   output [3:0]  io_out_ctrl_sig_mdu_op,
-  output        from_IFU_ready,
-  input         from_IFU_valid,
   input  [31:0] from_IFU_bits_inst
 );
-`ifdef RANDOMIZE_REG_INIT
-  reg [31:0] _RAND_0;
-`endif // RANDOMIZE_REG_INIT
-  reg  state; // @[IDU.scala 50:24]
   wire [19:0] _imm_i_T_2 = from_IFU_bits_inst[31] ? 20'hfffff : 20'h0; // @[Bitwise.scala 77:12]
   wire [31:0] imm_i = {_imm_i_T_2,from_IFU_bits_inst[31:20]}; // @[Cat.scala 33:92]
   wire [31:0] imm_s = {_imm_i_T_2,from_IFU_bits_inst[31:25],from_IFU_bits_inst[11:7]}; // @[Cat.scala 33:92]
@@ -689,61 +660,6 @@ module IDU(
   assign io_out_ctrl_sig_bru_op = decode_info_invMatrixOutputs[25:22]; // @[IDU.scala 160:45]
   assign io_out_ctrl_sig_csr_op = decode_info_invMatrixOutputs[6:4]; // @[IDU.scala 152:45]
   assign io_out_ctrl_sig_mdu_op = decode_info_invMatrixOutputs[3:0]; // @[IDU.scala 151:45]
-  assign from_IFU_ready = state ? 1'h0 : 1'h1; // @[Mux.scala 81:58]
-  always @(posedge clock) begin
-    if (reset) begin // @[IDU.scala 50:24]
-      state <= 1'h0; // @[IDU.scala 50:24]
-    end else if (state) begin // @[Mux.scala 81:58]
-      state <= 1'h0;
-    end else begin
-      state <= from_IFU_valid;
-    end
-  end
-// Register and memory initialization
-`ifdef RANDOMIZE_GARBAGE_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_INVALID_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_REG_INIT
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-`define RANDOMIZE
-`endif
-`ifndef RANDOM
-`define RANDOM $random
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-  integer initvar;
-`endif
-`ifndef SYNTHESIS
-`ifdef FIRRTL_BEFORE_INITIAL
-`FIRRTL_BEFORE_INITIAL
-`endif
-initial begin
-  `ifdef RANDOMIZE
-    `ifdef INIT_RANDOM
-      `INIT_RANDOM
-    `endif
-    `ifndef VERILATOR
-      `ifdef RANDOMIZE_DELAY
-        #`RANDOMIZE_DELAY begin end
-      `else
-        #0.002 begin end
-      `endif
-    `endif
-`ifdef RANDOMIZE_REG_INIT
-  _RAND_0 = {1{`RANDOM}};
-  state = _RAND_0[0:0];
-`endif // RANDOMIZE_REG_INIT
-  `endif // RANDOMIZE
-end // initial
-`ifdef FIRRTL_AFTER_INITIAL
-`FIRRTL_AFTER_INITIAL
-`endif
-`endif // SYNTHESIS
 endmodule
 module RegFile(
   input         clock,
@@ -1148,11 +1064,7 @@ module top(
   wire  IFU_i_io_in_ctrl_csr; // @[top.scala 36:37]
   wire [31:0] IFU_i_io_in_excpt_addr; // @[top.scala 36:37]
   wire [31:0] IFU_i_io_out_cur_pc; // @[top.scala 36:37]
-  wire  IFU_i_to_IDU_ready; // @[top.scala 36:37]
-  wire  IFU_i_to_IDU_valid; // @[top.scala 36:37]
   wire [31:0] IFU_i_to_IDU_bits_inst; // @[top.scala 36:37]
-  wire  IDU_i_clock; // @[top.scala 37:33]
-  wire  IDU_i_reset; // @[top.scala 37:33]
   wire [31:0] IDU_i_io_out_imm; // @[top.scala 37:33]
   wire [4:0] IDU_i_io_out_rs1; // @[top.scala 37:33]
   wire [4:0] IDU_i_io_out_rs2; // @[top.scala 37:33]
@@ -1169,8 +1081,6 @@ module top(
   wire [3:0] IDU_i_io_out_ctrl_sig_bru_op; // @[top.scala 37:33]
   wire [2:0] IDU_i_io_out_ctrl_sig_csr_op; // @[top.scala 37:33]
   wire [3:0] IDU_i_io_out_ctrl_sig_mdu_op; // @[top.scala 37:33]
-  wire  IDU_i_from_IFU_ready; // @[top.scala 37:33]
-  wire  IDU_i_from_IFU_valid; // @[top.scala 37:33]
   wire [31:0] IDU_i_from_IFU_bits_inst; // @[top.scala 37:33]
   wire  RegFile_i_clock; // @[top.scala 38:37]
   wire  RegFile_i_reset; // @[top.scala 38:37]
@@ -1233,13 +1143,9 @@ module top(
     .io_in_ctrl_csr(IFU_i_io_in_ctrl_csr),
     .io_in_excpt_addr(IFU_i_io_in_excpt_addr),
     .io_out_cur_pc(IFU_i_io_out_cur_pc),
-    .to_IDU_ready(IFU_i_to_IDU_ready),
-    .to_IDU_valid(IFU_i_to_IDU_valid),
     .to_IDU_bits_inst(IFU_i_to_IDU_bits_inst)
   );
   IDU IDU_i ( // @[top.scala 37:33]
-    .clock(IDU_i_clock),
-    .reset(IDU_i_reset),
     .io_out_imm(IDU_i_io_out_imm),
     .io_out_rs1(IDU_i_io_out_rs1),
     .io_out_rs2(IDU_i_io_out_rs2),
@@ -1256,8 +1162,6 @@ module top(
     .io_out_ctrl_sig_bru_op(IDU_i_io_out_ctrl_sig_bru_op),
     .io_out_ctrl_sig_csr_op(IDU_i_io_out_ctrl_sig_csr_op),
     .io_out_ctrl_sig_mdu_op(IDU_i_io_out_ctrl_sig_mdu_op),
-    .from_IFU_ready(IDU_i_from_IFU_ready),
-    .from_IFU_valid(IDU_i_from_IFU_valid),
     .from_IFU_bits_inst(IDU_i_from_IFU_bits_inst)
   );
   RegFile RegFile_i ( // @[top.scala 38:37]
@@ -1331,10 +1235,6 @@ module top(
   assign IFU_i_io_in_addr_target = Alu_i_io_alu_out_alu_result; // @[top.scala 49:30]
   assign IFU_i_io_in_ctrl_csr = csr_i_io_out_ctrl_csr; // @[top.scala 50:30]
   assign IFU_i_io_in_excpt_addr = csr_i_io_out_csr_pc; // @[top.scala 51:30]
-  assign IFU_i_to_IDU_ready = IDU_i_from_IFU_ready; // @[top.scala 60:26]
-  assign IDU_i_clock = clock;
-  assign IDU_i_reset = reset;
-  assign IDU_i_from_IFU_valid = IFU_i_to_IDU_valid; // @[top.scala 59:26]
   assign IDU_i_from_IFU_bits_inst = IFU_i_to_IDU_bits_inst; // @[top.scala 58:26]
   assign RegFile_i_clock = clock;
   assign RegFile_i_reset = reset;
