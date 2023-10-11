@@ -19,36 +19,36 @@ module IFU(
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  wire [31:0] RomBB_i1_addr; // @[IFU.scala 58:26]
-  wire [31:0] RomBB_i1_inst; // @[IFU.scala 58:26]
-  reg [31:0] reg_PC; // @[IFU.scala 43:26]
-  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 53:27]
+  wire [31:0] RomBB_i1_addr; // @[IFU.scala 59:26]
+  wire [31:0] RomBB_i1_inst; // @[IFU.scala 59:26]
+  reg [31:0] reg_PC; // @[IFU.scala 44:26]
+  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 54:27]
   wire  _reg_PC_T = to_IDU_ready & to_IDU_valid; // @[Decoupled.scala 51:35]
-  reg  state; // @[IFU.scala 67:24]
-  RomBB RomBB_i1 ( // @[IFU.scala 58:26]
+  reg  state; // @[IFU.scala 68:24]
+  RomBB RomBB_i1 ( // @[IFU.scala 59:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
   );
   assign to_IDU_valid = state; // @[Mux.scala 81:58]
-  assign to_IDU_bits_inst = _reg_PC_T ? RomBB_i1_inst : 32'h13; // @[IFU.scala 62:31]
-  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 64:25]
-  assign RomBB_i1_addr = reg_PC; // @[IFU.scala 59:25]
+  assign to_IDU_bits_inst = _reg_PC_T ? RomBB_i1_inst : 32'h13; // @[IFU.scala 63:31]
+  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 65:25]
+  assign RomBB_i1_addr = reg_PC; // @[IFU.scala 60:25]
   always @(posedge clock) begin
-    if (reset) begin // @[IFU.scala 43:26]
-      reg_PC <= 32'h80000000; // @[IFU.scala 43:26]
-    end else if (_reg_PC_T) begin // @[IFU.scala 56:18]
-      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 48:38]
-        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 49:17]
-      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 50:45]
-        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 51:17]
+    if (reset) begin // @[IFU.scala 44:26]
+      reg_PC <= 32'h80000000; // @[IFU.scala 44:26]
+    end else if (_reg_PC_T) begin // @[IFU.scala 57:18]
+      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 49:38]
+        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 50:17]
+      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 51:45]
+        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 52:17]
       end else begin
-        reg_PC <= _next_PC_T_1; // @[IFU.scala 53:17]
+        reg_PC <= _next_PC_T_1; // @[IFU.scala 54:17]
       end
     end
-    if (reset) begin // @[IFU.scala 67:24]
-      state <= 1'h0; // @[IFU.scala 67:24]
+    if (reset) begin // @[IFU.scala 68:24]
+      state <= 1'h0; // @[IFU.scala 68:24]
     end else if (state) begin // @[Mux.scala 81:58]
-      if (to_IDU_ready) begin // @[IFU.scala 70:31]
+      if (to_IDU_ready) begin // @[IFU.scala 71:31]
         state <= 1'h0;
       end else begin
         state <= 1'h1;
@@ -133,7 +133,7 @@ module IDU(
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_REG_INIT
-  reg  state; // @[IDU.scala 20:24]
+  reg  state; // @[IDU.scala 21:24]
   wire [19:0] _imm_i_T_2 = from_IFU_bits_inst[31] ? 20'hfffff : 20'h0; // @[Bitwise.scala 77:12]
   wire [31:0] imm_i = {_imm_i_T_2,from_IFU_bits_inst[31:20]}; // @[Cat.scala 33:92]
   wire [31:0] imm_s = {_imm_i_T_2,from_IFU_bits_inst[31:25],from_IFU_bits_inst[11:7]}; // @[Cat.scala 33:92]
@@ -669,33 +669,33 @@ module IDU(
     decode_info_orMatrixOutputs[14],decode_info_orMatrixOutputs[13],decode_info_orMatrixOutputs[12],
     decode_info_orMatrixOutputs[11],decode_info_orMatrixOutputs[10],decode_info_orMatrixOutputs[9],
     decode_info_orMatrixOutputs[8],decode_info_invMatrixOutputs_lo_lo}; // @[Cat.scala 33:92]
-  wire [2:0] inst_type = decode_info_invMatrixOutputs[21:19]; // @[IDU.scala 111:36]
+  wire [2:0] inst_type = decode_info_invMatrixOutputs[21:19]; // @[IDU.scala 112:36]
   wire [31:0] _to_ISU_bits_imm_T_1 = 3'h1 == inst_type ? imm_i : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _to_ISU_bits_imm_T_3 = 3'h2 == inst_type ? imm_s : _to_ISU_bits_imm_T_1; // @[Mux.scala 81:58]
   wire [31:0] _to_ISU_bits_imm_T_5 = 3'h3 == inst_type ? imm_b : _to_ISU_bits_imm_T_3; // @[Mux.scala 81:58]
   wire [31:0] _to_ISU_bits_imm_T_7 = 3'h4 == inst_type ? imm_u : _to_ISU_bits_imm_T_5; // @[Mux.scala 81:58]
   wire [32:0] _to_ISU_bits_imm_T_9 = 3'h5 == inst_type ? imm_j : {{1'd0}, _to_ISU_bits_imm_T_7}; // @[Mux.scala 81:58]
   assign from_IFU_ready = state ? 1'h0 : 1'h1; // @[Mux.scala 81:58]
-  assign to_ISU_bits_imm = _to_ISU_bits_imm_T_9[31:0]; // @[IDU.scala 112:21]
-  assign to_ISU_bits_pc = from_IFU_bits_pc; // @[IDU.scala 122:21]
-  assign to_ISU_bits_rs1 = from_IFU_bits_inst[19:15]; // @[IDU.scala 119:42]
-  assign to_ISU_bits_rs2 = from_IFU_bits_inst[24:20]; // @[IDU.scala 120:42]
-  assign to_ISU_bits_rd = from_IFU_bits_inst[11:7]; // @[IDU.scala 121:42]
-  assign to_ISU_bits_ctrl_sig_reg_wen = decode_info_invMatrixOutputs[10]; // @[IDU.scala 130:50]
-  assign to_ISU_bits_ctrl_sig_fu_op = decode_info_invMatrixOutputs[32:30]; // @[IDU.scala 136:50]
-  assign to_ISU_bits_ctrl_sig_mem_wen = decode_info_invMatrixOutputs[9]; // @[IDU.scala 129:50]
-  assign to_ISU_bits_ctrl_sig_is_ebreak = decode_info_invMatrixOutputs[8]; // @[IDU.scala 128:50]
-  assign to_ISU_bits_ctrl_sig_not_impl = decode_info_invMatrixOutputs[7]; // @[IDU.scala 127:50]
-  assign to_ISU_bits_ctrl_sig_src1_op = decode_info_invMatrixOutputs[14:13]; // @[IDU.scala 132:50]
-  assign to_ISU_bits_ctrl_sig_src2_op = decode_info_invMatrixOutputs[12:11]; // @[IDU.scala 131:50]
-  assign to_ISU_bits_ctrl_sig_alu_op = decode_info_invMatrixOutputs[18:15]; // @[IDU.scala 133:50]
-  assign to_ISU_bits_ctrl_sig_lsu_op = decode_info_invMatrixOutputs[29:26]; // @[IDU.scala 135:50]
-  assign to_ISU_bits_ctrl_sig_bru_op = decode_info_invMatrixOutputs[25:22]; // @[IDU.scala 134:50]
-  assign to_ISU_bits_ctrl_sig_csr_op = decode_info_invMatrixOutputs[6:4]; // @[IDU.scala 126:50]
-  assign to_ISU_bits_ctrl_sig_mdu_op = decode_info_invMatrixOutputs[3:0]; // @[IDU.scala 125:50]
+  assign to_ISU_bits_imm = _to_ISU_bits_imm_T_9[31:0]; // @[IDU.scala 113:21]
+  assign to_ISU_bits_pc = from_IFU_bits_pc; // @[IDU.scala 123:21]
+  assign to_ISU_bits_rs1 = from_IFU_bits_inst[19:15]; // @[IDU.scala 120:42]
+  assign to_ISU_bits_rs2 = from_IFU_bits_inst[24:20]; // @[IDU.scala 121:42]
+  assign to_ISU_bits_rd = from_IFU_bits_inst[11:7]; // @[IDU.scala 122:42]
+  assign to_ISU_bits_ctrl_sig_reg_wen = decode_info_invMatrixOutputs[10]; // @[IDU.scala 131:50]
+  assign to_ISU_bits_ctrl_sig_fu_op = decode_info_invMatrixOutputs[32:30]; // @[IDU.scala 137:50]
+  assign to_ISU_bits_ctrl_sig_mem_wen = decode_info_invMatrixOutputs[9]; // @[IDU.scala 130:50]
+  assign to_ISU_bits_ctrl_sig_is_ebreak = decode_info_invMatrixOutputs[8]; // @[IDU.scala 129:50]
+  assign to_ISU_bits_ctrl_sig_not_impl = decode_info_invMatrixOutputs[7]; // @[IDU.scala 128:50]
+  assign to_ISU_bits_ctrl_sig_src1_op = decode_info_invMatrixOutputs[14:13]; // @[IDU.scala 133:50]
+  assign to_ISU_bits_ctrl_sig_src2_op = decode_info_invMatrixOutputs[12:11]; // @[IDU.scala 132:50]
+  assign to_ISU_bits_ctrl_sig_alu_op = decode_info_invMatrixOutputs[18:15]; // @[IDU.scala 134:50]
+  assign to_ISU_bits_ctrl_sig_lsu_op = decode_info_invMatrixOutputs[29:26]; // @[IDU.scala 136:50]
+  assign to_ISU_bits_ctrl_sig_bru_op = decode_info_invMatrixOutputs[25:22]; // @[IDU.scala 135:50]
+  assign to_ISU_bits_ctrl_sig_csr_op = decode_info_invMatrixOutputs[6:4]; // @[IDU.scala 127:50]
+  assign to_ISU_bits_ctrl_sig_mdu_op = decode_info_invMatrixOutputs[3:0]; // @[IDU.scala 126:50]
   always @(posedge clock) begin
-    if (reset) begin // @[IDU.scala 20:24]
-      state <= 1'h0; // @[IDU.scala 20:24]
+    if (reset) begin // @[IDU.scala 21:24]
+      state <= 1'h0; // @[IDU.scala 21:24]
     end else if (state) begin // @[Mux.scala 81:58]
       state <= 1'h0;
     end else begin
