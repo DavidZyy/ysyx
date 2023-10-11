@@ -130,7 +130,7 @@ void get_cpu() {
 
 // execute on inst, until WB stage
 void npc_exec_once() {
-    // single_cycle();
+    single_cycle();
     single_cycle();
     get_cpu();
 }
