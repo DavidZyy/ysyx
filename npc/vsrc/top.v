@@ -6,6 +6,7 @@
 module IFU(
   input         clock,
   input         reset,
+  input         to_IDU_ready,
   output        to_IDU_valid,
   output [31:0] to_IDU_bits_inst,
   output [31:0] to_IDU_bits_pc,
@@ -16,23 +17,26 @@ module IFU(
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
+  reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
   wire [31:0] RomBB_i1_addr; // @[IFU.scala 58:26]
   wire [31:0] RomBB_i1_inst; // @[IFU.scala 58:26]
   reg [31:0] reg_PC; // @[IFU.scala 43:26]
   wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 53:27]
+  wire  _reg_PC_T = to_IDU_ready & to_IDU_valid; // @[Decoupled.scala 51:35]
+  reg  state; // @[IFU.scala 67:24]
   RomBB RomBB_i1 ( // @[IFU.scala 58:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
   );
-  assign to_IDU_valid = 1'h1; // @[IFU.scala 46:20]
-  assign to_IDU_bits_inst = RomBB_i1_inst; // @[IFU.scala 63:25]
+  assign to_IDU_valid = state; // @[Mux.scala 81:58]
+  assign to_IDU_bits_inst = _reg_PC_T ? RomBB_i1_inst : 32'h13; // @[IFU.scala 62:31]
   assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 64:25]
   assign RomBB_i1_addr = reg_PC; // @[IFU.scala 59:25]
   always @(posedge clock) begin
     if (reset) begin // @[IFU.scala 43:26]
       reg_PC <= 32'h80000000; // @[IFU.scala 43:26]
-    end else if (to_IDU_valid) begin // @[IFU.scala 56:18]
+    end else if (_reg_PC_T) begin // @[IFU.scala 56:18]
       if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 48:38]
         reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 49:17]
       end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 50:45]
@@ -40,6 +44,17 @@ module IFU(
       end else begin
         reg_PC <= _next_PC_T_1; // @[IFU.scala 53:17]
       end
+    end
+    if (reset) begin // @[IFU.scala 67:24]
+      state <= 1'h0; // @[IFU.scala 67:24]
+    end else if (state) begin // @[Mux.scala 81:58]
+      if (to_IDU_ready) begin // @[IFU.scala 70:31]
+        state <= 1'h0;
+      end else begin
+        state <= 1'h1;
+      end
+    end else begin
+      state <= 1'h1;
     end
   end
 // Register and memory initialization
@@ -80,6 +95,8 @@ initial begin
 `ifdef RANDOMIZE_REG_INIT
   _RAND_0 = {1{`RANDOM}};
   reg_PC = _RAND_0[31:0];
+  _RAND_1 = {1{`RANDOM}};
+  state = _RAND_1[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -89,6 +106,10 @@ end // initial
 `endif // SYNTHESIS
 endmodule
 module IDU(
+  input         clock,
+  input         reset,
+  output        from_IFU_ready,
+  input         from_IFU_valid,
   input  [31:0] from_IFU_bits_inst,
   input  [31:0] from_IFU_bits_pc,
   output [31:0] to_ISU_bits_imm,
@@ -109,6 +130,10 @@ module IDU(
   output [2:0]  to_ISU_bits_ctrl_sig_csr_op,
   output [3:0]  to_ISU_bits_ctrl_sig_mdu_op
 );
+`ifdef RANDOMIZE_REG_INIT
+  reg [31:0] _RAND_0;
+`endif // RANDOMIZE_REG_INIT
+  reg  state; // @[IDU.scala 20:24]
   wire [19:0] _imm_i_T_2 = from_IFU_bits_inst[31] ? 20'hfffff : 20'h0; // @[Bitwise.scala 77:12]
   wire [31:0] imm_i = {_imm_i_T_2,from_IFU_bits_inst[31:20]}; // @[Cat.scala 33:92]
   wire [31:0] imm_s = {_imm_i_T_2,from_IFU_bits_inst[31:25],from_IFU_bits_inst[11:7]}; // @[Cat.scala 33:92]
@@ -650,6 +675,7 @@ module IDU(
   wire [31:0] _to_ISU_bits_imm_T_5 = 3'h3 == inst_type ? imm_b : _to_ISU_bits_imm_T_3; // @[Mux.scala 81:58]
   wire [31:0] _to_ISU_bits_imm_T_7 = 3'h4 == inst_type ? imm_u : _to_ISU_bits_imm_T_5; // @[Mux.scala 81:58]
   wire [32:0] _to_ISU_bits_imm_T_9 = 3'h5 == inst_type ? imm_j : {{1'd0}, _to_ISU_bits_imm_T_7}; // @[Mux.scala 81:58]
+  assign from_IFU_ready = state ? 1'h0 : 1'h1; // @[Mux.scala 81:58]
   assign to_ISU_bits_imm = _to_ISU_bits_imm_T_9[31:0]; // @[IDU.scala 112:21]
   assign to_ISU_bits_pc = from_IFU_bits_pc; // @[IDU.scala 122:21]
   assign to_ISU_bits_rs1 = from_IFU_bits_inst[19:15]; // @[IDU.scala 119:42]
@@ -667,6 +693,60 @@ module IDU(
   assign to_ISU_bits_ctrl_sig_bru_op = decode_info_invMatrixOutputs[25:22]; // @[IDU.scala 134:50]
   assign to_ISU_bits_ctrl_sig_csr_op = decode_info_invMatrixOutputs[6:4]; // @[IDU.scala 126:50]
   assign to_ISU_bits_ctrl_sig_mdu_op = decode_info_invMatrixOutputs[3:0]; // @[IDU.scala 125:50]
+  always @(posedge clock) begin
+    if (reset) begin // @[IDU.scala 20:24]
+      state <= 1'h0; // @[IDU.scala 20:24]
+    end else if (state) begin // @[Mux.scala 81:58]
+      state <= 1'h0;
+    end else begin
+      state <= from_IFU_valid;
+    end
+  end
+// Register and memory initialization
+`ifdef RANDOMIZE_GARBAGE_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_INVALID_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_REG_INIT
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+`define RANDOMIZE
+`endif
+`ifndef RANDOM
+`define RANDOM $random
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+  integer initvar;
+`endif
+`ifndef SYNTHESIS
+`ifdef FIRRTL_BEFORE_INITIAL
+`FIRRTL_BEFORE_INITIAL
+`endif
+initial begin
+  `ifdef RANDOMIZE
+    `ifdef INIT_RANDOM
+      `INIT_RANDOM
+    `endif
+    `ifndef VERILATOR
+      `ifdef RANDOMIZE_DELAY
+        #`RANDOMIZE_DELAY begin end
+      `else
+        #0.002 begin end
+      `endif
+    `endif
+`ifdef RANDOMIZE_REG_INIT
+  _RAND_0 = {1{`RANDOM}};
+  state = _RAND_0[0:0];
+`endif // RANDOMIZE_REG_INIT
+  `endif // RANDOMIZE
+end // initial
+`ifdef FIRRTL_AFTER_INITIAL
+`FIRRTL_AFTER_INITIAL
+`endif
+`endif // SYNTHESIS
 endmodule
 module RegFile(
   input         clock,
@@ -1309,6 +1389,7 @@ module top(
 );
   wire  IFU_i_clock; // @[core.scala 26:27]
   wire  IFU_i_reset; // @[core.scala 26:27]
+  wire  IFU_i_to_IDU_ready; // @[core.scala 26:27]
   wire  IFU_i_to_IDU_valid; // @[core.scala 26:27]
   wire [31:0] IFU_i_to_IDU_bits_inst; // @[core.scala 26:27]
   wire [31:0] IFU_i_to_IDU_bits_pc; // @[core.scala 26:27]
@@ -1316,6 +1397,10 @@ module top(
   wire [31:0] IFU_i_from_EXU_bits_bru_addr; // @[core.scala 26:27]
   wire  IFU_i_from_EXU_bits_csr_ctrl_br; // @[core.scala 26:27]
   wire [31:0] IFU_i_from_EXU_bits_csr_addr; // @[core.scala 26:27]
+  wire  IDU_i_clock; // @[core.scala 27:27]
+  wire  IDU_i_reset; // @[core.scala 27:27]
+  wire  IDU_i_from_IFU_ready; // @[core.scala 27:27]
+  wire  IDU_i_from_IFU_valid; // @[core.scala 27:27]
   wire [31:0] IDU_i_from_IFU_bits_inst; // @[core.scala 27:27]
   wire [31:0] IDU_i_from_IFU_bits_pc; // @[core.scala 27:27]
   wire [31:0] IDU_i_to_ISU_bits_imm; // @[core.scala 27:27]
@@ -1417,6 +1502,7 @@ module top(
   IFU IFU_i ( // @[core.scala 26:27]
     .clock(IFU_i_clock),
     .reset(IFU_i_reset),
+    .to_IDU_ready(IFU_i_to_IDU_ready),
     .to_IDU_valid(IFU_i_to_IDU_valid),
     .to_IDU_bits_inst(IFU_i_to_IDU_bits_inst),
     .to_IDU_bits_pc(IFU_i_to_IDU_bits_pc),
@@ -1426,6 +1512,10 @@ module top(
     .from_EXU_bits_csr_addr(IFU_i_from_EXU_bits_csr_addr)
   );
   IDU IDU_i ( // @[core.scala 27:27]
+    .clock(IDU_i_clock),
+    .reset(IDU_i_reset),
+    .from_IFU_ready(IDU_i_from_IFU_ready),
+    .from_IFU_valid(IDU_i_from_IFU_valid),
     .from_IFU_bits_inst(IDU_i_from_IFU_bits_inst),
     .from_IFU_bits_pc(IDU_i_from_IFU_bits_pc),
     .to_ISU_bits_imm(IDU_i_to_ISU_bits_imm),
@@ -1539,10 +1629,14 @@ module top(
   assign io_out_difftest_mtvec = EXU_i_difftest_mtvec; // @[core.scala 42:21]
   assign IFU_i_clock = clock;
   assign IFU_i_reset = reset;
+  assign IFU_i_to_IDU_ready = IDU_i_from_IFU_ready; // @[Connect.scala 10:22]
   assign IFU_i_from_EXU_bits_bru_ctrl_br = EXU_i_to_IFU_bits_bru_ctrl_br; // @[Connect.scala 8:22]
   assign IFU_i_from_EXU_bits_bru_addr = EXU_i_to_IFU_bits_bru_addr; // @[Connect.scala 8:22]
   assign IFU_i_from_EXU_bits_csr_ctrl_br = EXU_i_to_IFU_bits_csr_ctrl_br; // @[Connect.scala 8:22]
   assign IFU_i_from_EXU_bits_csr_addr = EXU_i_to_IFU_bits_csr_addr; // @[Connect.scala 8:22]
+  assign IDU_i_clock = clock;
+  assign IDU_i_reset = reset;
+  assign IDU_i_from_IFU_valid = IFU_i_to_IDU_valid; // @[Connect.scala 9:22]
   assign IDU_i_from_IFU_bits_inst = IFU_i_to_IDU_bits_inst; // @[Connect.scala 8:22]
   assign IDU_i_from_IFU_bits_pc = IFU_i_to_IDU_bits_pc; // @[Connect.scala 8:22]
   assign ISU_i_clock = clock;
