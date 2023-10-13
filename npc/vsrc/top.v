@@ -6,40 +6,52 @@
 module IFU(
   input         clock,
   input         reset,
-  output        to_IDU_valid,
   output [31:0] to_IDU_bits_inst,
   output [31:0] to_IDU_bits_pc,
   input         from_EXU_bits_bru_ctrl_br,
   input  [31:0] from_EXU_bits_bru_addr,
   input         from_EXU_bits_csr_ctrl_br,
-  input  [31:0] from_EXU_bits_csr_addr
+  input  [31:0] from_EXU_bits_csr_addr,
+  input         axi_ar_ready,
+  output        axi_ar_valid,
+  output [31:0] axi_ar_bits_addr,
+  output        axi_r_ready,
+  input         axi_r_valid,
+  input  [31:0] axi_r_bits_data
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
+  reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  wire [31:0] RomBB_i1_addr; // @[IFU.scala 59:26]
-  wire [31:0] RomBB_i1_inst; // @[IFU.scala 59:26]
-  reg [31:0] reg_PC; // @[IFU.scala 44:26]
-  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 54:27]
-  RomBB RomBB_i1 ( // @[IFU.scala 59:26]
-    .addr(RomBB_i1_addr),
-    .inst(RomBB_i1_inst)
-  );
-  assign to_IDU_valid = 1'h1; // @[IFU.scala 47:20]
-  assign to_IDU_bits_inst = to_IDU_valid ? RomBB_i1_inst : 32'h13; // @[IFU.scala 63:31]
-  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 65:25]
-  assign RomBB_i1_addr = reg_PC; // @[IFU.scala 60:25]
+  reg [31:0] reg_PC; // @[IFU.scala 36:26]
+  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 46:27]
+  wire  _reg_PC_T = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
+  reg  state; // @[IFU.scala 70:24]
+  assign to_IDU_bits_inst = _reg_PC_T ? axi_r_bits_data : 32'h13; // @[IFU.scala 54:31]
+  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 56:25]
+  assign axi_ar_valid = state ? 1'h0 : 1'h1; // @[Mux.scala 81:58]
+  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 51:22]
+  assign axi_r_ready = state; // @[Mux.scala 81:58]
   always @(posedge clock) begin
-    if (reset) begin // @[IFU.scala 44:26]
-      reg_PC <= 32'h80000000; // @[IFU.scala 44:26]
-    end else if (to_IDU_valid) begin // @[IFU.scala 57:18]
-      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 49:38]
-        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 50:17]
-      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 51:45]
-        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 52:17]
+    if (reset) begin // @[IFU.scala 36:26]
+      reg_PC <= 32'h80000000; // @[IFU.scala 36:26]
+    end else if (_reg_PC_T) begin // @[IFU.scala 49:18]
+      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 41:38]
+        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 42:17]
+      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 43:45]
+        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 44:17]
       end else begin
-        reg_PC <= _next_PC_T_1; // @[IFU.scala 54:17]
+        reg_PC <= _next_PC_T_1; // @[IFU.scala 46:17]
       end
+    end
+    if (reset) begin // @[IFU.scala 70:24]
+      state <= 1'h0; // @[IFU.scala 70:24]
+    end else if (state) begin // @[Mux.scala 81:58]
+      state <= axi_r_valid;
+    end else if (axi_ar_ready) begin // @[IFU.scala 72:28]
+      state <= 1'h0;
+    end else begin
+      state <= 1'h1;
     end
   end
 // Register and memory initialization
@@ -80,6 +92,8 @@ initial begin
 `ifdef RANDOMIZE_REG_INIT
   _RAND_0 = {1{`RANDOM}};
   reg_PC = _RAND_0[31:0];
+  _RAND_1 = {1{`RANDOM}};
+  state = _RAND_1[0:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -1289,13 +1303,94 @@ module WBU(
   output        to_ISU_bits_reg_wen,
   output [31:0] to_ISU_bits_wdata
 );
-  wire [31:0] _to_ISU_bits_wdata_T_1 = from_EXU_bits_pc + 32'h4; // @[WBU.scala 20:47]
+  wire [31:0] _to_ISU_bits_wdata_T_1 = from_EXU_bits_pc + 32'h4; // @[WBU.scala 21:47]
   wire [31:0] _to_ISU_bits_wdata_T_3 = 3'h1 == from_EXU_bits_fu_op ? from_EXU_bits_alu_result : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _to_ISU_bits_wdata_T_5 = 3'h4 == from_EXU_bits_fu_op ? from_EXU_bits_lsu_rdata : _to_ISU_bits_wdata_T_3; // @[Mux.scala 81:58]
   wire [31:0] _to_ISU_bits_wdata_T_7 = 3'h3 == from_EXU_bits_fu_op ? _to_ISU_bits_wdata_T_1 : _to_ISU_bits_wdata_T_5; // @[Mux.scala 81:58]
   wire [31:0] _to_ISU_bits_wdata_T_9 = 3'h5 == from_EXU_bits_fu_op ? from_EXU_bits_csr_rdata : _to_ISU_bits_wdata_T_7; // @[Mux.scala 81:58]
-  assign to_ISU_bits_reg_wen = from_EXU_bits_reg_wen; // @[WBU.scala 16:25]
+  assign to_ISU_bits_reg_wen = from_EXU_bits_reg_wen; // @[WBU.scala 17:25]
   assign to_ISU_bits_wdata = 3'h2 == from_EXU_bits_fu_op ? from_EXU_bits_mdu_result : _to_ISU_bits_wdata_T_9; // @[Mux.scala 81:58]
+endmodule
+module SRAM(
+  input         clock,
+  input         reset,
+  output        axi_ar_ready,
+  input         axi_ar_valid,
+  input  [31:0] axi_ar_bits_addr,
+  input         axi_r_ready,
+  output        axi_r_valid,
+  output [31:0] axi_r_bits_data
+);
+`ifdef RANDOMIZE_REG_INIT
+  reg [31:0] _RAND_0;
+`endif // RANDOMIZE_REG_INIT
+  wire [31:0] RomBB_i1_addr; // @[sram.scala 44:26]
+  wire [31:0] RomBB_i1_inst; // @[sram.scala 44:26]
+  reg  state; // @[sram.scala 30:24]
+  RomBB RomBB_i1 ( // @[sram.scala 44:26]
+    .addr(RomBB_i1_addr),
+    .inst(RomBB_i1_inst)
+  );
+  assign axi_ar_ready = state ? 1'h0 : 1'h1; // @[Mux.scala 81:58]
+  assign axi_r_valid = state; // @[Mux.scala 81:58]
+  assign axi_r_bits_data = RomBB_i1_inst; // @[sram.scala 47:21]
+  assign RomBB_i1_addr = axi_ar_bits_addr; // @[sram.scala 46:22]
+  always @(posedge clock) begin
+    if (reset) begin // @[sram.scala 30:24]
+      state <= 1'h0; // @[sram.scala 30:24]
+    end else if (state) begin // @[Mux.scala 81:58]
+      state <= axi_r_ready;
+    end else if (axi_ar_valid) begin // @[sram.scala 32:28]
+      state <= 1'h0;
+    end else begin
+      state <= 1'h1;
+    end
+  end
+// Register and memory initialization
+`ifdef RANDOMIZE_GARBAGE_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_INVALID_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_REG_INIT
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+`define RANDOMIZE
+`endif
+`ifndef RANDOM
+`define RANDOM $random
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+  integer initvar;
+`endif
+`ifndef SYNTHESIS
+`ifdef FIRRTL_BEFORE_INITIAL
+`FIRRTL_BEFORE_INITIAL
+`endif
+initial begin
+  `ifdef RANDOMIZE
+    `ifdef INIT_RANDOM
+      `INIT_RANDOM
+    `endif
+    `ifndef VERILATOR
+      `ifdef RANDOMIZE_DELAY
+        #`RANDOMIZE_DELAY begin end
+      `else
+        #0.002 begin end
+      `endif
+    `endif
+`ifdef RANDOMIZE_REG_INIT
+  _RAND_0 = {1{`RANDOM}};
+  state = _RAND_0[0:0];
+`endif // RANDOMIZE_REG_INIT
+  `endif // RANDOMIZE
+end // initial
+`ifdef FIRRTL_AFTER_INITIAL
+`FIRRTL_AFTER_INITIAL
+`endif
+`endif // SYNTHESIS
 endmodule
 module top(
   input         clock,
@@ -1307,125 +1402,143 @@ module top(
   output [31:0] io_out_difftest_mstatus,
   output [31:0] io_out_difftest_mtvec
 );
-  wire  IFU_i_clock; // @[core.scala 24:27]
-  wire  IFU_i_reset; // @[core.scala 24:27]
-  wire  IFU_i_to_IDU_valid; // @[core.scala 24:27]
-  wire [31:0] IFU_i_to_IDU_bits_inst; // @[core.scala 24:27]
-  wire [31:0] IFU_i_to_IDU_bits_pc; // @[core.scala 24:27]
-  wire  IFU_i_from_EXU_bits_bru_ctrl_br; // @[core.scala 24:27]
-  wire [31:0] IFU_i_from_EXU_bits_bru_addr; // @[core.scala 24:27]
-  wire  IFU_i_from_EXU_bits_csr_ctrl_br; // @[core.scala 24:27]
-  wire [31:0] IFU_i_from_EXU_bits_csr_addr; // @[core.scala 24:27]
-  wire [31:0] IDU_i_from_IFU_bits_inst; // @[core.scala 25:27]
-  wire [31:0] IDU_i_from_IFU_bits_pc; // @[core.scala 25:27]
-  wire [31:0] IDU_i_to_ISU_bits_imm; // @[core.scala 25:27]
-  wire [31:0] IDU_i_to_ISU_bits_pc; // @[core.scala 25:27]
-  wire [4:0] IDU_i_to_ISU_bits_rs1; // @[core.scala 25:27]
-  wire [4:0] IDU_i_to_ISU_bits_rs2; // @[core.scala 25:27]
-  wire [4:0] IDU_i_to_ISU_bits_rd; // @[core.scala 25:27]
-  wire  IDU_i_to_ISU_bits_ctrl_sig_reg_wen; // @[core.scala 25:27]
-  wire [2:0] IDU_i_to_ISU_bits_ctrl_sig_fu_op; // @[core.scala 25:27]
-  wire  IDU_i_to_ISU_bits_ctrl_sig_mem_wen; // @[core.scala 25:27]
-  wire  IDU_i_to_ISU_bits_ctrl_sig_is_ebreak; // @[core.scala 25:27]
-  wire  IDU_i_to_ISU_bits_ctrl_sig_not_impl; // @[core.scala 25:27]
-  wire [1:0] IDU_i_to_ISU_bits_ctrl_sig_src1_op; // @[core.scala 25:27]
-  wire [1:0] IDU_i_to_ISU_bits_ctrl_sig_src2_op; // @[core.scala 25:27]
-  wire [3:0] IDU_i_to_ISU_bits_ctrl_sig_alu_op; // @[core.scala 25:27]
-  wire [3:0] IDU_i_to_ISU_bits_ctrl_sig_lsu_op; // @[core.scala 25:27]
-  wire [3:0] IDU_i_to_ISU_bits_ctrl_sig_bru_op; // @[core.scala 25:27]
-  wire [2:0] IDU_i_to_ISU_bits_ctrl_sig_csr_op; // @[core.scala 25:27]
-  wire [3:0] IDU_i_to_ISU_bits_ctrl_sig_mdu_op; // @[core.scala 25:27]
-  wire  ISU_i_clock; // @[core.scala 26:27]
-  wire  ISU_i_reset; // @[core.scala 26:27]
-  wire [31:0] ISU_i_from_IDU_bits_imm; // @[core.scala 26:27]
-  wire [31:0] ISU_i_from_IDU_bits_pc; // @[core.scala 26:27]
-  wire [4:0] ISU_i_from_IDU_bits_rs1; // @[core.scala 26:27]
-  wire [4:0] ISU_i_from_IDU_bits_rs2; // @[core.scala 26:27]
-  wire [4:0] ISU_i_from_IDU_bits_rd; // @[core.scala 26:27]
-  wire  ISU_i_from_IDU_bits_ctrl_sig_reg_wen; // @[core.scala 26:27]
-  wire [2:0] ISU_i_from_IDU_bits_ctrl_sig_fu_op; // @[core.scala 26:27]
-  wire  ISU_i_from_IDU_bits_ctrl_sig_mem_wen; // @[core.scala 26:27]
-  wire  ISU_i_from_IDU_bits_ctrl_sig_is_ebreak; // @[core.scala 26:27]
-  wire  ISU_i_from_IDU_bits_ctrl_sig_not_impl; // @[core.scala 26:27]
-  wire [1:0] ISU_i_from_IDU_bits_ctrl_sig_src1_op; // @[core.scala 26:27]
-  wire [1:0] ISU_i_from_IDU_bits_ctrl_sig_src2_op; // @[core.scala 26:27]
-  wire [3:0] ISU_i_from_IDU_bits_ctrl_sig_alu_op; // @[core.scala 26:27]
-  wire [3:0] ISU_i_from_IDU_bits_ctrl_sig_lsu_op; // @[core.scala 26:27]
-  wire [3:0] ISU_i_from_IDU_bits_ctrl_sig_bru_op; // @[core.scala 26:27]
-  wire [2:0] ISU_i_from_IDU_bits_ctrl_sig_csr_op; // @[core.scala 26:27]
-  wire [3:0] ISU_i_from_IDU_bits_ctrl_sig_mdu_op; // @[core.scala 26:27]
-  wire  ISU_i_from_WBU_bits_reg_wen; // @[core.scala 26:27]
-  wire [31:0] ISU_i_from_WBU_bits_wdata; // @[core.scala 26:27]
-  wire [31:0] ISU_i_to_EXU_bits_imm; // @[core.scala 26:27]
-  wire [31:0] ISU_i_to_EXU_bits_pc; // @[core.scala 26:27]
-  wire [31:0] ISU_i_to_EXU_bits_rdata1; // @[core.scala 26:27]
-  wire [31:0] ISU_i_to_EXU_bits_rdata2; // @[core.scala 26:27]
-  wire  ISU_i_to_EXU_bits_ctrl_sig_reg_wen; // @[core.scala 26:27]
-  wire [2:0] ISU_i_to_EXU_bits_ctrl_sig_fu_op; // @[core.scala 26:27]
-  wire  ISU_i_to_EXU_bits_ctrl_sig_mem_wen; // @[core.scala 26:27]
-  wire  ISU_i_to_EXU_bits_ctrl_sig_is_ebreak; // @[core.scala 26:27]
-  wire  ISU_i_to_EXU_bits_ctrl_sig_not_impl; // @[core.scala 26:27]
-  wire [1:0] ISU_i_to_EXU_bits_ctrl_sig_src1_op; // @[core.scala 26:27]
-  wire [1:0] ISU_i_to_EXU_bits_ctrl_sig_src2_op; // @[core.scala 26:27]
-  wire [3:0] ISU_i_to_EXU_bits_ctrl_sig_alu_op; // @[core.scala 26:27]
-  wire [3:0] ISU_i_to_EXU_bits_ctrl_sig_lsu_op; // @[core.scala 26:27]
-  wire [3:0] ISU_i_to_EXU_bits_ctrl_sig_bru_op; // @[core.scala 26:27]
-  wire [2:0] ISU_i_to_EXU_bits_ctrl_sig_csr_op; // @[core.scala 26:27]
-  wire [3:0] ISU_i_to_EXU_bits_ctrl_sig_mdu_op; // @[core.scala 26:27]
-  wire  EXU_i_clock; // @[core.scala 27:27]
-  wire  EXU_i_reset; // @[core.scala 27:27]
-  wire [31:0] EXU_i_from_ISU_bits_imm; // @[core.scala 27:27]
-  wire [31:0] EXU_i_from_ISU_bits_pc; // @[core.scala 27:27]
-  wire [31:0] EXU_i_from_ISU_bits_rdata1; // @[core.scala 27:27]
-  wire [31:0] EXU_i_from_ISU_bits_rdata2; // @[core.scala 27:27]
-  wire  EXU_i_from_ISU_bits_ctrl_sig_reg_wen; // @[core.scala 27:27]
-  wire [2:0] EXU_i_from_ISU_bits_ctrl_sig_fu_op; // @[core.scala 27:27]
-  wire  EXU_i_from_ISU_bits_ctrl_sig_mem_wen; // @[core.scala 27:27]
-  wire  EXU_i_from_ISU_bits_ctrl_sig_is_ebreak; // @[core.scala 27:27]
-  wire  EXU_i_from_ISU_bits_ctrl_sig_not_impl; // @[core.scala 27:27]
-  wire [1:0] EXU_i_from_ISU_bits_ctrl_sig_src1_op; // @[core.scala 27:27]
-  wire [1:0] EXU_i_from_ISU_bits_ctrl_sig_src2_op; // @[core.scala 27:27]
-  wire [3:0] EXU_i_from_ISU_bits_ctrl_sig_alu_op; // @[core.scala 27:27]
-  wire [3:0] EXU_i_from_ISU_bits_ctrl_sig_lsu_op; // @[core.scala 27:27]
-  wire [3:0] EXU_i_from_ISU_bits_ctrl_sig_bru_op; // @[core.scala 27:27]
-  wire [2:0] EXU_i_from_ISU_bits_ctrl_sig_csr_op; // @[core.scala 27:27]
-  wire [3:0] EXU_i_from_ISU_bits_ctrl_sig_mdu_op; // @[core.scala 27:27]
-  wire [31:0] EXU_i_to_WBU_bits_alu_result; // @[core.scala 27:27]
-  wire [31:0] EXU_i_to_WBU_bits_mdu_result; // @[core.scala 27:27]
-  wire [31:0] EXU_i_to_WBU_bits_lsu_rdata; // @[core.scala 27:27]
-  wire [31:0] EXU_i_to_WBU_bits_csr_rdata; // @[core.scala 27:27]
-  wire [31:0] EXU_i_to_WBU_bits_pc; // @[core.scala 27:27]
-  wire  EXU_i_to_WBU_bits_reg_wen; // @[core.scala 27:27]
-  wire [2:0] EXU_i_to_WBU_bits_fu_op; // @[core.scala 27:27]
-  wire  EXU_i_to_IFU_bits_bru_ctrl_br; // @[core.scala 27:27]
-  wire [31:0] EXU_i_to_IFU_bits_bru_addr; // @[core.scala 27:27]
-  wire  EXU_i_to_IFU_bits_csr_ctrl_br; // @[core.scala 27:27]
-  wire [31:0] EXU_i_to_IFU_bits_csr_addr; // @[core.scala 27:27]
-  wire [31:0] EXU_i_difftest_mcause; // @[core.scala 27:27]
-  wire [31:0] EXU_i_difftest_mepc; // @[core.scala 27:27]
-  wire [31:0] EXU_i_difftest_mstatus; // @[core.scala 27:27]
-  wire [31:0] EXU_i_difftest_mtvec; // @[core.scala 27:27]
-  wire [31:0] WBU_i_from_EXU_bits_alu_result; // @[core.scala 28:27]
-  wire [31:0] WBU_i_from_EXU_bits_mdu_result; // @[core.scala 28:27]
-  wire [31:0] WBU_i_from_EXU_bits_lsu_rdata; // @[core.scala 28:27]
-  wire [31:0] WBU_i_from_EXU_bits_csr_rdata; // @[core.scala 28:27]
-  wire [31:0] WBU_i_from_EXU_bits_pc; // @[core.scala 28:27]
-  wire  WBU_i_from_EXU_bits_reg_wen; // @[core.scala 28:27]
-  wire [2:0] WBU_i_from_EXU_bits_fu_op; // @[core.scala 28:27]
-  wire  WBU_i_to_ISU_bits_reg_wen; // @[core.scala 28:27]
-  wire [31:0] WBU_i_to_ISU_bits_wdata; // @[core.scala 28:27]
-  IFU IFU_i ( // @[core.scala 24:27]
+  wire  IFU_i_clock; // @[core.scala 25:27]
+  wire  IFU_i_reset; // @[core.scala 25:27]
+  wire [31:0] IFU_i_to_IDU_bits_inst; // @[core.scala 25:27]
+  wire [31:0] IFU_i_to_IDU_bits_pc; // @[core.scala 25:27]
+  wire  IFU_i_from_EXU_bits_bru_ctrl_br; // @[core.scala 25:27]
+  wire [31:0] IFU_i_from_EXU_bits_bru_addr; // @[core.scala 25:27]
+  wire  IFU_i_from_EXU_bits_csr_ctrl_br; // @[core.scala 25:27]
+  wire [31:0] IFU_i_from_EXU_bits_csr_addr; // @[core.scala 25:27]
+  wire  IFU_i_axi_ar_ready; // @[core.scala 25:27]
+  wire  IFU_i_axi_ar_valid; // @[core.scala 25:27]
+  wire [31:0] IFU_i_axi_ar_bits_addr; // @[core.scala 25:27]
+  wire  IFU_i_axi_r_ready; // @[core.scala 25:27]
+  wire  IFU_i_axi_r_valid; // @[core.scala 25:27]
+  wire [31:0] IFU_i_axi_r_bits_data; // @[core.scala 25:27]
+  wire [31:0] IDU_i_from_IFU_bits_inst; // @[core.scala 26:27]
+  wire [31:0] IDU_i_from_IFU_bits_pc; // @[core.scala 26:27]
+  wire [31:0] IDU_i_to_ISU_bits_imm; // @[core.scala 26:27]
+  wire [31:0] IDU_i_to_ISU_bits_pc; // @[core.scala 26:27]
+  wire [4:0] IDU_i_to_ISU_bits_rs1; // @[core.scala 26:27]
+  wire [4:0] IDU_i_to_ISU_bits_rs2; // @[core.scala 26:27]
+  wire [4:0] IDU_i_to_ISU_bits_rd; // @[core.scala 26:27]
+  wire  IDU_i_to_ISU_bits_ctrl_sig_reg_wen; // @[core.scala 26:27]
+  wire [2:0] IDU_i_to_ISU_bits_ctrl_sig_fu_op; // @[core.scala 26:27]
+  wire  IDU_i_to_ISU_bits_ctrl_sig_mem_wen; // @[core.scala 26:27]
+  wire  IDU_i_to_ISU_bits_ctrl_sig_is_ebreak; // @[core.scala 26:27]
+  wire  IDU_i_to_ISU_bits_ctrl_sig_not_impl; // @[core.scala 26:27]
+  wire [1:0] IDU_i_to_ISU_bits_ctrl_sig_src1_op; // @[core.scala 26:27]
+  wire [1:0] IDU_i_to_ISU_bits_ctrl_sig_src2_op; // @[core.scala 26:27]
+  wire [3:0] IDU_i_to_ISU_bits_ctrl_sig_alu_op; // @[core.scala 26:27]
+  wire [3:0] IDU_i_to_ISU_bits_ctrl_sig_lsu_op; // @[core.scala 26:27]
+  wire [3:0] IDU_i_to_ISU_bits_ctrl_sig_bru_op; // @[core.scala 26:27]
+  wire [2:0] IDU_i_to_ISU_bits_ctrl_sig_csr_op; // @[core.scala 26:27]
+  wire [3:0] IDU_i_to_ISU_bits_ctrl_sig_mdu_op; // @[core.scala 26:27]
+  wire  ISU_i_clock; // @[core.scala 27:27]
+  wire  ISU_i_reset; // @[core.scala 27:27]
+  wire [31:0] ISU_i_from_IDU_bits_imm; // @[core.scala 27:27]
+  wire [31:0] ISU_i_from_IDU_bits_pc; // @[core.scala 27:27]
+  wire [4:0] ISU_i_from_IDU_bits_rs1; // @[core.scala 27:27]
+  wire [4:0] ISU_i_from_IDU_bits_rs2; // @[core.scala 27:27]
+  wire [4:0] ISU_i_from_IDU_bits_rd; // @[core.scala 27:27]
+  wire  ISU_i_from_IDU_bits_ctrl_sig_reg_wen; // @[core.scala 27:27]
+  wire [2:0] ISU_i_from_IDU_bits_ctrl_sig_fu_op; // @[core.scala 27:27]
+  wire  ISU_i_from_IDU_bits_ctrl_sig_mem_wen; // @[core.scala 27:27]
+  wire  ISU_i_from_IDU_bits_ctrl_sig_is_ebreak; // @[core.scala 27:27]
+  wire  ISU_i_from_IDU_bits_ctrl_sig_not_impl; // @[core.scala 27:27]
+  wire [1:0] ISU_i_from_IDU_bits_ctrl_sig_src1_op; // @[core.scala 27:27]
+  wire [1:0] ISU_i_from_IDU_bits_ctrl_sig_src2_op; // @[core.scala 27:27]
+  wire [3:0] ISU_i_from_IDU_bits_ctrl_sig_alu_op; // @[core.scala 27:27]
+  wire [3:0] ISU_i_from_IDU_bits_ctrl_sig_lsu_op; // @[core.scala 27:27]
+  wire [3:0] ISU_i_from_IDU_bits_ctrl_sig_bru_op; // @[core.scala 27:27]
+  wire [2:0] ISU_i_from_IDU_bits_ctrl_sig_csr_op; // @[core.scala 27:27]
+  wire [3:0] ISU_i_from_IDU_bits_ctrl_sig_mdu_op; // @[core.scala 27:27]
+  wire  ISU_i_from_WBU_bits_reg_wen; // @[core.scala 27:27]
+  wire [31:0] ISU_i_from_WBU_bits_wdata; // @[core.scala 27:27]
+  wire [31:0] ISU_i_to_EXU_bits_imm; // @[core.scala 27:27]
+  wire [31:0] ISU_i_to_EXU_bits_pc; // @[core.scala 27:27]
+  wire [31:0] ISU_i_to_EXU_bits_rdata1; // @[core.scala 27:27]
+  wire [31:0] ISU_i_to_EXU_bits_rdata2; // @[core.scala 27:27]
+  wire  ISU_i_to_EXU_bits_ctrl_sig_reg_wen; // @[core.scala 27:27]
+  wire [2:0] ISU_i_to_EXU_bits_ctrl_sig_fu_op; // @[core.scala 27:27]
+  wire  ISU_i_to_EXU_bits_ctrl_sig_mem_wen; // @[core.scala 27:27]
+  wire  ISU_i_to_EXU_bits_ctrl_sig_is_ebreak; // @[core.scala 27:27]
+  wire  ISU_i_to_EXU_bits_ctrl_sig_not_impl; // @[core.scala 27:27]
+  wire [1:0] ISU_i_to_EXU_bits_ctrl_sig_src1_op; // @[core.scala 27:27]
+  wire [1:0] ISU_i_to_EXU_bits_ctrl_sig_src2_op; // @[core.scala 27:27]
+  wire [3:0] ISU_i_to_EXU_bits_ctrl_sig_alu_op; // @[core.scala 27:27]
+  wire [3:0] ISU_i_to_EXU_bits_ctrl_sig_lsu_op; // @[core.scala 27:27]
+  wire [3:0] ISU_i_to_EXU_bits_ctrl_sig_bru_op; // @[core.scala 27:27]
+  wire [2:0] ISU_i_to_EXU_bits_ctrl_sig_csr_op; // @[core.scala 27:27]
+  wire [3:0] ISU_i_to_EXU_bits_ctrl_sig_mdu_op; // @[core.scala 27:27]
+  wire  EXU_i_clock; // @[core.scala 28:27]
+  wire  EXU_i_reset; // @[core.scala 28:27]
+  wire [31:0] EXU_i_from_ISU_bits_imm; // @[core.scala 28:27]
+  wire [31:0] EXU_i_from_ISU_bits_pc; // @[core.scala 28:27]
+  wire [31:0] EXU_i_from_ISU_bits_rdata1; // @[core.scala 28:27]
+  wire [31:0] EXU_i_from_ISU_bits_rdata2; // @[core.scala 28:27]
+  wire  EXU_i_from_ISU_bits_ctrl_sig_reg_wen; // @[core.scala 28:27]
+  wire [2:0] EXU_i_from_ISU_bits_ctrl_sig_fu_op; // @[core.scala 28:27]
+  wire  EXU_i_from_ISU_bits_ctrl_sig_mem_wen; // @[core.scala 28:27]
+  wire  EXU_i_from_ISU_bits_ctrl_sig_is_ebreak; // @[core.scala 28:27]
+  wire  EXU_i_from_ISU_bits_ctrl_sig_not_impl; // @[core.scala 28:27]
+  wire [1:0] EXU_i_from_ISU_bits_ctrl_sig_src1_op; // @[core.scala 28:27]
+  wire [1:0] EXU_i_from_ISU_bits_ctrl_sig_src2_op; // @[core.scala 28:27]
+  wire [3:0] EXU_i_from_ISU_bits_ctrl_sig_alu_op; // @[core.scala 28:27]
+  wire [3:0] EXU_i_from_ISU_bits_ctrl_sig_lsu_op; // @[core.scala 28:27]
+  wire [3:0] EXU_i_from_ISU_bits_ctrl_sig_bru_op; // @[core.scala 28:27]
+  wire [2:0] EXU_i_from_ISU_bits_ctrl_sig_csr_op; // @[core.scala 28:27]
+  wire [3:0] EXU_i_from_ISU_bits_ctrl_sig_mdu_op; // @[core.scala 28:27]
+  wire [31:0] EXU_i_to_WBU_bits_alu_result; // @[core.scala 28:27]
+  wire [31:0] EXU_i_to_WBU_bits_mdu_result; // @[core.scala 28:27]
+  wire [31:0] EXU_i_to_WBU_bits_lsu_rdata; // @[core.scala 28:27]
+  wire [31:0] EXU_i_to_WBU_bits_csr_rdata; // @[core.scala 28:27]
+  wire [31:0] EXU_i_to_WBU_bits_pc; // @[core.scala 28:27]
+  wire  EXU_i_to_WBU_bits_reg_wen; // @[core.scala 28:27]
+  wire [2:0] EXU_i_to_WBU_bits_fu_op; // @[core.scala 28:27]
+  wire  EXU_i_to_IFU_bits_bru_ctrl_br; // @[core.scala 28:27]
+  wire [31:0] EXU_i_to_IFU_bits_bru_addr; // @[core.scala 28:27]
+  wire  EXU_i_to_IFU_bits_csr_ctrl_br; // @[core.scala 28:27]
+  wire [31:0] EXU_i_to_IFU_bits_csr_addr; // @[core.scala 28:27]
+  wire [31:0] EXU_i_difftest_mcause; // @[core.scala 28:27]
+  wire [31:0] EXU_i_difftest_mepc; // @[core.scala 28:27]
+  wire [31:0] EXU_i_difftest_mstatus; // @[core.scala 28:27]
+  wire [31:0] EXU_i_difftest_mtvec; // @[core.scala 28:27]
+  wire [31:0] WBU_i_from_EXU_bits_alu_result; // @[core.scala 29:27]
+  wire [31:0] WBU_i_from_EXU_bits_mdu_result; // @[core.scala 29:27]
+  wire [31:0] WBU_i_from_EXU_bits_lsu_rdata; // @[core.scala 29:27]
+  wire [31:0] WBU_i_from_EXU_bits_csr_rdata; // @[core.scala 29:27]
+  wire [31:0] WBU_i_from_EXU_bits_pc; // @[core.scala 29:27]
+  wire  WBU_i_from_EXU_bits_reg_wen; // @[core.scala 29:27]
+  wire [2:0] WBU_i_from_EXU_bits_fu_op; // @[core.scala 29:27]
+  wire  WBU_i_to_ISU_bits_reg_wen; // @[core.scala 29:27]
+  wire [31:0] WBU_i_to_ISU_bits_wdata; // @[core.scala 29:27]
+  wire  sram_i_clock; // @[core.scala 31:27]
+  wire  sram_i_reset; // @[core.scala 31:27]
+  wire  sram_i_axi_ar_ready; // @[core.scala 31:27]
+  wire  sram_i_axi_ar_valid; // @[core.scala 31:27]
+  wire [31:0] sram_i_axi_ar_bits_addr; // @[core.scala 31:27]
+  wire  sram_i_axi_r_ready; // @[core.scala 31:27]
+  wire  sram_i_axi_r_valid; // @[core.scala 31:27]
+  wire [31:0] sram_i_axi_r_bits_data; // @[core.scala 31:27]
+  IFU IFU_i ( // @[core.scala 25:27]
     .clock(IFU_i_clock),
     .reset(IFU_i_reset),
-    .to_IDU_valid(IFU_i_to_IDU_valid),
     .to_IDU_bits_inst(IFU_i_to_IDU_bits_inst),
     .to_IDU_bits_pc(IFU_i_to_IDU_bits_pc),
     .from_EXU_bits_bru_ctrl_br(IFU_i_from_EXU_bits_bru_ctrl_br),
     .from_EXU_bits_bru_addr(IFU_i_from_EXU_bits_bru_addr),
     .from_EXU_bits_csr_ctrl_br(IFU_i_from_EXU_bits_csr_ctrl_br),
-    .from_EXU_bits_csr_addr(IFU_i_from_EXU_bits_csr_addr)
+    .from_EXU_bits_csr_addr(IFU_i_from_EXU_bits_csr_addr),
+    .axi_ar_ready(IFU_i_axi_ar_ready),
+    .axi_ar_valid(IFU_i_axi_ar_valid),
+    .axi_ar_bits_addr(IFU_i_axi_ar_bits_addr),
+    .axi_r_ready(IFU_i_axi_r_ready),
+    .axi_r_valid(IFU_i_axi_r_valid),
+    .axi_r_bits_data(IFU_i_axi_r_bits_data)
   );
-  IDU IDU_i ( // @[core.scala 25:27]
+  IDU IDU_i ( // @[core.scala 26:27]
     .from_IFU_bits_inst(IDU_i_from_IFU_bits_inst),
     .from_IFU_bits_pc(IDU_i_from_IFU_bits_pc),
     .to_ISU_bits_imm(IDU_i_to_ISU_bits_imm),
@@ -1446,7 +1559,7 @@ module top(
     .to_ISU_bits_ctrl_sig_csr_op(IDU_i_to_ISU_bits_ctrl_sig_csr_op),
     .to_ISU_bits_ctrl_sig_mdu_op(IDU_i_to_ISU_bits_ctrl_sig_mdu_op)
   );
-  ISU ISU_i ( // @[core.scala 26:27]
+  ISU ISU_i ( // @[core.scala 27:27]
     .clock(ISU_i_clock),
     .reset(ISU_i_reset),
     .from_IDU_bits_imm(ISU_i_from_IDU_bits_imm),
@@ -1485,7 +1598,7 @@ module top(
     .to_EXU_bits_ctrl_sig_csr_op(ISU_i_to_EXU_bits_ctrl_sig_csr_op),
     .to_EXU_bits_ctrl_sig_mdu_op(ISU_i_to_EXU_bits_ctrl_sig_mdu_op)
   );
-  EXU EXU_i ( // @[core.scala 27:27]
+  EXU EXU_i ( // @[core.scala 28:27]
     .clock(EXU_i_clock),
     .reset(EXU_i_reset),
     .from_ISU_bits_imm(EXU_i_from_ISU_bits_imm),
@@ -1520,7 +1633,7 @@ module top(
     .difftest_mstatus(EXU_i_difftest_mstatus),
     .difftest_mtvec(EXU_i_difftest_mtvec)
   );
-  WBU WBU_i ( // @[core.scala 28:27]
+  WBU WBU_i ( // @[core.scala 29:27]
     .from_EXU_bits_alu_result(WBU_i_from_EXU_bits_alu_result),
     .from_EXU_bits_mdu_result(WBU_i_from_EXU_bits_mdu_result),
     .from_EXU_bits_lsu_rdata(WBU_i_from_EXU_bits_lsu_rdata),
@@ -1531,18 +1644,31 @@ module top(
     .to_ISU_bits_reg_wen(WBU_i_to_ISU_bits_reg_wen),
     .to_ISU_bits_wdata(WBU_i_to_ISU_bits_wdata)
   );
-  assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[core.scala 37:20]
-  assign io_out_pc = IFU_i_to_IDU_bits_pc; // @[core.scala 38:20]
-  assign io_out_difftest_mcause = EXU_i_difftest_mcause; // @[core.scala 40:21]
-  assign io_out_difftest_mepc = EXU_i_difftest_mepc; // @[core.scala 40:21]
-  assign io_out_difftest_mstatus = EXU_i_difftest_mstatus; // @[core.scala 40:21]
-  assign io_out_difftest_mtvec = EXU_i_difftest_mtvec; // @[core.scala 40:21]
+  SRAM sram_i ( // @[core.scala 31:27]
+    .clock(sram_i_clock),
+    .reset(sram_i_reset),
+    .axi_ar_ready(sram_i_axi_ar_ready),
+    .axi_ar_valid(sram_i_axi_ar_valid),
+    .axi_ar_bits_addr(sram_i_axi_ar_bits_addr),
+    .axi_r_ready(sram_i_axi_r_ready),
+    .axi_r_valid(sram_i_axi_r_valid),
+    .axi_r_bits_data(sram_i_axi_r_bits_data)
+  );
+  assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[core.scala 42:20]
+  assign io_out_pc = IFU_i_to_IDU_bits_pc; // @[core.scala 43:20]
+  assign io_out_difftest_mcause = EXU_i_difftest_mcause; // @[core.scala 45:21]
+  assign io_out_difftest_mepc = EXU_i_difftest_mepc; // @[core.scala 45:21]
+  assign io_out_difftest_mstatus = EXU_i_difftest_mstatus; // @[core.scala 45:21]
+  assign io_out_difftest_mtvec = EXU_i_difftest_mtvec; // @[core.scala 45:21]
   assign IFU_i_clock = clock;
   assign IFU_i_reset = reset;
   assign IFU_i_from_EXU_bits_bru_ctrl_br = EXU_i_to_IFU_bits_bru_ctrl_br; // @[Connect.scala 8:22]
   assign IFU_i_from_EXU_bits_bru_addr = EXU_i_to_IFU_bits_bru_addr; // @[Connect.scala 8:22]
   assign IFU_i_from_EXU_bits_csr_ctrl_br = EXU_i_to_IFU_bits_csr_ctrl_br; // @[Connect.scala 8:22]
   assign IFU_i_from_EXU_bits_csr_addr = EXU_i_to_IFU_bits_csr_addr; // @[Connect.scala 8:22]
+  assign IFU_i_axi_ar_ready = sram_i_axi_ar_ready; // @[Connect.scala 10:22]
+  assign IFU_i_axi_r_valid = sram_i_axi_r_valid; // @[Connect.scala 9:22]
+  assign IFU_i_axi_r_bits_data = sram_i_axi_r_bits_data; // @[Connect.scala 8:22]
   assign IDU_i_from_IFU_bits_inst = IFU_i_to_IDU_bits_inst; // @[Connect.scala 8:22]
   assign IDU_i_from_IFU_bits_pc = IFU_i_to_IDU_bits_pc; // @[Connect.scala 8:22]
   assign ISU_i_clock = clock;
@@ -1591,4 +1717,9 @@ module top(
   assign WBU_i_from_EXU_bits_pc = EXU_i_to_WBU_bits_pc; // @[Connect.scala 8:22]
   assign WBU_i_from_EXU_bits_reg_wen = EXU_i_to_WBU_bits_reg_wen; // @[Connect.scala 8:22]
   assign WBU_i_from_EXU_bits_fu_op = EXU_i_to_WBU_bits_fu_op; // @[Connect.scala 8:22]
+  assign sram_i_clock = clock;
+  assign sram_i_reset = reset;
+  assign sram_i_axi_ar_valid = IFU_i_axi_ar_valid; // @[Connect.scala 9:22]
+  assign sram_i_axi_ar_bits_addr = IFU_i_axi_ar_bits_addr; // @[Connect.scala 8:22]
+  assign sram_i_axi_r_ready = IFU_i_axi_r_ready; // @[Connect.scala 10:22]
 endmodule
