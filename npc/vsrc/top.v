@@ -47,11 +47,13 @@ module IFU(
     if (reset) begin // @[IFU.scala 70:24]
       state <= 1'h0; // @[IFU.scala 70:24]
     end else if (state) begin // @[Mux.scala 81:58]
-      state <= axi_r_valid;
-    end else if (axi_ar_ready) begin // @[IFU.scala 72:28]
-      state <= 1'h0;
+      if (axi_r_valid) begin // @[IFU.scala 73:28]
+        state <= 1'h0;
+      end else begin
+        state <= 1'h1;
+      end
     end else begin
-      state <= 1'h1;
+      state <= axi_ar_ready;
     end
   end
 // Register and memory initialization
@@ -1339,11 +1341,13 @@ module SRAM(
     if (reset) begin // @[sram.scala 30:24]
       state <= 1'h0; // @[sram.scala 30:24]
     end else if (state) begin // @[Mux.scala 81:58]
-      state <= axi_r_ready;
-    end else if (axi_ar_valid) begin // @[sram.scala 32:28]
-      state <= 1'h0;
+      if (axi_r_ready) begin // @[sram.scala 33:28]
+        state <= 1'h0;
+      end else begin
+        state <= 1'h1;
+      end
     end else begin
-      state <= 1'h1;
+      state <= axi_ar_valid;
     end
   end
 // Register and memory initialization
