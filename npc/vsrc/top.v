@@ -26,7 +26,7 @@ module IFU(
   reg [31:0] reg_PC; // @[IFU.scala 36:26]
   wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 46:27]
   wire  _reg_PC_T = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
-  reg  state; // @[IFU.scala 71:24]
+  reg  state; // @[IFU.scala 72:24]
   assign to_IDU_bits_inst = _reg_PC_T ? axi_r_bits_data : 32'h13; // @[IFU.scala 55:31]
   assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 57:25]
   assign axi_ar_valid = state ? 1'h0 : 1'h1; // @[Mux.scala 81:58]
@@ -44,10 +44,10 @@ module IFU(
         reg_PC <= _next_PC_T_1; // @[IFU.scala 46:17]
       end
     end
-    if (reset) begin // @[IFU.scala 71:24]
-      state <= 1'h0; // @[IFU.scala 71:24]
+    if (reset) begin // @[IFU.scala 72:24]
+      state <= 1'h0; // @[IFU.scala 72:24]
     end else if (state) begin // @[Mux.scala 81:58]
-      if (axi_r_valid) begin // @[IFU.scala 74:28]
+      if (axi_r_valid) begin // @[IFU.scala 75:28]
         state <= 1'h0;
       end else begin
         state <= 1'h1;
@@ -1395,29 +1395,29 @@ module SRAM(
   wire  lfsr_clock; // @[sram.scala 45:22]
   wire  lfsr_reset; // @[sram.scala 45:22]
   wire [3:0] lfsr_io_out; // @[sram.scala 45:22]
-  wire [31:0] RomBB_i1_addr; // @[sram.scala 79:26]
-  wire [31:0] RomBB_i1_inst; // @[sram.scala 79:26]
+  wire [31:0] RomBB_i1_addr; // @[sram.scala 80:26]
+  wire [31:0] RomBB_i1_inst; // @[sram.scala 80:26]
   reg [1:0] state; // @[sram.scala 31:24]
   wire  _axi_ar_ready_T = 2'h0 == state; // @[Mux.scala 81:61]
   wire  _axi_ar_ready_T_2 = 2'h2 == state; // @[Mux.scala 81:61]
   reg [3:0] delay; // @[sram.scala 47:24]
-  wire [3:0] _delay_T_1 = delay - 4'h1; // @[sram.scala 65:32]
-  wire [1:0] _GEN_4 = axi_r_ready ? 2'h0 : 2'h2; // @[sram.scala 69:32 70:25 74:25]
+  wire [3:0] _delay_T_1 = delay - 4'h1; // @[sram.scala 66:32]
+  wire [1:0] _GEN_4 = axi_r_ready ? 2'h0 : 2'h2; // @[sram.scala 70:32 71:25 75:25]
   LFSR lfsr ( // @[sram.scala 45:22]
     .clock(lfsr_clock),
     .reset(lfsr_reset),
     .io_out(lfsr_io_out)
   );
-  RomBB RomBB_i1 ( // @[sram.scala 79:26]
+  RomBB RomBB_i1 ( // @[sram.scala 80:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
   );
   assign axi_ar_ready = 2'h2 == state ? 1'h0 : 2'h0 == state; // @[Mux.scala 81:58]
   assign axi_r_valid = 2'h2 == state; // @[Mux.scala 81:61]
-  assign axi_r_bits_data = RomBB_i1_inst; // @[sram.scala 82:21]
+  assign axi_r_bits_data = RomBB_i1_inst; // @[sram.scala 83:21]
   assign lfsr_clock = clock;
   assign lfsr_reset = reset;
-  assign RomBB_i1_addr = axi_ar_bits_addr; // @[sram.scala 81:22]
+  assign RomBB_i1_addr = axi_ar_bits_addr; // @[sram.scala 82:22]
   always @(posedge clock) begin
     if (reset) begin // @[sram.scala 31:24]
       state <= 2'h0; // @[sram.scala 31:24]
@@ -1425,11 +1425,11 @@ module SRAM(
       if (axi_ar_valid) begin // @[sram.scala 52:33]
         state <= 2'h1; // @[sram.scala 53:25]
       end else begin
-        state <= 2'h0; // @[sram.scala 58:25]
+        state <= 2'h0; // @[sram.scala 59:25]
       end
     end else if (2'h1 == state) begin // @[sram.scala 50:20]
-      if (delay == 4'h0) begin // @[sram.scala 62:34]
-        state <= 2'h2; // @[sram.scala 63:23]
+      if (delay == 4'h0) begin // @[sram.scala 63:34]
+        state <= 2'h2; // @[sram.scala 64:23]
       end
     end else if (_axi_ar_ready_T_2) begin // @[sram.scala 50:20]
       state <= _GEN_4;
@@ -1441,8 +1441,8 @@ module SRAM(
         delay <= lfsr_io_out; // @[sram.scala 54:25]
       end
     end else if (2'h1 == state) begin // @[sram.scala 50:20]
-      if (!(delay == 4'h0)) begin // @[sram.scala 62:34]
-        delay <= _delay_T_1; // @[sram.scala 65:23]
+      if (!(delay == 4'h0)) begin // @[sram.scala 63:34]
+        delay <= _delay_T_1; // @[sram.scala 66:23]
       end
     end
   end
