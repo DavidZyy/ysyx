@@ -1326,29 +1326,28 @@ module SRAM(
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_REG_INIT
-  wire [31:0] RomBB_i1_addr; // @[sram.scala 71:26]
-  wire [31:0] RomBB_i1_inst; // @[sram.scala 71:26]
+  wire [31:0] RomBB_i1_addr; // @[sram.scala 72:26]
+  wire [31:0] RomBB_i1_inst; // @[sram.scala 72:26]
   reg  state; // @[sram.scala 35:24]
-  wire  _GEN_7 = state & axi_r_ready; // @[sram.scala 49:18 50:20]
-  RomBB RomBB_i1 ( // @[sram.scala 71:26]
+  RomBB RomBB_i1 ( // @[sram.scala 72:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
   );
-  assign axi_ar_ready = ~state ? 1'h0 : _GEN_7; // @[sram.scala 50:20]
-  assign axi_r_valid = ~state & axi_ar_valid; // @[sram.scala 50:20]
-  assign axi_r_bits_data = RomBB_i1_inst; // @[sram.scala 74:21]
-  assign RomBB_i1_addr = axi_ar_bits_addr; // @[sram.scala 73:22]
+  assign axi_ar_ready = state ? 1'h0 : 1'h1; // @[Mux.scala 81:58]
+  assign axi_r_valid = state; // @[Mux.scala 81:58]
+  assign axi_r_bits_data = RomBB_i1_inst; // @[sram.scala 75:21]
+  assign RomBB_i1_addr = axi_ar_bits_addr; // @[sram.scala 74:22]
   always @(posedge clock) begin
     if (reset) begin // @[sram.scala 35:24]
       state <= 1'h0; // @[sram.scala 35:24]
-    end else if (~state) begin // @[sram.scala 50:20]
-      state <= axi_ar_valid;
-    end else if (state) begin // @[sram.scala 50:20]
-      if (axi_r_ready) begin // @[sram.scala 61:32]
-        state <= 1'h0; // @[sram.scala 62:25]
+    end else if (state) begin // @[Mux.scala 81:58]
+      if (axi_r_ready) begin // @[sram.scala 38:28]
+        state <= 1'h0;
       end else begin
-        state <= 1'h1; // @[sram.scala 66:25]
+        state <= 1'h1;
       end
+    end else begin
+      state <= axi_ar_valid;
     end
   end
 // Register and memory initialization
