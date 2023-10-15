@@ -1329,12 +1329,12 @@ module SRAM(
   wire [31:0] RomBB_i1_addr; // @[sram.scala 72:26]
   wire [31:0] RomBB_i1_inst; // @[sram.scala 72:26]
   reg  state; // @[sram.scala 35:24]
-  wire  _GEN_7 = state & axi_r_ready; // @[sram.scala 50:18 51:20]
+  wire  _GEN_1 = axi_ar_valid ? 1'h0 : 1'h1; // @[sram.scala 50:18 53:33 56:30]
   RomBB RomBB_i1 ( // @[sram.scala 72:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
   );
-  assign axi_ar_ready = ~state ? 1'h0 : _GEN_7; // @[sram.scala 51:20]
+  assign axi_ar_ready = ~state ? _GEN_1 : 1'h1; // @[sram.scala 51:20]
   assign axi_r_valid = ~state & axi_ar_valid; // @[sram.scala 51:20]
   assign axi_r_bits_data = RomBB_i1_inst; // @[sram.scala 75:21]
   assign RomBB_i1_addr = axi_ar_bits_addr; // @[sram.scala 74:22]
