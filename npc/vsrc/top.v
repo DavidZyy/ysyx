@@ -1353,7 +1353,7 @@ module SRAM(
         state <= 2'h0; // @[sram.scala 60:25]
       end
     end else if (2'h1 == state) begin // @[sram.scala 52:20]
-      if (delay != 4'h0) begin // @[sram.scala 64:34]
+      if (delay == 4'h0) begin // @[sram.scala 64:34]
         state <= 2'h2; // @[sram.scala 65:23]
       end
     end else if (_axi_ar_ready_T_2) begin // @[sram.scala 52:20]
@@ -1366,7 +1366,7 @@ module SRAM(
         delay <= 4'ha; // @[sram.scala 56:25]
       end
     end else if (2'h1 == state) begin // @[sram.scala 52:20]
-      if (!(delay != 4'h0)) begin // @[sram.scala 64:34]
+      if (!(delay == 4'h0)) begin // @[sram.scala 64:34]
         delay <= _delay_T_1; // @[sram.scala 67:23]
       end
     end
