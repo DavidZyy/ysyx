@@ -1340,14 +1340,14 @@ module SRAM(
   always @(posedge clock) begin
     if (reset) begin // @[sram.scala 35:24]
       state <= 1'h0; // @[sram.scala 35:24]
-    end else if (state) begin // @[Mux.scala 81:58]
-      if (axi_r_ready) begin // @[sram.scala 38:28]
-        state <= 1'h0;
-      end else begin
-        state <= 1'h1;
-      end
-    end else begin
+    end else if (~state) begin // @[sram.scala 51:20]
       state <= axi_ar_valid;
+    end else if (state) begin // @[sram.scala 51:20]
+      if (axi_r_ready) begin // @[sram.scala 62:32]
+        state <= 1'h0; // @[sram.scala 63:25]
+      end else begin
+        state <= 1'h1; // @[sram.scala 67:25]
+      end
     end
   end
 // Register and memory initialization
