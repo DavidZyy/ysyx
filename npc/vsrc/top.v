@@ -26,16 +26,16 @@ module IFU(
   reg [31:0] reg_PC; // @[IFU.scala 36:26]
   wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 46:27]
   wire  _reg_PC_T = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
-  reg  state; // @[IFU.scala 70:24]
-  assign to_IDU_bits_inst = _reg_PC_T ? axi_r_bits_data : 32'h13; // @[IFU.scala 54:31]
-  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 56:25]
+  reg  state; // @[IFU.scala 71:24]
+  assign to_IDU_bits_inst = _reg_PC_T ? axi_r_bits_data : 32'h13; // @[IFU.scala 55:31]
+  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 57:25]
   assign axi_ar_valid = state ? 1'h0 : 1'h1; // @[Mux.scala 81:58]
-  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 51:22]
+  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 52:22]
   assign axi_r_ready = state; // @[Mux.scala 81:58]
   always @(posedge clock) begin
     if (reset) begin // @[IFU.scala 36:26]
       reg_PC <= 32'h80000000; // @[IFU.scala 36:26]
-    end else if (_reg_PC_T) begin // @[IFU.scala 49:18]
+    end else if (_reg_PC_T) begin // @[IFU.scala 50:18]
       if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 41:38]
         reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 42:17]
       end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 43:45]
@@ -44,10 +44,10 @@ module IFU(
         reg_PC <= _next_PC_T_1; // @[IFU.scala 46:17]
       end
     end
-    if (reset) begin // @[IFU.scala 70:24]
-      state <= 1'h0; // @[IFU.scala 70:24]
+    if (reset) begin // @[IFU.scala 71:24]
+      state <= 1'h0; // @[IFU.scala 71:24]
     end else if (state) begin // @[Mux.scala 81:58]
-      if (axi_r_valid) begin // @[IFU.scala 73:28]
+      if (axi_r_valid) begin // @[IFU.scala 74:28]
         state <= 1'h0;
       end else begin
         state <= 1'h1;
@@ -1326,28 +1326,29 @@ module SRAM(
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_REG_INIT
-  wire [31:0] RomBB_i1_addr; // @[sram.scala 44:26]
-  wire [31:0] RomBB_i1_inst; // @[sram.scala 44:26]
-  reg  state; // @[sram.scala 30:24]
-  RomBB RomBB_i1 ( // @[sram.scala 44:26]
+  wire [31:0] RomBB_i1_addr; // @[sram.scala 71:26]
+  wire [31:0] RomBB_i1_inst; // @[sram.scala 71:26]
+  reg  state; // @[sram.scala 35:24]
+  wire  _GEN_7 = state & axi_r_ready; // @[sram.scala 49:18 50:20]
+  RomBB RomBB_i1 ( // @[sram.scala 71:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
   );
-  assign axi_ar_ready = state ? 1'h0 : 1'h1; // @[Mux.scala 81:58]
-  assign axi_r_valid = state; // @[Mux.scala 81:58]
-  assign axi_r_bits_data = RomBB_i1_inst; // @[sram.scala 47:21]
-  assign RomBB_i1_addr = axi_ar_bits_addr; // @[sram.scala 46:22]
+  assign axi_ar_ready = ~state ? 1'h0 : _GEN_7; // @[sram.scala 50:20]
+  assign axi_r_valid = ~state & axi_ar_valid; // @[sram.scala 50:20]
+  assign axi_r_bits_data = RomBB_i1_inst; // @[sram.scala 74:21]
+  assign RomBB_i1_addr = axi_ar_bits_addr; // @[sram.scala 73:22]
   always @(posedge clock) begin
-    if (reset) begin // @[sram.scala 30:24]
-      state <= 1'h0; // @[sram.scala 30:24]
-    end else if (state) begin // @[Mux.scala 81:58]
-      if (axi_r_ready) begin // @[sram.scala 33:28]
-        state <= 1'h0;
-      end else begin
-        state <= 1'h1;
-      end
-    end else begin
+    if (reset) begin // @[sram.scala 35:24]
+      state <= 1'h0; // @[sram.scala 35:24]
+    end else if (~state) begin // @[sram.scala 50:20]
       state <= axi_ar_valid;
+    end else if (state) begin // @[sram.scala 50:20]
+      if (axi_r_ready) begin // @[sram.scala 61:32]
+        state <= 1'h0; // @[sram.scala 62:25]
+      end else begin
+        state <= 1'h1; // @[sram.scala 66:25]
+      end
     end
   end
 // Register and memory initialization
