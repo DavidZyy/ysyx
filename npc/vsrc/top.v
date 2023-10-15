@@ -1333,8 +1333,8 @@ module SRAM(
   wire  _axi_ar_ready_T = 2'h0 == state; // @[Mux.scala 81:61]
   wire  _axi_ar_ready_T_2 = 2'h2 == state; // @[Mux.scala 81:61]
   reg [3:0] delay; // @[sram.scala 49:24]
-  wire [1:0] _state_T_1 = state - 2'h1; // @[sram.scala 67:32]
-  wire [1:0] _GEN_3 = axi_r_ready ? 2'h0 : 2'h2; // @[sram.scala 71:32 72:25 76:25]
+  wire [3:0] _delay_T_1 = delay - 4'h1; // @[sram.scala 67:32]
+  wire [1:0] _GEN_4 = axi_r_ready ? 2'h0 : 2'h2; // @[sram.scala 71:32 72:25 76:25]
   RomBB RomBB_i1 ( // @[sram.scala 81:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
@@ -1355,17 +1355,19 @@ module SRAM(
     end else if (2'h1 == state) begin // @[sram.scala 52:20]
       if (delay != 4'h0) begin // @[sram.scala 64:34]
         state <= 2'h2; // @[sram.scala 65:23]
-      end else begin
-        state <= _state_T_1; // @[sram.scala 67:23]
       end
     end else if (_axi_ar_ready_T_2) begin // @[sram.scala 52:20]
-      state <= _GEN_3;
+      state <= _GEN_4;
     end
     if (reset) begin // @[sram.scala 49:24]
       delay <= 4'h0; // @[sram.scala 49:24]
     end else if (_axi_ar_ready_T) begin // @[sram.scala 52:20]
       if (axi_ar_valid) begin // @[sram.scala 54:33]
         delay <= 4'ha; // @[sram.scala 56:25]
+      end
+    end else if (2'h1 == state) begin // @[sram.scala 52:20]
+      if (!(delay != 4'h0)) begin // @[sram.scala 64:34]
+        delay <= _delay_T_1; // @[sram.scala 67:23]
       end
     end
   end
