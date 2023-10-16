@@ -23,18 +23,19 @@ module IFU(
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  reg [31:0] reg_PC; // @[IFU.scala 36:26]
+  reg [31:0] reg_PC; // @[IFU.scala 37:26]
   wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 46:27]
   wire  _reg_PC_T = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
-  reg  state; // @[IFU.scala 72:24]
+  reg [1:0] state; // @[IFU.scala 72:24]
+  wire [1:0] _state_T = axi_ar_ready ? 2'h1 : 2'h0; // @[IFU.scala 74:28]
   assign to_IDU_bits_inst = _reg_PC_T ? axi_r_bits_data : 32'h13; // @[IFU.scala 55:31]
   assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 57:25]
-  assign axi_ar_valid = state ? 1'h0 : 1'h1; // @[Mux.scala 81:58]
+  assign axi_ar_valid = 2'h0 == state; // @[Mux.scala 81:61]
   assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 52:22]
-  assign axi_r_ready = state; // @[Mux.scala 81:58]
+  assign axi_r_ready = 2'h1 == state; // @[Mux.scala 81:61]
   always @(posedge clock) begin
-    if (reset) begin // @[IFU.scala 36:26]
-      reg_PC <= 32'h80000000; // @[IFU.scala 36:26]
+    if (reset) begin // @[IFU.scala 37:26]
+      reg_PC <= 32'h80000000; // @[IFU.scala 37:26]
     end else if (_reg_PC_T) begin // @[IFU.scala 50:18]
       if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 41:38]
         reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 42:17]
@@ -45,15 +46,19 @@ module IFU(
       end
     end
     if (reset) begin // @[IFU.scala 72:24]
-      state <= 1'h0; // @[IFU.scala 72:24]
-    end else if (state) begin // @[Mux.scala 81:58]
+      state <= 2'h0; // @[IFU.scala 72:24]
+    end else if (2'h2 == state) begin // @[Mux.scala 81:58]
+      state <= 2'h0;
+    end else if (2'h1 == state) begin // @[Mux.scala 81:58]
       if (axi_r_valid) begin // @[IFU.scala 75:28]
-        state <= 1'h0;
+        state <= 2'h2;
       end else begin
-        state <= 1'h1;
+        state <= 2'h1;
       end
+    end else if (2'h0 == state) begin // @[Mux.scala 81:58]
+      state <= _state_T;
     end else begin
-      state <= axi_ar_ready;
+      state <= 2'h0;
     end
   end
 // Register and memory initialization
@@ -95,7 +100,7 @@ initial begin
   _RAND_0 = {1{`RANDOM}};
   reg_PC = _RAND_0[31:0];
   _RAND_1 = {1{`RANDOM}};
-  state = _RAND_1[0:0];
+  state = _RAND_1[1:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -1305,12 +1310,12 @@ module WBU(
   output        to_ISU_bits_reg_wen,
   output [31:0] to_ISU_bits_wdata
 );
-  wire [31:0] _to_ISU_bits_wdata_T_1 = from_EXU_bits_pc + 32'h4; // @[WBU.scala 21:47]
+  wire [31:0] _to_ISU_bits_wdata_T_1 = from_EXU_bits_pc + 32'h4; // @[WBU.scala 22:47]
   wire [31:0] _to_ISU_bits_wdata_T_3 = 3'h1 == from_EXU_bits_fu_op ? from_EXU_bits_alu_result : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _to_ISU_bits_wdata_T_5 = 3'h4 == from_EXU_bits_fu_op ? from_EXU_bits_lsu_rdata : _to_ISU_bits_wdata_T_3; // @[Mux.scala 81:58]
   wire [31:0] _to_ISU_bits_wdata_T_7 = 3'h3 == from_EXU_bits_fu_op ? _to_ISU_bits_wdata_T_1 : _to_ISU_bits_wdata_T_5; // @[Mux.scala 81:58]
   wire [31:0] _to_ISU_bits_wdata_T_9 = 3'h5 == from_EXU_bits_fu_op ? from_EXU_bits_csr_rdata : _to_ISU_bits_wdata_T_7; // @[Mux.scala 81:58]
-  assign to_ISU_bits_reg_wen = from_EXU_bits_reg_wen; // @[WBU.scala 17:25]
+  assign to_ISU_bits_reg_wen = from_EXU_bits_reg_wen; // @[WBU.scala 18:25]
   assign to_ISU_bits_wdata = 3'h2 == from_EXU_bits_fu_op ? from_EXU_bits_mdu_result : _to_ISU_bits_wdata_T_9; // @[Mux.scala 81:58]
 endmodule
 module SRAM(
@@ -1680,12 +1685,12 @@ module top(
     .axi_r_valid(sram_i_axi_r_valid),
     .axi_r_bits_data(sram_i_axi_r_bits_data)
   );
-  assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[core.scala 42:20]
-  assign io_out_pc = IFU_i_to_IDU_bits_pc; // @[core.scala 43:20]
-  assign io_out_difftest_mcause = EXU_i_difftest_mcause; // @[core.scala 45:21]
-  assign io_out_difftest_mepc = EXU_i_difftest_mepc; // @[core.scala 45:21]
-  assign io_out_difftest_mstatus = EXU_i_difftest_mstatus; // @[core.scala 45:21]
-  assign io_out_difftest_mtvec = EXU_i_difftest_mtvec; // @[core.scala 45:21]
+  assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[core.scala 43:20]
+  assign io_out_pc = IFU_i_to_IDU_bits_pc; // @[core.scala 44:20]
+  assign io_out_difftest_mcause = EXU_i_difftest_mcause; // @[core.scala 46:21]
+  assign io_out_difftest_mepc = EXU_i_difftest_mepc; // @[core.scala 46:21]
+  assign io_out_difftest_mstatus = EXU_i_difftest_mstatus; // @[core.scala 46:21]
+  assign io_out_difftest_mtvec = EXU_i_difftest_mtvec; // @[core.scala 46:21]
   assign IFU_i_clock = clock;
   assign IFU_i_reset = reset;
   assign IFU_i_from_EXU_bits_bru_ctrl_br = EXU_i_to_IFU_bits_bru_ctrl_br; // @[Connect.scala 8:22]
