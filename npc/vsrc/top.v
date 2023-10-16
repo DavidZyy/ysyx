@@ -12,6 +12,7 @@ module IFU(
   input  [31:0] from_EXU_bits_bru_addr,
   input         from_EXU_bits_csr_ctrl_br,
   input  [31:0] from_EXU_bits_csr_addr,
+  output        from_WBU_ready,
   input         axi_ar_ready,
   output        axi_ar_valid,
   output [31:0] axi_ar_bits_addr,
@@ -25,18 +26,18 @@ module IFU(
 `endif // RANDOMIZE_REG_INIT
   reg [31:0] reg_PC; // @[IFU.scala 37:26]
   wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 46:27]
-  wire  _reg_PC_T = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
-  reg [1:0] state; // @[IFU.scala 72:24]
-  wire [1:0] _state_T = axi_ar_ready ? 2'h1 : 2'h0; // @[IFU.scala 74:28]
-  assign to_IDU_bits_inst = _reg_PC_T ? axi_r_bits_data : 32'h13; // @[IFU.scala 55:31]
-  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 57:25]
+  reg [1:0] state; // @[IFU.scala 73:24]
+  wire [1:0] _state_T = axi_ar_ready ? 2'h1 : 2'h0; // @[IFU.scala 75:28]
+  assign to_IDU_bits_inst = from_WBU_ready ? axi_r_bits_data : 32'h13; // @[IFU.scala 56:31]
+  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 58:25]
+  assign from_WBU_ready = 2'h2 == state; // @[Mux.scala 81:61]
   assign axi_ar_valid = 2'h0 == state; // @[Mux.scala 81:61]
-  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 52:22]
+  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 53:22]
   assign axi_r_ready = 2'h1 == state; // @[Mux.scala 81:61]
   always @(posedge clock) begin
     if (reset) begin // @[IFU.scala 37:26]
       reg_PC <= 32'h80000000; // @[IFU.scala 37:26]
-    end else if (_reg_PC_T) begin // @[IFU.scala 50:18]
+    end else if (from_WBU_ready) begin // @[IFU.scala 51:18]
       if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 41:38]
         reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 42:17]
       end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 43:45]
@@ -45,12 +46,12 @@ module IFU(
         reg_PC <= _next_PC_T_1; // @[IFU.scala 46:17]
       end
     end
-    if (reset) begin // @[IFU.scala 72:24]
-      state <= 2'h0; // @[IFU.scala 72:24]
+    if (reset) begin // @[IFU.scala 73:24]
+      state <= 2'h0; // @[IFU.scala 73:24]
     end else if (2'h2 == state) begin // @[Mux.scala 81:58]
       state <= 2'h0;
     end else if (2'h1 == state) begin // @[Mux.scala 81:58]
-      if (axi_r_valid) begin // @[IFU.scala 75:28]
+      if (axi_r_valid) begin // @[IFU.scala 76:28]
         state <= 2'h2;
       end else begin
         state <= 2'h1;
@@ -1441,6 +1442,7 @@ module top(
   wire [31:0] IFU_i_from_EXU_bits_bru_addr; // @[core.scala 25:27]
   wire  IFU_i_from_EXU_bits_csr_ctrl_br; // @[core.scala 25:27]
   wire [31:0] IFU_i_from_EXU_bits_csr_addr; // @[core.scala 25:27]
+  wire  IFU_i_from_WBU_ready; // @[core.scala 25:27]
   wire  IFU_i_axi_ar_ready; // @[core.scala 25:27]
   wire  IFU_i_axi_ar_valid; // @[core.scala 25:27]
   wire [31:0] IFU_i_axi_ar_bits_addr; // @[core.scala 25:27]
@@ -1562,6 +1564,7 @@ module top(
     .from_EXU_bits_bru_addr(IFU_i_from_EXU_bits_bru_addr),
     .from_EXU_bits_csr_ctrl_br(IFU_i_from_EXU_bits_csr_ctrl_br),
     .from_EXU_bits_csr_addr(IFU_i_from_EXU_bits_csr_addr),
+    .from_WBU_ready(IFU_i_from_WBU_ready),
     .axi_ar_ready(IFU_i_axi_ar_ready),
     .axi_ar_valid(IFU_i_axi_ar_valid),
     .axi_ar_bits_addr(IFU_i_axi_ar_bits_addr),
