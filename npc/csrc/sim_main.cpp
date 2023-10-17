@@ -133,7 +133,7 @@ void npc_exec_once() {
   while(!top->io_out_wb){
     single_cycle();
   }
-  // single_cycle();
+  single_cycle();
     get_cpu();
 }
 
