@@ -1407,6 +1407,71 @@ module WBU(
   assign to_ISU_bits_wdata = 3'h2 == from_EXU_bits_fu_op ? from_EXU_bits_mdu_result : _to_ISU_bits_wdata_T_9; // @[Mux.scala 81:58]
   assign to_IFU_valid = from_EXU_valid; // @[WBU.scala 16:20]
 endmodule
+module LFSR(
+  input        clock,
+  input        reset,
+  output [3:0] io_out
+);
+`ifdef RANDOMIZE_REG_INIT
+  reg [31:0] _RAND_0;
+`endif // RANDOMIZE_REG_INIT
+  reg [3:0] reg_; // @[LSFR.scala 11:20]
+  wire  feedback = reg_[3] ^ reg_[0]; // @[LSFR.scala 15:25]
+  wire [3:0] _reg_T_1 = {feedback,reg_[3:1]}; // @[Cat.scala 33:92]
+  assign io_out = reg_; // @[LSFR.scala 20:10]
+  always @(posedge clock) begin
+    if (reset) begin // @[LSFR.scala 11:20]
+      reg_ <= 4'h1; // @[LSFR.scala 11:20]
+    end else begin
+      reg_ <= _reg_T_1; // @[LSFR.scala 18:7]
+    end
+  end
+// Register and memory initialization
+`ifdef RANDOMIZE_GARBAGE_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_INVALID_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_REG_INIT
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+`define RANDOMIZE
+`endif
+`ifndef RANDOM
+`define RANDOM $random
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+  integer initvar;
+`endif
+`ifndef SYNTHESIS
+`ifdef FIRRTL_BEFORE_INITIAL
+`FIRRTL_BEFORE_INITIAL
+`endif
+initial begin
+  `ifdef RANDOMIZE
+    `ifdef INIT_RANDOM
+      `INIT_RANDOM
+    `endif
+    `ifndef VERILATOR
+      `ifdef RANDOMIZE_DELAY
+        #`RANDOMIZE_DELAY begin end
+      `else
+        #0.002 begin end
+      `endif
+    `endif
+`ifdef RANDOMIZE_REG_INIT
+  _RAND_0 = {1{`RANDOM}};
+  reg_ = _RAND_0[3:0];
+`endif // RANDOMIZE_REG_INIT
+  `endif // RANDOMIZE
+end // initial
+`ifdef FIRRTL_AFTER_INITIAL
+`FIRRTL_AFTER_INITIAL
+`endif
+`endif // SYNTHESIS
+endmodule
 module SRAM(
   input         clock,
   input         reset,
@@ -1421,13 +1486,22 @@ module SRAM(
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
+  wire  lfsr_clock; // @[sram.scala 39:22]
+  wire  lfsr_reset; // @[sram.scala 39:22]
+  wire [3:0] lfsr_io_out; // @[sram.scala 39:22]
   wire [31:0] RomBB_i1_addr; // @[sram.scala 74:26]
   wire [31:0] RomBB_i1_inst; // @[sram.scala 74:26]
   reg [1:0] state; // @[sram.scala 31:24]
   wire  _axi_ar_ready_T = 2'h0 == state; // @[Mux.scala 81:61]
   wire  _axi_r_valid_T = 2'h2 == state; // @[Mux.scala 81:61]
-  reg  delay; // @[sram.scala 41:24]
-  wire [1:0] _GEN_3 = axi_r_ready ? 2'h0 : 2'h2; // @[sram.scala 64:32 65:25 69:25]
+  reg [3:0] delay; // @[sram.scala 41:24]
+  wire [3:0] _delay_T_1 = delay - 4'h1; // @[sram.scala 60:32]
+  wire [1:0] _GEN_4 = axi_r_ready ? 2'h0 : 2'h2; // @[sram.scala 64:32 65:25 69:25]
+  LFSR lfsr ( // @[sram.scala 39:22]
+    .clock(lfsr_clock),
+    .reset(lfsr_reset),
+    .io_out(lfsr_io_out)
+  );
   RomBB RomBB_i1 ( // @[sram.scala 74:26]
     .addr(RomBB_i1_addr),
     .inst(RomBB_i1_inst)
@@ -1435,6 +1509,8 @@ module SRAM(
   assign axi_ar_ready = 2'h0 == state; // @[Mux.scala 81:61]
   assign axi_r_valid = 2'h2 == state; // @[Mux.scala 81:61]
   assign axi_r_bits_data = RomBB_i1_inst; // @[sram.scala 77:21]
+  assign lfsr_clock = clock;
+  assign lfsr_reset = reset;
   assign RomBB_i1_addr = axi_ar_bits_addr; // @[sram.scala 76:22]
   always @(posedge clock) begin
     if (reset) begin // @[sram.scala 31:24]
@@ -1446,19 +1522,23 @@ module SRAM(
         state <= 2'h0; // @[sram.scala 53:25]
       end
     end else if (2'h1 == state) begin // @[sram.scala 44:20]
-      if (~delay) begin // @[sram.scala 57:34]
+      if (delay == 4'h0) begin // @[sram.scala 57:34]
         state <= 2'h2; // @[sram.scala 58:23]
       end
     end else if (_axi_r_valid_T) begin // @[sram.scala 44:20]
-      state <= _GEN_3;
+      state <= _GEN_4;
     end
     if (reset) begin // @[sram.scala 41:24]
-      delay <= 1'h0; // @[sram.scala 41:24]
+      delay <= 4'h0; // @[sram.scala 41:24]
     end else if (_axi_ar_ready_T) begin // @[sram.scala 44:20]
-      delay <= 1'h0; // @[sram.scala 46:21]
+      if (axi_ar_valid) begin // @[sram.scala 47:33]
+        delay <= lfsr_io_out; // @[sram.scala 49:25]
+      end else begin
+        delay <= 4'h0; // @[sram.scala 46:21]
+      end
     end else if (2'h1 == state) begin // @[sram.scala 44:20]
-      if (!(~delay)) begin // @[sram.scala 57:34]
-        delay <= delay - 1'h1; // @[sram.scala 60:23]
+      if (!(delay == 4'h0)) begin // @[sram.scala 57:34]
+        delay <= _delay_T_1; // @[sram.scala 60:23]
       end
     end
   end
@@ -1501,7 +1581,7 @@ initial begin
   _RAND_0 = {1{`RANDOM}};
   state = _RAND_0[1:0];
   _RAND_1 = {1{`RANDOM}};
-  delay = _RAND_1[0:0];
+  delay = _RAND_1[3:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
