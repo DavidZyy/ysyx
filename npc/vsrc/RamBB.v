@@ -29,7 +29,6 @@ module RamBB (
   assign wmask_new[3:0] = wmask;
   assign wmask_new[7:0] = 0;
 
-
 // always @(*) begin
 always @(negedge clock) begin
   if (valid) begin // 有读写请求时
