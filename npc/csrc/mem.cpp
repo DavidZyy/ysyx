@@ -120,7 +120,7 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
 
     word_t wdata_new = ((wdata << (8*addr_low)) & full_wmask) | rdata & ~full_wmask;
 
-  IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata_new:" FMT_WORD"\n\n", waddr, wdata_new));
+  IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata_new:" FMT_WORD"\n", waddr, wdata_new));
     *(uint32_t *)waddr_host = wdata_new;
   }
 }
