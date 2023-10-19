@@ -18,13 +18,6 @@ module RamBB (
     output reg [`DATA_WIDTH-1:0] rdata
 );
 
-// always @(*) begin
-//     if (valid) begin
-//         vaddr_read(addr, rdata_4_w);
-//     end else begin
-//         rdata_4_w = 0;
-//     end
-// end
   wire [8-1:0] wmask_new;
   assign wmask_new[3:0] = wmask;
   assign wmask_new[7:0] = 0;
@@ -32,9 +25,11 @@ module RamBB (
 // always @(*) begin
 always @(negedge clock) begin
   if (valid) begin // 有读写请求时
-    vaddr_read(addr, rdata);
     if (mem_wen) begin // 有写请求时
-        vaddr_write(addr, wdata, wmask_new);
+      vaddr_write(addr, wdata, wmask_new);
+    end
+    else begin
+      vaddr_read(addr, rdata);
     end
   end
   else begin
