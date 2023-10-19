@@ -118,6 +118,7 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
       }
     }
 
+  IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n", waddr, wdata));
     word_t wdata_new = ((wdata << (8*addr_low)) & full_wmask) | rdata & ~full_wmask;
 
   IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata_new:" FMT_WORD"\n", waddr, wdata_new));
