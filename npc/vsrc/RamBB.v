@@ -26,7 +26,7 @@ module RamBB (
 //     end
 // end
   wire [8-1:0] wmask_new;
-  assign wmaks_new[3:0] = wmask;
+  assign wmask_new[3:0] = wmask;
 
 // always @(*) begin
 always @(negedge clock) begin
