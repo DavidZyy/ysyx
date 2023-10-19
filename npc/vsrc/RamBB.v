@@ -25,6 +25,7 @@ module RamBB (
 // always @(*) begin
 always @(negedge clock) begin
   $display("wmask = %b", wmask);
+  $display("wmask_new = %b", wmask_new);
   if (valid) begin // 有读写请求时
     if (mem_wen) begin // 有写请求时
       vaddr_write(addr, wdata, wmask_new);
