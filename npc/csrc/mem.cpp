@@ -51,8 +51,9 @@ extern uint32_t vmem[SCREEN_W * SCREEN_H];
 extern uint32_t vgactl_port_base[2];
 #include<sys/time.h>
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
+  // Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
 
+  raddr = raddr & ~align_mask;
   if (raddr == 0 && top->io_out_pc == 0) {
     // not ready for inst fetch
     return;
@@ -82,8 +83,8 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   }
 }
 
-extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
-  Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
+extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
+  // Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
 
   if (waddr == SERIAL_PORT) {
     // printf("%d: %c", waddr, (char)wdata);
@@ -100,8 +101,26 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata) {
     npc_write_device = 1;
   } else {
     if(!in_pmem(waddr)) out_of_bound(waddr);
-    uint8_t *waddr_temp = guest_to_host(waddr);
-    *(uint32_t *)waddr_temp = wdata;
+
+    char addr_low = waddr & align_mask;
+
+    uint8_t *waddr_align = waddr & ~align_mask;
+    uint8_t *waddr_host = guest_to_host(waddr_align);
+
+    uint32_t rdata = *(uint32_t *)waddr_host;
+
+    word_t full_wmask = 0;
+    for(int i=0; i<4; i++) {
+      if(wmask & 1<<i){
+        for(int j=i*8; j<i*8+8; j++){
+          full_wmask |= 1<<j;
+        }
+      }
+    }
+
+    word_t wdata_new = ((wdata << (8*addr_low)) & full_wmask) | rdata & ~full_wmask;
+
+    *(uint32_t *)waddr_host = wdata_new;
   }
 }
 
@@ -119,8 +138,8 @@ extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
   // }
 }
 
-extern "C" void vaddr_write(sword_t waddr, sword_t wdata) {
-  pmem_write(waddr, wdata);
+extern "C" void vaddr_write(sword_t waddr, sword_t wdata, char wmask) {
+  pmem_write(waddr, wdata, wmask);
   IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
   IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
 }

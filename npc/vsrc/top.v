@@ -915,11 +915,11 @@ module Lsu(
 );
   wire  RamBB_i1_clock; // @[lsu.scala 53:26]
   wire [31:0] RamBB_i1_addr; // @[lsu.scala 53:26]
-  wire [31:0] RamBB_i1_wdata; // @[lsu.scala 53:26]
   wire  RamBB_i1_mem_wen; // @[lsu.scala 53:26]
   wire  RamBB_i1_valid; // @[lsu.scala 53:26]
+  wire [31:0] RamBB_i1_wdata; // @[lsu.scala 53:26]
+  wire  RamBB_i1_wmask; // @[lsu.scala 53:26]
   wire [31:0] RamBB_i1_rdata; // @[lsu.scala 53:26]
-  wire [31:0] RamBB_i1_rdata_4_w; // @[lsu.scala 53:26]
   wire [1:0] addr_low_2 = io_in_addr[1:0]; // @[lsu.scala 49:31]
   wire [23:0] _lb_rdata_T_2 = RamBB_i1_rdata[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 77:12]
   wire [31:0] _lb_rdata_T_4 = {_lb_rdata_T_2,RamBB_i1_rdata[7:0]}; // @[Cat.scala 33:92]
@@ -953,39 +953,33 @@ module Lsu(
   wire [31:0] _io_out_rdata_T_5 = 4'h4 == io_in_op ? lbu_rdata : _io_out_rdata_T_3; // @[Mux.scala 81:58]
   wire [31:0] _io_out_rdata_T_7 = 4'h2 == io_in_op ? lh_rdata : _io_out_rdata_T_5; // @[Mux.scala 81:58]
   wire [31:0] _io_out_rdata_T_9 = 4'h5 == io_in_op ? lhu_rdata : _io_out_rdata_T_7; // @[Mux.scala 81:58]
-  wire [31:0] lw_rdata = RamBB_i1_rdata; // @[lsu.scala 70:25 96:14]
-  wire [15:0] _sb_wmask_T_1 = 2'h1 == addr_low_2 ? 16'hff00 : 16'hff; // @[Mux.scala 81:58]
-  wire [23:0] _sb_wmask_T_3 = 2'h2 == addr_low_2 ? 24'hff0000 : {{8'd0}, _sb_wmask_T_1}; // @[Mux.scala 81:58]
-  wire [31:0] sb_wmask = 2'h3 == addr_low_2 ? 32'hff000000 : {{8'd0}, _sb_wmask_T_3}; // @[Mux.scala 81:58]
-  wire [15:0] _sh_wmask_T_1 = 2'h0 == addr_low_2 ? 16'hffff : 16'h0; // @[Mux.scala 81:58]
-  wire [31:0] sh_wmask = 2'h2 == addr_low_2 ? 32'hffff0000 : {{16'd0}, _sh_wmask_T_1}; // @[Mux.scala 81:58]
-  wire [31:0] _wmask_T_1 = 4'h6 == io_in_op ? sb_wmask : 32'h0; // @[Mux.scala 81:58]
-  wire [31:0] _wmask_T_3 = 4'h7 == io_in_op ? sh_wmask : _wmask_T_1; // @[Mux.scala 81:58]
-  wire [31:0] wmask = 4'h8 == io_in_op ? 32'hffffffff : _wmask_T_3; // @[Mux.scala 81:58]
-  wire [5:0] _wdata_align_4_T = 4'h8 * addr_low_2; // @[lsu.scala 134:32]
-  wire [94:0] _GEN_2 = {{63'd0}, io_in_wdata}; // @[lsu.scala 134:24]
-  wire [94:0] _wdata_align_4_T_1 = _GEN_2 << _wdata_align_4_T; // @[lsu.scala 134:24]
-  wire [94:0] _GEN_0 = {{63'd0}, wmask}; // @[lsu.scala 134:47]
-  wire [94:0] _wdata_align_4_T_2 = _wdata_align_4_T_1 & _GEN_0; // @[lsu.scala 134:47]
-  wire [31:0] _wdata_align_4_T_3 = ~wmask; // @[lsu.scala 134:71]
-  wire [31:0] _wdata_align_4_T_4 = RamBB_i1_rdata_4_w & _wdata_align_4_T_3; // @[lsu.scala 134:69]
-  wire [94:0] _GEN_1 = {{63'd0}, _wdata_align_4_T_4}; // @[lsu.scala 134:56]
-  wire [94:0] wdata_align_4 = _wdata_align_4_T_2 | _GEN_1; // @[lsu.scala 134:56]
+  wire [31:0] lw_rdata = RamBB_i1_rdata; // @[lsu.scala 71:25 97:14]
+  wire [4:0] _sb_wmask_T_1 = 2'h1 == addr_low_2 ? 5'h10 : 5'h1; // @[Mux.scala 81:58]
+  wire [8:0] _sb_wmask_T_3 = 2'h2 == addr_low_2 ? 9'h100 : {{4'd0}, _sb_wmask_T_1}; // @[Mux.scala 81:58]
+  wire [12:0] _sb_wmask_T_5 = 2'h3 == addr_low_2 ? 13'h1000 : {{4'd0}, _sb_wmask_T_3}; // @[Mux.scala 81:58]
+  wire [4:0] _sh_wmask_T_1 = 2'h0 == addr_low_2 ? 5'h11 : 5'h0; // @[Mux.scala 81:58]
+  wire [12:0] _sh_wmask_T_3 = 2'h2 == addr_low_2 ? 13'h1100 : {{8'd0}, _sh_wmask_T_1}; // @[Mux.scala 81:58]
+  wire [3:0] sb_wmask = _sb_wmask_T_5[3:0]; // @[lsu.scala 108:24 112:17]
+  wire [3:0] _wmask_T_1 = 4'h6 == io_in_op ? sb_wmask : 4'h0; // @[Mux.scala 81:58]
+  wire [3:0] sh_wmask = _sh_wmask_T_3[3:0]; // @[lsu.scala 109:24 119:17]
+  wire [3:0] _wmask_T_3 = 4'h7 == io_in_op ? sh_wmask : _wmask_T_1; // @[Mux.scala 81:58]
+  wire [3:0] wmask = 4'h8 == io_in_op ? 4'h1 : _wmask_T_3; // @[Mux.scala 81:58]
   RamBB RamBB_i1 ( // @[lsu.scala 53:26]
     .clock(RamBB_i1_clock),
     .addr(RamBB_i1_addr),
-    .wdata(RamBB_i1_wdata),
     .mem_wen(RamBB_i1_mem_wen),
     .valid(RamBB_i1_valid),
-    .rdata(RamBB_i1_rdata),
-    .rdata_4_w(RamBB_i1_rdata_4_w)
+    .wdata(RamBB_i1_wdata),
+    .wmask(RamBB_i1_wmask),
+    .rdata(RamBB_i1_rdata)
   );
   assign io_out_rdata = 4'h3 == io_in_op ? lw_rdata : _io_out_rdata_T_9; // @[Mux.scala 81:58]
   assign RamBB_i1_clock = clock; // @[lsu.scala 55:25]
-  assign RamBB_i1_addr = {io_in_addr[31:2], 2'h0}; // @[lsu.scala 56:46]
-  assign RamBB_i1_wdata = wdata_align_4[31:0]; // @[lsu.scala 136:25]
-  assign RamBB_i1_mem_wen = io_in_mem_wen; // @[lsu.scala 57:25]
-  assign RamBB_i1_valid = io_in_valid; // @[lsu.scala 58:25]
+  assign RamBB_i1_addr = io_in_addr; // @[lsu.scala 57:25]
+  assign RamBB_i1_mem_wen = io_in_mem_wen; // @[lsu.scala 58:25]
+  assign RamBB_i1_valid = io_in_valid; // @[lsu.scala 59:25]
+  assign RamBB_i1_wdata = io_in_wdata; // @[lsu.scala 137:25]
+  assign RamBB_i1_wmask = wmask[0]; // @[lsu.scala 138:25]
 endmodule
 module Csr(
   input         clock,
