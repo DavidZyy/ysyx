@@ -959,7 +959,7 @@ module Lsu(
   wire [3:0] sb_wmask = 2'h3 == addr_low_2 ? 4'h8 : {{1'd0}, _sb_wmask_T_3}; // @[Mux.scala 81:58]
   wire [1:0] _sh_wmask_T_1 = 2'h0 == addr_low_2 ? 2'h3 : 2'h0; // @[Mux.scala 81:58]
   wire [3:0] sh_wmask = 2'h2 == addr_low_2 ? 4'hc : {{2'd0}, _sh_wmask_T_1}; // @[Mux.scala 81:58]
-  wire [3:0] _wmask_T_1 = 4'h6 == io_in_op ? sb_wmask : 4'h0; // @[Mux.scala 81:58]
+  wire [3:0] _wmask_T_1 = 4'h6 == io_in_op ? sb_wmask : 4'hf; // @[Mux.scala 81:58]
   wire [3:0] _wmask_T_3 = 4'h7 == io_in_op ? sh_wmask : _wmask_T_1; // @[Mux.scala 81:58]
   wire [3:0] wmask = 4'h8 == io_in_op ? 4'hf : _wmask_T_3; // @[Mux.scala 81:58]
   RamBB RamBB_i1 ( // @[lsu.scala 53:26]
