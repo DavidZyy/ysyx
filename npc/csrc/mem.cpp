@@ -104,7 +104,7 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
 
     char addr_low = waddr & align_mask;
 
-    uint8_t *waddr_align = waddr & ~align_mask;
+    sword_t waddr_align = waddr & ~align_mask;
     uint8_t *waddr_host = guest_to_host(waddr_align);
 
     uint32_t rdata = *(uint32_t *)waddr_host;
