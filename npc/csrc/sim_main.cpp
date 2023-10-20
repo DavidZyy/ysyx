@@ -34,8 +34,8 @@ CPU_state cpu;
  */
 void step_and_dump_wave(){
   top->eval();
-  // contextp->timeInc(1);
-  // tfp->dump(contextp->time());
+  contextp->timeInc(1);
+  tfp->dump(contextp->time());
 }
 
 void sim_init(){
@@ -53,11 +53,9 @@ void sim_exit(){
   tfp->close();
 }
 
-void single_cycle(int rst) {
+void single_cycle() {
   top->clock = 0;
-  if(rst) top->reset = 1;
   step_and_dump_wave();
-  if(rst) top->reset = 0;
   top->clock = 1;
   step_and_dump_wave();
 }
@@ -84,16 +82,17 @@ void print_serial(long long ch){
  * signal is emited. To prevent this case happens,
  * I add the condition "top->pc > 0".
  */
-// void not_ipl_exception(){
-//   if(top->pc_IF){
-//   terminal = 1;
-//   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
-//   printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
-//     (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
-//     // (void *)top->pc, top->inst);
-//   // printf(ANSI_FMT(""))
-//   }
-// }
+extern "C" void not_impl_exception(){
+  if(top->io_out_pc){
+  terminal = 1;
+  printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
+  printf("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
+  // printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
+    // (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
+    // (void *)top->pc, top->inst);
+  // printf(ANSI_FMT(""))
+  }
+}
 
 /**
  * argv[1] is the path of the program to be executed.
@@ -105,34 +104,36 @@ void print_arg(int argc, char *argv[]){
   }
 }
 
-// uint64_t *cpu_gpr = NULL;
 word_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
-  // cpu_gpr = (uint64_t *)(((VerilatedDpiOpenVar*)r)->datap());
   cpu_gpr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
-// 一个输出RTL中通用寄存器的值的示例
-void dump_gpr() {
-  int i;
-  for (i = 0; i < 32; i++) {
-    if(cpu.gpr[i])
-      printf("gpr[%d] = 0x%lx\n", i, cpu.gpr[i]);
-  }
-  printf("\n");
-}
 
 /* get npc's register state */
 void get_cpu() {
   assert(cpu_gpr);
+  // get gpr
   for(int i = 0; i < 32; i++){
     cpu.gpr[i] = cpu_gpr[i];
   }
+
+  // get csr
+  cpu.csr[cpu_mcause_id] = top->io_out_difftest_mcause;
+  cpu.csr[cpu_mepc_id] = top->io_out_difftest_mepc;
+  cpu.csr[cpu_mtvec_id] = top->io_out_difftest_mtvec;
+  cpu.mstatus = top->io_out_difftest_mstatus;
+
+  // get pc
   cpu.pc = top->io_out_pc;
 }
 
+// execute on inst, until WB stage
 void npc_exec_once() {
-    single_cycle(0);
+  while(!top->io_out_wb){
+    single_cycle();
+  }
+  single_cycle();
     get_cpu();
 }
 
@@ -141,17 +142,16 @@ void nemu_exec_once() {
 }
 
 void init_isa() {
-  // long size = load_init_img();
   cpu.pc = RESET_VECTOR;
 }
 
 uint8_t* guest_to_host(paddr_t paddr);
 // similar to monitor
 void init_monitor(int argc, char *argv[]) {
-  // print_arg(argc, argv);
   init_log(argv[3]);
   init_isa();
   long img_size = load_img(argv[1]);
+  // long img_size = load_init_img();
   init_difftest(argv[2], img_size, 0);
 }
 
@@ -163,34 +163,35 @@ int status = 0;
 
 void vga_update_screen();
 extern uint8_t pmem[CONFIG_MSIZE];
+
+void dump_gpr();
 int main(int argc, char *argv[]) {
-  // Assert(0, "hi:%d" , 5);
-  // memset(pmem, 0, sizeof(pmem));
   init_monitor(argc, argv);
-  init_device();
+  // init_device();
   Log("wave has closed to make it sim faster");
 
   sim_init();
 
   top->reset = 1;
-  single_cycle(0);
-  // single_cycle(0);
-  // single_cycle(0);
+  single_cycle();
   top->reset = 0;
 
   uint64_t i;
   uint64_t times = -1;
   // uint64_t times = 1000000;
+  // uint64_t times = 100;
 
   int begin = 1;
 
   for (i = 0; i < times; i++) {
 
+    // printf("%-3s: " FMT_WORD"\n" ,"before exec pc", cpu.pc);
     npc_exec_once();
-    // if(i&7 == 0) 
-    vga_update_screen();
-    // nemu_exec_once();
-    // log_write
+    // printf("%-3s: " FMT_WORD"\n" ,"after exec pc", cpu.pc);
+    // dump_gpr();
+    // printf("\n\n");
+    // vga_update_screen();
+    nemu_exec_once();
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
     
     if(terminal)

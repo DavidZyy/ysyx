@@ -8,6 +8,7 @@
 #include "isa.h"
 #include "common.h"
 
+#include "../obj_dir/Vtop.h"
 // #define NULL nullptr
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
@@ -57,12 +58,28 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
+extern Vtop* top;
+bool check_status_reg(CPU_state *ref_r) {
+  if(top->io_out_difftest_mcause != ref_r->csr[cpu_mcause_id])
+    return false;
+  if(top->io_out_difftest_mepc != ref_r->csr[cpu_mepc_id])
+    return false;
+  if(top->io_out_difftest_mstatus != ref_r->mstatus)
+    return false;
+  if(top->io_out_difftest_mtvec != ref_r->csr[cpu_mtvec_id])
+    return false;
+  return true;
+}
+
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   for(int i = 0; i < 32; i++){
     if(ref_r->gpr[i] != cpu.gpr[i])
       goto error;
   }
   if(ref_r->pc != cpu.pc)
+    goto error;
+
+  if(!check_status_reg(ref_r))
     goto error;
 
   return true;
@@ -79,26 +96,50 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
-void isa_reg_display(CPU_state *ref){
-  // for(int i = 0; i < 32; i++){
-  //   if(ref->gpr[i] != cpu.gpr[i]) {
-  //     printf("nemu: gpr[%d] = " FMT_WORD, i, ref->gpr[i]);
-  //     printf("\t");
-  //     printf("npc: gpr[%d] = " FMT_WORD"\n", i, cpu.gpr[i]);
-  //   }
-  // }
+// 一个输出RTL中通用寄存器的值的示例
+void dump_gpr() {
+  int i;
+  for (i = 0; i < 32; i++) {
+    if(cpu.gpr[i]) {
+      printf("%-3s: " FMT_WORD "\n", regs[i], cpu.gpr[i]);  // Use width and alignment specifiers in the format string
+    }
+  }
+}
+
+void isa_reg_display(CPU_state *ref_r){
   printf("npc(dut)     nemu(ref)\n");
   for (int i = 0; i < 32; i++) {
-    if(ref->gpr[i] != cpu.gpr[i]) {
+    if(ref_r->gpr[i] != cpu.gpr[i]) {
       printf("%-3s: " FMT_WORD "  ", regs[i], cpu.gpr[i]);  // Use width and alignment specifiers in the format string
-      printf("%-3s: " FMT_WORD "  ", regs[i], ref->gpr[i]);
+      printf("%-3s: " FMT_WORD "  ", regs[i], ref_r->gpr[i]);
       printf("\n");
     }
   }
 
+  if(top->io_out_difftest_mcause != ref_r->csr[cpu_mcause_id]) {
+      printf("%-3s: " FMT_WORD "  ", "mcause", top->io_out_difftest_mcause);
+      printf("%-3s: " FMT_WORD "  ", "mcause", ref_r->csr[cpu_mcause_id]);
+      printf("\n");
+  }
+  if(top->io_out_difftest_mepc != ref_r->csr[cpu_mepc_id]) {
+      printf("%-3s: " FMT_WORD "  ", "mepc", top->io_out_difftest_mepc);
+      printf("%-3s: " FMT_WORD "  ", "mepc", ref_r->csr[cpu_mepc_id]);
+      printf("\n");
+  }
+  if(top->io_out_difftest_mstatus != ref_r->mstatus) {
+      printf("%-3s: " FMT_WORD "  ", "mstatus", top->io_out_difftest_mstatus);
+      printf("%-3s: " FMT_WORD "  ", "mstatus", ref_r->mstatus);
+      printf("\n");
+  }
+  if(top->io_out_difftest_mtvec != ref_r->csr[cpu_mtvec_id]) {
+      printf("%-3s: " FMT_WORD "  ", "mtvec", top->io_out_difftest_mtvec);
+      printf("%-3s: " FMT_WORD "  ", "mtvec", ref_r->csr[cpu_mtvec_id]);
+      printf("\n");
+  }
+
   printf("%-3s: " FMT_WORD ,"pc", cpu.pc);
   printf("\t");
-  printf("%-3s: " FMT_WORD"\n", "pc", ref->pc);
+  printf("%-3s: " FMT_WORD"\n", "pc", ref_r->pc);
 }
 
 extern int status;
@@ -116,13 +157,32 @@ static void checkmem(){
 
 }
 
-void difftest_step(){
+int npc_read_device = 0;
+int npc_write_device = 0;
+
+void difftest_step() {
   CPU_state ref_f;
   int pc = 0;
 
-  ref_difftest_exec(1);
-  ref_difftest_regcpy(&ref_f, DIFFTEST_TO_DUT);
-  checkregs(&ref_f, pc);
+// fiadfasd
+  if (npc_read_device) {
+    // not exec, copy regs and memory to ref
+    ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+    ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), sizeof(pmem), DIFFTEST_TO_REF);
+    // reset
+    npc_read_device = 0;
+  } else if(npc_write_device) {
+    // do noting
+    ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+    ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), sizeof(pmem), DIFFTEST_TO_REF);
+    // reset
+    npc_write_device = 0;
+  } else {
+    ref_difftest_exec(1);
+    ref_difftest_regcpy(&ref_f, DIFFTEST_TO_DUT);
+    checkregs(&ref_f, pc);
+  }
+
   /* if the instructions is store, check the memory 
     around the destination address */
   // if(is_store())

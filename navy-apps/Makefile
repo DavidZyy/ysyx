@@ -56,7 +56,7 @@ WL = -Wl,
 endif
 
 ### 32-bit ISA may need compiler-rt to support 64-bit mul/div
-ifneq ($(findstring $(ISA), x86|mips32|riscv32|loongarch32r),)
+ifneq ($(findstring $(ISA), x86|mips32|riscv32|riscv32e|loongarch32r),)
 LIBS += compiler-rt
 endif
 
@@ -96,6 +96,7 @@ CFLAGS   += -O0 -MMD $(INCFLAGS) -static -D__NAVY__ \
 CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  +=  $(CFLAGS)
 
+# $(error $(CFLAGS))
 ## 4. ISA-Specific Configurations
 
 ### Paste in ISA-specific configurations (e.g., from `scripts/x86.mk`)
@@ -119,6 +120,7 @@ $(DST_DIR)/%.i: %.S
 $(DST_DIR)/%.o: %.c
 	@mkdir -p $(dir $@) && echo + CC $<
 	@$(CC) -std=gnu11 $(CFLAGS) -c -o $@ $(realpath $<)
+# $(CC) -std=gnu11 $(CFLAGS) -c -o $@ $(realpath $<)
 
 ### Rule (compile): a single `.cc` -> `.o` (g++)
 $(DST_DIR)/%.o: %.cc
@@ -174,6 +176,8 @@ archive: $(ARCHIVE)
 ### Install an application to fsimg
 install: app
 	@echo + INSTALL "->" $(NAME)
+# new added
+	@objdump -d $(APP) > $(APP).txt
 	@mkdir -p $(NAVY_HOME)/fsimg/bin
 	@cp $(APP) $(NAVY_HOME)/fsimg/bin/$(NAME)
 
@@ -194,11 +198,11 @@ $(CLEAN_ALL):
 
 ### Build fsimg and ramdisk for Nanos-lite
 # APPS += nslider
-APPS += menu 
-APPS += nterm
+# APPS += menu 
+# APPS += nterm
 # APPS = bird pal nterm nslider menu
 # APPS += bird
-# APPS += pal
+APPS += pal
 # TESTS =  timer-test
 # TESTS = dummy hello file-test timer-test event-test
 # TESTS = event-test

@@ -75,8 +75,8 @@ sim:
 	$(addprefix -LDFLAGS , $(LDFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(CPP_FILES) $(C_FILES) $(VSRCS) $(SVSRCS)
-	@obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
-	@gtkwave dump.vcd
+	-@obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
+	# @gtkwave dump.vcd
 
 # sim:
 # 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
