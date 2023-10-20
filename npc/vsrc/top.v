@@ -1320,8 +1320,8 @@ module EXU(
     if (reset) begin // @[EXU.scala 31:24]
       state <= 2'h0; // @[EXU.scala 31:24]
     end else if (2'h0 == state) begin // @[EXU.scala 32:20]
-      if (_state_T) begin // @[EXU.scala 35:25]
-        state <= 2'h3;
+      if (_state_T) begin // @[EXU.scala 34:25]
+        state <= 2'h1;
       end else begin
         state <= 2'h0;
       end
