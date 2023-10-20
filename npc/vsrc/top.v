@@ -1312,9 +1312,7 @@ module SRAM_lsu(
     end else if (_axi_ar_ready_T) begin // @[sram.scala 109:20]
       if (_T_1) begin // @[sram.scala 112:32]
         state <= 3'h1; // @[sram.scala 113:23]
-      end else if (_T_2) begin // @[sram.scala 114:39]
-        state <= 3'h3; // @[sram.scala 115:23]
-      end else begin
+      end else if (!(_T_2)) begin // @[sram.scala 114:39]
         state <= 3'h0; // @[sram.scala 117:23]
       end
     end else if (3'h1 == state) begin // @[sram.scala 109:20]
