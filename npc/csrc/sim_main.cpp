@@ -130,8 +130,11 @@ void get_cpu() {
 
 // execute on inst, until WB stage
 void npc_exec_once() {
+  int n = 100; 
   while(!top->io_out_wb){
     single_cycle();
+    if(!(n--))
+      break;
   }
   single_cycle();
     get_cpu();
@@ -179,7 +182,7 @@ int main(int argc, char *argv[]) {
   uint64_t i;
   // uint64_t times = -1;
   // uint64_t times = 1000000;
-  uint64_t times = 20;
+  uint64_t times = 10000;
 
   int begin = 1;
 
