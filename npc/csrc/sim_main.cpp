@@ -133,8 +133,8 @@ void npc_exec_once() {
   int n = 100; 
   while(!top->io_out_wb){
     single_cycle();
-    if(!(n--))
-      break;
+    // if(!(n--))
+    //   break;
   }
   single_cycle();
     get_cpu();
