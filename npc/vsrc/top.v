@@ -1325,7 +1325,7 @@ module EXU(
         state <= 2'h0;
       end
     end else if (2'h1 == state) begin // @[EXU.scala 32:20]
-      if (from_ISU_bits_ctrl_sig_fu_op == 3'h4) begin // @[EXU.scala 38:89]
+      if (from_ISU_bits_ctrl_sig_fu_op == 3'h4) begin // @[EXU.scala 38:69]
         state <= 2'h2; // @[EXU.scala 39:23]
       end else begin
         state <= 2'h3; // @[EXU.scala 41:23]
