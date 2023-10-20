@@ -1224,6 +1224,7 @@ module EXU(
   wire  not_impl_moudle_i_not_impl; // @[EXU.scala 22:37]
   reg [1:0] state; // @[EXU.scala 31:24]
   wire  _state_T = from_ISU_ready & from_ISU_valid; // @[Decoupled.scala 51:35]
+  wire  _T_2 = from_ISU_bits_ctrl_sig_fu_op == 3'h4; // @[EXU.scala 38:48]
   wire [1:0] _GEN_1 = 2'h3 == state ? 2'h0 : state; // @[EXU.scala 32:20 48:19 31:24]
   wire [31:0] _Alu_i_io_in_src1_T_1 = 2'h2 == from_ISU_bits_ctrl_sig_src1_op ? from_ISU_bits_rdata1 : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _Alu_i_io_in_src2_T_1 = 2'h2 == from_ISU_bits_ctrl_sig_src2_op ? from_ISU_bits_rdata2 : 32'h0; // @[Mux.scala 81:58]
@@ -1302,7 +1303,7 @@ module EXU(
   assign Bru_i_io_in_src2 = from_ISU_bits_rdata2; // @[EXU.scala 82:24]
   assign Bru_i_io_in_op = from_ISU_bits_ctrl_sig_bru_op; // @[EXU.scala 80:24]
   assign Lsu_i_clock = clock;
-  assign Lsu_i_io_in_valid = 2'h2 == state; // @[Mux.scala 81:61]
+  assign Lsu_i_io_in_valid = _T_2 & state == 2'h3; // @[EXU.scala 76:78]
   assign Lsu_i_io_in_mem_wen = from_ISU_bits_ctrl_sig_mem_wen; // @[EXU.scala 74:25]
   assign Lsu_i_io_in_addr = Alu_i_io_out_result; // @[EXU.scala 72:25]
   assign Lsu_i_io_in_wdata = from_ISU_bits_rdata2; // @[EXU.scala 73:25]
