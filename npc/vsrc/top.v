@@ -906,21 +906,29 @@ module Bru(
 endmodule
 module Lsu(
   input         clock,
+  input         reset,
   input         io_in_valid,
   input         io_in_mem_wen,
   input  [31:0] io_in_addr,
   input  [31:0] io_in_wdata,
   input  [3:0]  io_in_op,
-  output [31:0] io_out_rdata
+  output [31:0] io_out_rdata,
+  output        io_out_end,
+  output        io_out_idle
 );
-  wire  RamBB_i1_clock; // @[lsu.scala 76:26]
-  wire [31:0] RamBB_i1_addr; // @[lsu.scala 76:26]
-  wire  RamBB_i1_mem_wen; // @[lsu.scala 76:26]
-  wire  RamBB_i1_valid; // @[lsu.scala 76:26]
-  wire [31:0] RamBB_i1_wdata; // @[lsu.scala 76:26]
-  wire [3:0] RamBB_i1_wmask; // @[lsu.scala 76:26]
-  wire [31:0] RamBB_i1_rdata; // @[lsu.scala 76:26]
-  wire [1:0] addr_low_2 = io_in_addr[1:0]; // @[lsu.scala 72:31]
+`ifdef RANDOMIZE_REG_INIT
+  reg [31:0] _RAND_0;
+`endif // RANDOMIZE_REG_INIT
+  wire  RamBB_i1_clock; // @[lsu.scala 84:26]
+  wire [31:0] RamBB_i1_addr; // @[lsu.scala 84:26]
+  wire  RamBB_i1_mem_wen; // @[lsu.scala 84:26]
+  wire  RamBB_i1_valid; // @[lsu.scala 84:26]
+  wire [31:0] RamBB_i1_wdata; // @[lsu.scala 84:26]
+  wire [3:0] RamBB_i1_wmask; // @[lsu.scala 84:26]
+  wire [31:0] RamBB_i1_rdata; // @[lsu.scala 84:26]
+  reg [1:0] state; // @[lsu.scala 46:24]
+  wire [1:0] _GEN_2 = 2'h3 == state ? 2'h0 : state; // @[lsu.scala 48:20 67:19 46:24]
+  wire [1:0] addr_low_2 = io_in_addr[1:0]; // @[lsu.scala 80:31]
   wire [23:0] _lb_rdata_T_2 = RamBB_i1_rdata[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 77:12]
   wire [31:0] _lb_rdata_T_4 = {_lb_rdata_T_2,RamBB_i1_rdata[7:0]}; // @[Cat.scala 33:92]
   wire [23:0] _lb_rdata_T_7 = RamBB_i1_rdata[15] ? 24'hffffff : 24'h0; // @[Bitwise.scala 77:12]
@@ -953,7 +961,7 @@ module Lsu(
   wire [31:0] _io_out_rdata_T_5 = 4'h4 == io_in_op ? lbu_rdata : _io_out_rdata_T_3; // @[Mux.scala 81:58]
   wire [31:0] _io_out_rdata_T_7 = 4'h2 == io_in_op ? lh_rdata : _io_out_rdata_T_5; // @[Mux.scala 81:58]
   wire [31:0] _io_out_rdata_T_9 = 4'h5 == io_in_op ? lhu_rdata : _io_out_rdata_T_7; // @[Mux.scala 81:58]
-  wire [31:0] lw_rdata = RamBB_i1_rdata; // @[lsu.scala 120:14 94:25]
+  wire [31:0] lw_rdata = RamBB_i1_rdata; // @[lsu.scala 102:25 128:14]
   wire [1:0] _sb_wmask_T_1 = 2'h1 == addr_low_2 ? 2'h2 : 2'h1; // @[Mux.scala 81:58]
   wire [2:0] _sb_wmask_T_3 = 2'h2 == addr_low_2 ? 3'h4 : {{1'd0}, _sb_wmask_T_1}; // @[Mux.scala 81:58]
   wire [3:0] sb_wmask = 2'h3 == addr_low_2 ? 4'h8 : {{1'd0}, _sb_wmask_T_3}; // @[Mux.scala 81:58]
@@ -961,7 +969,7 @@ module Lsu(
   wire [3:0] sh_wmask = 2'h2 == addr_low_2 ? 4'hc : {{2'd0}, _sh_wmask_T_1}; // @[Mux.scala 81:58]
   wire [3:0] _wmask_T_1 = 4'h6 == io_in_op ? sb_wmask : 4'h0; // @[Mux.scala 81:58]
   wire [3:0] _wmask_T_3 = 4'h7 == io_in_op ? sh_wmask : _wmask_T_1; // @[Mux.scala 81:58]
-  RamBB RamBB_i1 ( // @[lsu.scala 76:26]
+  RamBB RamBB_i1 ( // @[lsu.scala 84:26]
     .clock(RamBB_i1_clock),
     .addr(RamBB_i1_addr),
     .mem_wen(RamBB_i1_mem_wen),
@@ -971,12 +979,80 @@ module Lsu(
     .rdata(RamBB_i1_rdata)
   );
   assign io_out_rdata = 4'h3 == io_in_op ? lw_rdata : _io_out_rdata_T_9; // @[Mux.scala 81:58]
-  assign RamBB_i1_clock = clock; // @[lsu.scala 78:25]
-  assign RamBB_i1_addr = io_in_addr; // @[lsu.scala 80:25]
-  assign RamBB_i1_mem_wen = io_in_mem_wen; // @[lsu.scala 81:25]
-  assign RamBB_i1_valid = io_in_valid; // @[lsu.scala 82:25]
-  assign RamBB_i1_wdata = io_in_wdata; // @[lsu.scala 160:25]
+  assign io_out_end = 2'h3 == state; // @[Mux.scala 81:61]
+  assign io_out_idle = 2'h0 == state; // @[Mux.scala 81:61]
+  assign RamBB_i1_clock = clock; // @[lsu.scala 86:25]
+  assign RamBB_i1_addr = io_in_addr; // @[lsu.scala 88:25]
+  assign RamBB_i1_mem_wen = io_in_mem_wen; // @[lsu.scala 89:25]
+  assign RamBB_i1_valid = io_in_valid; // @[lsu.scala 90:25]
+  assign RamBB_i1_wdata = io_in_wdata; // @[lsu.scala 168:25]
   assign RamBB_i1_wmask = 4'h8 == io_in_op ? 4'hf : _wmask_T_3; // @[Mux.scala 81:58]
+  always @(posedge clock) begin
+    if (reset) begin // @[lsu.scala 46:24]
+      state <= 2'h0; // @[lsu.scala 46:24]
+    end else if (2'h0 == state) begin // @[lsu.scala 48:20]
+      if (io_in_valid) begin // @[lsu.scala 50:32]
+        if (io_in_mem_wen) begin // @[lsu.scala 51:38]
+          state <= 2'h2; // @[lsu.scala 52:27]
+        end else begin
+          state <= 2'h1; // @[lsu.scala 54:27]
+        end
+      end else begin
+        state <= 2'h0; // @[lsu.scala 57:23]
+      end
+    end else if (2'h1 == state) begin // @[lsu.scala 48:20]
+      state <= 2'h3; // @[lsu.scala 61:19]
+    end else if (2'h2 == state) begin // @[lsu.scala 48:20]
+      state <= 2'h3; // @[lsu.scala 64:19]
+    end else begin
+      state <= _GEN_2;
+    end
+  end
+// Register and memory initialization
+`ifdef RANDOMIZE_GARBAGE_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_INVALID_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_REG_INIT
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+`define RANDOMIZE
+`endif
+`ifndef RANDOM
+`define RANDOM $random
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+  integer initvar;
+`endif
+`ifndef SYNTHESIS
+`ifdef FIRRTL_BEFORE_INITIAL
+`FIRRTL_BEFORE_INITIAL
+`endif
+initial begin
+  `ifdef RANDOMIZE
+    `ifdef INIT_RANDOM
+      `INIT_RANDOM
+    `endif
+    `ifndef VERILATOR
+      `ifdef RANDOMIZE_DELAY
+        #`RANDOMIZE_DELAY begin end
+      `else
+        #0.002 begin end
+      `endif
+    `endif
+`ifdef RANDOMIZE_REG_INIT
+  _RAND_0 = {1{`RANDOM}};
+  state = _RAND_0[1:0];
+`endif // RANDOMIZE_REG_INIT
+  `endif // RANDOMIZE
+end // initial
+`ifdef FIRRTL_AFTER_INITIAL
+`FIRRTL_AFTER_INITIAL
+`endif
+`endif // SYNTHESIS
 endmodule
 module Csr(
   input         clock,
@@ -1201,12 +1277,15 @@ module EXU(
   wire [3:0] Bru_i_io_in_op; // @[EXU.scala 18:37]
   wire  Bru_i_io_out_ctrl_br; // @[EXU.scala 18:37]
   wire  Lsu_i_clock; // @[EXU.scala 19:37]
+  wire  Lsu_i_reset; // @[EXU.scala 19:37]
   wire  Lsu_i_io_in_valid; // @[EXU.scala 19:37]
   wire  Lsu_i_io_in_mem_wen; // @[EXU.scala 19:37]
   wire [31:0] Lsu_i_io_in_addr; // @[EXU.scala 19:37]
   wire [31:0] Lsu_i_io_in_wdata; // @[EXU.scala 19:37]
   wire [3:0] Lsu_i_io_in_op; // @[EXU.scala 19:37]
   wire [31:0] Lsu_i_io_out_rdata; // @[EXU.scala 19:37]
+  wire  Lsu_i_io_out_end; // @[EXU.scala 19:37]
+  wire  Lsu_i_io_out_idle; // @[EXU.scala 19:37]
   wire  Csr_i_clock; // @[EXU.scala 20:37]
   wire  Csr_i_reset; // @[EXU.scala 20:37]
   wire [2:0] Csr_i_io_in_op; // @[EXU.scala 20:37]
@@ -1224,6 +1303,8 @@ module EXU(
   wire  not_impl_moudle_i_not_impl; // @[EXU.scala 22:37]
   reg [1:0] state; // @[EXU.scala 31:24]
   wire  _state_T = from_ISU_ready & from_ISU_valid; // @[Decoupled.scala 51:35]
+  wire [1:0] _state_T_2 = Lsu_i_io_out_idle ? 2'h2 : 2'h1; // @[EXU.scala 39:29]
+  wire [1:0] _state_T_3 = Lsu_i_io_out_end ? 2'h3 : 2'h2; // @[EXU.scala 45:25]
   wire [1:0] _GEN_1 = 2'h3 == state ? 2'h0 : state; // @[EXU.scala 32:20 48:19 31:24]
   wire [31:0] _Alu_i_io_in_src1_T_1 = 2'h2 == from_ISU_bits_ctrl_sig_src1_op ? from_ISU_bits_rdata1 : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] _Alu_i_io_in_src2_T_1 = 2'h2 == from_ISU_bits_ctrl_sig_src2_op ? from_ISU_bits_rdata2 : 32'h0; // @[Mux.scala 81:58]
@@ -1247,12 +1328,15 @@ module EXU(
   );
   Lsu Lsu_i ( // @[EXU.scala 19:37]
     .clock(Lsu_i_clock),
+    .reset(Lsu_i_reset),
     .io_in_valid(Lsu_i_io_in_valid),
     .io_in_mem_wen(Lsu_i_io_in_mem_wen),
     .io_in_addr(Lsu_i_io_in_addr),
     .io_in_wdata(Lsu_i_io_in_wdata),
     .io_in_op(Lsu_i_io_in_op),
-    .io_out_rdata(Lsu_i_io_out_rdata)
+    .io_out_rdata(Lsu_i_io_out_rdata),
+    .io_out_end(Lsu_i_io_out_end),
+    .io_out_idle(Lsu_i_io_out_idle)
   );
   Csr Csr_i ( // @[EXU.scala 20:37]
     .clock(Csr_i_clock),
@@ -1302,6 +1386,7 @@ module EXU(
   assign Bru_i_io_in_src2 = from_ISU_bits_rdata2; // @[EXU.scala 82:24]
   assign Bru_i_io_in_op = from_ISU_bits_ctrl_sig_bru_op; // @[EXU.scala 80:24]
   assign Lsu_i_clock = clock;
+  assign Lsu_i_reset = reset;
   assign Lsu_i_io_in_valid = 2'h2 == state; // @[Mux.scala 81:61]
   assign Lsu_i_io_in_mem_wen = from_ISU_bits_ctrl_sig_mem_wen; // @[EXU.scala 74:25]
   assign Lsu_i_io_in_addr = Alu_i_io_out_result; // @[EXU.scala 72:25]
@@ -1326,12 +1411,12 @@ module EXU(
       end
     end else if (2'h1 == state) begin // @[EXU.scala 32:20]
       if (from_ISU_bits_ctrl_sig_fu_op == 3'h4) begin // @[EXU.scala 38:69]
-        state <= 2'h2; // @[EXU.scala 39:23]
+        state <= _state_T_2; // @[EXU.scala 39:23]
       end else begin
         state <= 2'h3; // @[EXU.scala 41:23]
       end
     end else if (2'h2 == state) begin // @[EXU.scala 32:20]
-      state <= 2'h3; // @[EXU.scala 45:19]
+      state <= _state_T_3; // @[EXU.scala 45:19]
     end else begin
       state <= _GEN_1;
     end
