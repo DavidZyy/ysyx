@@ -1301,7 +1301,7 @@ module EXU(
   assign Bru_i_io_in_src2 = from_ISU_bits_rdata2; // @[EXU.scala 82:24]
   assign Bru_i_io_in_op = from_ISU_bits_ctrl_sig_bru_op; // @[EXU.scala 80:24]
   assign Lsu_i_clock = clock;
-  assign Lsu_i_io_in_valid = 2'h1 == state; // @[Mux.scala 81:61]
+  assign Lsu_i_io_in_valid = from_ISU_bits_ctrl_sig_fu_op == 3'h4; // @[EXU.scala 76:57]
   assign Lsu_i_io_in_mem_wen = from_ISU_bits_ctrl_sig_mem_wen; // @[EXU.scala 74:25]
   assign Lsu_i_io_in_addr = Alu_i_io_out_result; // @[EXU.scala 72:25]
   assign Lsu_i_io_in_wdata = from_ISU_bits_rdata2; // @[EXU.scala 73:25]
