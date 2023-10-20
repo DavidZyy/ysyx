@@ -130,11 +130,11 @@ void get_cpu() {
 
 // execute on inst, until WB stage
 void npc_exec_once() {
-  int n = 100; 
+  int n = 10000; 
   while(!top->io_out_wb){
     single_cycle();
-    // if(!(n--))
-    //   break;
+    if(!(n--))
+      break;
   }
   single_cycle();
     get_cpu();
