@@ -179,7 +179,7 @@ int main(int argc, char *argv[]) {
   uint64_t i;
   // uint64_t times = -1;
   // uint64_t times = 1000000;
-  uint64_t times = 20000;
+  uint64_t times = 20;
 
   int begin = 1;
 
