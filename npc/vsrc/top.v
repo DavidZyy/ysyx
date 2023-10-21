@@ -1755,44 +1755,45 @@ module Arbiter(
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_REG_INIT
-  reg [3:0] state; // @[Arbiter.scala 43:24]
+  reg [3:0] state; // @[Arbiter.scala 42:24]
   wire  _state_T = from_master1_ar_ready & from_master1_ar_valid; // @[Decoupled.scala 51:35]
-  wire  _T_2 = 4'h2 == state; // @[Arbiter.scala 45:20]
+  wire  _T_2 = 4'h2 == state; // @[Arbiter.scala 44:20]
   wire  _state_T_2 = to_slave_ar_ready & to_slave_ar_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_3 = _state_T_2 ? 4'h3 : 4'h2; // @[Arbiter.scala 65:25]
-  wire  _T_3 = 4'h3 == state; // @[Arbiter.scala 45:20]
+  wire [3:0] _state_T_3 = _state_T_2 ? 4'h3 : 4'h2; // @[Arbiter.scala 64:25]
+  wire  _T_3 = 4'h3 == state; // @[Arbiter.scala 44:20]
   wire  _state_T_4 = to_slave_r_ready & to_slave_r_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_5 = _state_T_4 ? 4'h4 : 4'h3; // @[Arbiter.scala 68:25]
+  wire [3:0] _state_T_5 = _state_T_4 ? 4'h4 : 4'h3; // @[Arbiter.scala 67:25]
   wire  _state_T_6 = from_master1_r_ready & from_master1_r_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_7 = _state_T_6 ? 4'h0 : 4'h4; // @[Arbiter.scala 71:25]
-  wire [3:0] _GEN_1 = 4'h4 == state ? _state_T_7 : state; // @[Arbiter.scala 45:20 71:19 43:24]
-  wire [3:0] _GEN_2 = 4'h3 == state ? _state_T_5 : _GEN_1; // @[Arbiter.scala 45:20 68:19]
+  wire [3:0] _state_T_7 = _state_T_6 ? 4'h0 : 4'h4; // @[Arbiter.scala 70:25]
+  wire [3:0] _GEN_1 = 4'h4 == state ? _state_T_7 : state; // @[Arbiter.scala 44:20 70:19 42:24]
+  wire [3:0] _GEN_2 = 4'h3 == state ? _state_T_5 : _GEN_1; // @[Arbiter.scala 44:20 67:19]
+  wire [31:0] _to_slave_ar_bits_addr_T_1 = _T_2 ? from_master1_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
   assign from_master1_ar_ready = 4'h1 == state; // @[Mux.scala 81:61]
   assign from_master1_r_valid = 4'h4 == state; // @[Mux.scala 81:61]
-  assign from_master1_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 124:30]
+  assign from_master1_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 134:30]
   assign to_slave_aw_valid = 4'ha == state; // @[Mux.scala 81:61]
   assign to_slave_w_valid = 4'ha == state; // @[Mux.scala 81:61]
   assign to_slave_b_ready = 4'hb == state; // @[Mux.scala 81:61]
   assign to_slave_ar_valid = 4'h6 == state | _T_2; // @[Mux.scala 81:58]
-  assign to_slave_ar_bits_addr = _T_2 ? from_master1_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
+  assign to_slave_ar_bits_addr = _T_3 ? from_master1_ar_bits_addr : _to_slave_ar_bits_addr_T_1; // @[Mux.scala 81:58]
   assign to_slave_r_ready = 4'h7 == state | _T_3; // @[Mux.scala 81:58]
   always @(posedge clock) begin
-    if (reset) begin // @[Arbiter.scala 43:24]
-      state <= 4'h0; // @[Arbiter.scala 43:24]
-    end else if (4'h0 == state) begin // @[Arbiter.scala 45:20]
-      if (from_master1_ar_valid) begin // @[Arbiter.scala 47:42]
-        state <= 4'h1; // @[Arbiter.scala 48:23]
+    if (reset) begin // @[Arbiter.scala 42:24]
+      state <= 4'h0; // @[Arbiter.scala 42:24]
+    end else if (4'h0 == state) begin // @[Arbiter.scala 44:20]
+      if (from_master1_ar_valid) begin // @[Arbiter.scala 46:42]
+        state <= 4'h1; // @[Arbiter.scala 47:23]
       end else begin
-        state <= 4'h0; // @[Arbiter.scala 57:23]
+        state <= 4'h0; // @[Arbiter.scala 56:23]
       end
-    end else if (4'h1 == state) begin // @[Arbiter.scala 45:20]
-      if (_state_T) begin // @[Arbiter.scala 62:25]
+    end else if (4'h1 == state) begin // @[Arbiter.scala 44:20]
+      if (_state_T) begin // @[Arbiter.scala 61:25]
         state <= 4'h2;
       end else begin
         state <= 4'h1;
       end
-    end else if (4'h2 == state) begin // @[Arbiter.scala 45:20]
-      state <= _state_T_3; // @[Arbiter.scala 65:19]
+    end else if (4'h2 == state) begin // @[Arbiter.scala 44:20]
+      state <= _state_T_3; // @[Arbiter.scala 64:19]
     end else begin
       state <= _GEN_2;
     end
@@ -2219,13 +2220,13 @@ module top(
     .to_slave_r_valid(arbiter_i_to_slave_r_valid),
     .to_slave_r_bits_data(arbiter_i_to_slave_r_bits_data)
   );
-  assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[core.scala 53:20]
-  assign io_out_pc = IFU_i_to_IDU_bits_pc; // @[core.scala 54:20]
-  assign io_out_difftest_mcause = EXU_i_difftest_mcause; // @[core.scala 57:21]
-  assign io_out_difftest_mepc = EXU_i_difftest_mepc; // @[core.scala 57:21]
-  assign io_out_difftest_mstatus = EXU_i_difftest_mstatus; // @[core.scala 57:21]
-  assign io_out_difftest_mtvec = EXU_i_difftest_mtvec; // @[core.scala 57:21]
-  assign io_out_wb = WBU_i_to_IFU_valid; // @[core.scala 55:20]
+  assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[core.scala 52:20]
+  assign io_out_pc = IFU_i_to_IDU_bits_pc; // @[core.scala 53:20]
+  assign io_out_difftest_mcause = EXU_i_difftest_mcause; // @[core.scala 56:21]
+  assign io_out_difftest_mepc = EXU_i_difftest_mepc; // @[core.scala 56:21]
+  assign io_out_difftest_mstatus = EXU_i_difftest_mstatus; // @[core.scala 56:21]
+  assign io_out_difftest_mtvec = EXU_i_difftest_mtvec; // @[core.scala 56:21]
+  assign io_out_wb = WBU_i_to_IFU_valid; // @[core.scala 54:20]
   assign IFU_i_clock = clock;
   assign IFU_i_reset = reset;
   assign IFU_i_from_EXU_bits_bru_ctrl_br = EXU_i_to_IFU_bits_bru_ctrl_br; // @[Connect.scala 13:22]
