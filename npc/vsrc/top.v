@@ -920,6 +920,7 @@ module Lsu(
   output [31:0] axi_w_bits_data,
   output [3:0]  axi_w_bits_strb,
   output        axi_b_ready,
+  input         axi_b_valid,
   output        axi_ar_valid,
   output [31:0] axi_ar_bits_addr,
   output        axi_r_ready,
@@ -939,8 +940,10 @@ module Lsu(
   reg [2:0] state; // @[lsu.scala 47:24]
   wire  _state_T = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
   wire [2:0] _state_T_1 = _state_T ? 3'h5 : 3'h2; // @[lsu.scala 65:25]
+  wire  _state_T_2 = axi_b_ready & axi_b_valid; // @[Decoupled.scala 51:35]
+  wire [2:0] _state_T_3 = _state_T_2 ? 3'h5 : 3'h4; // @[lsu.scala 72:25]
   wire [2:0] _GEN_2 = 3'h5 == state ? 3'h0 : state; // @[lsu.scala 49:20 75:19 47:24]
-  wire [2:0] _GEN_3 = 3'h4 == state ? 3'h5 : _GEN_2; // @[lsu.scala 49:20 72:19]
+  wire [2:0] _GEN_3 = 3'h4 == state ? _state_T_3 : _GEN_2; // @[lsu.scala 49:20 72:19]
   wire [2:0] _GEN_4 = 3'h3 == state ? 3'h4 : _GEN_3; // @[lsu.scala 49:20 69:19]
   wire [1:0] addr_low_2 = io_in_addr[1:0]; // @[lsu.scala 96:31]
   wire [23:0] _lb_rdata_T_2 = axi_r_bits_data[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 77:12]
@@ -1460,6 +1463,7 @@ module EXU(
   wire [31:0] Lsu_i_axi_w_bits_data; // @[EXU.scala 21:37]
   wire [3:0] Lsu_i_axi_w_bits_strb; // @[EXU.scala 21:37]
   wire  Lsu_i_axi_b_ready; // @[EXU.scala 21:37]
+  wire  Lsu_i_axi_b_valid; // @[EXU.scala 21:37]
   wire  Lsu_i_axi_ar_valid; // @[EXU.scala 21:37]
   wire [31:0] Lsu_i_axi_ar_bits_addr; // @[EXU.scala 21:37]
   wire  Lsu_i_axi_r_ready; // @[EXU.scala 21:37]
@@ -1537,6 +1541,7 @@ module EXU(
     .axi_w_bits_data(Lsu_i_axi_w_bits_data),
     .axi_w_bits_strb(Lsu_i_axi_w_bits_strb),
     .axi_b_ready(Lsu_i_axi_b_ready),
+    .axi_b_valid(Lsu_i_axi_b_valid),
     .axi_ar_valid(Lsu_i_axi_ar_valid),
     .axi_ar_bits_addr(Lsu_i_axi_ar_bits_addr),
     .axi_r_ready(Lsu_i_axi_r_ready),
@@ -1615,6 +1620,7 @@ module EXU(
   assign Lsu_i_io_in_addr = Alu_i_io_out_result; // @[EXU.scala 74:25]
   assign Lsu_i_io_in_wdata = from_ISU_bits_rdata2; // @[EXU.scala 75:25]
   assign Lsu_i_io_in_op = from_ISU_bits_ctrl_sig_lsu_op; // @[EXU.scala 77:25]
+  assign Lsu_i_axi_b_valid = sram_i_axi_b_valid; // @[Connect.scala 12:22]
   assign Lsu_i_axi_r_valid = sram_i_axi_r_valid; // @[Connect.scala 12:22]
   assign Lsu_i_axi_r_bits_data = sram_i_axi_r_bits_data; // @[Connect.scala 11:22]
   assign Csr_i_clock = clock;
