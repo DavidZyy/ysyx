@@ -1770,7 +1770,7 @@ module Arbiter(
   wire [31:0] _to_slave_ar_bits_addr_T_1 = _T_2 ? from_master1_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
   assign from_master1_ar_ready = 4'h1 == state; // @[Mux.scala 81:61]
   assign from_master1_r_valid = 4'h4 == state; // @[Mux.scala 81:61]
-  assign from_master1_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 102:30]
+  assign from_master1_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 124:30]
   assign to_slave_aw_valid = 4'ha == state; // @[Mux.scala 81:61]
   assign to_slave_w_valid = 4'ha == state; // @[Mux.scala 81:61]
   assign to_slave_b_ready = 4'hb == state; // @[Mux.scala 81:61]
