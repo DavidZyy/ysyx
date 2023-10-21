@@ -930,13 +930,6 @@ module Lsu(
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_REG_INIT
-  wire  RamBB_i1_clock; // @[lsu.scala 100:26]
-  wire [31:0] RamBB_i1_addr; // @[lsu.scala 100:26]
-  wire  RamBB_i1_mem_wen; // @[lsu.scala 100:26]
-  wire  RamBB_i1_valid; // @[lsu.scala 100:26]
-  wire [31:0] RamBB_i1_wdata; // @[lsu.scala 100:26]
-  wire [3:0] RamBB_i1_wmask; // @[lsu.scala 100:26]
-  wire [31:0] RamBB_i1_rdata; // @[lsu.scala 100:26]
   reg [2:0] state; // @[lsu.scala 47:24]
   wire  _state_T = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
   wire [2:0] _state_T_1 = _state_T ? 3'h5 : 3'h2; // @[lsu.scala 65:25]
@@ -985,15 +978,6 @@ module Lsu(
   wire [3:0] sh_wmask = 2'h2 == addr_low_2 ? 4'hc : {{2'd0}, _sh_wmask_T_1}; // @[Mux.scala 81:58]
   wire [3:0] _wmask_T_1 = 4'h6 == io_in_op ? sb_wmask : 4'h0; // @[Mux.scala 81:58]
   wire [3:0] _wmask_T_3 = 4'h7 == io_in_op ? sh_wmask : _wmask_T_1; // @[Mux.scala 81:58]
-  RamBB RamBB_i1 ( // @[lsu.scala 100:26]
-    .clock(RamBB_i1_clock),
-    .addr(RamBB_i1_addr),
-    .mem_wen(RamBB_i1_mem_wen),
-    .valid(RamBB_i1_valid),
-    .wdata(RamBB_i1_wdata),
-    .wmask(RamBB_i1_wmask),
-    .rdata(RamBB_i1_rdata)
-  );
   assign io_out_rdata = 4'h3 == io_in_op ? axi_r_bits_data : _io_out_rdata_T_9; // @[Mux.scala 81:58]
   assign io_out_end = 3'h5 == state; // @[Mux.scala 81:61]
   assign io_out_idle = 3'h0 == state; // @[Mux.scala 81:61]
@@ -1005,12 +989,6 @@ module Lsu(
   assign axi_ar_valid = 3'h1 == state; // @[Mux.scala 81:61]
   assign axi_ar_bits_addr = io_in_addr; // @[lsu.scala 89:22]
   assign axi_r_ready = 3'h2 == state; // @[Mux.scala 81:61]
-  assign RamBB_i1_clock = clock; // @[lsu.scala 102:25]
-  assign RamBB_i1_addr = io_in_addr; // @[lsu.scala 103:25]
-  assign RamBB_i1_mem_wen = io_in_mem_wen; // @[lsu.scala 104:25]
-  assign RamBB_i1_valid = io_in_valid; // @[lsu.scala 105:25]
-  assign RamBB_i1_wdata = io_in_wdata; // @[lsu.scala 178:25]
-  assign RamBB_i1_wmask = 4'h8 == io_in_op ? 4'hf : _wmask_T_3; // @[Mux.scala 81:58]
   always @(posedge clock) begin
     if (reset) begin // @[lsu.scala 47:24]
       state <= 3'h0; // @[lsu.scala 47:24]
