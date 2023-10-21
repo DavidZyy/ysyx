@@ -53,7 +53,7 @@ module IFU(
     if (reset) begin // @[IFU.scala 79:24]
       state <= 2'h0; // @[IFU.scala 79:24]
     end else if (2'h2 == state) begin // @[Mux.scala 81:58]
-      if (from_WBU_valid) begin // @[IFU.scala 83:28]
+      if (_reg_PC_T) begin // @[IFU.scala 83:28]
         state <= 2'h0;
       end else begin
         state <= 2'h2;
