@@ -1457,7 +1457,7 @@ module Arbiter(
   assign from_master2_b_valid = 4'hc == state; // @[Mux.scala 81:61]
   assign from_master2_ar_ready = 4'h5 == state; // @[Mux.scala 81:61]
   assign from_master2_r_valid = 4'h8 == state; // @[Mux.scala 81:61]
-  assign from_master2_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 141:30]
+  assign from_master2_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 147:30]
   assign to_slave_aw_valid = 4'ha == state; // @[Mux.scala 81:61]
   assign to_slave_w_valid = 4'ha == state; // @[Mux.scala 81:61]
   assign to_slave_w_bits_data = _T_8 ? from_master2_w_bits_data : _to_slave_w_bits_data_T_1; // @[Mux.scala 81:58]
