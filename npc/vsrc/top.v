@@ -30,7 +30,9 @@ module IFU(
   wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 46:27]
   wire  _reg_PC_T = from_WBU_ready & from_WBU_valid; // @[Decoupled.scala 51:35]
   reg [1:0] state; // @[IFU.scala 79:24]
-  wire [1:0] _state_T = axi_ar_ready ? 2'h1 : 2'h0; // @[IFU.scala 81:28]
+  wire  _state_T = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
+  wire [1:0] _state_T_1 = _state_T ? 2'h1 : 2'h0; // @[IFU.scala 81:28]
+  wire  _state_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
   assign to_IDU_valid = 2'h2 == state; // @[Mux.scala 81:61]
   assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 56:31]
   assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 64:25]
@@ -59,13 +61,13 @@ module IFU(
         state <= 2'h2;
       end
     end else if (2'h1 == state) begin // @[Mux.scala 81:58]
-      if (axi_r_valid) begin // @[IFU.scala 82:28]
+      if (_state_T_2) begin // @[IFU.scala 82:28]
         state <= 2'h2;
       end else begin
         state <= 2'h1;
       end
     end else if (2'h0 == state) begin // @[Mux.scala 81:58]
-      state <= _state_T;
+      state <= _state_T_1;
     end else begin
       state <= 2'h0;
     end
