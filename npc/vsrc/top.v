@@ -919,6 +919,7 @@ module Lsu(
   output        io_out_idle,
   input         axi_aw_ready,
   output        axi_aw_valid,
+  output [31:0] axi_aw_bits_addr,
   input         axi_w_ready,
   output        axi_w_valid,
   output [31:0] axi_w_bits_data,
@@ -991,6 +992,7 @@ module Lsu(
   assign io_out_end = 3'h5 == state; // @[Mux.scala 81:61]
   assign io_out_idle = 3'h0 == state; // @[Mux.scala 81:61]
   assign axi_aw_valid = 3'h3 == state; // @[Mux.scala 81:61]
+  assign axi_aw_bits_addr = io_in_addr; // @[lsu.scala 92:22]
   assign axi_w_valid = 3'h3 == state; // @[Mux.scala 81:61]
   assign axi_w_bits_data = io_in_wdata; // @[lsu.scala 93:22]
   assign axi_w_bits_strb = 4'h8 == io_in_op ? 4'hf : _wmask_T_3; // @[Mux.scala 81:58]
@@ -1391,6 +1393,7 @@ module Arbiter(
   input         reset,
   output        from_master2_aw_ready,
   input         from_master2_aw_valid,
+  input  [31:0] from_master2_aw_bits_addr,
   output        from_master2_w_ready,
   input         from_master2_w_valid,
   input  [31:0] from_master2_w_bits_data,
@@ -1450,6 +1453,8 @@ module Arbiter(
   wire [3:0] _GEN_6 = 4'h8 == state ? _state_T_7 : _GEN_5; // @[Arbiter.scala 43:20 83:19]
   wire [3:0] _GEN_7 = 4'h7 == state ? _state_T_5 : _GEN_6; // @[Arbiter.scala 43:20 80:19]
   wire [31:0] _to_slave_ar_bits_addr_T_1 = _T_3 ? from_master2_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
+  wire [31:0] _to_slave_ar_bits_addr_T_3 = _T_4 ? from_master2_ar_bits_addr : _to_slave_ar_bits_addr_T_1; // @[Mux.scala 81:58]
+  wire [31:0] _to_slave_ar_bits_addr_T_5 = _T_7 ? from_master2_aw_bits_addr : _to_slave_ar_bits_addr_T_3; // @[Mux.scala 81:58]
   wire [31:0] _to_slave_w_bits_data_T_1 = _T_7 ? from_master2_w_bits_data : 32'h0; // @[Mux.scala 81:58]
   wire [3:0] _to_slave_w_bits_strb_T_1 = _T_7 ? from_master2_w_bits_strb : 4'h0; // @[Mux.scala 81:58]
   assign from_master2_aw_ready = 4'h9 == state; // @[Mux.scala 81:61]
@@ -1457,14 +1462,14 @@ module Arbiter(
   assign from_master2_b_valid = 4'hc == state; // @[Mux.scala 81:61]
   assign from_master2_ar_ready = 4'h5 == state; // @[Mux.scala 81:61]
   assign from_master2_r_valid = 4'h8 == state; // @[Mux.scala 81:61]
-  assign from_master2_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 148:30]
+  assign from_master2_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 151:30]
   assign to_slave_aw_valid = 4'ha == state; // @[Mux.scala 81:61]
   assign to_slave_w_valid = 4'ha == state; // @[Mux.scala 81:61]
   assign to_slave_w_bits_data = _T_8 ? from_master2_w_bits_data : _to_slave_w_bits_data_T_1; // @[Mux.scala 81:58]
   assign to_slave_w_bits_strb = _T_8 ? from_master2_w_bits_strb : _to_slave_w_bits_strb_T_1; // @[Mux.scala 81:58]
   assign to_slave_b_ready = 4'hb == state; // @[Mux.scala 81:61]
   assign to_slave_ar_valid = _T_3 | 4'h2 == state; // @[Mux.scala 81:58]
-  assign to_slave_ar_bits_addr = _T_4 ? from_master2_ar_bits_addr : _to_slave_ar_bits_addr_T_1; // @[Mux.scala 81:58]
+  assign to_slave_ar_bits_addr = _T_8 ? from_master2_aw_bits_addr : _to_slave_ar_bits_addr_T_5; // @[Mux.scala 81:58]
   assign to_slave_r_ready = _T_4 | 4'h3 == state; // @[Mux.scala 81:58]
   always @(posedge clock) begin
     if (reset) begin // @[Arbiter.scala 41:24]
@@ -1600,6 +1605,7 @@ module EXU(
   wire  Lsu_i_io_out_idle; // @[EXU.scala 23:37]
   wire  Lsu_i_axi_aw_ready; // @[EXU.scala 23:37]
   wire  Lsu_i_axi_aw_valid; // @[EXU.scala 23:37]
+  wire [31:0] Lsu_i_axi_aw_bits_addr; // @[EXU.scala 23:37]
   wire  Lsu_i_axi_w_ready; // @[EXU.scala 23:37]
   wire  Lsu_i_axi_w_valid; // @[EXU.scala 23:37]
   wire [31:0] Lsu_i_axi_w_bits_data; // @[EXU.scala 23:37]
@@ -1647,6 +1653,7 @@ module EXU(
   wire  arbiter_i_reset; // @[EXU.scala 118:27]
   wire  arbiter_i_from_master2_aw_ready; // @[EXU.scala 118:27]
   wire  arbiter_i_from_master2_aw_valid; // @[EXU.scala 118:27]
+  wire [31:0] arbiter_i_from_master2_aw_bits_addr; // @[EXU.scala 118:27]
   wire  arbiter_i_from_master2_w_ready; // @[EXU.scala 118:27]
   wire  arbiter_i_from_master2_w_valid; // @[EXU.scala 118:27]
   wire [31:0] arbiter_i_from_master2_w_bits_data; // @[EXU.scala 118:27]
@@ -1711,6 +1718,7 @@ module EXU(
     .io_out_idle(Lsu_i_io_out_idle),
     .axi_aw_ready(Lsu_i_axi_aw_ready),
     .axi_aw_valid(Lsu_i_axi_aw_valid),
+    .axi_aw_bits_addr(Lsu_i_axi_aw_bits_addr),
     .axi_w_ready(Lsu_i_axi_w_ready),
     .axi_w_valid(Lsu_i_axi_w_valid),
     .axi_w_bits_data(Lsu_i_axi_w_bits_data),
@@ -1768,6 +1776,7 @@ module EXU(
     .reset(arbiter_i_reset),
     .from_master2_aw_ready(arbiter_i_from_master2_aw_ready),
     .from_master2_aw_valid(arbiter_i_from_master2_aw_valid),
+    .from_master2_aw_bits_addr(arbiter_i_from_master2_aw_bits_addr),
     .from_master2_w_ready(arbiter_i_from_master2_w_ready),
     .from_master2_w_valid(arbiter_i_from_master2_w_valid),
     .from_master2_w_bits_data(arbiter_i_from_master2_w_bits_data),
@@ -1855,6 +1864,7 @@ module EXU(
   assign arbiter_i_clock = clock;
   assign arbiter_i_reset = reset;
   assign arbiter_i_from_master2_aw_valid = Lsu_i_axi_aw_valid; // @[Connect.scala 14:22]
+  assign arbiter_i_from_master2_aw_bits_addr = Lsu_i_axi_aw_bits_addr; // @[Connect.scala 13:22]
   assign arbiter_i_from_master2_w_valid = Lsu_i_axi_w_valid; // @[Connect.scala 14:22]
   assign arbiter_i_from_master2_w_bits_data = Lsu_i_axi_w_bits_data; // @[Connect.scala 13:22]
   assign arbiter_i_from_master2_w_bits_strb = Lsu_i_axi_w_bits_strb; // @[Connect.scala 13:22]
