@@ -26,42 +26,42 @@ module IFU(
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  reg [31:0] reg_PC; // @[IFU.scala 37:26]
-  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 46:27]
+  reg [31:0] reg_PC; // @[IFU.scala 35:26]
+  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 44:27]
   wire  _reg_PC_T = from_WBU_ready & from_WBU_valid; // @[Decoupled.scala 51:35]
-  reg [1:0] state; // @[IFU.scala 79:24]
+  reg [1:0] state; // @[IFU.scala 76:24]
   wire  _state_T = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
-  wire [1:0] _state_T_1 = _state_T ? 2'h1 : 2'h0; // @[IFU.scala 81:28]
+  wire [1:0] _state_T_1 = _state_T ? 2'h1 : 2'h0; // @[IFU.scala 78:28]
   wire  _state_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
   assign to_IDU_valid = 2'h2 == state; // @[Mux.scala 81:61]
-  assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 56:31]
-  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 64:25]
+  assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 53:31]
+  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 61:25]
   assign from_WBU_ready = 2'h2 == state; // @[Mux.scala 81:61]
   assign axi_ar_valid = 2'h0 == state; // @[Mux.scala 81:61]
-  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 53:22]
+  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 50:22]
   assign axi_r_ready = 2'h1 == state; // @[Mux.scala 81:61]
   always @(posedge clock) begin
-    if (reset) begin // @[IFU.scala 37:26]
-      reg_PC <= 32'h80000000; // @[IFU.scala 37:26]
-    end else if (_reg_PC_T) begin // @[IFU.scala 51:18]
-      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 41:38]
-        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 42:17]
-      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 43:45]
-        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 44:17]
+    if (reset) begin // @[IFU.scala 35:26]
+      reg_PC <= 32'h80000000; // @[IFU.scala 35:26]
+    end else if (_reg_PC_T) begin // @[IFU.scala 48:18]
+      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 39:38]
+        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 40:17]
+      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 41:45]
+        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 42:17]
       end else begin
-        reg_PC <= _next_PC_T_1; // @[IFU.scala 46:17]
+        reg_PC <= _next_PC_T_1; // @[IFU.scala 44:17]
       end
     end
-    if (reset) begin // @[IFU.scala 79:24]
-      state <= 2'h0; // @[IFU.scala 79:24]
+    if (reset) begin // @[IFU.scala 76:24]
+      state <= 2'h0; // @[IFU.scala 76:24]
     end else if (2'h2 == state) begin // @[Mux.scala 81:58]
-      if (_reg_PC_T) begin // @[IFU.scala 83:28]
+      if (_reg_PC_T) begin // @[IFU.scala 80:28]
         state <= 2'h0;
       end else begin
         state <= 2'h2;
       end
     end else if (2'h1 == state) begin // @[Mux.scala 81:58]
-      if (_state_T_2) begin // @[IFU.scala 82:28]
+      if (_state_T_2) begin // @[IFU.scala 79:28]
         state <= 2'h2;
       end else begin
         state <= 2'h1;
