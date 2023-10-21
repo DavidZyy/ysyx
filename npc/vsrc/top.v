@@ -1767,7 +1767,6 @@ module Arbiter(
   wire [3:0] _state_T_7 = _state_T_6 ? 4'h0 : 4'h4; // @[Arbiter.scala 71:25]
   wire [3:0] _GEN_1 = 4'h4 == state ? _state_T_7 : state; // @[Arbiter.scala 45:20 71:19 43:24]
   wire [3:0] _GEN_2 = 4'h3 == state ? _state_T_5 : _GEN_1; // @[Arbiter.scala 45:20 68:19]
-  wire [31:0] _to_slave_ar_bits_addr_T_1 = _T_2 ? from_master1_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
   assign from_master1_ar_ready = 4'h1 == state; // @[Mux.scala 81:61]
   assign from_master1_r_valid = 4'h4 == state; // @[Mux.scala 81:61]
   assign from_master1_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 124:30]
@@ -1775,7 +1774,7 @@ module Arbiter(
   assign to_slave_w_valid = 4'ha == state; // @[Mux.scala 81:61]
   assign to_slave_b_ready = 4'hb == state; // @[Mux.scala 81:61]
   assign to_slave_ar_valid = 4'h6 == state | _T_2; // @[Mux.scala 81:58]
-  assign to_slave_ar_bits_addr = _T_3 ? from_master1_ar_bits_addr : _to_slave_ar_bits_addr_T_1; // @[Mux.scala 81:58]
+  assign to_slave_ar_bits_addr = _T_2 ? from_master1_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
   assign to_slave_r_ready = 4'h7 == state | _T_3; // @[Mux.scala 81:58]
   always @(posedge clock) begin
     if (reset) begin // @[Arbiter.scala 43:24]
