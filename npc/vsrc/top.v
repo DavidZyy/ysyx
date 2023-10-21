@@ -1245,6 +1245,7 @@ module SRAM(
   input         reset,
   output        axi_aw_ready,
   input         axi_aw_valid,
+  input  [31:0] axi_aw_bits_addr,
   output        axi_w_ready,
   input         axi_w_valid,
   input  [31:0] axi_w_bits_data,
@@ -1287,6 +1288,7 @@ module SRAM(
   wire [2:0] _GEN_2 = _axi_b_valid_T ? _state_T_7 : state; // @[sram.scala 56:20 82:19 44:24]
   wire [2:0] _GEN_3 = 3'h3 == state ? _state_T_5 : _GEN_2; // @[sram.scala 56:20 78:19]
   wire  _GEN_4 = 3'h3 == state ? _delay_T_1 : delay; // @[sram.scala 56:20 79:19 54:24]
+  wire [31:0] _RamBB_i1_io_addr_T_1 = 3'h2 == state ? axi_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
   RamBB RamBB_i1 ( // @[sram.scala 86:26]
     .clock(RamBB_i1_clock),
     .addr(RamBB_i1_addr),
@@ -1301,13 +1303,13 @@ module SRAM(
   assign axi_b_valid = 3'h4 == state; // @[Mux.scala 81:61]
   assign axi_ar_ready = 3'h0 == state; // @[Mux.scala 81:61]
   assign axi_r_valid = 3'h2 == state; // @[Mux.scala 81:61]
-  assign axi_r_bits_data = RamBB_i1_rdata; // @[sram.scala 102:21]
+  assign axi_r_bits_data = RamBB_i1_rdata; // @[sram.scala 105:21]
   assign RamBB_i1_clock = clock; // @[sram.scala 88:25]
-  assign RamBB_i1_addr = axi_ar_bits_addr; // @[sram.scala 89:25]
+  assign RamBB_i1_addr = 3'h4 == state ? axi_aw_bits_addr : _RamBB_i1_io_addr_T_1; // @[Mux.scala 81:58]
   assign RamBB_i1_mem_wen = 3'h4 == state; // @[Mux.scala 81:61]
   assign RamBB_i1_valid = 3'h4 == state | 3'h2 == state; // @[Mux.scala 81:58]
-  assign RamBB_i1_wdata = axi_w_bits_data; // @[sram.scala 99:25]
-  assign RamBB_i1_wmask = axi_w_bits_strb; // @[sram.scala 100:25]
+  assign RamBB_i1_wdata = axi_w_bits_data; // @[sram.scala 102:25]
+  assign RamBB_i1_wmask = axi_w_bits_strb; // @[sram.scala 103:25]
   always @(posedge clock) begin
     if (reset) begin // @[sram.scala 44:24]
       state <= 3'h0; // @[sram.scala 44:24]
@@ -1408,6 +1410,7 @@ module Arbiter(
   output [31:0] from_master2_r_bits_data,
   input         to_slave_aw_ready,
   output        to_slave_aw_valid,
+  output [31:0] to_slave_aw_bits_addr,
   input         to_slave_w_ready,
   output        to_slave_w_valid,
   output [31:0] to_slave_w_bits_data,
@@ -1453,8 +1456,7 @@ module Arbiter(
   wire [3:0] _GEN_6 = 4'h8 == state ? _state_T_7 : _GEN_5; // @[Arbiter.scala 43:20 83:19]
   wire [3:0] _GEN_7 = 4'h7 == state ? _state_T_5 : _GEN_6; // @[Arbiter.scala 43:20 80:19]
   wire [31:0] _to_slave_ar_bits_addr_T_1 = _T_3 ? from_master2_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
-  wire [31:0] _to_slave_ar_bits_addr_T_3 = _T_4 ? from_master2_ar_bits_addr : _to_slave_ar_bits_addr_T_1; // @[Mux.scala 81:58]
-  wire [31:0] _to_slave_ar_bits_addr_T_5 = _T_7 ? from_master2_aw_bits_addr : _to_slave_ar_bits_addr_T_3; // @[Mux.scala 81:58]
+  wire [31:0] _to_slave_aw_bits_addr_T_1 = _T_7 ? from_master2_aw_bits_addr : 32'hffffffff; // @[Mux.scala 81:58]
   wire [31:0] _to_slave_w_bits_data_T_1 = _T_7 ? from_master2_w_bits_data : 32'h0; // @[Mux.scala 81:58]
   wire [3:0] _to_slave_w_bits_strb_T_1 = _T_7 ? from_master2_w_bits_strb : 4'h0; // @[Mux.scala 81:58]
   assign from_master2_aw_ready = 4'h9 == state; // @[Mux.scala 81:61]
@@ -1462,14 +1464,15 @@ module Arbiter(
   assign from_master2_b_valid = 4'hc == state; // @[Mux.scala 81:61]
   assign from_master2_ar_ready = 4'h5 == state; // @[Mux.scala 81:61]
   assign from_master2_r_valid = 4'h8 == state; // @[Mux.scala 81:61]
-  assign from_master2_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 151:30]
+  assign from_master2_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 148:30]
   assign to_slave_aw_valid = 4'ha == state; // @[Mux.scala 81:61]
+  assign to_slave_aw_bits_addr = _T_8 ? from_master2_aw_bits_addr : _to_slave_aw_bits_addr_T_1; // @[Mux.scala 81:58]
   assign to_slave_w_valid = 4'ha == state; // @[Mux.scala 81:61]
   assign to_slave_w_bits_data = _T_8 ? from_master2_w_bits_data : _to_slave_w_bits_data_T_1; // @[Mux.scala 81:58]
   assign to_slave_w_bits_strb = _T_8 ? from_master2_w_bits_strb : _to_slave_w_bits_strb_T_1; // @[Mux.scala 81:58]
   assign to_slave_b_ready = 4'hb == state; // @[Mux.scala 81:61]
   assign to_slave_ar_valid = _T_3 | 4'h2 == state; // @[Mux.scala 81:58]
-  assign to_slave_ar_bits_addr = _T_8 ? from_master2_aw_bits_addr : _to_slave_ar_bits_addr_T_5; // @[Mux.scala 81:58]
+  assign to_slave_ar_bits_addr = _T_4 ? from_master2_ar_bits_addr : _to_slave_ar_bits_addr_T_1; // @[Mux.scala 81:58]
   assign to_slave_r_ready = _T_4 | 4'h3 == state; // @[Mux.scala 81:58]
   always @(posedge clock) begin
     if (reset) begin // @[Arbiter.scala 41:24]
@@ -1637,6 +1640,7 @@ module EXU(
   wire  sram_i_reset; // @[EXU.scala 114:24]
   wire  sram_i_axi_aw_ready; // @[EXU.scala 114:24]
   wire  sram_i_axi_aw_valid; // @[EXU.scala 114:24]
+  wire [31:0] sram_i_axi_aw_bits_addr; // @[EXU.scala 114:24]
   wire  sram_i_axi_w_ready; // @[EXU.scala 114:24]
   wire  sram_i_axi_w_valid; // @[EXU.scala 114:24]
   wire [31:0] sram_i_axi_w_bits_data; // @[EXU.scala 114:24]
@@ -1668,6 +1672,7 @@ module EXU(
   wire [31:0] arbiter_i_from_master2_r_bits_data; // @[EXU.scala 118:27]
   wire  arbiter_i_to_slave_aw_ready; // @[EXU.scala 118:27]
   wire  arbiter_i_to_slave_aw_valid; // @[EXU.scala 118:27]
+  wire [31:0] arbiter_i_to_slave_aw_bits_addr; // @[EXU.scala 118:27]
   wire  arbiter_i_to_slave_w_ready; // @[EXU.scala 118:27]
   wire  arbiter_i_to_slave_w_valid; // @[EXU.scala 118:27]
   wire [31:0] arbiter_i_to_slave_w_bits_data; // @[EXU.scala 118:27]
@@ -1758,6 +1763,7 @@ module EXU(
     .reset(sram_i_reset),
     .axi_aw_ready(sram_i_axi_aw_ready),
     .axi_aw_valid(sram_i_axi_aw_valid),
+    .axi_aw_bits_addr(sram_i_axi_aw_bits_addr),
     .axi_w_ready(sram_i_axi_w_ready),
     .axi_w_valid(sram_i_axi_w_valid),
     .axi_w_bits_data(sram_i_axi_w_bits_data),
@@ -1791,6 +1797,7 @@ module EXU(
     .from_master2_r_bits_data(arbiter_i_from_master2_r_bits_data),
     .to_slave_aw_ready(arbiter_i_to_slave_aw_ready),
     .to_slave_aw_valid(arbiter_i_to_slave_aw_valid),
+    .to_slave_aw_bits_addr(arbiter_i_to_slave_aw_bits_addr),
     .to_slave_w_ready(arbiter_i_to_slave_w_ready),
     .to_slave_w_valid(arbiter_i_to_slave_w_valid),
     .to_slave_w_bits_data(arbiter_i_to_slave_w_bits_data),
@@ -1854,6 +1861,7 @@ module EXU(
   assign sram_i_clock = clock;
   assign sram_i_reset = reset;
   assign sram_i_axi_aw_valid = arbiter_i_to_slave_aw_valid; // @[Connect.scala 14:22]
+  assign sram_i_axi_aw_bits_addr = arbiter_i_to_slave_aw_bits_addr; // @[Connect.scala 13:22]
   assign sram_i_axi_w_valid = arbiter_i_to_slave_w_valid; // @[Connect.scala 14:22]
   assign sram_i_axi_w_bits_data = arbiter_i_to_slave_w_bits_data; // @[Connect.scala 13:22]
   assign sram_i_axi_w_bits_strb = arbiter_i_to_slave_w_bits_strb; // @[Connect.scala 13:22]
@@ -2128,6 +2136,7 @@ module top(
   wire  sram_i_reset; // @[core.scala 35:27]
   wire  sram_i_axi_aw_ready; // @[core.scala 35:27]
   wire  sram_i_axi_aw_valid; // @[core.scala 35:27]
+  wire [31:0] sram_i_axi_aw_bits_addr; // @[core.scala 35:27]
   wire  sram_i_axi_w_ready; // @[core.scala 35:27]
   wire  sram_i_axi_w_valid; // @[core.scala 35:27]
   wire [31:0] sram_i_axi_w_bits_data; // @[core.scala 35:27]
@@ -2297,6 +2306,7 @@ module top(
     .reset(sram_i_reset),
     .axi_aw_ready(sram_i_axi_aw_ready),
     .axi_aw_valid(sram_i_axi_aw_valid),
+    .axi_aw_bits_addr(sram_i_axi_aw_bits_addr),
     .axi_w_ready(sram_i_axi_w_ready),
     .axi_w_valid(sram_i_axi_w_valid),
     .axi_w_bits_data(sram_i_axi_w_bits_data),
@@ -2382,6 +2392,7 @@ module top(
   assign sram_i_clock = clock;
   assign sram_i_reset = reset;
   assign sram_i_axi_aw_valid = 1'h0; // @[Connect.scala 14:22]
+  assign sram_i_axi_aw_bits_addr = 32'h0; // @[Connect.scala 13:22]
   assign sram_i_axi_w_valid = 1'h0; // @[Connect.scala 14:22]
   assign sram_i_axi_w_bits_data = 32'h0; // @[Connect.scala 13:22]
   assign sram_i_axi_w_bits_strb = 4'h0; // @[Connect.scala 13:22]
