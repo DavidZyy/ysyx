@@ -22,7 +22,8 @@ Context* __am_irq_handle(Context *c) {
     // c' value is been changed here! passing in c is not the return c.
     c = user_handler(ev, c);
     // chage sp here
-    // assert(c != NULL);
+    assert(c != NULL);
+     __asm__ __volatile__("mv sp, %0" :: "r"(c));
   }
 
   // c is changed
@@ -47,7 +48,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   // return NULL;
   Context *stack_top = kstack.end - sizeof(Context);
   stack_top->mepc = (uintptr_t)entry;
-  printf("mepc addr:%p\n", &(stack_top->mepc));
+  // printf("mepc addr:%p\n", &(stack_top->mepc));
   return stack_top;
 }
 
