@@ -19,15 +19,10 @@ Context* __am_irq_handle(Context *c) {
       default: ev.event = EVENT_ERROR; break;
     }
 
-    // c' value is been changed here! passing in c is not the return c.
     c = user_handler(ev, c);
-    // printf("c:%p\n", c);
-    // chage sp not here, but in trap? use the return c?
     assert(c != NULL);
-    // __asm__ __volatile__("mv sp, %0" :: "r"(c));
   }
 
-  // c is changed
   return c;
 }
 
@@ -43,21 +38,8 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
   return true;
 }
 
-// end is the bottem of stack, and decrese the size of Context
-// is the top of stack, stack increase from high address to low address
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  // return NULL;
-  Context *stack_top = kstack.end - sizeof(Context);
-  stack_top->mepc = (uintptr_t)entry;
-  #define msk MUXDEF(CONFIG_ISA64, "0xa00001800", "0x1800")
-  stack_top->mstatus = 0x1800;
-  // a0 is gpr[10]
-  for(int i=0; i<1; i++) {
-    // stack_top->gpr[10+i] = ((uintptr_t)arg)[i];
-    stack_top->gpr[10+i] = (uintptr_t)arg;
-  }
-  // printf("mepc addr:%p\n", &(stack_top->mepc));
-  return stack_top;
+  return NULL;
 }
 
 void yield() {
