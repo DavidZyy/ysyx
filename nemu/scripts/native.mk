@@ -25,8 +25,7 @@ $(BINARY): compile_git
 
 # Some convenient rules
 
-# ELF := $(patsubst %.bin, %.elf, $(IMG))
-ELF := /home/zhuyangyang/project/ysyx-workbench/navy-apps/apps/nterm/build/nterm-riscv32
+ELF := $(patsubst %.bin, %.elf, $(IMG))
 
 # $(error $(ARGS))
 override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
