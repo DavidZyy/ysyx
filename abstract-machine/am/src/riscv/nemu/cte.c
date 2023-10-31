@@ -21,6 +21,7 @@ Context* __am_irq_handle(Context *c) {
 
     // c' value is been changed here! passing in c is not the return c.
     c = user_handler(ev, c);
+    printf("c:%p\n", c);
     // chage sp here
     assert(c != NULL);
     // __asm__ __volatile__("mv sp, %0" :: "r"(c));
