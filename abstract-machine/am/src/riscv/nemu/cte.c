@@ -41,9 +41,13 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
   return true;
 }
 
+// end is the bottem of stack, and decrese the size of Context
+// is the top of stack, stack increase from high address to low address
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   // return NULL;
-  return kstack.end - sizeof(Context);
+  Context *stack_top = kstack.end - sizeof(Context);
+  stack_top->mepc = (uintptr_t)entry;
+  return stack_top;
 }
 
 void yield() {
