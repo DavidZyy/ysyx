@@ -84,6 +84,12 @@
     "reent.h": "c",
     "system_error": "c",
     "limits": "cpp",
-    "streambuf": "c"
+    "streambuf": "c",
+    "deque": "c",
+    "string": "c",
+    "unordered_set": "c",
+    "vector": "c",
+    "string_view": "c",
+    "initializer_list": "c"
   }
 }
