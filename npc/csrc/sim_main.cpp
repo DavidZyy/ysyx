@@ -5,12 +5,16 @@
 /* DPI-C function */
 #include "svdpi.h"
 // #include "Vtop__Dpi.h"
+// #include "Vtop__Dpi.h"
 #include "verilated_dpi.h"
 
 // my header
 #include "utils.h"
 #include "macro.h"
 #include "mem.h"
+#include "isa.h"
+#include "debug.h"
+#include "vga.h"
 #include "isa.h"
 #include "debug.h"
 #include "vga.h"
@@ -22,8 +26,11 @@
 
 void init_log(const char *log_file);
 
+void init_log(const char *log_file);
+
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
+Vtop* top;
 Vtop* top;
 
 CPU_state cpu;
@@ -32,11 +39,15 @@ CPU_state cpu;
 /**
  * close vcd will much faster!
  */
+/**
+ * close vcd will much faster!
+ */
 void step_and_dump_wave(){
   top->eval();
   contextp->timeInc(1);
   tfp->dump(contextp->time());
 }
+
 
 void sim_init(){
   contextp = new VerilatedContext;
@@ -55,7 +66,10 @@ void sim_exit(){
 
 void single_cycle() {
   top->clock = 0;
+void single_cycle() {
+  top->clock = 0;
   step_and_dump_wave();
+  top->clock = 1;
   top->clock = 1;
   step_and_dump_wave();
 }
@@ -63,8 +77,18 @@ void single_cycle() {
 /* ebreak means success! */
 int terminal = 0;
 extern "C" void exit_code(){
+extern "C" void exit_code(){
   terminal = 1;
   printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
+        (void *)top->io_out_pc);
+}
+
+void print_clkdiv(long long clkdiv){
+  printf("read rtc in cpu: %llx\n", clkdiv);
+}
+
+void print_serial(long long ch){
+  printf("%c", ch);
         (void *)top->io_out_pc);
 }
 
@@ -84,8 +108,13 @@ void print_serial(long long ch){
  */
 extern "C" void not_impl_exception(){
   if(top->io_out_pc){
+extern "C" void not_impl_exception(){
+  if(top->io_out_pc){
   terminal = 1;
   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
+  printf("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
+  // printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
+    // (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
   printf("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
   // printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
     // (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
@@ -105,14 +134,19 @@ void print_arg(int argc, char *argv[]){
 }
 
 word_t *cpu_gpr = NULL;
+word_t *cpu_gpr = NULL;
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r) {
+  cpu_gpr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
   cpu_gpr = (word_t *)(((VerilatedDpiOpenVar*)r)->datap());
 }
 
 
+
+/* get npc's register state */
 /* get npc's register state */
 void get_cpu() {
   assert(cpu_gpr);
+  // get gpr
   // get gpr
   for(int i = 0; i < 32; i++){
     cpu.gpr[i] = cpu_gpr[i];
@@ -126,8 +160,18 @@ void get_cpu() {
 
   // get pc
   cpu.pc = top->io_out_pc;
+
+  // get csr
+  cpu.csr[cpu_mcause_id] = top->io_out_difftest_mcause;
+  cpu.csr[cpu_mepc_id] = top->io_out_difftest_mepc;
+  cpu.csr[cpu_mtvec_id] = top->io_out_difftest_mtvec;
+  cpu.mstatus = top->io_out_difftest_mstatus;
+
+  // get pc
+  cpu.pc = top->io_out_pc;
 }
 
+// execute on inst, until WB stage
 // execute on inst, until WB stage
 void npc_exec_once() {
   while(!top->io_out_wb){
@@ -165,6 +209,30 @@ void vga_update_screen();
 extern uint8_t pmem[CONFIG_MSIZE];
 
 void dump_gpr();
+void init_isa() {
+  cpu.pc = RESET_VECTOR;
+}
+
+uint8_t* guest_to_host(paddr_t paddr);
+// similar to monitor
+void init_monitor(int argc, char *argv[]) {
+  init_log(argv[3]);
+  init_isa();
+  long img_size = load_img(argv[1]);
+  // long img_size = load_init_img();
+  init_difftest(argv[2], img_size, 0);
+}
+
+void init_device() {
+  init_vga();
+}
+
+int status = 0;
+
+void vga_update_screen();
+extern uint8_t pmem[CONFIG_MSIZE];
+
+void dump_gpr();
 int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
   // init_device();
@@ -172,6 +240,9 @@ int main(int argc, char *argv[]) {
 
   sim_init();
 
+  top->reset = 1;
+  single_cycle();
+  top->reset = 0;
   top->reset = 1;
   single_cycle();
   top->reset = 0;
@@ -188,6 +259,11 @@ int main(int argc, char *argv[]) {
     // printf("%-3s: " FMT_WORD"\n" ,"before exec pc", cpu.pc);
     npc_exec_once();
     // printf("%-3s: " FMT_WORD"\n" ,"after exec pc", cpu.pc);
+  for (i = 0; i < times; i++) {
+
+    // printf("%-3s: " FMT_WORD"\n" ,"before exec pc", cpu.pc);
+    npc_exec_once();
+    // printf("%-3s: " FMT_WORD"\n" ,"after exec pc", cpu.pc);
     // dump_gpr();
     // printf("\n\n");
     // vga_update_screen();
@@ -199,5 +275,6 @@ int main(int argc, char *argv[]) {
   }
 
   sim_exit();
+  return status;
   return status;
 }
