@@ -24,7 +24,7 @@ Context* __am_irq_handle(Context *c) {
     printf("c:%p\n", c);
     // chage sp here
     assert(c != NULL);
-    // __asm__ __volatile__("mv sp, %0" :: "r"(c -44));
+    __asm__ __volatile__("mv sp, %0" :: "r"(c));
   }
 
   // c is changed
