@@ -19,10 +19,12 @@ Context* __am_irq_handle(Context *c) {
       default: ev.event = EVENT_ERROR; break;
     }
 
+    // c' value is been changed here! passing in c is not the return c.
     c = user_handler(ev, c);
     // assert(c != NULL);
   }
 
+  // c is changed
   return c;
 }
 
