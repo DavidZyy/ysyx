@@ -51,6 +51,10 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   stack_top->mepc = (uintptr_t)entry;
   #define msk MUXDEF(CONFIG_ISA64, "0xa00001800", "0x1800")
   stack_top->mstatus = 0x1800;
+  // a0 is gpr[10]
+  for(int i=0; i<6; i++) {
+    stack_top->gpr[10+i] = ((uint32_t *)arg)[i];
+  }
   // printf("mepc addr:%p\n", &(stack_top->mepc));
   return stack_top;
 }
