@@ -42,7 +42,7 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   // return NULL;
-  return (Context *)1;
+  return (Context *)80000000;
 }
 
 void yield() {
