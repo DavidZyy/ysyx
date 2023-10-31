@@ -47,6 +47,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   // return NULL;
   Context *stack_top = kstack.end - sizeof(Context);
   stack_top->mepc = (uintptr_t)entry;
+  printf("mepc:%p\n", stack_top->mepc);
   return stack_top;
 }
 
