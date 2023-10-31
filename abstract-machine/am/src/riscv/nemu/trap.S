@@ -59,7 +59,8 @@ __am_asm_trap:
 
   mv a0, sp
   jal __am_irq_handle
-  mv sp, ra
+
+  mv sp, ra # move the returned new context to c?
 
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
