@@ -35,7 +35,7 @@ always @(negedge clock) begin
     end
   end
   else begin
-    rdata = 0;
+    rdata = rdata;
   end
 end
 
