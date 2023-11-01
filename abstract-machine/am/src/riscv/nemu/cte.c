@@ -47,7 +47,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   // a0 is gpr[10]
   for(int i=0; i<4; i++) {
     // stack_top->gpr[10+i] = ((uintptr_t)arg)[i];
-    stack_top->gpr[10+i] = (uintptr_t)(((uint32_t *)arg) + i);
+    stack_top->gpr[10+i] = (uintptr_t)(*(((uint32_t *)arg) + i));
   }
   // printf("mepc addr:%p\n", &(stack_top->mepc));
   return stack_top;
