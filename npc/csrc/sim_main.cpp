@@ -178,7 +178,7 @@ extern uint8_t pmem[CONFIG_MSIZE];
 //   printf("  Align: 0x%lx ", section_header->sh_addralign);
 // }
 
-void *text_max;
+word_t text_max;
 #define Elf_Ehdr MUXDEF(CONFIG_ISA64, Elf64_Ehdr, Elf32_Ehdr)
 #define Elf_Phdr MUXDEF(CONFIG_ISA64, Elf64_Phdr, Elf32_Phdr)
 #define Elf_Shdr MUXDEF(CONFIG_ISA64, Elf64_Shdr, Elf32_Shdr)
@@ -192,9 +192,12 @@ void get_text_addr_range(const char *elf_file) {
   Elf_Ehdr elf_header;
   assert(fread(&elf_header, sizeof(Elf_Ehdr), 1, file) == 1);
 
+  // locate to .text section
   fseek(file, elf_header.e_shoff + sizeof(Elf_Shdr), SEEK_SET);
+  // read it
   assert(fread(&section_header, sizeof(Elf_Shdr), 1, file) == 1);
-  printf("  Address: 0x%x ", section_header.sh_addr);
+  text_max = section_header.sh_addr + section_header.sh_size;
+  printf("  text_max: 0x%x ", text_max);
 }
 
 void dump_gpr();
