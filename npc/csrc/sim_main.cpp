@@ -164,6 +164,38 @@ int status = 0;
 void vga_update_screen();
 extern uint8_t pmem[CONFIG_MSIZE];
 
+
+// void print_section_header() {
+//   printf("  Type: %u ", section_header->sh_type);
+//   printf("  Address: 0x%lx ", section_header->sh_addr);
+//   printf("  Offset: 0x%lx ", section_header->sh_offset);
+//   printf("  Size: 0x%lx ", section_header->sh_size);
+//   printf("  EntSize: 0x%lx ", section_header->sh_entsize);
+//   printf("  Flags: 0x%lx ", section_header->sh_flags);
+//   printf("  Link: %u ", section_header->sh_link);
+//   printf("  Info: %u ", section_header->sh_info);
+//   printf("  Align: 0x%lx ", section_header->sh_addralign);
+// }
+
+void *text_max;
+#define Elf_Ehdr MUXDEF(CONFIG_ISA64, Elf64_Ehdr, Elf32_Ehdr)
+#define Elf_Phdr MUXDEF(CONFIG_ISA64, Elf64_Phdr, Elf32_Phdr)
+#define Elf_Shdr MUXDEF(CONFIG_ISA64, Elf64_Shdr, Elf32_Shdr)
+#define Elf_Sym  MUXDEF(CONFIG_ISA64, Elf64_Sym,  Elf32_Sym)
+Elf_Shdr section_header;
+void get_text_addr_range(const char *elf_file) {
+  assert(elf_file);
+  FILE *file = fopen(elf_file, "rb");
+  assert(file);
+
+  Elf_Ehdr elf_header;
+  assert(fread(&elf_header, sizeof(Elf_Ehdr), 1, file) == 1);
+
+  fseek(file, elf_header.e_shoff, SEEK_SET);
+  assert(fread(section_header, sizeof(Elf_Shdr), 1, file) == 1);
+  printf("  Address: 0x%lx ", section_header->sh_addr);
+}
+
 void dump_gpr();
 int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
