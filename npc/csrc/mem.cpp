@@ -87,7 +87,7 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
   // Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
 
   if (waddr == SERIAL_PORT) {
-    // printf("%d: %c", waddr, (char)wdata);
+    printf("%d: %c", waddr, (char)wdata);
     printf("%c", (char)wdata);
     npc_write_device = 1;
   } else if(in_vmem(waddr)) {
