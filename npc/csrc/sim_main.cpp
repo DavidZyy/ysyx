@@ -202,8 +202,8 @@ void get_text_addr_range(const char *elf_file) {
 
 void dump_gpr();
 int main(int argc, char *argv[]) {
-  get_text_addr_range(argv[4]);
-  print_arg(argc, argv);
+  // get_text_addr_range(argv[4]);
+  // print_arg(argc, argv);
   init_monitor(argc, argv);
   // init_device();
   Log("wave has closed to make it sim faster");
