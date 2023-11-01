@@ -201,7 +201,7 @@ void dump_gpr();
 int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
   // init_device();
-  print_arg();
+  print_arg(argc, argv);
   Log("wave has closed to make it sim faster");
 
   sim_init();
