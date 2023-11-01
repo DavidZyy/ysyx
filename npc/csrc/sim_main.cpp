@@ -197,13 +197,13 @@ void get_text_addr_range(const char *elf_file) {
   // read it
   assert(fread(&section_header, sizeof(Elf_Shdr), 1, file) == 1);
   text_max = section_header.sh_addr + section_header.sh_size;
-  printf("  text_max: 0x%x ", text_max);
+  printf("text_max: 0x%x\n", text_max);
 }
 
 void dump_gpr();
 int main(int argc, char *argv[]) {
   get_text_addr_range(argv[4]);
-  // print_arg(argc, argv);
+  print_arg(argc, argv);
   init_monitor(argc, argv);
   // init_device();
   Log("wave has closed to make it sim faster");
