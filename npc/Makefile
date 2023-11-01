@@ -63,6 +63,7 @@ all:
 # the program to be executed on npc, about ?=, 
 # see gnu make 6.2.4 Conditional Variable Assignment
 IMG ?= 
+ELF := $(patsubst %.bin, %.elf, $(IMG))
 # SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv32-nemu-interpreter-so
 SO = $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 LOG_FILE = $(NPC_HOME)/build/npc-log.txt
@@ -75,7 +76,7 @@ sim:
 	$(addprefix -LDFLAGS , $(LDFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(CPP_FILES) $(C_FILES) $(VSRCS) $(SVSRCS)
-	-@obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
+	-@obj_dir/Vtop $(IMG) $(ELF) $(SO) $(LOG_FILE)
 	@gtkwave dump.vcd
 
 # sim:
