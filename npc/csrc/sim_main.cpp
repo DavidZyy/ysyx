@@ -19,6 +19,7 @@
 // #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <elf.h>
 
 void init_log(const char *log_file);
 
