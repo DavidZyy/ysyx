@@ -111,7 +111,8 @@ all: default
 
 # @build/top
 run: $(BIN)
-	@$< $(IMG)
+# @$< $(IMG)
+	$< $(IMG)
 
 clean:
 	rm -rf logs obj_dir $(BUILD_DIR) *.vcd
