@@ -130,7 +130,7 @@ extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
   pmem_read(raddr, rdata);
 }
 
-extern text_max;
+extern word_t text_max;
 extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
   // printf("%x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
   pmem_read(raddr, rdata);
