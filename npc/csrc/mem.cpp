@@ -87,6 +87,8 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
   // Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
 
   if (waddr == SERIAL_PORT) {
+  IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+  IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
     printf("%d: %c", waddr, (char)wdata);
     printf("%c", (char)wdata);
     npc_write_device = 1;
@@ -144,8 +146,8 @@ extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
 
 extern "C" void vaddr_write(sword_t waddr, sword_t wdata, char wmask) {
   pmem_write(waddr, wdata, wmask);
-  IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
-  IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
+  // IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+  // IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
 }
 
 long load_img(const char *img_file) {
