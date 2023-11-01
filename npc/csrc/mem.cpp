@@ -137,8 +137,8 @@ extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
   // store also call read
   if(raddr >= text_max) {
   // if small, is instruction fetch
-    IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
-    IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, *rdata));
+    // IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+    // IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, *rdata));
   }
 }
 
