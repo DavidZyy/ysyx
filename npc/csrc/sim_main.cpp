@@ -194,7 +194,7 @@ void get_text_addr_range(const char *elf_file) {
 
   fseek(file, elf_header.e_shoff, SEEK_SET);
   assert(fread(section_header, sizeof(Elf_Shdr), 1, file) == 1);
-  printf("  Address: 0x%lx ", section_header->sh_addr);
+  printf("  Address: 0x%lx ", section_header.sh_addr);
 }
 
 void dump_gpr();
