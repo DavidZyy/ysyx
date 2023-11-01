@@ -199,9 +199,9 @@ void get_text_addr_range(const char *elf_file) {
 
 void dump_gpr();
 int main(int argc, char *argv[]) {
+  print_arg(argc, argv);
   init_monitor(argc, argv);
   // init_device();
-  print_arg(argc, argv);
   Log("wave has closed to make it sim faster");
 
   sim_init();
