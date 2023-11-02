@@ -90,7 +90,7 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
   IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
   IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
   printf("!!!!!!!!!!!!!!!!!!!1\n");
-    printf("%d: %c", waddr, (char)wdata);
+    printf("%x: %c", waddr, (char)wdata);
     printf("%c", (char)wdata);
     npc_write_device = 1;
   } else if(in_vmem(waddr)) {
