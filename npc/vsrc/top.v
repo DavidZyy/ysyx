@@ -1728,183 +1728,6 @@ end // initial
 `endif
 `endif // SYNTHESIS
 endmodule
-module Arbiter(
-  input         clock,
-  input         reset,
-  output        from_master1_ar_ready,
-  input         from_master1_ar_valid,
-  input  [31:0] from_master1_ar_bits_addr,
-  input         from_master1_r_ready,
-  output        from_master1_r_valid,
-  output [31:0] from_master1_r_bits_data,
-  output        from_master2_aw_ready,
-  input         from_master2_aw_valid,
-  input  [31:0] from_master2_aw_bits_addr,
-  output        from_master2_w_ready,
-  input         from_master2_w_valid,
-  input  [31:0] from_master2_w_bits_data,
-  input  [3:0]  from_master2_w_bits_strb,
-  input         from_master2_b_ready,
-  output        from_master2_b_valid,
-  output        from_master2_ar_ready,
-  input         from_master2_ar_valid,
-  input  [31:0] from_master2_ar_bits_addr,
-  input         from_master2_r_ready,
-  output        from_master2_r_valid,
-  output [31:0] from_master2_r_bits_data,
-  input         to_slave_aw_ready,
-  output        to_slave_aw_valid,
-  output [31:0] to_slave_aw_bits_addr,
-  input         to_slave_w_ready,
-  output        to_slave_w_valid,
-  output [31:0] to_slave_w_bits_data,
-  output [3:0]  to_slave_w_bits_strb,
-  output        to_slave_b_ready,
-  input         to_slave_b_valid,
-  input         to_slave_ar_ready,
-  output        to_slave_ar_valid,
-  output [31:0] to_slave_ar_bits_addr,
-  output        to_slave_r_ready,
-  input         to_slave_r_valid,
-  input  [31:0] to_slave_r_bits_data
-);
-`ifdef RANDOMIZE_REG_INIT
-  reg [31:0] _RAND_0;
-`endif // RANDOMIZE_REG_INIT
-  reg [3:0] state; // @[Arbiter.scala 41:24]
-  wire [3:0] _GEN_0 = from_master2_aw_valid & from_master2_w_valid ? 4'h9 : 4'h0; // @[Arbiter.scala 52:71 53:23 56:23]
-  wire  _state_T = from_master1_ar_ready & from_master1_ar_valid; // @[Decoupled.scala 51:35]
-  wire  _T_3 = 4'h2 == state; // @[Arbiter.scala 43:20]
-  wire  _state_T_2 = to_slave_ar_ready & to_slave_ar_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_3 = _state_T_2 ? 4'h3 : 4'h2; // @[Arbiter.scala 64:25]
-  wire  _T_4 = 4'h3 == state; // @[Arbiter.scala 43:20]
-  wire  _state_T_4 = to_slave_r_ready & to_slave_r_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_5 = _state_T_4 ? 4'h4 : 4'h3; // @[Arbiter.scala 67:25]
-  wire  _state_T_6 = from_master1_r_ready & from_master1_r_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_7 = _state_T_6 ? 4'h0 : 4'h4; // @[Arbiter.scala 70:25]
-  wire  _state_T_8 = from_master2_ar_ready & from_master2_ar_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_9 = _state_T_8 ? 4'h6 : 4'h5; // @[Arbiter.scala 74:25]
-  wire  _T_7 = 4'h6 == state; // @[Arbiter.scala 43:20]
-  wire [3:0] _state_T_11 = _state_T_2 ? 4'h7 : 4'h6; // @[Arbiter.scala 77:25]
-  wire  _T_8 = 4'h7 == state; // @[Arbiter.scala 43:20]
-  wire [3:0] _state_T_13 = _state_T_4 ? 4'h8 : 4'h7; // @[Arbiter.scala 80:25]
-  wire  _state_T_14 = from_master2_r_ready & from_master2_r_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_15 = _state_T_14 ? 4'h0 : 4'h8; // @[Arbiter.scala 83:25]
-  wire  _state_T_16 = from_master2_aw_ready & from_master2_aw_valid; // @[Decoupled.scala 51:35]
-  wire  _state_T_17 = from_master2_w_ready & from_master2_w_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_19 = _state_T_16 & _state_T_17 ? 4'ha : 4'h9; // @[Arbiter.scala 87:25]
-  wire  _T_11 = 4'ha == state; // @[Arbiter.scala 43:20]
-  wire  _state_T_20 = to_slave_aw_ready & to_slave_aw_valid; // @[Decoupled.scala 51:35]
-  wire  _state_T_21 = to_slave_w_ready & to_slave_w_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_23 = _state_T_20 & _state_T_21 ? 4'hb : 4'ha; // @[Arbiter.scala 90:25]
-  wire  _T_12 = 4'hb == state; // @[Arbiter.scala 43:20]
-  wire  _state_T_24 = to_slave_b_ready & to_slave_b_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_25 = _state_T_24 ? 4'hc : 4'hb; // @[Arbiter.scala 93:25]
-  wire  _state_T_26 = from_master2_b_ready & from_master2_b_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_T_27 = _state_T_26 ? 4'h0 : 4'hc; // @[Arbiter.scala 96:25]
-  wire [3:0] _GEN_3 = 4'hc == state ? _state_T_27 : state; // @[Arbiter.scala 43:20 96:19 41:24]
-  wire [3:0] _GEN_4 = 4'hb == state ? _state_T_25 : _GEN_3; // @[Arbiter.scala 43:20 93:19]
-  wire [3:0] _GEN_5 = 4'ha == state ? _state_T_23 : _GEN_4; // @[Arbiter.scala 43:20 90:19]
-  wire [3:0] _GEN_6 = 4'h9 == state ? _state_T_19 : _GEN_5; // @[Arbiter.scala 43:20 87:19]
-  wire [3:0] _GEN_7 = 4'h8 == state ? _state_T_15 : _GEN_6; // @[Arbiter.scala 43:20 83:19]
-  wire [3:0] _GEN_8 = 4'h7 == state ? _state_T_13 : _GEN_7; // @[Arbiter.scala 43:20 80:19]
-  wire [3:0] _GEN_9 = 4'h6 == state ? _state_T_11 : _GEN_8; // @[Arbiter.scala 43:20 77:19]
-  wire [3:0] _GEN_10 = 4'h5 == state ? _state_T_9 : _GEN_9; // @[Arbiter.scala 43:20 74:19]
-  wire [3:0] _GEN_11 = 4'h4 == state ? _state_T_7 : _GEN_10; // @[Arbiter.scala 43:20 70:19]
-  wire [3:0] _GEN_12 = 4'h3 == state ? _state_T_5 : _GEN_11; // @[Arbiter.scala 43:20 67:19]
-  wire [31:0] _to_slave_ar_bits_addr_T_1 = _T_3 ? from_master1_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
-  wire [31:0] _to_slave_ar_bits_addr_T_3 = _T_4 ? from_master1_ar_bits_addr : _to_slave_ar_bits_addr_T_1; // @[Mux.scala 81:58]
-  wire [31:0] _to_slave_ar_bits_addr_T_5 = _T_7 ? from_master2_ar_bits_addr : _to_slave_ar_bits_addr_T_3; // @[Mux.scala 81:58]
-  wire [31:0] _to_slave_aw_bits_addr_T_1 = _T_11 ? from_master2_aw_bits_addr : 32'hffffffff; // @[Mux.scala 81:58]
-  wire [31:0] _to_slave_w_bits_data_T_1 = _T_11 ? from_master2_w_bits_data : 32'h0; // @[Mux.scala 81:58]
-  wire [3:0] _to_slave_w_bits_strb_T_1 = _T_11 ? from_master2_w_bits_strb : 4'h0; // @[Mux.scala 81:58]
-  assign from_master1_ar_ready = 4'h1 == state; // @[Mux.scala 81:61]
-  assign from_master1_r_valid = 4'h4 == state; // @[Mux.scala 81:61]
-  assign from_master1_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 141:30]
-  assign from_master2_aw_ready = 4'h9 == state; // @[Mux.scala 81:61]
-  assign from_master2_w_ready = 4'h9 == state; // @[Mux.scala 81:61]
-  assign from_master2_b_valid = 4'hc == state; // @[Mux.scala 81:61]
-  assign from_master2_ar_ready = 4'h5 == state; // @[Mux.scala 81:61]
-  assign from_master2_r_valid = 4'h8 == state; // @[Mux.scala 81:61]
-  assign from_master2_r_bits_data = to_slave_r_bits_data; // @[Arbiter.scala 148:30]
-  assign to_slave_aw_valid = 4'ha == state; // @[Mux.scala 81:61]
-  assign to_slave_aw_bits_addr = _T_12 ? from_master2_aw_bits_addr : _to_slave_aw_bits_addr_T_1; // @[Mux.scala 81:58]
-  assign to_slave_w_valid = 4'ha == state; // @[Mux.scala 81:61]
-  assign to_slave_w_bits_data = _T_12 ? from_master2_w_bits_data : _to_slave_w_bits_data_T_1; // @[Mux.scala 81:58]
-  assign to_slave_w_bits_strb = _T_12 ? from_master2_w_bits_strb : _to_slave_w_bits_strb_T_1; // @[Mux.scala 81:58]
-  assign to_slave_b_ready = 4'hb == state; // @[Mux.scala 81:61]
-  assign to_slave_ar_valid = _T_7 | _T_3; // @[Mux.scala 81:58]
-  assign to_slave_ar_bits_addr = _T_8 ? from_master2_ar_bits_addr : _to_slave_ar_bits_addr_T_5; // @[Mux.scala 81:58]
-  assign to_slave_r_ready = _T_8 | _T_4; // @[Mux.scala 81:58]
-  always @(posedge clock) begin
-    if (reset) begin // @[Arbiter.scala 41:24]
-      state <= 4'h0; // @[Arbiter.scala 41:24]
-    end else if (4'h0 == state) begin // @[Arbiter.scala 43:20]
-      if (from_master1_ar_valid) begin // @[Arbiter.scala 45:42]
-        state <= 4'h1; // @[Arbiter.scala 46:23]
-      end else if (from_master2_ar_valid) begin // @[Arbiter.scala 48:47]
-        state <= 4'h5; // @[Arbiter.scala 50:23]
-      end else begin
-        state <= _GEN_0;
-      end
-    end else if (4'h1 == state) begin // @[Arbiter.scala 43:20]
-      if (_state_T) begin // @[Arbiter.scala 61:25]
-        state <= 4'h2;
-      end else begin
-        state <= 4'h1;
-      end
-    end else if (4'h2 == state) begin // @[Arbiter.scala 43:20]
-      state <= _state_T_3; // @[Arbiter.scala 64:19]
-    end else begin
-      state <= _GEN_12;
-    end
-  end
-// Register and memory initialization
-`ifdef RANDOMIZE_GARBAGE_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_INVALID_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_REG_INIT
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-`define RANDOMIZE
-`endif
-`ifndef RANDOM
-`define RANDOM $random
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-  integer initvar;
-`endif
-`ifndef SYNTHESIS
-`ifdef FIRRTL_BEFORE_INITIAL
-`FIRRTL_BEFORE_INITIAL
-`endif
-initial begin
-  `ifdef RANDOMIZE
-    `ifdef INIT_RANDOM
-      `INIT_RANDOM
-    `endif
-    `ifndef VERILATOR
-      `ifdef RANDOMIZE_DELAY
-        #`RANDOMIZE_DELAY begin end
-      `else
-        #0.002 begin end
-      `endif
-    `endif
-`ifdef RANDOMIZE_REG_INIT
-  _RAND_0 = {1{`RANDOM}};
-  state = _RAND_0[3:0];
-`endif // RANDOMIZE_REG_INIT
-  `endif // RANDOMIZE
-end // initial
-`ifdef FIRRTL_AFTER_INITIAL
-`FIRRTL_AFTER_INITIAL
-`endif
-`endif // SYNTHESIS
-endmodule
 module top(
   input         clock,
   input         reset,
@@ -2081,61 +1904,40 @@ module top(
   wire [31:0] WBU_i_to_ISU_bits_wdata; // @[core.scala 33:27]
   wire [4:0] WBU_i_to_ISU_bits_rd; // @[core.scala 33:27]
   wire  WBU_i_to_IFU_valid; // @[core.scala 33:27]
-  wire  sram_i_clock; // @[core.scala 40:27]
-  wire  sram_i_reset; // @[core.scala 40:27]
-  wire  sram_i_axi_aw_ready; // @[core.scala 40:27]
-  wire  sram_i_axi_aw_valid; // @[core.scala 40:27]
-  wire [31:0] sram_i_axi_aw_bits_addr; // @[core.scala 40:27]
-  wire  sram_i_axi_w_ready; // @[core.scala 40:27]
-  wire  sram_i_axi_w_valid; // @[core.scala 40:27]
-  wire [31:0] sram_i_axi_w_bits_data; // @[core.scala 40:27]
-  wire [3:0] sram_i_axi_w_bits_strb; // @[core.scala 40:27]
-  wire  sram_i_axi_b_ready; // @[core.scala 40:27]
-  wire  sram_i_axi_b_valid; // @[core.scala 40:27]
-  wire  sram_i_axi_ar_ready; // @[core.scala 40:27]
-  wire  sram_i_axi_ar_valid; // @[core.scala 40:27]
-  wire [31:0] sram_i_axi_ar_bits_addr; // @[core.scala 40:27]
-  wire  sram_i_axi_r_ready; // @[core.scala 40:27]
-  wire  sram_i_axi_r_valid; // @[core.scala 40:27]
-  wire [31:0] sram_i_axi_r_bits_data; // @[core.scala 40:27]
-  wire  arbiter_i_clock; // @[core.scala 41:27]
-  wire  arbiter_i_reset; // @[core.scala 41:27]
-  wire  arbiter_i_from_master1_ar_ready; // @[core.scala 41:27]
-  wire  arbiter_i_from_master1_ar_valid; // @[core.scala 41:27]
-  wire [31:0] arbiter_i_from_master1_ar_bits_addr; // @[core.scala 41:27]
-  wire  arbiter_i_from_master1_r_ready; // @[core.scala 41:27]
-  wire  arbiter_i_from_master1_r_valid; // @[core.scala 41:27]
-  wire [31:0] arbiter_i_from_master1_r_bits_data; // @[core.scala 41:27]
-  wire  arbiter_i_from_master2_aw_ready; // @[core.scala 41:27]
-  wire  arbiter_i_from_master2_aw_valid; // @[core.scala 41:27]
-  wire [31:0] arbiter_i_from_master2_aw_bits_addr; // @[core.scala 41:27]
-  wire  arbiter_i_from_master2_w_ready; // @[core.scala 41:27]
-  wire  arbiter_i_from_master2_w_valid; // @[core.scala 41:27]
-  wire [31:0] arbiter_i_from_master2_w_bits_data; // @[core.scala 41:27]
-  wire [3:0] arbiter_i_from_master2_w_bits_strb; // @[core.scala 41:27]
-  wire  arbiter_i_from_master2_b_ready; // @[core.scala 41:27]
-  wire  arbiter_i_from_master2_b_valid; // @[core.scala 41:27]
-  wire  arbiter_i_from_master2_ar_ready; // @[core.scala 41:27]
-  wire  arbiter_i_from_master2_ar_valid; // @[core.scala 41:27]
-  wire [31:0] arbiter_i_from_master2_ar_bits_addr; // @[core.scala 41:27]
-  wire  arbiter_i_from_master2_r_ready; // @[core.scala 41:27]
-  wire  arbiter_i_from_master2_r_valid; // @[core.scala 41:27]
-  wire [31:0] arbiter_i_from_master2_r_bits_data; // @[core.scala 41:27]
-  wire  arbiter_i_to_slave_aw_ready; // @[core.scala 41:27]
-  wire  arbiter_i_to_slave_aw_valid; // @[core.scala 41:27]
-  wire [31:0] arbiter_i_to_slave_aw_bits_addr; // @[core.scala 41:27]
-  wire  arbiter_i_to_slave_w_ready; // @[core.scala 41:27]
-  wire  arbiter_i_to_slave_w_valid; // @[core.scala 41:27]
-  wire [31:0] arbiter_i_to_slave_w_bits_data; // @[core.scala 41:27]
-  wire [3:0] arbiter_i_to_slave_w_bits_strb; // @[core.scala 41:27]
-  wire  arbiter_i_to_slave_b_ready; // @[core.scala 41:27]
-  wire  arbiter_i_to_slave_b_valid; // @[core.scala 41:27]
-  wire  arbiter_i_to_slave_ar_ready; // @[core.scala 41:27]
-  wire  arbiter_i_to_slave_ar_valid; // @[core.scala 41:27]
-  wire [31:0] arbiter_i_to_slave_ar_bits_addr; // @[core.scala 41:27]
-  wire  arbiter_i_to_slave_r_ready; // @[core.scala 41:27]
-  wire  arbiter_i_to_slave_r_valid; // @[core.scala 41:27]
-  wire [31:0] arbiter_i_to_slave_r_bits_data; // @[core.scala 41:27]
+  wire  sram_i_clock; // @[core.scala 35:27]
+  wire  sram_i_reset; // @[core.scala 35:27]
+  wire  sram_i_axi_aw_ready; // @[core.scala 35:27]
+  wire  sram_i_axi_aw_valid; // @[core.scala 35:27]
+  wire [31:0] sram_i_axi_aw_bits_addr; // @[core.scala 35:27]
+  wire  sram_i_axi_w_ready; // @[core.scala 35:27]
+  wire  sram_i_axi_w_valid; // @[core.scala 35:27]
+  wire [31:0] sram_i_axi_w_bits_data; // @[core.scala 35:27]
+  wire [3:0] sram_i_axi_w_bits_strb; // @[core.scala 35:27]
+  wire  sram_i_axi_b_ready; // @[core.scala 35:27]
+  wire  sram_i_axi_b_valid; // @[core.scala 35:27]
+  wire  sram_i_axi_ar_ready; // @[core.scala 35:27]
+  wire  sram_i_axi_ar_valid; // @[core.scala 35:27]
+  wire [31:0] sram_i_axi_ar_bits_addr; // @[core.scala 35:27]
+  wire  sram_i_axi_r_ready; // @[core.scala 35:27]
+  wire  sram_i_axi_r_valid; // @[core.scala 35:27]
+  wire [31:0] sram_i_axi_r_bits_data; // @[core.scala 35:27]
+  wire  sram_i2_clock; // @[core.scala 36:27]
+  wire  sram_i2_reset; // @[core.scala 36:27]
+  wire  sram_i2_axi_aw_ready; // @[core.scala 36:27]
+  wire  sram_i2_axi_aw_valid; // @[core.scala 36:27]
+  wire [31:0] sram_i2_axi_aw_bits_addr; // @[core.scala 36:27]
+  wire  sram_i2_axi_w_ready; // @[core.scala 36:27]
+  wire  sram_i2_axi_w_valid; // @[core.scala 36:27]
+  wire [31:0] sram_i2_axi_w_bits_data; // @[core.scala 36:27]
+  wire [3:0] sram_i2_axi_w_bits_strb; // @[core.scala 36:27]
+  wire  sram_i2_axi_b_ready; // @[core.scala 36:27]
+  wire  sram_i2_axi_b_valid; // @[core.scala 36:27]
+  wire  sram_i2_axi_ar_ready; // @[core.scala 36:27]
+  wire  sram_i2_axi_ar_valid; // @[core.scala 36:27]
+  wire [31:0] sram_i2_axi_ar_bits_addr; // @[core.scala 36:27]
+  wire  sram_i2_axi_r_ready; // @[core.scala 36:27]
+  wire  sram_i2_axi_r_valid; // @[core.scala 36:27]
+  wire [31:0] sram_i2_axi_r_bits_data; // @[core.scala 36:27]
   wire  _EXU_i_from_ISU_bits_T = ISU_i_to_EXU_valid & EXU_i_from_ISU_ready; // @[Connect.scala 24:58]
   reg [31:0] EXU_i_from_ISU_bits_r_imm; // @[Reg.scala 19:16]
   reg [31:0] EXU_i_from_ISU_bits_r_pc; // @[Reg.scala 19:16]
@@ -2310,7 +2112,7 @@ module top(
     .to_ISU_bits_rd(WBU_i_to_ISU_bits_rd),
     .to_IFU_valid(WBU_i_to_IFU_valid)
   );
-  SRAM sram_i ( // @[core.scala 40:27]
+  SRAM sram_i ( // @[core.scala 35:27]
     .clock(sram_i_clock),
     .reset(sram_i_reset),
     .axi_aw_ready(sram_i_axi_aw_ready),
@@ -2329,45 +2131,24 @@ module top(
     .axi_r_valid(sram_i_axi_r_valid),
     .axi_r_bits_data(sram_i_axi_r_bits_data)
   );
-  Arbiter arbiter_i ( // @[core.scala 41:27]
-    .clock(arbiter_i_clock),
-    .reset(arbiter_i_reset),
-    .from_master1_ar_ready(arbiter_i_from_master1_ar_ready),
-    .from_master1_ar_valid(arbiter_i_from_master1_ar_valid),
-    .from_master1_ar_bits_addr(arbiter_i_from_master1_ar_bits_addr),
-    .from_master1_r_ready(arbiter_i_from_master1_r_ready),
-    .from_master1_r_valid(arbiter_i_from_master1_r_valid),
-    .from_master1_r_bits_data(arbiter_i_from_master1_r_bits_data),
-    .from_master2_aw_ready(arbiter_i_from_master2_aw_ready),
-    .from_master2_aw_valid(arbiter_i_from_master2_aw_valid),
-    .from_master2_aw_bits_addr(arbiter_i_from_master2_aw_bits_addr),
-    .from_master2_w_ready(arbiter_i_from_master2_w_ready),
-    .from_master2_w_valid(arbiter_i_from_master2_w_valid),
-    .from_master2_w_bits_data(arbiter_i_from_master2_w_bits_data),
-    .from_master2_w_bits_strb(arbiter_i_from_master2_w_bits_strb),
-    .from_master2_b_ready(arbiter_i_from_master2_b_ready),
-    .from_master2_b_valid(arbiter_i_from_master2_b_valid),
-    .from_master2_ar_ready(arbiter_i_from_master2_ar_ready),
-    .from_master2_ar_valid(arbiter_i_from_master2_ar_valid),
-    .from_master2_ar_bits_addr(arbiter_i_from_master2_ar_bits_addr),
-    .from_master2_r_ready(arbiter_i_from_master2_r_ready),
-    .from_master2_r_valid(arbiter_i_from_master2_r_valid),
-    .from_master2_r_bits_data(arbiter_i_from_master2_r_bits_data),
-    .to_slave_aw_ready(arbiter_i_to_slave_aw_ready),
-    .to_slave_aw_valid(arbiter_i_to_slave_aw_valid),
-    .to_slave_aw_bits_addr(arbiter_i_to_slave_aw_bits_addr),
-    .to_slave_w_ready(arbiter_i_to_slave_w_ready),
-    .to_slave_w_valid(arbiter_i_to_slave_w_valid),
-    .to_slave_w_bits_data(arbiter_i_to_slave_w_bits_data),
-    .to_slave_w_bits_strb(arbiter_i_to_slave_w_bits_strb),
-    .to_slave_b_ready(arbiter_i_to_slave_b_ready),
-    .to_slave_b_valid(arbiter_i_to_slave_b_valid),
-    .to_slave_ar_ready(arbiter_i_to_slave_ar_ready),
-    .to_slave_ar_valid(arbiter_i_to_slave_ar_valid),
-    .to_slave_ar_bits_addr(arbiter_i_to_slave_ar_bits_addr),
-    .to_slave_r_ready(arbiter_i_to_slave_r_ready),
-    .to_slave_r_valid(arbiter_i_to_slave_r_valid),
-    .to_slave_r_bits_data(arbiter_i_to_slave_r_bits_data)
+  SRAM sram_i2 ( // @[core.scala 36:27]
+    .clock(sram_i2_clock),
+    .reset(sram_i2_reset),
+    .axi_aw_ready(sram_i2_axi_aw_ready),
+    .axi_aw_valid(sram_i2_axi_aw_valid),
+    .axi_aw_bits_addr(sram_i2_axi_aw_bits_addr),
+    .axi_w_ready(sram_i2_axi_w_ready),
+    .axi_w_valid(sram_i2_axi_w_valid),
+    .axi_w_bits_data(sram_i2_axi_w_bits_data),
+    .axi_w_bits_strb(sram_i2_axi_w_bits_strb),
+    .axi_b_ready(sram_i2_axi_b_ready),
+    .axi_b_valid(sram_i2_axi_b_valid),
+    .axi_ar_ready(sram_i2_axi_ar_ready),
+    .axi_ar_valid(sram_i2_axi_ar_valid),
+    .axi_ar_bits_addr(sram_i2_axi_ar_bits_addr),
+    .axi_r_ready(sram_i2_axi_r_ready),
+    .axi_r_valid(sram_i2_axi_r_valid),
+    .axi_r_bits_data(sram_i2_axi_r_bits_data)
   );
   assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[core.scala 55:20]
   assign io_out_pc = IFU_i_to_IDU_bits_pc; // @[core.scala 56:20]
@@ -2383,9 +2164,9 @@ module top(
   assign IFU_i_from_EXU_bits_csr_ctrl_br = EXU_i_to_IFU_bits_csr_ctrl_br; // @[Connect.scala 13:22]
   assign IFU_i_from_EXU_bits_csr_addr = EXU_i_to_IFU_bits_csr_addr; // @[Connect.scala 13:22]
   assign IFU_i_from_WBU_valid = WBU_i_to_IFU_valid; // @[Connect.scala 14:22]
-  assign IFU_i_axi_ar_ready = arbiter_i_from_master1_ar_ready; // @[Connect.scala 15:22]
-  assign IFU_i_axi_r_valid = arbiter_i_from_master1_r_valid; // @[Connect.scala 14:22]
-  assign IFU_i_axi_r_bits_data = arbiter_i_from_master1_r_bits_data; // @[Connect.scala 13:22]
+  assign IFU_i_axi_ar_ready = sram_i_axi_ar_ready; // @[Connect.scala 15:22]
+  assign IFU_i_axi_r_valid = sram_i_axi_r_valid; // @[Connect.scala 14:22]
+  assign IFU_i_axi_r_bits_data = sram_i_axi_r_bits_data; // @[Connect.scala 13:22]
   assign IDU_i_from_IFU_valid = IFU_i_to_IDU_valid; // @[Connect.scala 14:22]
   assign IDU_i_from_IFU_bits_inst = IFU_i_to_IDU_bits_inst; // @[Connect.scala 13:22]
   assign IDU_i_from_IFU_bits_pc = IFU_i_to_IDU_bits_pc; // @[Connect.scala 13:22]
@@ -2432,12 +2213,12 @@ module top(
   assign EXU_i_from_ISU_bits_ctrl_sig_bru_op = EXU_i_from_ISU_bits_r_ctrl_sig_bru_op; // @[Connect.scala 24:22]
   assign EXU_i_from_ISU_bits_ctrl_sig_csr_op = EXU_i_from_ISU_bits_r_ctrl_sig_csr_op; // @[Connect.scala 24:22]
   assign EXU_i_from_ISU_bits_ctrl_sig_mdu_op = EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op; // @[Connect.scala 24:22]
-  assign EXU_i_lsu_axi_master_aw_ready = arbiter_i_from_master2_aw_ready; // @[Connect.scala 15:22]
-  assign EXU_i_lsu_axi_master_w_ready = arbiter_i_from_master2_w_ready; // @[Connect.scala 15:22]
-  assign EXU_i_lsu_axi_master_b_valid = arbiter_i_from_master2_b_valid; // @[Connect.scala 14:22]
-  assign EXU_i_lsu_axi_master_ar_ready = arbiter_i_from_master2_ar_ready; // @[Connect.scala 15:22]
-  assign EXU_i_lsu_axi_master_r_valid = arbiter_i_from_master2_r_valid; // @[Connect.scala 14:22]
-  assign EXU_i_lsu_axi_master_r_bits_data = arbiter_i_from_master2_r_bits_data; // @[Connect.scala 13:22]
+  assign EXU_i_lsu_axi_master_aw_ready = sram_i2_axi_aw_ready; // @[Connect.scala 15:22]
+  assign EXU_i_lsu_axi_master_w_ready = sram_i2_axi_w_ready; // @[Connect.scala 15:22]
+  assign EXU_i_lsu_axi_master_b_valid = sram_i2_axi_b_valid; // @[Connect.scala 14:22]
+  assign EXU_i_lsu_axi_master_ar_ready = sram_i2_axi_ar_ready; // @[Connect.scala 15:22]
+  assign EXU_i_lsu_axi_master_r_valid = sram_i2_axi_r_valid; // @[Connect.scala 14:22]
+  assign EXU_i_lsu_axi_master_r_bits_data = sram_i2_axi_r_bits_data; // @[Connect.scala 13:22]
   assign WBU_i_from_EXU_valid = EXU_i_to_WBU_valid; // @[Connect.scala 14:22]
   assign WBU_i_from_EXU_bits_alu_result = EXU_i_to_WBU_bits_alu_result; // @[Connect.scala 13:22]
   assign WBU_i_from_EXU_bits_mdu_result = EXU_i_to_WBU_bits_mdu_result; // @[Connect.scala 13:22]
@@ -2449,35 +2230,26 @@ module top(
   assign WBU_i_from_EXU_bits_fu_op = EXU_i_to_WBU_bits_fu_op; // @[Connect.scala 13:22]
   assign sram_i_clock = clock;
   assign sram_i_reset = reset;
-  assign sram_i_axi_aw_valid = arbiter_i_to_slave_aw_valid; // @[Connect.scala 14:22]
-  assign sram_i_axi_aw_bits_addr = arbiter_i_to_slave_aw_bits_addr; // @[Connect.scala 13:22]
-  assign sram_i_axi_w_valid = arbiter_i_to_slave_w_valid; // @[Connect.scala 14:22]
-  assign sram_i_axi_w_bits_data = arbiter_i_to_slave_w_bits_data; // @[Connect.scala 13:22]
-  assign sram_i_axi_w_bits_strb = arbiter_i_to_slave_w_bits_strb; // @[Connect.scala 13:22]
-  assign sram_i_axi_b_ready = arbiter_i_to_slave_b_ready; // @[Connect.scala 15:22]
-  assign sram_i_axi_ar_valid = arbiter_i_to_slave_ar_valid; // @[Connect.scala 14:22]
-  assign sram_i_axi_ar_bits_addr = arbiter_i_to_slave_ar_bits_addr; // @[Connect.scala 13:22]
-  assign sram_i_axi_r_ready = arbiter_i_to_slave_r_ready; // @[Connect.scala 15:22]
-  assign arbiter_i_clock = clock;
-  assign arbiter_i_reset = reset;
-  assign arbiter_i_from_master1_ar_valid = IFU_i_axi_ar_valid; // @[Connect.scala 14:22]
-  assign arbiter_i_from_master1_ar_bits_addr = IFU_i_axi_ar_bits_addr; // @[Connect.scala 13:22]
-  assign arbiter_i_from_master1_r_ready = IFU_i_axi_r_ready; // @[Connect.scala 15:22]
-  assign arbiter_i_from_master2_aw_valid = EXU_i_lsu_axi_master_aw_valid; // @[Connect.scala 14:22]
-  assign arbiter_i_from_master2_aw_bits_addr = EXU_i_lsu_axi_master_aw_bits_addr; // @[Connect.scala 13:22]
-  assign arbiter_i_from_master2_w_valid = EXU_i_lsu_axi_master_w_valid; // @[Connect.scala 14:22]
-  assign arbiter_i_from_master2_w_bits_data = EXU_i_lsu_axi_master_w_bits_data; // @[Connect.scala 13:22]
-  assign arbiter_i_from_master2_w_bits_strb = EXU_i_lsu_axi_master_w_bits_strb; // @[Connect.scala 13:22]
-  assign arbiter_i_from_master2_b_ready = EXU_i_lsu_axi_master_b_ready; // @[Connect.scala 15:22]
-  assign arbiter_i_from_master2_ar_valid = EXU_i_lsu_axi_master_ar_valid; // @[Connect.scala 14:22]
-  assign arbiter_i_from_master2_ar_bits_addr = EXU_i_lsu_axi_master_ar_bits_addr; // @[Connect.scala 13:22]
-  assign arbiter_i_from_master2_r_ready = EXU_i_lsu_axi_master_r_ready; // @[Connect.scala 15:22]
-  assign arbiter_i_to_slave_aw_ready = sram_i_axi_aw_ready; // @[Connect.scala 15:22]
-  assign arbiter_i_to_slave_w_ready = sram_i_axi_w_ready; // @[Connect.scala 15:22]
-  assign arbiter_i_to_slave_b_valid = sram_i_axi_b_valid; // @[Connect.scala 14:22]
-  assign arbiter_i_to_slave_ar_ready = sram_i_axi_ar_ready; // @[Connect.scala 15:22]
-  assign arbiter_i_to_slave_r_valid = sram_i_axi_r_valid; // @[Connect.scala 14:22]
-  assign arbiter_i_to_slave_r_bits_data = sram_i_axi_r_bits_data; // @[Connect.scala 13:22]
+  assign sram_i_axi_aw_valid = 1'h0; // @[Connect.scala 14:22]
+  assign sram_i_axi_aw_bits_addr = 32'h0; // @[Connect.scala 13:22]
+  assign sram_i_axi_w_valid = 1'h0; // @[Connect.scala 14:22]
+  assign sram_i_axi_w_bits_data = 32'h0; // @[Connect.scala 13:22]
+  assign sram_i_axi_w_bits_strb = 4'h0; // @[Connect.scala 13:22]
+  assign sram_i_axi_b_ready = 1'h0; // @[Connect.scala 15:22]
+  assign sram_i_axi_ar_valid = IFU_i_axi_ar_valid; // @[Connect.scala 14:22]
+  assign sram_i_axi_ar_bits_addr = IFU_i_axi_ar_bits_addr; // @[Connect.scala 13:22]
+  assign sram_i_axi_r_ready = IFU_i_axi_r_ready; // @[Connect.scala 15:22]
+  assign sram_i2_clock = clock;
+  assign sram_i2_reset = reset;
+  assign sram_i2_axi_aw_valid = EXU_i_lsu_axi_master_aw_valid; // @[Connect.scala 14:22]
+  assign sram_i2_axi_aw_bits_addr = EXU_i_lsu_axi_master_aw_bits_addr; // @[Connect.scala 13:22]
+  assign sram_i2_axi_w_valid = EXU_i_lsu_axi_master_w_valid; // @[Connect.scala 14:22]
+  assign sram_i2_axi_w_bits_data = EXU_i_lsu_axi_master_w_bits_data; // @[Connect.scala 13:22]
+  assign sram_i2_axi_w_bits_strb = EXU_i_lsu_axi_master_w_bits_strb; // @[Connect.scala 13:22]
+  assign sram_i2_axi_b_ready = EXU_i_lsu_axi_master_b_ready; // @[Connect.scala 15:22]
+  assign sram_i2_axi_ar_valid = EXU_i_lsu_axi_master_ar_valid; // @[Connect.scala 14:22]
+  assign sram_i2_axi_ar_bits_addr = EXU_i_lsu_axi_master_ar_bits_addr; // @[Connect.scala 13:22]
+  assign sram_i2_axi_r_ready = EXU_i_lsu_axi_master_r_ready; // @[Connect.scala 15:22]
   always @(posedge clock) begin
     if (_EXU_i_from_ISU_bits_T) begin // @[Reg.scala 20:18]
       EXU_i_from_ISU_bits_r_imm <= ISU_i_to_EXU_bits_imm; // @[Reg.scala 20:22]
