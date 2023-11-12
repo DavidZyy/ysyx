@@ -27,41 +27,41 @@ module IFU(
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
   reg [31:0] reg_PC; // @[IFU.scala 37:26]
-  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 46:27]
+  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 45:27]
   wire  _reg_PC_T = from_WBU_ready & from_WBU_valid; // @[Decoupled.scala 51:35]
-  reg [1:0] state; // @[IFU.scala 58:24]
+  reg [1:0] state; // @[IFU.scala 53:24]
   wire  _state_T = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
-  wire [1:0] _state_T_1 = _state_T ? 2'h1 : 2'h0; // @[IFU.scala 60:28]
+  wire [1:0] _state_T_1 = _state_T ? 2'h1 : 2'h0; // @[IFU.scala 55:28]
   wire  _state_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
   assign to_IDU_valid = 2'h2 == state; // @[Mux.scala 81:61]
-  assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 54:31]
-  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 55:25]
+  assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 73:28]
+  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 74:22]
   assign from_WBU_ready = 2'h2 == state; // @[Mux.scala 81:61]
   assign axi_ar_valid = 2'h0 == state; // @[Mux.scala 81:61]
-  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 67:22]
+  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 62:22]
   assign axi_r_ready = 2'h1 == state; // @[Mux.scala 81:61]
   always @(posedge clock) begin
     if (reset) begin // @[IFU.scala 37:26]
       reg_PC <= 32'h80000000; // @[IFU.scala 37:26]
-    end else if (_reg_PC_T) begin // @[IFU.scala 50:18]
-      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 41:38]
-        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 42:17]
-      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 43:45]
-        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 44:17]
+    end else if (_reg_PC_T) begin // @[IFU.scala 49:18]
+      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 40:38]
+        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 41:17]
+      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 42:45]
+        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 43:17]
       end else begin
-        reg_PC <= _next_PC_T_1; // @[IFU.scala 46:17]
+        reg_PC <= _next_PC_T_1; // @[IFU.scala 45:17]
       end
     end
-    if (reset) begin // @[IFU.scala 58:24]
-      state <= 2'h0; // @[IFU.scala 58:24]
+    if (reset) begin // @[IFU.scala 53:24]
+      state <= 2'h0; // @[IFU.scala 53:24]
     end else if (2'h2 == state) begin // @[Mux.scala 81:58]
-      if (_reg_PC_T) begin // @[IFU.scala 62:28]
+      if (_reg_PC_T) begin // @[IFU.scala 57:28]
         state <= 2'h0;
       end else begin
         state <= 2'h2;
       end
     end else if (2'h1 == state) begin // @[Mux.scala 81:58]
-      if (_state_T_2) begin // @[IFU.scala 61:28]
+      if (_state_T_2) begin // @[IFU.scala 56:28]
         state <= 2'h2;
       end else begin
         state <= 2'h1;
@@ -939,7 +939,7 @@ module Lsu(
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_REG_INIT
-  reg [2:0] state; // @[lsu.scala 47:24]
+  reg [2:0] state; // @[lsu.scala 48:24]
   wire  _state_T = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
   wire  _state_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
   wire [2:0] _state_T_3 = _state_T_2 ? 3'h5 : 3'h2; // @[lsu.scala 66:25]
@@ -948,7 +948,7 @@ module Lsu(
   wire [2:0] _state_T_7 = _state_T_4 & _state_T_5 ? 3'h4 : 3'h3; // @[lsu.scala 71:25]
   wire  _state_T_8 = axi_b_ready & axi_b_valid; // @[Decoupled.scala 51:35]
   wire [2:0] _state_T_9 = _state_T_8 ? 3'h5 : 3'h4; // @[lsu.scala 74:25]
-  wire [2:0] _GEN_2 = 3'h5 == state ? 3'h0 : state; // @[lsu.scala 49:20 77:19 47:24]
+  wire [2:0] _GEN_2 = 3'h5 == state ? 3'h0 : state; // @[lsu.scala 49:20 77:19 48:24]
   wire [2:0] _GEN_3 = 3'h4 == state ? _state_T_9 : _GEN_2; // @[lsu.scala 49:20 74:19]
   wire [2:0] _GEN_4 = 3'h3 == state ? _state_T_7 : _GEN_3; // @[lsu.scala 49:20 71:19]
   wire [1:0] addr_low_2 = io_in_addr[1:0]; // @[lsu.scala 84:31]
@@ -980,10 +980,6 @@ module Lsu(
   wire [31:0] _lhu_rdata_T_5 = {16'h0,axi_r_bits_data[31:16]}; // @[Cat.scala 33:92]
   wire [31:0] _lhu_rdata_T_7 = 2'h0 == addr_low_2 ? _lhu_rdata_T_2 : 32'h0; // @[Mux.scala 81:58]
   wire [31:0] lhu_rdata = 2'h2 == addr_low_2 ? _lhu_rdata_T_5 : _lhu_rdata_T_7; // @[Mux.scala 81:58]
-  wire [31:0] _io_out_rdata_T_3 = 4'h1 == io_in_op ? lb_rdata : 32'h0; // @[Mux.scala 81:58]
-  wire [31:0] _io_out_rdata_T_5 = 4'h4 == io_in_op ? lbu_rdata : _io_out_rdata_T_3; // @[Mux.scala 81:58]
-  wire [31:0] _io_out_rdata_T_7 = 4'h2 == io_in_op ? lh_rdata : _io_out_rdata_T_5; // @[Mux.scala 81:58]
-  wire [31:0] _io_out_rdata_T_9 = 4'h5 == io_in_op ? lhu_rdata : _io_out_rdata_T_7; // @[Mux.scala 81:58]
   wire [1:0] _sb_wmask_T_1 = 2'h1 == addr_low_2 ? 2'h2 : 2'h1; // @[Mux.scala 81:58]
   wire [2:0] _sb_wmask_T_3 = 2'h2 == addr_low_2 ? 3'h4 : {{1'd0}, _sb_wmask_T_1}; // @[Mux.scala 81:58]
   wire [3:0] sb_wmask = 2'h3 == addr_low_2 ? 4'h8 : {{1'd0}, _sb_wmask_T_3}; // @[Mux.scala 81:58]
@@ -991,21 +987,25 @@ module Lsu(
   wire [3:0] sh_wmask = 2'h2 == addr_low_2 ? 4'hc : {{2'd0}, _sh_wmask_T_1}; // @[Mux.scala 81:58]
   wire [3:0] _wmask_T_1 = 4'h6 == io_in_op ? sb_wmask : 4'h0; // @[Mux.scala 81:58]
   wire [3:0] _wmask_T_3 = 4'h7 == io_in_op ? sh_wmask : _wmask_T_1; // @[Mux.scala 81:58]
+  wire [31:0] _io_out_rdata_T_3 = 4'h1 == io_in_op ? lb_rdata : 32'h0; // @[Mux.scala 81:58]
+  wire [31:0] _io_out_rdata_T_5 = 4'h4 == io_in_op ? lbu_rdata : _io_out_rdata_T_3; // @[Mux.scala 81:58]
+  wire [31:0] _io_out_rdata_T_7 = 4'h2 == io_in_op ? lh_rdata : _io_out_rdata_T_5; // @[Mux.scala 81:58]
+  wire [31:0] _io_out_rdata_T_9 = 4'h5 == io_in_op ? lhu_rdata : _io_out_rdata_T_7; // @[Mux.scala 81:58]
   assign io_out_rdata = 4'h3 == io_in_op ? axi_r_bits_data : _io_out_rdata_T_9; // @[Mux.scala 81:58]
   assign io_out_end = 3'h5 == state; // @[Mux.scala 81:61]
   assign io_out_idle = 3'h0 == state; // @[Mux.scala 81:61]
   assign axi_aw_valid = 3'h3 == state; // @[Mux.scala 81:61]
-  assign axi_aw_bits_addr = io_in_addr; // @[lsu.scala 173:22]
+  assign axi_aw_bits_addr = io_in_addr; // @[lsu.scala 164:22]
   assign axi_w_valid = 3'h3 == state; // @[Mux.scala 81:61]
-  assign axi_w_bits_data = io_in_wdata; // @[lsu.scala 176:22]
+  assign axi_w_bits_data = io_in_wdata; // @[lsu.scala 166:22]
   assign axi_w_bits_strb = 4'h8 == io_in_op ? 4'hf : _wmask_T_3; // @[Mux.scala 81:58]
   assign axi_b_ready = 3'h4 == state; // @[Mux.scala 81:61]
   assign axi_ar_valid = 3'h1 == state; // @[Mux.scala 81:61]
-  assign axi_ar_bits_addr = io_in_addr; // @[lsu.scala 168:22]
+  assign axi_ar_bits_addr = io_in_addr; // @[lsu.scala 161:22]
   assign axi_r_ready = 3'h2 == state; // @[Mux.scala 81:61]
   always @(posedge clock) begin
-    if (reset) begin // @[lsu.scala 47:24]
-      state <= 3'h0; // @[lsu.scala 47:24]
+    if (reset) begin // @[lsu.scala 48:24]
+      state <= 3'h0; // @[lsu.scala 48:24]
     end else if (3'h0 == state) begin // @[lsu.scala 49:20]
       if (io_in_valid) begin // @[lsu.scala 51:32]
         if (io_in_mem_wen) begin // @[lsu.scala 52:38]
@@ -1601,33 +1601,32 @@ module SRAM(
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  wire  RamBB_i1_clock; // @[sram.scala 86:26]
-  wire [31:0] RamBB_i1_addr; // @[sram.scala 86:26]
-  wire  RamBB_i1_mem_wen; // @[sram.scala 86:26]
-  wire  RamBB_i1_valid; // @[sram.scala 86:26]
-  wire [31:0] RamBB_i1_wdata; // @[sram.scala 86:26]
-  wire [3:0] RamBB_i1_wmask; // @[sram.scala 86:26]
-  wire [31:0] RamBB_i1_rdata; // @[sram.scala 86:26]
-  reg [2:0] state; // @[sram.scala 44:24]
-  wire  _axi_ar_ready_T = 3'h0 == state; // @[Mux.scala 81:61]
-  wire  _axi_r_valid_T = 3'h2 == state; // @[Mux.scala 81:61]
-  wire  _axi_b_valid_T = 3'h4 == state; // @[Mux.scala 81:61]
-  reg  delay; // @[sram.scala 54:24]
+  wire  RamBB_i1_clock; // @[sram.scala 79:26]
+  wire [31:0] RamBB_i1_addr; // @[sram.scala 79:26]
+  wire  RamBB_i1_mem_wen; // @[sram.scala 79:26]
+  wire  RamBB_i1_valid; // @[sram.scala 79:26]
+  wire [31:0] RamBB_i1_wdata; // @[sram.scala 79:26]
+  wire [3:0] RamBB_i1_wmask; // @[sram.scala 79:26]
+  wire [31:0] RamBB_i1_rdata; // @[sram.scala 79:26]
+  reg  delay; // @[sram.scala 44:24]
+  reg [2:0] state; // @[sram.scala 48:24]
   wire  _T_1 = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
   wire  _T_2 = axi_aw_ready & axi_aw_valid; // @[Decoupled.scala 51:35]
   wire  _T_3 = axi_w_ready & axi_w_valid; // @[Decoupled.scala 51:35]
-  wire  _state_T = ~delay; // @[sram.scala 71:32]
-  wire  _delay_T_1 = delay - 1'h1; // @[sram.scala 72:28]
+  wire  _state_T = ~delay; // @[sram.scala 64:32]
+  wire  _delay_T_1 = delay - 1'h1; // @[sram.scala 65:28]
+  wire  _T_6 = 3'h2 == state; // @[sram.scala 49:20]
   wire  _state_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
-  wire [2:0] _state_T_3 = _state_T_2 ? 3'h0 : 3'h2; // @[sram.scala 75:25]
-  wire [2:0] _state_T_5 = _state_T ? 3'h4 : 3'h3; // @[sram.scala 78:25]
+  wire [2:0] _state_T_3 = _state_T_2 ? 3'h0 : 3'h2; // @[sram.scala 68:25]
+  wire [2:0] _state_T_5 = _state_T ? 3'h4 : 3'h3; // @[sram.scala 71:25]
+  wire  _T_8 = 3'h4 == state; // @[sram.scala 49:20]
   wire  _state_T_6 = axi_b_ready & axi_b_valid; // @[Decoupled.scala 51:35]
-  wire [2:0] _state_T_7 = _state_T_6 ? 3'h0 : 3'h4; // @[sram.scala 82:25]
-  wire [2:0] _GEN_2 = _axi_b_valid_T ? _state_T_7 : state; // @[sram.scala 56:20 82:19 44:24]
-  wire [2:0] _GEN_3 = 3'h3 == state ? _state_T_5 : _GEN_2; // @[sram.scala 56:20 78:19]
-  wire  _GEN_4 = 3'h3 == state ? _delay_T_1 : delay; // @[sram.scala 56:20 79:19 54:24]
-  wire [31:0] _RamBB_i1_io_addr_T_1 = 3'h2 == state ? axi_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
-  RamBB RamBB_i1 ( // @[sram.scala 86:26]
+  wire [2:0] _state_T_7 = _state_T_6 ? 3'h0 : 3'h4; // @[sram.scala 75:25]
+  wire [2:0] _GEN_2 = 3'h4 == state ? _state_T_7 : state; // @[sram.scala 49:20 75:19 48:24]
+  wire [2:0] _GEN_3 = 3'h3 == state ? _state_T_5 : _GEN_2; // @[sram.scala 49:20 71:19]
+  wire  _GEN_4 = 3'h3 == state ? _delay_T_1 : delay; // @[sram.scala 49:20 72:19 44:24]
+  wire [31:0] _RamBB_i1_io_addr_T_1 = _T_6 ? axi_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
+  RamBB RamBB_i1 ( // @[sram.scala 79:26]
     .clock(RamBB_i1_clock),
     .addr(RamBB_i1_addr),
     .mem_wen(RamBB_i1_mem_wen),
@@ -1641,43 +1640,43 @@ module SRAM(
   assign axi_b_valid = 3'h4 == state; // @[Mux.scala 81:61]
   assign axi_ar_ready = 3'h0 == state; // @[Mux.scala 81:61]
   assign axi_r_valid = 3'h2 == state; // @[Mux.scala 81:61]
-  assign axi_r_bits_data = RamBB_i1_rdata; // @[sram.scala 105:21]
-  assign RamBB_i1_clock = clock; // @[sram.scala 88:25]
-  assign RamBB_i1_addr = 3'h4 == state ? axi_aw_bits_addr : _RamBB_i1_io_addr_T_1; // @[Mux.scala 81:58]
+  assign axi_r_bits_data = RamBB_i1_rdata; // @[sram.scala 99:21]
+  assign RamBB_i1_clock = clock; // @[sram.scala 80:25]
+  assign RamBB_i1_addr = _T_8 ? axi_aw_bits_addr : _RamBB_i1_io_addr_T_1; // @[Mux.scala 81:58]
   assign RamBB_i1_mem_wen = 3'h4 == state; // @[Mux.scala 81:61]
-  assign RamBB_i1_valid = 3'h4 == state | 3'h2 == state; // @[Mux.scala 81:58]
-  assign RamBB_i1_wdata = axi_w_bits_data; // @[sram.scala 102:25]
-  assign RamBB_i1_wmask = axi_w_bits_strb; // @[sram.scala 103:25]
+  assign RamBB_i1_valid = _T_8 | _T_6; // @[Mux.scala 81:58]
+  assign RamBB_i1_wdata = axi_w_bits_data; // @[sram.scala 94:25]
+  assign RamBB_i1_wmask = axi_w_bits_strb; // @[sram.scala 95:25]
   always @(posedge clock) begin
     if (reset) begin // @[sram.scala 44:24]
-      state <= 3'h0; // @[sram.scala 44:24]
-    end else if (_axi_ar_ready_T) begin // @[sram.scala 56:20]
-      if (_T_1) begin // @[sram.scala 60:32]
-        state <= 3'h1; // @[sram.scala 61:23]
-      end else if (_T_2 & _T_3) begin // @[sram.scala 63:51]
-        state <= 3'h3; // @[sram.scala 64:23]
+      delay <= 1'h0; // @[sram.scala 44:24]
+    end else if (3'h0 == state) begin // @[sram.scala 49:20]
+      delay <= 1'h0; // @[sram.scala 51:19]
+    end else if (3'h1 == state) begin // @[sram.scala 49:20]
+      delay <= delay - 1'h1; // @[sram.scala 65:19]
+    end else if (!(3'h2 == state)) begin // @[sram.scala 49:20]
+      delay <= _GEN_4;
+    end
+    if (reset) begin // @[sram.scala 48:24]
+      state <= 3'h0; // @[sram.scala 48:24]
+    end else if (3'h0 == state) begin // @[sram.scala 49:20]
+      if (_T_1) begin // @[sram.scala 53:32]
+        state <= 3'h1; // @[sram.scala 54:23]
+      end else if (_T_2 & _T_3) begin // @[sram.scala 56:51]
+        state <= 3'h3; // @[sram.scala 57:23]
       end else begin
-        state <= 3'h0; // @[sram.scala 67:23]
+        state <= 3'h0; // @[sram.scala 60:23]
       end
-    end else if (3'h1 == state) begin // @[sram.scala 56:20]
-      if (~delay) begin // @[sram.scala 71:25]
+    end else if (3'h1 == state) begin // @[sram.scala 49:20]
+      if (~delay) begin // @[sram.scala 64:25]
         state <= 3'h2;
       end else begin
         state <= 3'h1;
       end
-    end else if (_axi_r_valid_T) begin // @[sram.scala 56:20]
-      state <= _state_T_3; // @[sram.scala 75:19]
+    end else if (3'h2 == state) begin // @[sram.scala 49:20]
+      state <= _state_T_3; // @[sram.scala 68:19]
     end else begin
       state <= _GEN_3;
-    end
-    if (reset) begin // @[sram.scala 54:24]
-      delay <= 1'h0; // @[sram.scala 54:24]
-    end else if (_axi_ar_ready_T) begin // @[sram.scala 56:20]
-      delay <= 1'h0; // @[sram.scala 58:19]
-    end else if (3'h1 == state) begin // @[sram.scala 56:20]
-      delay <= delay - 1'h1; // @[sram.scala 72:19]
-    end else if (!(_axi_r_valid_T)) begin // @[sram.scala 56:20]
-      delay <= _GEN_4;
     end
   end
 // Register and memory initialization
@@ -1717,9 +1716,9 @@ initial begin
     `endif
 `ifdef RANDOMIZE_REG_INIT
   _RAND_0 = {1{`RANDOM}};
-  state = _RAND_0[2:0];
+  delay = _RAND_0[0:0];
   _RAND_1 = {1{`RANDOM}};
-  delay = _RAND_1[0:0];
+  state = _RAND_1[2:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
