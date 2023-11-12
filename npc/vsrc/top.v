@@ -29,16 +29,16 @@ module IFU(
   reg [31:0] reg_PC; // @[IFU.scala 37:26]
   wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 46:27]
   wire  _reg_PC_T = from_WBU_ready & from_WBU_valid; // @[Decoupled.scala 51:35]
-  reg [1:0] state; // @[IFU.scala 59:24]
+  reg [1:0] state; // @[IFU.scala 58:24]
   wire  _state_T = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
-  wire [1:0] _state_T_1 = _state_T ? 2'h1 : 2'h0; // @[IFU.scala 61:28]
+  wire [1:0] _state_T_1 = _state_T ? 2'h1 : 2'h0; // @[IFU.scala 60:28]
   wire  _state_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
   assign to_IDU_valid = 2'h2 == state; // @[Mux.scala 81:61]
-  assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 55:31]
-  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 56:25]
+  assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 54:31]
+  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 55:25]
   assign from_WBU_ready = 2'h2 == state; // @[Mux.scala 81:61]
   assign axi_ar_valid = 2'h0 == state; // @[Mux.scala 81:61]
-  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 52:22]
+  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 67:22]
   assign axi_r_ready = 2'h1 == state; // @[Mux.scala 81:61]
   always @(posedge clock) begin
     if (reset) begin // @[IFU.scala 37:26]
@@ -52,16 +52,16 @@ module IFU(
         reg_PC <= _next_PC_T_1; // @[IFU.scala 46:17]
       end
     end
-    if (reset) begin // @[IFU.scala 59:24]
-      state <= 2'h0; // @[IFU.scala 59:24]
+    if (reset) begin // @[IFU.scala 58:24]
+      state <= 2'h0; // @[IFU.scala 58:24]
     end else if (2'h2 == state) begin // @[Mux.scala 81:58]
-      if (_reg_PC_T) begin // @[IFU.scala 63:28]
+      if (_reg_PC_T) begin // @[IFU.scala 62:28]
         state <= 2'h0;
       end else begin
         state <= 2'h2;
       end
     end else if (2'h1 == state) begin // @[Mux.scala 81:58]
-      if (_state_T_2) begin // @[IFU.scala 62:28]
+      if (_state_T_2) begin // @[IFU.scala 61:28]
         state <= 2'h2;
       end else begin
         state <= 2'h1;
@@ -951,7 +951,7 @@ module Lsu(
   wire [2:0] _GEN_2 = 3'h5 == state ? 3'h0 : state; // @[lsu.scala 49:20 77:19 47:24]
   wire [2:0] _GEN_3 = 3'h4 == state ? _state_T_9 : _GEN_2; // @[lsu.scala 49:20 74:19]
   wire [2:0] _GEN_4 = 3'h3 == state ? _state_T_7 : _GEN_3; // @[lsu.scala 49:20 71:19]
-  wire [1:0] addr_low_2 = io_in_addr[1:0]; // @[lsu.scala 98:31]
+  wire [1:0] addr_low_2 = io_in_addr[1:0]; // @[lsu.scala 84:31]
   wire [23:0] _lb_rdata_T_2 = axi_r_bits_data[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 77:12]
   wire [31:0] _lb_rdata_T_4 = {_lb_rdata_T_2,axi_r_bits_data[7:0]}; // @[Cat.scala 33:92]
   wire [23:0] _lb_rdata_T_7 = axi_r_bits_data[15] ? 24'hffffff : 24'h0; // @[Bitwise.scala 77:12]
@@ -995,13 +995,13 @@ module Lsu(
   assign io_out_end = 3'h5 == state; // @[Mux.scala 81:61]
   assign io_out_idle = 3'h0 == state; // @[Mux.scala 81:61]
   assign axi_aw_valid = 3'h3 == state; // @[Mux.scala 81:61]
-  assign axi_aw_bits_addr = io_in_addr; // @[lsu.scala 92:22]
+  assign axi_aw_bits_addr = io_in_addr; // @[lsu.scala 173:22]
   assign axi_w_valid = 3'h3 == state; // @[Mux.scala 81:61]
-  assign axi_w_bits_data = io_in_wdata; // @[lsu.scala 93:22]
+  assign axi_w_bits_data = io_in_wdata; // @[lsu.scala 176:22]
   assign axi_w_bits_strb = 4'h8 == io_in_op ? 4'hf : _wmask_T_3; // @[Mux.scala 81:58]
   assign axi_b_ready = 3'h4 == state; // @[Mux.scala 81:61]
   assign axi_ar_valid = 3'h1 == state; // @[Mux.scala 81:61]
-  assign axi_ar_bits_addr = io_in_addr; // @[lsu.scala 91:22]
+  assign axi_ar_bits_addr = io_in_addr; // @[lsu.scala 168:22]
   assign axi_r_ready = 3'h2 == state; // @[Mux.scala 81:61]
   always @(posedge clock) begin
     if (reset) begin // @[lsu.scala 47:24]
