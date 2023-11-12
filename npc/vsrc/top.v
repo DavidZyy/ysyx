@@ -1476,6 +1476,7 @@ module IFU_axi(
   input         axi_ar_ready,
   output        axi_ar_valid,
   output [31:0] axi_ar_bits_addr,
+  output [7:0]  axi_ar_bits_len,
   output        axi_r_ready,
   input         axi_r_valid,
   input  [31:0] axi_r_bits_data
@@ -1491,12 +1492,14 @@ module IFU_axi(
   wire  _state_T = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
   wire [1:0] _state_T_1 = _state_T ? 2'h1 : 2'h0; // @[IFU.scala 105:28]
   wire  _state_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
+  wire  _state_T_6 = 2'h0 == state; // @[Mux.scala 81:61]
   assign to_IDU_valid = 2'h2 == state; // @[Mux.scala 81:61]
   assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 130:28]
   assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 131:22]
   assign from_WBU_ready = 2'h2 == state; // @[Mux.scala 81:61]
   assign axi_ar_valid = 2'h0 == state; // @[Mux.scala 81:61]
   assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 112:23]
+  assign axi_ar_bits_len = {{7'd0}, _state_T_6}; // @[IFU.scala 114:23]
   assign axi_r_ready = 2'h1 == state; // @[Mux.scala 81:61]
   always @(posedge clock) begin
     if (reset) begin // @[IFU.scala 87:26]
@@ -1584,6 +1587,7 @@ module SRAM_axi(
   output        axi_ar_ready,
   input         axi_ar_valid,
   input  [31:0] axi_ar_bits_addr,
+  input  [7:0]  axi_ar_bits_len,
   output        axi_r_valid,
   output [31:0] axi_r_bits_data
 );
@@ -1645,7 +1649,7 @@ module SRAM_axi(
       reg_AxLen <= 8'h0; // @[sram_Axi.scala 25:28]
     end else if (2'h0 == state) begin // @[sram_Axi.scala 32:20]
       if (_T_1) begin // @[sram_Axi.scala 36:32]
-        reg_AxLen <= 8'h0; // @[sram_Axi.scala 38:27]
+        reg_AxLen <= axi_ar_bits_len; // @[sram_Axi.scala 38:27]
       end
     end else if (!(2'h1 == state)) begin // @[sram_Axi.scala 32:20]
       if (2'h2 == state) begin // @[sram_Axi.scala 32:20]
@@ -2066,6 +2070,7 @@ module top(
   wire  IFU_i_axi_ar_ready; // @[core.scala 40:27]
   wire  IFU_i_axi_ar_valid; // @[core.scala 40:27]
   wire [31:0] IFU_i_axi_ar_bits_addr; // @[core.scala 40:27]
+  wire [7:0] IFU_i_axi_ar_bits_len; // @[core.scala 40:27]
   wire  IFU_i_axi_r_ready; // @[core.scala 40:27]
   wire  IFU_i_axi_r_valid; // @[core.scala 40:27]
   wire [31:0] IFU_i_axi_r_bits_data; // @[core.scala 40:27]
@@ -2074,6 +2079,7 @@ module top(
   wire  sram_i_axi_ar_ready; // @[core.scala 41:27]
   wire  sram_i_axi_ar_valid; // @[core.scala 41:27]
   wire [31:0] sram_i_axi_ar_bits_addr; // @[core.scala 41:27]
+  wire [7:0] sram_i_axi_ar_bits_len; // @[core.scala 41:27]
   wire  sram_i_axi_r_valid; // @[core.scala 41:27]
   wire [31:0] sram_i_axi_r_bits_data; // @[core.scala 41:27]
   wire  sram_i2_clock; // @[core.scala 44:27]
@@ -2263,6 +2269,7 @@ module top(
     .axi_ar_ready(IFU_i_axi_ar_ready),
     .axi_ar_valid(IFU_i_axi_ar_valid),
     .axi_ar_bits_addr(IFU_i_axi_ar_bits_addr),
+    .axi_ar_bits_len(IFU_i_axi_ar_bits_len),
     .axi_r_ready(IFU_i_axi_r_ready),
     .axi_r_valid(IFU_i_axi_r_valid),
     .axi_r_bits_data(IFU_i_axi_r_bits_data)
@@ -2273,6 +2280,7 @@ module top(
     .axi_ar_ready(sram_i_axi_ar_ready),
     .axi_ar_valid(sram_i_axi_ar_valid),
     .axi_ar_bits_addr(sram_i_axi_ar_bits_addr),
+    .axi_ar_bits_len(sram_i_axi_ar_bits_len),
     .axi_r_valid(sram_i_axi_r_valid),
     .axi_r_bits_data(sram_i_axi_r_bits_data)
   );
@@ -2377,6 +2385,7 @@ module top(
   assign sram_i_reset = reset;
   assign sram_i_axi_ar_valid = IFU_i_axi_ar_valid; // @[Connect.scala 16:22]
   assign sram_i_axi_ar_bits_addr = IFU_i_axi_ar_bits_addr; // @[Connect.scala 15:22]
+  assign sram_i_axi_ar_bits_len = IFU_i_axi_ar_bits_len; // @[Connect.scala 15:22]
   assign sram_i2_clock = clock;
   assign sram_i2_reset = reset;
   assign sram_i2_axi_ar_valid = EXU_i_lsu_axi_master_ar_valid; // @[Connect.scala 16:22]
