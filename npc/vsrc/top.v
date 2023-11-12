@@ -1461,7 +1461,7 @@ module WBU(
   assign to_ISU_bits_rd = from_EXU_bits_rd; // @[WBU.scala 20:25]
   assign to_IFU_valid = from_EXU_valid; // @[WBU.scala 16:20]
 endmodule
-module IFU_axi(
+module IFU(
   input         clock,
   input         reset,
   output        to_IDU_valid,
@@ -1476,7 +1476,6 @@ module IFU_axi(
   input         axi_ar_ready,
   output        axi_ar_valid,
   output [31:0] axi_ar_bits_addr,
-  output [7:0]  axi_ar_bits_len,
   output        axi_r_ready,
   input         axi_r_valid,
   input  [31:0] axi_r_bits_data
@@ -1485,52 +1484,50 @@ module IFU_axi(
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  reg [31:0] reg_PC; // @[IFU.scala 87:26]
-  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 95:27]
+  reg [31:0] reg_PC; // @[IFU.scala 34:26]
+  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 42:27]
   wire  _reg_PC_T = from_WBU_ready & from_WBU_valid; // @[Decoupled.scala 51:35]
-  reg [1:0] state; // @[IFU.scala 103:24]
-  wire  _state_T = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
-  wire [1:0] _state_T_1 = _state_T ? 2'h1 : 2'h0; // @[IFU.scala 105:28]
-  wire  _state_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
-  wire  _state_T_6 = 2'h0 == state; // @[Mux.scala 81:61]
-  assign to_IDU_valid = 2'h2 == state; // @[Mux.scala 81:61]
-  assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 130:28]
-  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 131:22]
-  assign from_WBU_ready = 2'h2 == state; // @[Mux.scala 81:61]
-  assign axi_ar_valid = 2'h0 == state; // @[Mux.scala 81:61]
-  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 112:23]
-  assign axi_ar_bits_len = {{7'd0}, _state_T_6}; // @[IFU.scala 114:23]
-  assign axi_r_ready = 2'h1 == state; // @[Mux.scala 81:61]
+  reg [1:0] state_ifu; // @[IFU.scala 50:28]
+  wire  _state_ifu_T = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
+  wire [1:0] _state_ifu_T_1 = _state_ifu_T ? 2'h1 : 2'h0; // @[IFU.scala 52:26]
+  wire  _state_ifu_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
+  assign to_IDU_valid = 2'h2 == state_ifu; // @[Mux.scala 81:61]
+  assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 70:28]
+  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 71:22]
+  assign from_WBU_ready = 2'h2 == state_ifu; // @[Mux.scala 81:61]
+  assign axi_ar_valid = 2'h0 == state_ifu; // @[Mux.scala 81:61]
+  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 59:22]
+  assign axi_r_ready = 2'h1 == state_ifu; // @[Mux.scala 81:61]
   always @(posedge clock) begin
-    if (reset) begin // @[IFU.scala 87:26]
-      reg_PC <= 32'h80000000; // @[IFU.scala 87:26]
-    end else if (_reg_PC_T) begin // @[IFU.scala 99:18]
-      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 90:38]
-        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 91:17]
-      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 92:45]
-        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 93:17]
+    if (reset) begin // @[IFU.scala 34:26]
+      reg_PC <= 32'h80000000; // @[IFU.scala 34:26]
+    end else if (_reg_PC_T) begin // @[IFU.scala 46:18]
+      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 37:38]
+        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 38:17]
+      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 39:45]
+        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 40:17]
       end else begin
-        reg_PC <= _next_PC_T_1; // @[IFU.scala 95:17]
+        reg_PC <= _next_PC_T_1; // @[IFU.scala 42:17]
       end
     end
-    if (reset) begin // @[IFU.scala 103:24]
-      state <= 2'h0; // @[IFU.scala 103:24]
-    end else if (2'h2 == state) begin // @[Mux.scala 81:58]
-      if (_reg_PC_T) begin // @[IFU.scala 107:28]
-        state <= 2'h0;
+    if (reset) begin // @[IFU.scala 50:28]
+      state_ifu <= 2'h0; // @[IFU.scala 50:28]
+    end else if (2'h2 == state_ifu) begin // @[Mux.scala 81:58]
+      if (_reg_PC_T) begin // @[IFU.scala 54:28]
+        state_ifu <= 2'h0;
       end else begin
-        state <= 2'h2;
+        state_ifu <= 2'h2;
       end
-    end else if (2'h1 == state) begin // @[Mux.scala 81:58]
-      if (_state_T_2) begin // @[IFU.scala 106:28]
-        state <= 2'h2;
+    end else if (2'h1 == state_ifu) begin // @[Mux.scala 81:58]
+      if (_state_ifu_T_2) begin // @[IFU.scala 53:28]
+        state_ifu <= 2'h2;
       end else begin
-        state <= 2'h1;
+        state_ifu <= 2'h1;
       end
-    end else if (2'h0 == state) begin // @[Mux.scala 81:58]
-      state <= _state_T_1;
+    end else if (2'h0 == state_ifu) begin // @[Mux.scala 81:58]
+      state_ifu <= _state_ifu_T_1;
     end else begin
-      state <= 2'h0;
+      state_ifu <= 2'h0;
     end
   end
 // Register and memory initialization
@@ -1572,174 +1569,7 @@ initial begin
   _RAND_0 = {1{`RANDOM}};
   reg_PC = _RAND_0[31:0];
   _RAND_1 = {1{`RANDOM}};
-  state = _RAND_1[1:0];
-`endif // RANDOMIZE_REG_INIT
-  `endif // RANDOMIZE
-end // initial
-`ifdef FIRRTL_AFTER_INITIAL
-`FIRRTL_AFTER_INITIAL
-`endif
-`endif // SYNTHESIS
-endmodule
-module SRAM_axi(
-  input         clock,
-  input         reset,
-  output        axi_ar_ready,
-  input         axi_ar_valid,
-  input  [31:0] axi_ar_bits_addr,
-  input  [7:0]  axi_ar_bits_len,
-  output        axi_r_valid,
-  output [31:0] axi_r_bits_data
-);
-`ifdef RANDOMIZE_REG_INIT
-  reg [31:0] _RAND_0;
-  reg [31:0] _RAND_1;
-  reg [31:0] _RAND_2;
-  reg [31:0] _RAND_3;
-  reg [31:0] _RAND_4;
-`endif // RANDOMIZE_REG_INIT
-  wire  RamBB_i1_clock; // @[sram_Axi.scala 65:26]
-  wire [31:0] RamBB_i1_addr; // @[sram_Axi.scala 65:26]
-  wire  RamBB_i1_mem_wen; // @[sram_Axi.scala 65:26]
-  wire  RamBB_i1_valid; // @[sram_Axi.scala 65:26]
-  wire [31:0] RamBB_i1_wdata; // @[sram_Axi.scala 65:26]
-  wire [3:0] RamBB_i1_wmask; // @[sram_Axi.scala 65:26]
-  wire [31:0] RamBB_i1_rdata; // @[sram_Axi.scala 65:26]
-  reg  delay; // @[sram_Axi.scala 22:24]
-  reg [7:0] reg_AxLen; // @[sram_Axi.scala 25:28]
-  reg [31:0] reg_addr; // @[sram_Axi.scala 26:28]
-  reg [1:0] reg_burst; // @[sram_Axi.scala 27:28]
-  reg [1:0] state; // @[sram_Axi.scala 31:24]
-  wire  _T_1 = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
-  wire [1:0] _state_T_1 = reg_AxLen == 8'h0 ? 2'h3 : 2'h2; // @[sram_Axi.scala 47:29]
-  wire  _T_4 = 2'h2 == state; // @[sram_Axi.scala 32:20]
-  wire [1:0] _state_T_3 = reg_AxLen == 8'h1 ? 2'h3 : 2'h2; // @[sram_Axi.scala 54:29]
-  wire [7:0] _reg_AxLen_T_1 = reg_AxLen - 8'h1; // @[sram_Axi.scala 55:36]
-  wire [31:0] _reg_addr_T_1 = reg_addr + 32'h4; // @[sram_Axi.scala 57:37]
-  wire [31:0] _reg_addr_T_3 = 2'h1 == reg_burst ? _reg_addr_T_1 : reg_addr; // @[Mux.scala 81:58]
-  wire  _T_5 = 2'h3 == state; // @[sram_Axi.scala 32:20]
-  wire [1:0] _GEN_5 = 2'h3 == state ? 2'h0 : state; // @[sram_Axi.scala 32:20 61:19 31:24]
-  RamBB RamBB_i1 ( // @[sram_Axi.scala 65:26]
-    .clock(RamBB_i1_clock),
-    .addr(RamBB_i1_addr),
-    .mem_wen(RamBB_i1_mem_wen),
-    .valid(RamBB_i1_valid),
-    .wdata(RamBB_i1_wdata),
-    .wmask(RamBB_i1_wmask),
-    .rdata(RamBB_i1_rdata)
-  );
-  assign axi_ar_ready = 2'h0 == state; // @[Mux.scala 81:61]
-  assign axi_r_valid = _T_5 | _T_4; // @[Mux.scala 81:58]
-  assign axi_r_bits_data = RamBB_i1_rdata; // @[sram_Axi.scala 78:21]
-  assign RamBB_i1_clock = clock; // @[sram_Axi.scala 66:25]
-  assign RamBB_i1_addr = reg_addr; // @[sram_Axi.scala 67:25]
-  assign RamBB_i1_mem_wen = 1'h0; // @[sram_Axi.scala 68:25]
-  assign RamBB_i1_valid = _T_5 | _T_4; // @[Mux.scala 81:58]
-  assign RamBB_i1_wdata = 32'h0; // @[sram_Axi.scala 72:25]
-  assign RamBB_i1_wmask = 4'h0; // @[sram_Axi.scala 73:25]
-  always @(posedge clock) begin
-    if (reset) begin // @[sram_Axi.scala 22:24]
-      delay <= 1'h0; // @[sram_Axi.scala 22:24]
-    end else if (2'h0 == state) begin // @[sram_Axi.scala 32:20]
-      delay <= 1'h0; // @[sram_Axi.scala 34:19]
-    end else if (2'h1 == state) begin // @[sram_Axi.scala 32:20]
-      delay <= delay - 1'h1; // @[sram_Axi.scala 51:19]
-    end
-    if (reset) begin // @[sram_Axi.scala 25:28]
-      reg_AxLen <= 8'h0; // @[sram_Axi.scala 25:28]
-    end else if (2'h0 == state) begin // @[sram_Axi.scala 32:20]
-      if (_T_1) begin // @[sram_Axi.scala 36:32]
-        reg_AxLen <= axi_ar_bits_len; // @[sram_Axi.scala 38:27]
-      end
-    end else if (!(2'h1 == state)) begin // @[sram_Axi.scala 32:20]
-      if (2'h2 == state) begin // @[sram_Axi.scala 32:20]
-        reg_AxLen <= _reg_AxLen_T_1; // @[sram_Axi.scala 55:23]
-      end
-    end
-    if (reset) begin // @[sram_Axi.scala 26:28]
-      reg_addr <= 32'h0; // @[sram_Axi.scala 26:28]
-    end else if (2'h0 == state) begin // @[sram_Axi.scala 32:20]
-      if (_T_1) begin // @[sram_Axi.scala 36:32]
-        reg_addr <= axi_ar_bits_addr; // @[sram_Axi.scala 39:27]
-      end
-    end else if (!(2'h1 == state)) begin // @[sram_Axi.scala 32:20]
-      if (2'h2 == state) begin // @[sram_Axi.scala 32:20]
-        reg_addr <= _reg_addr_T_3; // @[sram_Axi.scala 56:23]
-      end
-    end
-    if (reset) begin // @[sram_Axi.scala 27:28]
-      reg_burst <= 2'h3; // @[sram_Axi.scala 27:28]
-    end else if (2'h0 == state) begin // @[sram_Axi.scala 32:20]
-      if (_T_1) begin // @[sram_Axi.scala 36:32]
-        reg_burst <= 2'h1; // @[sram_Axi.scala 40:27]
-      end
-    end
-    if (reset) begin // @[sram_Axi.scala 31:24]
-      state <= 2'h0; // @[sram_Axi.scala 31:24]
-    end else if (2'h0 == state) begin // @[sram_Axi.scala 32:20]
-      if (_T_1) begin // @[sram_Axi.scala 36:32]
-        state <= 2'h1; // @[sram_Axi.scala 37:27]
-      end else begin
-        state <= 2'h0; // @[sram_Axi.scala 42:23]
-      end
-    end else if (2'h1 == state) begin // @[sram_Axi.scala 32:20]
-      if (~delay) begin // @[sram_Axi.scala 46:34]
-        state <= _state_T_1; // @[sram_Axi.scala 47:23]
-      end else begin
-        state <= 2'h1; // @[sram_Axi.scala 49:23]
-      end
-    end else if (2'h2 == state) begin // @[sram_Axi.scala 32:20]
-      state <= _state_T_3; // @[sram_Axi.scala 54:23]
-    end else begin
-      state <= _GEN_5;
-    end
-  end
-// Register and memory initialization
-`ifdef RANDOMIZE_GARBAGE_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_INVALID_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_REG_INIT
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-`define RANDOMIZE
-`endif
-`ifndef RANDOM
-`define RANDOM $random
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-  integer initvar;
-`endif
-`ifndef SYNTHESIS
-`ifdef FIRRTL_BEFORE_INITIAL
-`FIRRTL_BEFORE_INITIAL
-`endif
-initial begin
-  `ifdef RANDOMIZE
-    `ifdef INIT_RANDOM
-      `INIT_RANDOM
-    `endif
-    `ifndef VERILATOR
-      `ifdef RANDOMIZE_DELAY
-        #`RANDOMIZE_DELAY begin end
-      `else
-        #0.002 begin end
-      `endif
-    `endif
-`ifdef RANDOMIZE_REG_INIT
-  _RAND_0 = {1{`RANDOM}};
-  delay = _RAND_0[0:0];
-  _RAND_1 = {1{`RANDOM}};
-  reg_AxLen = _RAND_1[7:0];
-  _RAND_2 = {1{`RANDOM}};
-  reg_addr = _RAND_2[31:0];
-  _RAND_3 = {1{`RANDOM}};
-  reg_burst = _RAND_3[1:0];
-  _RAND_4 = {1{`RANDOM}};
-  state = _RAND_4[1:0];
+  state_ifu = _RAND_1[1:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -2056,32 +1886,40 @@ module top(
   wire [31:0] WBU_i_to_ISU_bits_wdata; // @[core.scala 34:27]
   wire [4:0] WBU_i_to_ISU_bits_rd; // @[core.scala 34:27]
   wire  WBU_i_to_IFU_valid; // @[core.scala 34:27]
-  wire  IFU_i_clock; // @[core.scala 40:27]
-  wire  IFU_i_reset; // @[core.scala 40:27]
-  wire  IFU_i_to_IDU_valid; // @[core.scala 40:27]
-  wire [31:0] IFU_i_to_IDU_bits_inst; // @[core.scala 40:27]
-  wire [31:0] IFU_i_to_IDU_bits_pc; // @[core.scala 40:27]
-  wire  IFU_i_from_EXU_bits_bru_ctrl_br; // @[core.scala 40:27]
-  wire [31:0] IFU_i_from_EXU_bits_bru_addr; // @[core.scala 40:27]
-  wire  IFU_i_from_EXU_bits_csr_ctrl_br; // @[core.scala 40:27]
-  wire [31:0] IFU_i_from_EXU_bits_csr_addr; // @[core.scala 40:27]
-  wire  IFU_i_from_WBU_ready; // @[core.scala 40:27]
-  wire  IFU_i_from_WBU_valid; // @[core.scala 40:27]
-  wire  IFU_i_axi_ar_ready; // @[core.scala 40:27]
-  wire  IFU_i_axi_ar_valid; // @[core.scala 40:27]
-  wire [31:0] IFU_i_axi_ar_bits_addr; // @[core.scala 40:27]
-  wire [7:0] IFU_i_axi_ar_bits_len; // @[core.scala 40:27]
-  wire  IFU_i_axi_r_ready; // @[core.scala 40:27]
-  wire  IFU_i_axi_r_valid; // @[core.scala 40:27]
-  wire [31:0] IFU_i_axi_r_bits_data; // @[core.scala 40:27]
-  wire  sram_i_clock; // @[core.scala 41:27]
-  wire  sram_i_reset; // @[core.scala 41:27]
-  wire  sram_i_axi_ar_ready; // @[core.scala 41:27]
-  wire  sram_i_axi_ar_valid; // @[core.scala 41:27]
-  wire [31:0] sram_i_axi_ar_bits_addr; // @[core.scala 41:27]
-  wire [7:0] sram_i_axi_ar_bits_len; // @[core.scala 41:27]
-  wire  sram_i_axi_r_valid; // @[core.scala 41:27]
-  wire [31:0] sram_i_axi_r_bits_data; // @[core.scala 41:27]
+  wire  IFU_i_clock; // @[core.scala 36:27]
+  wire  IFU_i_reset; // @[core.scala 36:27]
+  wire  IFU_i_to_IDU_valid; // @[core.scala 36:27]
+  wire [31:0] IFU_i_to_IDU_bits_inst; // @[core.scala 36:27]
+  wire [31:0] IFU_i_to_IDU_bits_pc; // @[core.scala 36:27]
+  wire  IFU_i_from_EXU_bits_bru_ctrl_br; // @[core.scala 36:27]
+  wire [31:0] IFU_i_from_EXU_bits_bru_addr; // @[core.scala 36:27]
+  wire  IFU_i_from_EXU_bits_csr_ctrl_br; // @[core.scala 36:27]
+  wire [31:0] IFU_i_from_EXU_bits_csr_addr; // @[core.scala 36:27]
+  wire  IFU_i_from_WBU_ready; // @[core.scala 36:27]
+  wire  IFU_i_from_WBU_valid; // @[core.scala 36:27]
+  wire  IFU_i_axi_ar_ready; // @[core.scala 36:27]
+  wire  IFU_i_axi_ar_valid; // @[core.scala 36:27]
+  wire [31:0] IFU_i_axi_ar_bits_addr; // @[core.scala 36:27]
+  wire  IFU_i_axi_r_ready; // @[core.scala 36:27]
+  wire  IFU_i_axi_r_valid; // @[core.scala 36:27]
+  wire [31:0] IFU_i_axi_r_bits_data; // @[core.scala 36:27]
+  wire  sram_i_clock; // @[core.scala 37:27]
+  wire  sram_i_reset; // @[core.scala 37:27]
+  wire  sram_i_axi_ar_ready; // @[core.scala 37:27]
+  wire  sram_i_axi_ar_valid; // @[core.scala 37:27]
+  wire [31:0] sram_i_axi_ar_bits_addr; // @[core.scala 37:27]
+  wire  sram_i_axi_r_ready; // @[core.scala 37:27]
+  wire  sram_i_axi_r_valid; // @[core.scala 37:27]
+  wire [31:0] sram_i_axi_r_bits_data; // @[core.scala 37:27]
+  wire  sram_i_axi_aw_ready; // @[core.scala 37:27]
+  wire  sram_i_axi_aw_valid; // @[core.scala 37:27]
+  wire [31:0] sram_i_axi_aw_bits_addr; // @[core.scala 37:27]
+  wire  sram_i_axi_w_ready; // @[core.scala 37:27]
+  wire  sram_i_axi_w_valid; // @[core.scala 37:27]
+  wire [31:0] sram_i_axi_w_bits_data; // @[core.scala 37:27]
+  wire [3:0] sram_i_axi_w_bits_strb; // @[core.scala 37:27]
+  wire  sram_i_axi_b_ready; // @[core.scala 37:27]
+  wire  sram_i_axi_b_valid; // @[core.scala 37:27]
   wire  sram_i2_clock; // @[core.scala 44:27]
   wire  sram_i2_reset; // @[core.scala 44:27]
   wire  sram_i2_axi_ar_ready; // @[core.scala 44:27]
@@ -2254,7 +2092,7 @@ module top(
     .to_ISU_bits_rd(WBU_i_to_ISU_bits_rd),
     .to_IFU_valid(WBU_i_to_IFU_valid)
   );
-  IFU_axi IFU_i ( // @[core.scala 40:27]
+  IFU IFU_i ( // @[core.scala 36:27]
     .clock(IFU_i_clock),
     .reset(IFU_i_reset),
     .to_IDU_valid(IFU_i_to_IDU_valid),
@@ -2269,20 +2107,28 @@ module top(
     .axi_ar_ready(IFU_i_axi_ar_ready),
     .axi_ar_valid(IFU_i_axi_ar_valid),
     .axi_ar_bits_addr(IFU_i_axi_ar_bits_addr),
-    .axi_ar_bits_len(IFU_i_axi_ar_bits_len),
     .axi_r_ready(IFU_i_axi_r_ready),
     .axi_r_valid(IFU_i_axi_r_valid),
     .axi_r_bits_data(IFU_i_axi_r_bits_data)
   );
-  SRAM_axi sram_i ( // @[core.scala 41:27]
+  SRAM sram_i ( // @[core.scala 37:27]
     .clock(sram_i_clock),
     .reset(sram_i_reset),
     .axi_ar_ready(sram_i_axi_ar_ready),
     .axi_ar_valid(sram_i_axi_ar_valid),
     .axi_ar_bits_addr(sram_i_axi_ar_bits_addr),
-    .axi_ar_bits_len(sram_i_axi_ar_bits_len),
+    .axi_r_ready(sram_i_axi_r_ready),
     .axi_r_valid(sram_i_axi_r_valid),
-    .axi_r_bits_data(sram_i_axi_r_bits_data)
+    .axi_r_bits_data(sram_i_axi_r_bits_data),
+    .axi_aw_ready(sram_i_axi_aw_ready),
+    .axi_aw_valid(sram_i_axi_aw_valid),
+    .axi_aw_bits_addr(sram_i_axi_aw_bits_addr),
+    .axi_w_ready(sram_i_axi_w_ready),
+    .axi_w_valid(sram_i_axi_w_valid),
+    .axi_w_bits_data(sram_i_axi_w_bits_data),
+    .axi_w_bits_strb(sram_i_axi_w_bits_strb),
+    .axi_b_ready(sram_i_axi_b_ready),
+    .axi_b_valid(sram_i_axi_b_valid)
   );
   SRAM sram_i2 ( // @[core.scala 44:27]
     .clock(sram_i2_clock),
@@ -2385,7 +2231,13 @@ module top(
   assign sram_i_reset = reset;
   assign sram_i_axi_ar_valid = IFU_i_axi_ar_valid; // @[Connect.scala 16:22]
   assign sram_i_axi_ar_bits_addr = IFU_i_axi_ar_bits_addr; // @[Connect.scala 15:22]
-  assign sram_i_axi_ar_bits_len = IFU_i_axi_ar_bits_len; // @[Connect.scala 15:22]
+  assign sram_i_axi_r_ready = IFU_i_axi_r_ready; // @[Connect.scala 17:22]
+  assign sram_i_axi_aw_valid = 1'h0; // @[Connect.scala 16:22]
+  assign sram_i_axi_aw_bits_addr = 32'h0; // @[Connect.scala 15:22]
+  assign sram_i_axi_w_valid = 1'h0; // @[Connect.scala 16:22]
+  assign sram_i_axi_w_bits_data = 32'h0; // @[Connect.scala 15:22]
+  assign sram_i_axi_w_bits_strb = 4'h0; // @[Connect.scala 15:22]
+  assign sram_i_axi_b_ready = 1'h0; // @[Connect.scala 17:22]
   assign sram_i2_clock = clock;
   assign sram_i2_reset = reset;
   assign sram_i2_axi_ar_valid = EXU_i_lsu_axi_master_ar_valid; // @[Connect.scala 16:22]
