@@ -1582,8 +1582,8 @@ module I_Cache(
   input         clock,
   input         reset,
   output        from_IFU_ready,
+  input         from_IFU_valid,
   input  [31:0] from_IFU_bits_addr,
-  input         to_IFU_ready,
   output        to_IFU_valid,
   output [31:0] to_IFU_bits_data,
   input         to_sram_ar_ready,
@@ -2568,36 +2568,36 @@ module I_Cache(
   reg  validArray_1_13; // @[cache.scala 32:29]
   reg  validArray_1_14; // @[cache.scala 32:29]
   reg  validArray_1_15; // @[cache.scala 32:29]
-  wire [23:0] _GEN_1 = 4'h1 == CacheLineId ? tagArray_0_1 : tagArray_0_0; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_2 = 4'h2 == CacheLineId ? tagArray_0_2 : _GEN_1; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_3 = 4'h3 == CacheLineId ? tagArray_0_3 : _GEN_2; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_4 = 4'h4 == CacheLineId ? tagArray_0_4 : _GEN_3; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_5 = 4'h5 == CacheLineId ? tagArray_0_5 : _GEN_4; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_6 = 4'h6 == CacheLineId ? tagArray_0_6 : _GEN_5; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_7 = 4'h7 == CacheLineId ? tagArray_0_7 : _GEN_6; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_8 = 4'h8 == CacheLineId ? tagArray_0_8 : _GEN_7; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_9 = 4'h9 == CacheLineId ? tagArray_0_9 : _GEN_8; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_10 = 4'ha == CacheLineId ? tagArray_0_10 : _GEN_9; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_11 = 4'hb == CacheLineId ? tagArray_0_11 : _GEN_10; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_12 = 4'hc == CacheLineId ? tagArray_0_12 : _GEN_11; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_13 = 4'hd == CacheLineId ? tagArray_0_13 : _GEN_12; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_14 = 4'he == CacheLineId ? tagArray_0_14 : _GEN_13; // @[cache.scala 35:{25,25}]
-  wire [23:0] _GEN_15 = 4'hf == CacheLineId ? tagArray_0_15 : _GEN_14; // @[cache.scala 35:{25,25}]
-  wire  _GEN_17 = 4'h1 == CacheLineId ? validArray_0_1 : validArray_0_0; // @[cache.scala 35:{72,72}]
-  wire  _GEN_18 = 4'h2 == CacheLineId ? validArray_0_2 : _GEN_17; // @[cache.scala 35:{72,72}]
-  wire  _GEN_19 = 4'h3 == CacheLineId ? validArray_0_3 : _GEN_18; // @[cache.scala 35:{72,72}]
-  wire  _GEN_20 = 4'h4 == CacheLineId ? validArray_0_4 : _GEN_19; // @[cache.scala 35:{72,72}]
-  wire  _GEN_21 = 4'h5 == CacheLineId ? validArray_0_5 : _GEN_20; // @[cache.scala 35:{72,72}]
-  wire  _GEN_22 = 4'h6 == CacheLineId ? validArray_0_6 : _GEN_21; // @[cache.scala 35:{72,72}]
-  wire  _GEN_23 = 4'h7 == CacheLineId ? validArray_0_7 : _GEN_22; // @[cache.scala 35:{72,72}]
-  wire  _GEN_24 = 4'h8 == CacheLineId ? validArray_0_8 : _GEN_23; // @[cache.scala 35:{72,72}]
-  wire  _GEN_25 = 4'h9 == CacheLineId ? validArray_0_9 : _GEN_24; // @[cache.scala 35:{72,72}]
-  wire  _GEN_26 = 4'ha == CacheLineId ? validArray_0_10 : _GEN_25; // @[cache.scala 35:{72,72}]
-  wire  _GEN_27 = 4'hb == CacheLineId ? validArray_0_11 : _GEN_26; // @[cache.scala 35:{72,72}]
-  wire  _GEN_28 = 4'hc == CacheLineId ? validArray_0_12 : _GEN_27; // @[cache.scala 35:{72,72}]
-  wire  _GEN_29 = 4'hd == CacheLineId ? validArray_0_13 : _GEN_28; // @[cache.scala 35:{72,72}]
-  wire  _GEN_30 = 4'he == CacheLineId ? validArray_0_14 : _GEN_29; // @[cache.scala 35:{72,72}]
-  wire  _GEN_31 = 4'hf == CacheLineId ? validArray_0_15 : _GEN_30; // @[cache.scala 35:{72,72}]
+  wire [23:0] _GEN_1 = 4'h1 == CacheLineId ? tagArray_0_1 : tagArray_0_0; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_2 = 4'h2 == CacheLineId ? tagArray_0_2 : _GEN_1; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_3 = 4'h3 == CacheLineId ? tagArray_0_3 : _GEN_2; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_4 = 4'h4 == CacheLineId ? tagArray_0_4 : _GEN_3; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_5 = 4'h5 == CacheLineId ? tagArray_0_5 : _GEN_4; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_6 = 4'h6 == CacheLineId ? tagArray_0_6 : _GEN_5; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_7 = 4'h7 == CacheLineId ? tagArray_0_7 : _GEN_6; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_8 = 4'h8 == CacheLineId ? tagArray_0_8 : _GEN_7; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_9 = 4'h9 == CacheLineId ? tagArray_0_9 : _GEN_8; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_10 = 4'ha == CacheLineId ? tagArray_0_10 : _GEN_9; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_11 = 4'hb == CacheLineId ? tagArray_0_11 : _GEN_10; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_12 = 4'hc == CacheLineId ? tagArray_0_12 : _GEN_11; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_13 = 4'hd == CacheLineId ? tagArray_0_13 : _GEN_12; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_14 = 4'he == CacheLineId ? tagArray_0_14 : _GEN_13; // @[cache.scala 35:{24,24}]
+  wire [23:0] _GEN_15 = 4'hf == CacheLineId ? tagArray_0_15 : _GEN_14; // @[cache.scala 35:{24,24}]
+  wire  _GEN_17 = 4'h1 == CacheLineId ? validArray_0_1 : validArray_0_0; // @[cache.scala 35:{71,71}]
+  wire  _GEN_18 = 4'h2 == CacheLineId ? validArray_0_2 : _GEN_17; // @[cache.scala 35:{71,71}]
+  wire  _GEN_19 = 4'h3 == CacheLineId ? validArray_0_3 : _GEN_18; // @[cache.scala 35:{71,71}]
+  wire  _GEN_20 = 4'h4 == CacheLineId ? validArray_0_4 : _GEN_19; // @[cache.scala 35:{71,71}]
+  wire  _GEN_21 = 4'h5 == CacheLineId ? validArray_0_5 : _GEN_20; // @[cache.scala 35:{71,71}]
+  wire  _GEN_22 = 4'h6 == CacheLineId ? validArray_0_6 : _GEN_21; // @[cache.scala 35:{71,71}]
+  wire  _GEN_23 = 4'h7 == CacheLineId ? validArray_0_7 : _GEN_22; // @[cache.scala 35:{71,71}]
+  wire  _GEN_24 = 4'h8 == CacheLineId ? validArray_0_8 : _GEN_23; // @[cache.scala 35:{71,71}]
+  wire  _GEN_25 = 4'h9 == CacheLineId ? validArray_0_9 : _GEN_24; // @[cache.scala 35:{71,71}]
+  wire  _GEN_26 = 4'ha == CacheLineId ? validArray_0_10 : _GEN_25; // @[cache.scala 35:{71,71}]
+  wire  _GEN_27 = 4'hb == CacheLineId ? validArray_0_11 : _GEN_26; // @[cache.scala 35:{71,71}]
+  wire  _GEN_28 = 4'hc == CacheLineId ? validArray_0_12 : _GEN_27; // @[cache.scala 35:{71,71}]
+  wire  _GEN_29 = 4'hd == CacheLineId ? validArray_0_13 : _GEN_28; // @[cache.scala 35:{71,71}]
+  wire  _GEN_30 = 4'he == CacheLineId ? validArray_0_14 : _GEN_29; // @[cache.scala 35:{71,71}]
+  wire  _GEN_31 = 4'hf == CacheLineId ? validArray_0_15 : _GEN_30; // @[cache.scala 35:{71,71}]
   wire [23:0] _GEN_33 = 4'h1 == CacheLineId ? tagArray_1_1 : tagArray_1_0; // @[cache.scala 36:{25,25}]
   wire [23:0] _GEN_34 = 4'h2 == CacheLineId ? tagArray_1_2 : _GEN_33; // @[cache.scala 36:{25,25}]
   wire [23:0] _GEN_35 = 4'h3 == CacheLineId ? tagArray_1_3 : _GEN_34; // @[cache.scala 36:{25,25}]
@@ -2629,595 +2629,593 @@ module I_Cache(
   wire  _GEN_62 = 4'he == CacheLineId ? validArray_1_14 : _GEN_61; // @[cache.scala 36:{72,72}]
   wire  _GEN_63 = 4'hf == CacheLineId ? validArray_1_15 : _GEN_62; // @[cache.scala 36:{72,72}]
   wire  _hit_T_5 = tag == _GEN_47 & _GEN_63; // @[cache.scala 36:72]
-  wire  _hit = tag == _GEN_15 & _GEN_31 | _hit_T_5; // @[cache.scala 35:103]
-  wire  _hit_T_6 = to_IFU_ready & to_IFU_valid; // @[Decoupled.scala 51:35]
-  wire  hit = _hit_T_6 & _hit; // @[cache.scala 39:28]
-  wire  miss = _hit_T_6 & ~hit; // @[cache.scala 40:28]
-  reg [1:0] off; // @[cache.scala 47:24]
-  reg [2:0] state_cache; // @[cache.scala 50:30]
-  wire  _T_2 = 3'h2 == state_cache; // @[cache.scala 51:26]
-  wire  _state_cache_T = to_sram_ar_ready & to_sram_ar_valid; // @[Decoupled.scala 51:35]
-  wire [2:0] _state_cache_T_1 = _state_cache_T ? 3'h3 : 3'h2; // @[cache.scala 66:31]
-  wire [2:0] _state_cache_T_2 = to_sram_r_bits_last ? 3'h4 : 3'h3; // @[cache.scala 72:31]
+  wire  hit = tag == _GEN_15 & _GEN_31 | _hit_T_5; // @[cache.scala 35:102]
+  reg [1:0] off; // @[cache.scala 43:24]
+  reg [2:0] state_cache; // @[cache.scala 46:30]
+  wire  _T_1 = from_IFU_ready & from_IFU_valid; // @[Decoupled.scala 51:35]
+  wire  _T_3 = 3'h2 == state_cache; // @[cache.scala 47:26]
+  wire  _state_cache_T_1 = to_sram_ar_ready & to_sram_ar_valid; // @[Decoupled.scala 51:35]
+  wire [2:0] _state_cache_T_2 = _state_cache_T_1 ? 3'h3 : 3'h2; // @[cache.scala 60:31]
+  wire [2:0] _state_cache_T_3 = to_sram_r_bits_last ? 3'h4 : 3'h3; // @[cache.scala 66:31]
   wire  _off_T = to_sram_r_ready & to_sram_r_valid; // @[Decoupled.scala 51:35]
-  wire [1:0] _off_T_2 = off + 2'h1; // @[cache.scala 73:51]
-  wire [1:0] _off_T_3 = _off_T ? _off_T_2 : off; // @[cache.scala 73:31]
-  wire [2:0] _GEN_66 = 3'h4 == state_cache ? 3'h1 : state_cache; // @[cache.scala 51:26 78:25 50:30]
-  wire [2:0] _GEN_67 = 3'h3 == state_cache ? _state_cache_T_2 : _GEN_66; // @[cache.scala 51:26 72:25]
-  wire [1:0] _GEN_68 = 3'h3 == state_cache ? _off_T_3 : off; // @[cache.scala 47:24 51:26 73:25]
-  wire  _T_5 = state_cache == 3'h3; // @[cache.scala 83:24]
-  wire  _GEN_593 = 4'h0 == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_594 = 2'h0 == off; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_596 = 2'h1 == off; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_598 = 2'h2 == off; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_600 = 2'h3 == off; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_601 = 4'h1 == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_609 = 4'h2 == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_617 = 4'h3 == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_625 = 4'h4 == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_633 = 4'h5 == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_641 = 4'h6 == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_649 = 4'h7 == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_657 = 4'h8 == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_665 = 4'h9 == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_673 = 4'ha == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_681 = 4'hb == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_689 = 4'hc == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_697 = 4'hd == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_705 = 4'he == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_713 = 4'hf == CacheLineId; // @[cache.scala 84:{18,50,50}]
-  wire  _GEN_721 = ~replace_set; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_206 = ~replace_set & _GEN_593 | validArray_0_0; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_207 = ~replace_set & _GEN_601 | validArray_0_1; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_208 = ~replace_set & _GEN_609 | validArray_0_2; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_209 = ~replace_set & _GEN_617 | validArray_0_3; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_210 = ~replace_set & _GEN_625 | validArray_0_4; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_211 = ~replace_set & _GEN_633 | validArray_0_5; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_212 = ~replace_set & _GEN_641 | validArray_0_6; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_213 = ~replace_set & _GEN_649 | validArray_0_7; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_214 = ~replace_set & _GEN_657 | validArray_0_8; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_215 = ~replace_set & _GEN_665 | validArray_0_9; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_216 = ~replace_set & _GEN_673 | validArray_0_10; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_217 = ~replace_set & _GEN_681 | validArray_0_11; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_218 = ~replace_set & _GEN_689 | validArray_0_12; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_219 = ~replace_set & _GEN_697 | validArray_0_13; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_220 = ~replace_set & _GEN_705 | validArray_0_14; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_221 = ~replace_set & _GEN_713 | validArray_0_15; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_222 = replace_set & _GEN_593 | validArray_1_0; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_223 = replace_set & _GEN_601 | validArray_1_1; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_224 = replace_set & _GEN_609 | validArray_1_2; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_225 = replace_set & _GEN_617 | validArray_1_3; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_226 = replace_set & _GEN_625 | validArray_1_4; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_227 = replace_set & _GEN_633 | validArray_1_5; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_228 = replace_set & _GEN_641 | validArray_1_6; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_229 = replace_set & _GEN_649 | validArray_1_7; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_230 = replace_set & _GEN_657 | validArray_1_8; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_231 = replace_set & _GEN_665 | validArray_1_9; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_232 = replace_set & _GEN_673 | validArray_1_10; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_233 = replace_set & _GEN_681 | validArray_1_11; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_234 = replace_set & _GEN_689 | validArray_1_12; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_235 = replace_set & _GEN_697 | validArray_1_13; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_236 = replace_set & _GEN_705 | validArray_1_14; // @[cache.scala 32:29 86:{50,50}]
-  wire  _GEN_237 = replace_set & _GEN_713 | validArray_1_15; // @[cache.scala 32:29 86:{50,50}]
-  wire [1:0] _to_sram_ar_bits_len_T_1 = _T_2 ? 2'h3 : 2'h0; // @[Mux.scala 81:58]
-  wire [31:0] _GEN_529 = dataArray_0_0_cachedata_MPORT_data; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_530 = _GEN_593 & 2'h1 == EntId[1:0] ? dataArray_0_1_cachedata_MPORT_data : _GEN_529; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_531 = _GEN_593 & 2'h2 == EntId[1:0] ? dataArray_0_2_cachedata_MPORT_data : _GEN_530; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_532 = _GEN_593 & 2'h3 == EntId[1:0] ? dataArray_0_3_cachedata_MPORT_data : _GEN_531; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_533 = _GEN_601 & 2'h0 == EntId[1:0] ? dataArray_1_0_cachedata_MPORT_data : _GEN_532; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_534 = _GEN_601 & 2'h1 == EntId[1:0] ? dataArray_1_1_cachedata_MPORT_data : _GEN_533; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_535 = _GEN_601 & 2'h2 == EntId[1:0] ? dataArray_1_2_cachedata_MPORT_data : _GEN_534; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_536 = _GEN_601 & 2'h3 == EntId[1:0] ? dataArray_1_3_cachedata_MPORT_data : _GEN_535; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_537 = _GEN_609 & 2'h0 == EntId[1:0] ? dataArray_2_0_cachedata_MPORT_data : _GEN_536; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_538 = _GEN_609 & 2'h1 == EntId[1:0] ? dataArray_2_1_cachedata_MPORT_data : _GEN_537; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_539 = _GEN_609 & 2'h2 == EntId[1:0] ? dataArray_2_2_cachedata_MPORT_data : _GEN_538; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_540 = _GEN_609 & 2'h3 == EntId[1:0] ? dataArray_2_3_cachedata_MPORT_data : _GEN_539; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_541 = _GEN_617 & 2'h0 == EntId[1:0] ? dataArray_3_0_cachedata_MPORT_data : _GEN_540; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_542 = _GEN_617 & 2'h1 == EntId[1:0] ? dataArray_3_1_cachedata_MPORT_data : _GEN_541; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_543 = _GEN_617 & 2'h2 == EntId[1:0] ? dataArray_3_2_cachedata_MPORT_data : _GEN_542; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_544 = _GEN_617 & 2'h3 == EntId[1:0] ? dataArray_3_3_cachedata_MPORT_data : _GEN_543; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_545 = _GEN_625 & 2'h0 == EntId[1:0] ? dataArray_4_0_cachedata_MPORT_data : _GEN_544; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_546 = _GEN_625 & 2'h1 == EntId[1:0] ? dataArray_4_1_cachedata_MPORT_data : _GEN_545; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_547 = _GEN_625 & 2'h2 == EntId[1:0] ? dataArray_4_2_cachedata_MPORT_data : _GEN_546; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_548 = _GEN_625 & 2'h3 == EntId[1:0] ? dataArray_4_3_cachedata_MPORT_data : _GEN_547; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_549 = _GEN_633 & 2'h0 == EntId[1:0] ? dataArray_5_0_cachedata_MPORT_data : _GEN_548; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_550 = _GEN_633 & 2'h1 == EntId[1:0] ? dataArray_5_1_cachedata_MPORT_data : _GEN_549; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_551 = _GEN_633 & 2'h2 == EntId[1:0] ? dataArray_5_2_cachedata_MPORT_data : _GEN_550; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_552 = _GEN_633 & 2'h3 == EntId[1:0] ? dataArray_5_3_cachedata_MPORT_data : _GEN_551; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_553 = _GEN_641 & 2'h0 == EntId[1:0] ? dataArray_6_0_cachedata_MPORT_data : _GEN_552; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_554 = _GEN_641 & 2'h1 == EntId[1:0] ? dataArray_6_1_cachedata_MPORT_data : _GEN_553; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_555 = _GEN_641 & 2'h2 == EntId[1:0] ? dataArray_6_2_cachedata_MPORT_data : _GEN_554; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_556 = _GEN_641 & 2'h3 == EntId[1:0] ? dataArray_6_3_cachedata_MPORT_data : _GEN_555; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_557 = _GEN_649 & 2'h0 == EntId[1:0] ? dataArray_7_0_cachedata_MPORT_data : _GEN_556; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_558 = _GEN_649 & 2'h1 == EntId[1:0] ? dataArray_7_1_cachedata_MPORT_data : _GEN_557; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_559 = _GEN_649 & 2'h2 == EntId[1:0] ? dataArray_7_2_cachedata_MPORT_data : _GEN_558; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_560 = _GEN_649 & 2'h3 == EntId[1:0] ? dataArray_7_3_cachedata_MPORT_data : _GEN_559; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_561 = _GEN_657 & 2'h0 == EntId[1:0] ? dataArray_8_0_cachedata_MPORT_data : _GEN_560; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_562 = _GEN_657 & 2'h1 == EntId[1:0] ? dataArray_8_1_cachedata_MPORT_data : _GEN_561; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_563 = _GEN_657 & 2'h2 == EntId[1:0] ? dataArray_8_2_cachedata_MPORT_data : _GEN_562; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_564 = _GEN_657 & 2'h3 == EntId[1:0] ? dataArray_8_3_cachedata_MPORT_data : _GEN_563; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_565 = _GEN_665 & 2'h0 == EntId[1:0] ? dataArray_9_0_cachedata_MPORT_data : _GEN_564; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_566 = _GEN_665 & 2'h1 == EntId[1:0] ? dataArray_9_1_cachedata_MPORT_data : _GEN_565; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_567 = _GEN_665 & 2'h2 == EntId[1:0] ? dataArray_9_2_cachedata_MPORT_data : _GEN_566; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_568 = _GEN_665 & 2'h3 == EntId[1:0] ? dataArray_9_3_cachedata_MPORT_data : _GEN_567; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_569 = _GEN_673 & 2'h0 == EntId[1:0] ? dataArray_10_0_cachedata_MPORT_data : _GEN_568; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_570 = _GEN_673 & 2'h1 == EntId[1:0] ? dataArray_10_1_cachedata_MPORT_data : _GEN_569; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_571 = _GEN_673 & 2'h2 == EntId[1:0] ? dataArray_10_2_cachedata_MPORT_data : _GEN_570; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_572 = _GEN_673 & 2'h3 == EntId[1:0] ? dataArray_10_3_cachedata_MPORT_data : _GEN_571; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_573 = _GEN_681 & 2'h0 == EntId[1:0] ? dataArray_11_0_cachedata_MPORT_data : _GEN_572; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_574 = _GEN_681 & 2'h1 == EntId[1:0] ? dataArray_11_1_cachedata_MPORT_data : _GEN_573; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_575 = _GEN_681 & 2'h2 == EntId[1:0] ? dataArray_11_2_cachedata_MPORT_data : _GEN_574; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_576 = _GEN_681 & 2'h3 == EntId[1:0] ? dataArray_11_3_cachedata_MPORT_data : _GEN_575; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_577 = _GEN_689 & 2'h0 == EntId[1:0] ? dataArray_12_0_cachedata_MPORT_data : _GEN_576; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_578 = _GEN_689 & 2'h1 == EntId[1:0] ? dataArray_12_1_cachedata_MPORT_data : _GEN_577; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_579 = _GEN_689 & 2'h2 == EntId[1:0] ? dataArray_12_2_cachedata_MPORT_data : _GEN_578; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_580 = _GEN_689 & 2'h3 == EntId[1:0] ? dataArray_12_3_cachedata_MPORT_data : _GEN_579; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_581 = _GEN_697 & 2'h0 == EntId[1:0] ? dataArray_13_0_cachedata_MPORT_data : _GEN_580; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_582 = _GEN_697 & 2'h1 == EntId[1:0] ? dataArray_13_1_cachedata_MPORT_data : _GEN_581; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_583 = _GEN_697 & 2'h2 == EntId[1:0] ? dataArray_13_2_cachedata_MPORT_data : _GEN_582; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_584 = _GEN_697 & 2'h3 == EntId[1:0] ? dataArray_13_3_cachedata_MPORT_data : _GEN_583; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_585 = _GEN_705 & 2'h0 == EntId[1:0] ? dataArray_14_0_cachedata_MPORT_data : _GEN_584; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_586 = _GEN_705 & 2'h1 == EntId[1:0] ? dataArray_14_1_cachedata_MPORT_data : _GEN_585; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_587 = _GEN_705 & 2'h2 == EntId[1:0] ? dataArray_14_2_cachedata_MPORT_data : _GEN_586; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_588 = _GEN_705 & 2'h3 == EntId[1:0] ? dataArray_14_3_cachedata_MPORT_data : _GEN_587; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_589 = _GEN_713 & 2'h0 == EntId[1:0] ? dataArray_15_0_cachedata_MPORT_data : _GEN_588; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_590 = _GEN_713 & 2'h1 == EntId[1:0] ? dataArray_15_1_cachedata_MPORT_data : _GEN_589; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_591 = _GEN_713 & 2'h2 == EntId[1:0] ? dataArray_15_2_cachedata_MPORT_data : _GEN_590; // @[cache.scala 111:{28,28}]
-  wire [31:0] _GEN_592 = _GEN_713 & 2'h3 == EntId[1:0] ? dataArray_15_3_cachedata_MPORT_data : _GEN_591; // @[cache.scala 111:{28,28}]
+  wire [1:0] _off_T_2 = off + 2'h1; // @[cache.scala 67:51]
+  wire [1:0] _off_T_3 = _off_T ? _off_T_2 : off; // @[cache.scala 67:31]
+  wire [2:0] _GEN_65 = 3'h4 == state_cache ? 3'h1 : state_cache; // @[cache.scala 47:26 72:25 46:30]
+  wire [2:0] _GEN_66 = 3'h3 == state_cache ? _state_cache_T_3 : _GEN_65; // @[cache.scala 47:26 66:25]
+  wire [1:0] _GEN_67 = 3'h3 == state_cache ? _off_T_3 : off; // @[cache.scala 43:24 47:26 67:25]
+  wire  _T_6 = state_cache == 3'h3; // @[cache.scala 77:24]
+  wire  _GEN_592 = 4'h0 == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_593 = 2'h0 == off; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_595 = 2'h1 == off; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_597 = 2'h2 == off; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_599 = 2'h3 == off; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_600 = 4'h1 == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_608 = 4'h2 == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_616 = 4'h3 == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_624 = 4'h4 == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_632 = 4'h5 == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_640 = 4'h6 == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_648 = 4'h7 == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_656 = 4'h8 == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_664 = 4'h9 == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_672 = 4'ha == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_680 = 4'hb == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_688 = 4'hc == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_696 = 4'hd == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_704 = 4'he == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_712 = 4'hf == CacheLineId; // @[cache.scala 78:{18,50,50}]
+  wire  _GEN_720 = ~replace_set; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_205 = ~replace_set & _GEN_592 | validArray_0_0; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_206 = ~replace_set & _GEN_600 | validArray_0_1; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_207 = ~replace_set & _GEN_608 | validArray_0_2; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_208 = ~replace_set & _GEN_616 | validArray_0_3; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_209 = ~replace_set & _GEN_624 | validArray_0_4; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_210 = ~replace_set & _GEN_632 | validArray_0_5; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_211 = ~replace_set & _GEN_640 | validArray_0_6; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_212 = ~replace_set & _GEN_648 | validArray_0_7; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_213 = ~replace_set & _GEN_656 | validArray_0_8; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_214 = ~replace_set & _GEN_664 | validArray_0_9; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_215 = ~replace_set & _GEN_672 | validArray_0_10; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_216 = ~replace_set & _GEN_680 | validArray_0_11; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_217 = ~replace_set & _GEN_688 | validArray_0_12; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_218 = ~replace_set & _GEN_696 | validArray_0_13; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_219 = ~replace_set & _GEN_704 | validArray_0_14; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_220 = ~replace_set & _GEN_712 | validArray_0_15; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_221 = replace_set & _GEN_592 | validArray_1_0; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_222 = replace_set & _GEN_600 | validArray_1_1; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_223 = replace_set & _GEN_608 | validArray_1_2; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_224 = replace_set & _GEN_616 | validArray_1_3; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_225 = replace_set & _GEN_624 | validArray_1_4; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_226 = replace_set & _GEN_632 | validArray_1_5; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_227 = replace_set & _GEN_640 | validArray_1_6; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_228 = replace_set & _GEN_648 | validArray_1_7; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_229 = replace_set & _GEN_656 | validArray_1_8; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_230 = replace_set & _GEN_664 | validArray_1_9; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_231 = replace_set & _GEN_672 | validArray_1_10; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_232 = replace_set & _GEN_680 | validArray_1_11; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_233 = replace_set & _GEN_688 | validArray_1_12; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_234 = replace_set & _GEN_696 | validArray_1_13; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_235 = replace_set & _GEN_704 | validArray_1_14; // @[cache.scala 32:29 80:{50,50}]
+  wire  _GEN_236 = replace_set & _GEN_712 | validArray_1_15; // @[cache.scala 32:29 80:{50,50}]
+  wire [1:0] _to_sram_ar_bits_len_T_1 = _T_3 ? 2'h3 : 2'h0; // @[Mux.scala 81:58]
+  wire [31:0] _GEN_528 = dataArray_0_0_cachedata_MPORT_data; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_529 = _GEN_592 & 2'h1 == EntId[1:0] ? dataArray_0_1_cachedata_MPORT_data : _GEN_528; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_530 = _GEN_592 & 2'h2 == EntId[1:0] ? dataArray_0_2_cachedata_MPORT_data : _GEN_529; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_531 = _GEN_592 & 2'h3 == EntId[1:0] ? dataArray_0_3_cachedata_MPORT_data : _GEN_530; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_532 = _GEN_600 & 2'h0 == EntId[1:0] ? dataArray_1_0_cachedata_MPORT_data : _GEN_531; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_533 = _GEN_600 & 2'h1 == EntId[1:0] ? dataArray_1_1_cachedata_MPORT_data : _GEN_532; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_534 = _GEN_600 & 2'h2 == EntId[1:0] ? dataArray_1_2_cachedata_MPORT_data : _GEN_533; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_535 = _GEN_600 & 2'h3 == EntId[1:0] ? dataArray_1_3_cachedata_MPORT_data : _GEN_534; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_536 = _GEN_608 & 2'h0 == EntId[1:0] ? dataArray_2_0_cachedata_MPORT_data : _GEN_535; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_537 = _GEN_608 & 2'h1 == EntId[1:0] ? dataArray_2_1_cachedata_MPORT_data : _GEN_536; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_538 = _GEN_608 & 2'h2 == EntId[1:0] ? dataArray_2_2_cachedata_MPORT_data : _GEN_537; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_539 = _GEN_608 & 2'h3 == EntId[1:0] ? dataArray_2_3_cachedata_MPORT_data : _GEN_538; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_540 = _GEN_616 & 2'h0 == EntId[1:0] ? dataArray_3_0_cachedata_MPORT_data : _GEN_539; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_541 = _GEN_616 & 2'h1 == EntId[1:0] ? dataArray_3_1_cachedata_MPORT_data : _GEN_540; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_542 = _GEN_616 & 2'h2 == EntId[1:0] ? dataArray_3_2_cachedata_MPORT_data : _GEN_541; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_543 = _GEN_616 & 2'h3 == EntId[1:0] ? dataArray_3_3_cachedata_MPORT_data : _GEN_542; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_544 = _GEN_624 & 2'h0 == EntId[1:0] ? dataArray_4_0_cachedata_MPORT_data : _GEN_543; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_545 = _GEN_624 & 2'h1 == EntId[1:0] ? dataArray_4_1_cachedata_MPORT_data : _GEN_544; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_546 = _GEN_624 & 2'h2 == EntId[1:0] ? dataArray_4_2_cachedata_MPORT_data : _GEN_545; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_547 = _GEN_624 & 2'h3 == EntId[1:0] ? dataArray_4_3_cachedata_MPORT_data : _GEN_546; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_548 = _GEN_632 & 2'h0 == EntId[1:0] ? dataArray_5_0_cachedata_MPORT_data : _GEN_547; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_549 = _GEN_632 & 2'h1 == EntId[1:0] ? dataArray_5_1_cachedata_MPORT_data : _GEN_548; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_550 = _GEN_632 & 2'h2 == EntId[1:0] ? dataArray_5_2_cachedata_MPORT_data : _GEN_549; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_551 = _GEN_632 & 2'h3 == EntId[1:0] ? dataArray_5_3_cachedata_MPORT_data : _GEN_550; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_552 = _GEN_640 & 2'h0 == EntId[1:0] ? dataArray_6_0_cachedata_MPORT_data : _GEN_551; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_553 = _GEN_640 & 2'h1 == EntId[1:0] ? dataArray_6_1_cachedata_MPORT_data : _GEN_552; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_554 = _GEN_640 & 2'h2 == EntId[1:0] ? dataArray_6_2_cachedata_MPORT_data : _GEN_553; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_555 = _GEN_640 & 2'h3 == EntId[1:0] ? dataArray_6_3_cachedata_MPORT_data : _GEN_554; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_556 = _GEN_648 & 2'h0 == EntId[1:0] ? dataArray_7_0_cachedata_MPORT_data : _GEN_555; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_557 = _GEN_648 & 2'h1 == EntId[1:0] ? dataArray_7_1_cachedata_MPORT_data : _GEN_556; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_558 = _GEN_648 & 2'h2 == EntId[1:0] ? dataArray_7_2_cachedata_MPORT_data : _GEN_557; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_559 = _GEN_648 & 2'h3 == EntId[1:0] ? dataArray_7_3_cachedata_MPORT_data : _GEN_558; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_560 = _GEN_656 & 2'h0 == EntId[1:0] ? dataArray_8_0_cachedata_MPORT_data : _GEN_559; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_561 = _GEN_656 & 2'h1 == EntId[1:0] ? dataArray_8_1_cachedata_MPORT_data : _GEN_560; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_562 = _GEN_656 & 2'h2 == EntId[1:0] ? dataArray_8_2_cachedata_MPORT_data : _GEN_561; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_563 = _GEN_656 & 2'h3 == EntId[1:0] ? dataArray_8_3_cachedata_MPORT_data : _GEN_562; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_564 = _GEN_664 & 2'h0 == EntId[1:0] ? dataArray_9_0_cachedata_MPORT_data : _GEN_563; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_565 = _GEN_664 & 2'h1 == EntId[1:0] ? dataArray_9_1_cachedata_MPORT_data : _GEN_564; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_566 = _GEN_664 & 2'h2 == EntId[1:0] ? dataArray_9_2_cachedata_MPORT_data : _GEN_565; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_567 = _GEN_664 & 2'h3 == EntId[1:0] ? dataArray_9_3_cachedata_MPORT_data : _GEN_566; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_568 = _GEN_672 & 2'h0 == EntId[1:0] ? dataArray_10_0_cachedata_MPORT_data : _GEN_567; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_569 = _GEN_672 & 2'h1 == EntId[1:0] ? dataArray_10_1_cachedata_MPORT_data : _GEN_568; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_570 = _GEN_672 & 2'h2 == EntId[1:0] ? dataArray_10_2_cachedata_MPORT_data : _GEN_569; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_571 = _GEN_672 & 2'h3 == EntId[1:0] ? dataArray_10_3_cachedata_MPORT_data : _GEN_570; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_572 = _GEN_680 & 2'h0 == EntId[1:0] ? dataArray_11_0_cachedata_MPORT_data : _GEN_571; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_573 = _GEN_680 & 2'h1 == EntId[1:0] ? dataArray_11_1_cachedata_MPORT_data : _GEN_572; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_574 = _GEN_680 & 2'h2 == EntId[1:0] ? dataArray_11_2_cachedata_MPORT_data : _GEN_573; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_575 = _GEN_680 & 2'h3 == EntId[1:0] ? dataArray_11_3_cachedata_MPORT_data : _GEN_574; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_576 = _GEN_688 & 2'h0 == EntId[1:0] ? dataArray_12_0_cachedata_MPORT_data : _GEN_575; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_577 = _GEN_688 & 2'h1 == EntId[1:0] ? dataArray_12_1_cachedata_MPORT_data : _GEN_576; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_578 = _GEN_688 & 2'h2 == EntId[1:0] ? dataArray_12_2_cachedata_MPORT_data : _GEN_577; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_579 = _GEN_688 & 2'h3 == EntId[1:0] ? dataArray_12_3_cachedata_MPORT_data : _GEN_578; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_580 = _GEN_696 & 2'h0 == EntId[1:0] ? dataArray_13_0_cachedata_MPORT_data : _GEN_579; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_581 = _GEN_696 & 2'h1 == EntId[1:0] ? dataArray_13_1_cachedata_MPORT_data : _GEN_580; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_582 = _GEN_696 & 2'h2 == EntId[1:0] ? dataArray_13_2_cachedata_MPORT_data : _GEN_581; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_583 = _GEN_696 & 2'h3 == EntId[1:0] ? dataArray_13_3_cachedata_MPORT_data : _GEN_582; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_584 = _GEN_704 & 2'h0 == EntId[1:0] ? dataArray_14_0_cachedata_MPORT_data : _GEN_583; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_585 = _GEN_704 & 2'h1 == EntId[1:0] ? dataArray_14_1_cachedata_MPORT_data : _GEN_584; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_586 = _GEN_704 & 2'h2 == EntId[1:0] ? dataArray_14_2_cachedata_MPORT_data : _GEN_585; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_587 = _GEN_704 & 2'h3 == EntId[1:0] ? dataArray_14_3_cachedata_MPORT_data : _GEN_586; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_588 = _GEN_712 & 2'h0 == EntId[1:0] ? dataArray_15_0_cachedata_MPORT_data : _GEN_587; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_589 = _GEN_712 & 2'h1 == EntId[1:0] ? dataArray_15_1_cachedata_MPORT_data : _GEN_588; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_590 = _GEN_712 & 2'h2 == EntId[1:0] ? dataArray_15_2_cachedata_MPORT_data : _GEN_589; // @[cache.scala 105:{28,28}]
+  wire [31:0] _GEN_591 = _GEN_712 & 2'h3 == EntId[1:0] ? dataArray_15_3_cachedata_MPORT_data : _GEN_590; // @[cache.scala 105:{28,28}]
   assign dataArray_0_0_cachedata_MPORT_en = dataArray_0_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_0_0_cachedata_MPORT_addr = dataArray_0_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_0_0_cachedata_MPORT_data = dataArray_0_0[dataArray_0_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_0_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_0_0_MPORT_addr = replace_set;
-  assign dataArray_0_0_MPORT_mask = _GEN_593 & _GEN_594;
-  assign dataArray_0_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_0_0_MPORT_mask = _GEN_592 & _GEN_593;
+  assign dataArray_0_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_0_1_cachedata_MPORT_en = dataArray_0_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_0_1_cachedata_MPORT_addr = dataArray_0_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_0_1_cachedata_MPORT_data = dataArray_0_1[dataArray_0_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_0_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_0_1_MPORT_addr = replace_set;
-  assign dataArray_0_1_MPORT_mask = _GEN_593 & _GEN_596;
-  assign dataArray_0_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_0_1_MPORT_mask = _GEN_592 & _GEN_595;
+  assign dataArray_0_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_0_2_cachedata_MPORT_en = dataArray_0_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_0_2_cachedata_MPORT_addr = dataArray_0_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_0_2_cachedata_MPORT_data = dataArray_0_2[dataArray_0_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_0_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_0_2_MPORT_addr = replace_set;
-  assign dataArray_0_2_MPORT_mask = _GEN_593 & _GEN_598;
-  assign dataArray_0_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_0_2_MPORT_mask = _GEN_592 & _GEN_597;
+  assign dataArray_0_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_0_3_cachedata_MPORT_en = dataArray_0_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_0_3_cachedata_MPORT_addr = dataArray_0_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_0_3_cachedata_MPORT_data = dataArray_0_3[dataArray_0_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_0_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_0_3_MPORT_addr = replace_set;
-  assign dataArray_0_3_MPORT_mask = _GEN_593 & _GEN_600;
-  assign dataArray_0_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_0_3_MPORT_mask = _GEN_592 & _GEN_599;
+  assign dataArray_0_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_1_0_cachedata_MPORT_en = dataArray_1_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_1_0_cachedata_MPORT_addr = dataArray_1_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_1_0_cachedata_MPORT_data = dataArray_1_0[dataArray_1_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_1_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_1_0_MPORT_addr = replace_set;
-  assign dataArray_1_0_MPORT_mask = _GEN_601 & _GEN_594;
-  assign dataArray_1_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_1_0_MPORT_mask = _GEN_600 & _GEN_593;
+  assign dataArray_1_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_1_1_cachedata_MPORT_en = dataArray_1_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_1_1_cachedata_MPORT_addr = dataArray_1_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_1_1_cachedata_MPORT_data = dataArray_1_1[dataArray_1_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_1_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_1_1_MPORT_addr = replace_set;
-  assign dataArray_1_1_MPORT_mask = _GEN_601 & _GEN_596;
-  assign dataArray_1_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_1_1_MPORT_mask = _GEN_600 & _GEN_595;
+  assign dataArray_1_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_1_2_cachedata_MPORT_en = dataArray_1_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_1_2_cachedata_MPORT_addr = dataArray_1_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_1_2_cachedata_MPORT_data = dataArray_1_2[dataArray_1_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_1_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_1_2_MPORT_addr = replace_set;
-  assign dataArray_1_2_MPORT_mask = _GEN_601 & _GEN_598;
-  assign dataArray_1_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_1_2_MPORT_mask = _GEN_600 & _GEN_597;
+  assign dataArray_1_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_1_3_cachedata_MPORT_en = dataArray_1_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_1_3_cachedata_MPORT_addr = dataArray_1_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_1_3_cachedata_MPORT_data = dataArray_1_3[dataArray_1_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_1_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_1_3_MPORT_addr = replace_set;
-  assign dataArray_1_3_MPORT_mask = _GEN_601 & _GEN_600;
-  assign dataArray_1_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_1_3_MPORT_mask = _GEN_600 & _GEN_599;
+  assign dataArray_1_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_2_0_cachedata_MPORT_en = dataArray_2_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_2_0_cachedata_MPORT_addr = dataArray_2_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_2_0_cachedata_MPORT_data = dataArray_2_0[dataArray_2_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_2_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_2_0_MPORT_addr = replace_set;
-  assign dataArray_2_0_MPORT_mask = _GEN_609 & _GEN_594;
-  assign dataArray_2_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_2_0_MPORT_mask = _GEN_608 & _GEN_593;
+  assign dataArray_2_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_2_1_cachedata_MPORT_en = dataArray_2_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_2_1_cachedata_MPORT_addr = dataArray_2_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_2_1_cachedata_MPORT_data = dataArray_2_1[dataArray_2_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_2_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_2_1_MPORT_addr = replace_set;
-  assign dataArray_2_1_MPORT_mask = _GEN_609 & _GEN_596;
-  assign dataArray_2_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_2_1_MPORT_mask = _GEN_608 & _GEN_595;
+  assign dataArray_2_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_2_2_cachedata_MPORT_en = dataArray_2_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_2_2_cachedata_MPORT_addr = dataArray_2_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_2_2_cachedata_MPORT_data = dataArray_2_2[dataArray_2_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_2_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_2_2_MPORT_addr = replace_set;
-  assign dataArray_2_2_MPORT_mask = _GEN_609 & _GEN_598;
-  assign dataArray_2_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_2_2_MPORT_mask = _GEN_608 & _GEN_597;
+  assign dataArray_2_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_2_3_cachedata_MPORT_en = dataArray_2_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_2_3_cachedata_MPORT_addr = dataArray_2_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_2_3_cachedata_MPORT_data = dataArray_2_3[dataArray_2_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_2_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_2_3_MPORT_addr = replace_set;
-  assign dataArray_2_3_MPORT_mask = _GEN_609 & _GEN_600;
-  assign dataArray_2_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_2_3_MPORT_mask = _GEN_608 & _GEN_599;
+  assign dataArray_2_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_3_0_cachedata_MPORT_en = dataArray_3_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_3_0_cachedata_MPORT_addr = dataArray_3_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_3_0_cachedata_MPORT_data = dataArray_3_0[dataArray_3_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_3_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_3_0_MPORT_addr = replace_set;
-  assign dataArray_3_0_MPORT_mask = _GEN_617 & _GEN_594;
-  assign dataArray_3_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_3_0_MPORT_mask = _GEN_616 & _GEN_593;
+  assign dataArray_3_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_3_1_cachedata_MPORT_en = dataArray_3_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_3_1_cachedata_MPORT_addr = dataArray_3_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_3_1_cachedata_MPORT_data = dataArray_3_1[dataArray_3_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_3_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_3_1_MPORT_addr = replace_set;
-  assign dataArray_3_1_MPORT_mask = _GEN_617 & _GEN_596;
-  assign dataArray_3_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_3_1_MPORT_mask = _GEN_616 & _GEN_595;
+  assign dataArray_3_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_3_2_cachedata_MPORT_en = dataArray_3_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_3_2_cachedata_MPORT_addr = dataArray_3_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_3_2_cachedata_MPORT_data = dataArray_3_2[dataArray_3_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_3_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_3_2_MPORT_addr = replace_set;
-  assign dataArray_3_2_MPORT_mask = _GEN_617 & _GEN_598;
-  assign dataArray_3_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_3_2_MPORT_mask = _GEN_616 & _GEN_597;
+  assign dataArray_3_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_3_3_cachedata_MPORT_en = dataArray_3_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_3_3_cachedata_MPORT_addr = dataArray_3_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_3_3_cachedata_MPORT_data = dataArray_3_3[dataArray_3_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_3_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_3_3_MPORT_addr = replace_set;
-  assign dataArray_3_3_MPORT_mask = _GEN_617 & _GEN_600;
-  assign dataArray_3_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_3_3_MPORT_mask = _GEN_616 & _GEN_599;
+  assign dataArray_3_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_4_0_cachedata_MPORT_en = dataArray_4_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_4_0_cachedata_MPORT_addr = dataArray_4_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_4_0_cachedata_MPORT_data = dataArray_4_0[dataArray_4_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_4_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_4_0_MPORT_addr = replace_set;
-  assign dataArray_4_0_MPORT_mask = _GEN_625 & _GEN_594;
-  assign dataArray_4_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_4_0_MPORT_mask = _GEN_624 & _GEN_593;
+  assign dataArray_4_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_4_1_cachedata_MPORT_en = dataArray_4_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_4_1_cachedata_MPORT_addr = dataArray_4_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_4_1_cachedata_MPORT_data = dataArray_4_1[dataArray_4_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_4_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_4_1_MPORT_addr = replace_set;
-  assign dataArray_4_1_MPORT_mask = _GEN_625 & _GEN_596;
-  assign dataArray_4_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_4_1_MPORT_mask = _GEN_624 & _GEN_595;
+  assign dataArray_4_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_4_2_cachedata_MPORT_en = dataArray_4_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_4_2_cachedata_MPORT_addr = dataArray_4_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_4_2_cachedata_MPORT_data = dataArray_4_2[dataArray_4_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_4_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_4_2_MPORT_addr = replace_set;
-  assign dataArray_4_2_MPORT_mask = _GEN_625 & _GEN_598;
-  assign dataArray_4_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_4_2_MPORT_mask = _GEN_624 & _GEN_597;
+  assign dataArray_4_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_4_3_cachedata_MPORT_en = dataArray_4_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_4_3_cachedata_MPORT_addr = dataArray_4_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_4_3_cachedata_MPORT_data = dataArray_4_3[dataArray_4_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_4_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_4_3_MPORT_addr = replace_set;
-  assign dataArray_4_3_MPORT_mask = _GEN_625 & _GEN_600;
-  assign dataArray_4_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_4_3_MPORT_mask = _GEN_624 & _GEN_599;
+  assign dataArray_4_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_5_0_cachedata_MPORT_en = dataArray_5_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_5_0_cachedata_MPORT_addr = dataArray_5_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_5_0_cachedata_MPORT_data = dataArray_5_0[dataArray_5_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_5_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_5_0_MPORT_addr = replace_set;
-  assign dataArray_5_0_MPORT_mask = _GEN_633 & _GEN_594;
-  assign dataArray_5_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_5_0_MPORT_mask = _GEN_632 & _GEN_593;
+  assign dataArray_5_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_5_1_cachedata_MPORT_en = dataArray_5_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_5_1_cachedata_MPORT_addr = dataArray_5_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_5_1_cachedata_MPORT_data = dataArray_5_1[dataArray_5_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_5_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_5_1_MPORT_addr = replace_set;
-  assign dataArray_5_1_MPORT_mask = _GEN_633 & _GEN_596;
-  assign dataArray_5_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_5_1_MPORT_mask = _GEN_632 & _GEN_595;
+  assign dataArray_5_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_5_2_cachedata_MPORT_en = dataArray_5_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_5_2_cachedata_MPORT_addr = dataArray_5_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_5_2_cachedata_MPORT_data = dataArray_5_2[dataArray_5_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_5_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_5_2_MPORT_addr = replace_set;
-  assign dataArray_5_2_MPORT_mask = _GEN_633 & _GEN_598;
-  assign dataArray_5_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_5_2_MPORT_mask = _GEN_632 & _GEN_597;
+  assign dataArray_5_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_5_3_cachedata_MPORT_en = dataArray_5_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_5_3_cachedata_MPORT_addr = dataArray_5_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_5_3_cachedata_MPORT_data = dataArray_5_3[dataArray_5_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_5_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_5_3_MPORT_addr = replace_set;
-  assign dataArray_5_3_MPORT_mask = _GEN_633 & _GEN_600;
-  assign dataArray_5_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_5_3_MPORT_mask = _GEN_632 & _GEN_599;
+  assign dataArray_5_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_6_0_cachedata_MPORT_en = dataArray_6_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_6_0_cachedata_MPORT_addr = dataArray_6_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_6_0_cachedata_MPORT_data = dataArray_6_0[dataArray_6_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_6_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_6_0_MPORT_addr = replace_set;
-  assign dataArray_6_0_MPORT_mask = _GEN_641 & _GEN_594;
-  assign dataArray_6_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_6_0_MPORT_mask = _GEN_640 & _GEN_593;
+  assign dataArray_6_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_6_1_cachedata_MPORT_en = dataArray_6_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_6_1_cachedata_MPORT_addr = dataArray_6_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_6_1_cachedata_MPORT_data = dataArray_6_1[dataArray_6_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_6_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_6_1_MPORT_addr = replace_set;
-  assign dataArray_6_1_MPORT_mask = _GEN_641 & _GEN_596;
-  assign dataArray_6_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_6_1_MPORT_mask = _GEN_640 & _GEN_595;
+  assign dataArray_6_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_6_2_cachedata_MPORT_en = dataArray_6_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_6_2_cachedata_MPORT_addr = dataArray_6_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_6_2_cachedata_MPORT_data = dataArray_6_2[dataArray_6_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_6_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_6_2_MPORT_addr = replace_set;
-  assign dataArray_6_2_MPORT_mask = _GEN_641 & _GEN_598;
-  assign dataArray_6_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_6_2_MPORT_mask = _GEN_640 & _GEN_597;
+  assign dataArray_6_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_6_3_cachedata_MPORT_en = dataArray_6_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_6_3_cachedata_MPORT_addr = dataArray_6_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_6_3_cachedata_MPORT_data = dataArray_6_3[dataArray_6_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_6_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_6_3_MPORT_addr = replace_set;
-  assign dataArray_6_3_MPORT_mask = _GEN_641 & _GEN_600;
-  assign dataArray_6_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_6_3_MPORT_mask = _GEN_640 & _GEN_599;
+  assign dataArray_6_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_7_0_cachedata_MPORT_en = dataArray_7_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_7_0_cachedata_MPORT_addr = dataArray_7_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_7_0_cachedata_MPORT_data = dataArray_7_0[dataArray_7_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_7_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_7_0_MPORT_addr = replace_set;
-  assign dataArray_7_0_MPORT_mask = _GEN_649 & _GEN_594;
-  assign dataArray_7_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_7_0_MPORT_mask = _GEN_648 & _GEN_593;
+  assign dataArray_7_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_7_1_cachedata_MPORT_en = dataArray_7_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_7_1_cachedata_MPORT_addr = dataArray_7_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_7_1_cachedata_MPORT_data = dataArray_7_1[dataArray_7_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_7_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_7_1_MPORT_addr = replace_set;
-  assign dataArray_7_1_MPORT_mask = _GEN_649 & _GEN_596;
-  assign dataArray_7_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_7_1_MPORT_mask = _GEN_648 & _GEN_595;
+  assign dataArray_7_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_7_2_cachedata_MPORT_en = dataArray_7_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_7_2_cachedata_MPORT_addr = dataArray_7_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_7_2_cachedata_MPORT_data = dataArray_7_2[dataArray_7_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_7_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_7_2_MPORT_addr = replace_set;
-  assign dataArray_7_2_MPORT_mask = _GEN_649 & _GEN_598;
-  assign dataArray_7_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_7_2_MPORT_mask = _GEN_648 & _GEN_597;
+  assign dataArray_7_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_7_3_cachedata_MPORT_en = dataArray_7_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_7_3_cachedata_MPORT_addr = dataArray_7_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_7_3_cachedata_MPORT_data = dataArray_7_3[dataArray_7_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_7_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_7_3_MPORT_addr = replace_set;
-  assign dataArray_7_3_MPORT_mask = _GEN_649 & _GEN_600;
-  assign dataArray_7_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_7_3_MPORT_mask = _GEN_648 & _GEN_599;
+  assign dataArray_7_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_8_0_cachedata_MPORT_en = dataArray_8_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_8_0_cachedata_MPORT_addr = dataArray_8_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_8_0_cachedata_MPORT_data = dataArray_8_0[dataArray_8_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_8_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_8_0_MPORT_addr = replace_set;
-  assign dataArray_8_0_MPORT_mask = _GEN_657 & _GEN_594;
-  assign dataArray_8_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_8_0_MPORT_mask = _GEN_656 & _GEN_593;
+  assign dataArray_8_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_8_1_cachedata_MPORT_en = dataArray_8_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_8_1_cachedata_MPORT_addr = dataArray_8_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_8_1_cachedata_MPORT_data = dataArray_8_1[dataArray_8_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_8_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_8_1_MPORT_addr = replace_set;
-  assign dataArray_8_1_MPORT_mask = _GEN_657 & _GEN_596;
-  assign dataArray_8_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_8_1_MPORT_mask = _GEN_656 & _GEN_595;
+  assign dataArray_8_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_8_2_cachedata_MPORT_en = dataArray_8_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_8_2_cachedata_MPORT_addr = dataArray_8_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_8_2_cachedata_MPORT_data = dataArray_8_2[dataArray_8_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_8_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_8_2_MPORT_addr = replace_set;
-  assign dataArray_8_2_MPORT_mask = _GEN_657 & _GEN_598;
-  assign dataArray_8_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_8_2_MPORT_mask = _GEN_656 & _GEN_597;
+  assign dataArray_8_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_8_3_cachedata_MPORT_en = dataArray_8_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_8_3_cachedata_MPORT_addr = dataArray_8_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_8_3_cachedata_MPORT_data = dataArray_8_3[dataArray_8_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_8_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_8_3_MPORT_addr = replace_set;
-  assign dataArray_8_3_MPORT_mask = _GEN_657 & _GEN_600;
-  assign dataArray_8_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_8_3_MPORT_mask = _GEN_656 & _GEN_599;
+  assign dataArray_8_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_9_0_cachedata_MPORT_en = dataArray_9_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_9_0_cachedata_MPORT_addr = dataArray_9_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_9_0_cachedata_MPORT_data = dataArray_9_0[dataArray_9_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_9_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_9_0_MPORT_addr = replace_set;
-  assign dataArray_9_0_MPORT_mask = _GEN_665 & _GEN_594;
-  assign dataArray_9_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_9_0_MPORT_mask = _GEN_664 & _GEN_593;
+  assign dataArray_9_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_9_1_cachedata_MPORT_en = dataArray_9_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_9_1_cachedata_MPORT_addr = dataArray_9_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_9_1_cachedata_MPORT_data = dataArray_9_1[dataArray_9_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_9_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_9_1_MPORT_addr = replace_set;
-  assign dataArray_9_1_MPORT_mask = _GEN_665 & _GEN_596;
-  assign dataArray_9_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_9_1_MPORT_mask = _GEN_664 & _GEN_595;
+  assign dataArray_9_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_9_2_cachedata_MPORT_en = dataArray_9_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_9_2_cachedata_MPORT_addr = dataArray_9_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_9_2_cachedata_MPORT_data = dataArray_9_2[dataArray_9_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_9_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_9_2_MPORT_addr = replace_set;
-  assign dataArray_9_2_MPORT_mask = _GEN_665 & _GEN_598;
-  assign dataArray_9_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_9_2_MPORT_mask = _GEN_664 & _GEN_597;
+  assign dataArray_9_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_9_3_cachedata_MPORT_en = dataArray_9_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_9_3_cachedata_MPORT_addr = dataArray_9_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_9_3_cachedata_MPORT_data = dataArray_9_3[dataArray_9_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_9_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_9_3_MPORT_addr = replace_set;
-  assign dataArray_9_3_MPORT_mask = _GEN_665 & _GEN_600;
-  assign dataArray_9_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_9_3_MPORT_mask = _GEN_664 & _GEN_599;
+  assign dataArray_9_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_10_0_cachedata_MPORT_en = dataArray_10_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_10_0_cachedata_MPORT_addr = dataArray_10_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_10_0_cachedata_MPORT_data = dataArray_10_0[dataArray_10_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_10_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_10_0_MPORT_addr = replace_set;
-  assign dataArray_10_0_MPORT_mask = _GEN_673 & _GEN_594;
-  assign dataArray_10_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_10_0_MPORT_mask = _GEN_672 & _GEN_593;
+  assign dataArray_10_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_10_1_cachedata_MPORT_en = dataArray_10_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_10_1_cachedata_MPORT_addr = dataArray_10_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_10_1_cachedata_MPORT_data = dataArray_10_1[dataArray_10_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_10_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_10_1_MPORT_addr = replace_set;
-  assign dataArray_10_1_MPORT_mask = _GEN_673 & _GEN_596;
-  assign dataArray_10_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_10_1_MPORT_mask = _GEN_672 & _GEN_595;
+  assign dataArray_10_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_10_2_cachedata_MPORT_en = dataArray_10_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_10_2_cachedata_MPORT_addr = dataArray_10_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_10_2_cachedata_MPORT_data = dataArray_10_2[dataArray_10_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_10_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_10_2_MPORT_addr = replace_set;
-  assign dataArray_10_2_MPORT_mask = _GEN_673 & _GEN_598;
-  assign dataArray_10_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_10_2_MPORT_mask = _GEN_672 & _GEN_597;
+  assign dataArray_10_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_10_3_cachedata_MPORT_en = dataArray_10_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_10_3_cachedata_MPORT_addr = dataArray_10_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_10_3_cachedata_MPORT_data = dataArray_10_3[dataArray_10_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_10_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_10_3_MPORT_addr = replace_set;
-  assign dataArray_10_3_MPORT_mask = _GEN_673 & _GEN_600;
-  assign dataArray_10_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_10_3_MPORT_mask = _GEN_672 & _GEN_599;
+  assign dataArray_10_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_11_0_cachedata_MPORT_en = dataArray_11_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_11_0_cachedata_MPORT_addr = dataArray_11_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_11_0_cachedata_MPORT_data = dataArray_11_0[dataArray_11_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_11_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_11_0_MPORT_addr = replace_set;
-  assign dataArray_11_0_MPORT_mask = _GEN_681 & _GEN_594;
-  assign dataArray_11_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_11_0_MPORT_mask = _GEN_680 & _GEN_593;
+  assign dataArray_11_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_11_1_cachedata_MPORT_en = dataArray_11_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_11_1_cachedata_MPORT_addr = dataArray_11_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_11_1_cachedata_MPORT_data = dataArray_11_1[dataArray_11_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_11_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_11_1_MPORT_addr = replace_set;
-  assign dataArray_11_1_MPORT_mask = _GEN_681 & _GEN_596;
-  assign dataArray_11_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_11_1_MPORT_mask = _GEN_680 & _GEN_595;
+  assign dataArray_11_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_11_2_cachedata_MPORT_en = dataArray_11_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_11_2_cachedata_MPORT_addr = dataArray_11_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_11_2_cachedata_MPORT_data = dataArray_11_2[dataArray_11_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_11_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_11_2_MPORT_addr = replace_set;
-  assign dataArray_11_2_MPORT_mask = _GEN_681 & _GEN_598;
-  assign dataArray_11_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_11_2_MPORT_mask = _GEN_680 & _GEN_597;
+  assign dataArray_11_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_11_3_cachedata_MPORT_en = dataArray_11_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_11_3_cachedata_MPORT_addr = dataArray_11_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_11_3_cachedata_MPORT_data = dataArray_11_3[dataArray_11_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_11_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_11_3_MPORT_addr = replace_set;
-  assign dataArray_11_3_MPORT_mask = _GEN_681 & _GEN_600;
-  assign dataArray_11_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_11_3_MPORT_mask = _GEN_680 & _GEN_599;
+  assign dataArray_11_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_12_0_cachedata_MPORT_en = dataArray_12_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_12_0_cachedata_MPORT_addr = dataArray_12_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_12_0_cachedata_MPORT_data = dataArray_12_0[dataArray_12_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_12_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_12_0_MPORT_addr = replace_set;
-  assign dataArray_12_0_MPORT_mask = _GEN_689 & _GEN_594;
-  assign dataArray_12_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_12_0_MPORT_mask = _GEN_688 & _GEN_593;
+  assign dataArray_12_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_12_1_cachedata_MPORT_en = dataArray_12_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_12_1_cachedata_MPORT_addr = dataArray_12_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_12_1_cachedata_MPORT_data = dataArray_12_1[dataArray_12_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_12_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_12_1_MPORT_addr = replace_set;
-  assign dataArray_12_1_MPORT_mask = _GEN_689 & _GEN_596;
-  assign dataArray_12_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_12_1_MPORT_mask = _GEN_688 & _GEN_595;
+  assign dataArray_12_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_12_2_cachedata_MPORT_en = dataArray_12_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_12_2_cachedata_MPORT_addr = dataArray_12_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_12_2_cachedata_MPORT_data = dataArray_12_2[dataArray_12_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_12_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_12_2_MPORT_addr = replace_set;
-  assign dataArray_12_2_MPORT_mask = _GEN_689 & _GEN_598;
-  assign dataArray_12_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_12_2_MPORT_mask = _GEN_688 & _GEN_597;
+  assign dataArray_12_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_12_3_cachedata_MPORT_en = dataArray_12_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_12_3_cachedata_MPORT_addr = dataArray_12_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_12_3_cachedata_MPORT_data = dataArray_12_3[dataArray_12_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_12_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_12_3_MPORT_addr = replace_set;
-  assign dataArray_12_3_MPORT_mask = _GEN_689 & _GEN_600;
-  assign dataArray_12_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_12_3_MPORT_mask = _GEN_688 & _GEN_599;
+  assign dataArray_12_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_13_0_cachedata_MPORT_en = dataArray_13_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_13_0_cachedata_MPORT_addr = dataArray_13_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_13_0_cachedata_MPORT_data = dataArray_13_0[dataArray_13_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_13_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_13_0_MPORT_addr = replace_set;
-  assign dataArray_13_0_MPORT_mask = _GEN_697 & _GEN_594;
-  assign dataArray_13_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_13_0_MPORT_mask = _GEN_696 & _GEN_593;
+  assign dataArray_13_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_13_1_cachedata_MPORT_en = dataArray_13_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_13_1_cachedata_MPORT_addr = dataArray_13_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_13_1_cachedata_MPORT_data = dataArray_13_1[dataArray_13_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_13_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_13_1_MPORT_addr = replace_set;
-  assign dataArray_13_1_MPORT_mask = _GEN_697 & _GEN_596;
-  assign dataArray_13_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_13_1_MPORT_mask = _GEN_696 & _GEN_595;
+  assign dataArray_13_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_13_2_cachedata_MPORT_en = dataArray_13_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_13_2_cachedata_MPORT_addr = dataArray_13_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_13_2_cachedata_MPORT_data = dataArray_13_2[dataArray_13_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_13_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_13_2_MPORT_addr = replace_set;
-  assign dataArray_13_2_MPORT_mask = _GEN_697 & _GEN_598;
-  assign dataArray_13_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_13_2_MPORT_mask = _GEN_696 & _GEN_597;
+  assign dataArray_13_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_13_3_cachedata_MPORT_en = dataArray_13_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_13_3_cachedata_MPORT_addr = dataArray_13_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_13_3_cachedata_MPORT_data = dataArray_13_3[dataArray_13_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_13_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_13_3_MPORT_addr = replace_set;
-  assign dataArray_13_3_MPORT_mask = _GEN_697 & _GEN_600;
-  assign dataArray_13_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_13_3_MPORT_mask = _GEN_696 & _GEN_599;
+  assign dataArray_13_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_14_0_cachedata_MPORT_en = dataArray_14_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_14_0_cachedata_MPORT_addr = dataArray_14_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_14_0_cachedata_MPORT_data = dataArray_14_0[dataArray_14_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_14_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_14_0_MPORT_addr = replace_set;
-  assign dataArray_14_0_MPORT_mask = _GEN_705 & _GEN_594;
-  assign dataArray_14_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_14_0_MPORT_mask = _GEN_704 & _GEN_593;
+  assign dataArray_14_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_14_1_cachedata_MPORT_en = dataArray_14_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_14_1_cachedata_MPORT_addr = dataArray_14_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_14_1_cachedata_MPORT_data = dataArray_14_1[dataArray_14_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_14_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_14_1_MPORT_addr = replace_set;
-  assign dataArray_14_1_MPORT_mask = _GEN_705 & _GEN_596;
-  assign dataArray_14_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_14_1_MPORT_mask = _GEN_704 & _GEN_595;
+  assign dataArray_14_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_14_2_cachedata_MPORT_en = dataArray_14_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_14_2_cachedata_MPORT_addr = dataArray_14_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_14_2_cachedata_MPORT_data = dataArray_14_2[dataArray_14_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_14_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_14_2_MPORT_addr = replace_set;
-  assign dataArray_14_2_MPORT_mask = _GEN_705 & _GEN_598;
-  assign dataArray_14_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_14_2_MPORT_mask = _GEN_704 & _GEN_597;
+  assign dataArray_14_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_14_3_cachedata_MPORT_en = dataArray_14_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_14_3_cachedata_MPORT_addr = dataArray_14_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_14_3_cachedata_MPORT_data = dataArray_14_3[dataArray_14_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_14_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_14_3_MPORT_addr = replace_set;
-  assign dataArray_14_3_MPORT_mask = _GEN_705 & _GEN_600;
-  assign dataArray_14_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_14_3_MPORT_mask = _GEN_704 & _GEN_599;
+  assign dataArray_14_3_MPORT_en = _T_6 & _off_T;
   assign dataArray_15_0_cachedata_MPORT_en = dataArray_15_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_15_0_cachedata_MPORT_addr = dataArray_15_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_15_0_cachedata_MPORT_data = dataArray_15_0[dataArray_15_0_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_15_0_MPORT_data = to_sram_r_bits_data;
   assign dataArray_15_0_MPORT_addr = replace_set;
-  assign dataArray_15_0_MPORT_mask = _GEN_713 & _GEN_594;
-  assign dataArray_15_0_MPORT_en = _T_5 & _off_T;
+  assign dataArray_15_0_MPORT_mask = _GEN_712 & _GEN_593;
+  assign dataArray_15_0_MPORT_en = _T_6 & _off_T;
   assign dataArray_15_1_cachedata_MPORT_en = dataArray_15_1_cachedata_MPORT_en_pipe_0;
   assign dataArray_15_1_cachedata_MPORT_addr = dataArray_15_1_cachedata_MPORT_addr_pipe_0;
   assign dataArray_15_1_cachedata_MPORT_data = dataArray_15_1[dataArray_15_1_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_15_1_MPORT_data = to_sram_r_bits_data;
   assign dataArray_15_1_MPORT_addr = replace_set;
-  assign dataArray_15_1_MPORT_mask = _GEN_713 & _GEN_596;
-  assign dataArray_15_1_MPORT_en = _T_5 & _off_T;
+  assign dataArray_15_1_MPORT_mask = _GEN_712 & _GEN_595;
+  assign dataArray_15_1_MPORT_en = _T_6 & _off_T;
   assign dataArray_15_2_cachedata_MPORT_en = dataArray_15_2_cachedata_MPORT_en_pipe_0;
   assign dataArray_15_2_cachedata_MPORT_addr = dataArray_15_2_cachedata_MPORT_addr_pipe_0;
   assign dataArray_15_2_cachedata_MPORT_data = dataArray_15_2[dataArray_15_2_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_15_2_MPORT_data = to_sram_r_bits_data;
   assign dataArray_15_2_MPORT_addr = replace_set;
-  assign dataArray_15_2_MPORT_mask = _GEN_713 & _GEN_598;
-  assign dataArray_15_2_MPORT_en = _T_5 & _off_T;
+  assign dataArray_15_2_MPORT_mask = _GEN_712 & _GEN_597;
+  assign dataArray_15_2_MPORT_en = _T_6 & _off_T;
   assign dataArray_15_3_cachedata_MPORT_en = dataArray_15_3_cachedata_MPORT_en_pipe_0;
   assign dataArray_15_3_cachedata_MPORT_addr = dataArray_15_3_cachedata_MPORT_addr_pipe_0;
   assign dataArray_15_3_cachedata_MPORT_data = dataArray_15_3[dataArray_15_3_cachedata_MPORT_addr]; // @[cache.scala 30:33]
   assign dataArray_15_3_MPORT_data = to_sram_r_bits_data;
   assign dataArray_15_3_MPORT_addr = replace_set;
-  assign dataArray_15_3_MPORT_mask = _GEN_713 & _GEN_600;
-  assign dataArray_15_3_MPORT_en = _T_5 & _off_T;
+  assign dataArray_15_3_MPORT_mask = _GEN_712 & _GEN_599;
+  assign dataArray_15_3_MPORT_en = _T_6 & _off_T;
   assign from_IFU_ready = 3'h0 == state_cache; // @[Mux.scala 81:61]
   assign to_IFU_valid = 3'h1 == state_cache; // @[Mux.scala 81:61]
-  assign to_IFU_bits_data = hit ? _GEN_592 : 32'h13; // @[cache.scala 111:28]
+  assign to_IFU_bits_data = hit ? _GEN_591 : 32'h13; // @[cache.scala 105:28]
   assign to_sram_ar_valid = 3'h2 == state_cache; // @[Mux.scala 81:61]
-  assign to_sram_ar_bits_addr = _T_2 ? from_IFU_bits_addr : 32'h0; // @[Mux.scala 81:58]
-  assign to_sram_ar_bits_len = {{6'd0}, _to_sram_ar_bits_len_T_1}; // @[cache.scala 96:27]
+  assign to_sram_ar_bits_addr = _T_3 ? from_IFU_bits_addr : 32'h0; // @[Mux.scala 81:58]
+  assign to_sram_ar_bits_len = {{6'd0}, _to_sram_ar_bits_len_T_1}; // @[cache.scala 90:27]
   assign to_sram_r_ready = 3'h3 == state_cache; // @[Mux.scala 81:61]
   always @(posedge clock) begin
     if (dataArray_0_0_MPORT_en & dataArray_0_0_MPORT_mask) begin
@@ -3670,10 +3668,10 @@ module I_Cache(
     end
     if (reset) begin // @[cache.scala 21:30]
       replace_set <= 1'h0; // @[cache.scala 21:30]
-    end else if (!(3'h0 == state_cache)) begin // @[cache.scala 51:26]
-      if (!(3'h1 == state_cache)) begin // @[cache.scala 51:26]
-        if (3'h2 == state_cache) begin // @[cache.scala 51:26]
-          replace_set <= random_num; // @[cache.scala 68:25]
+    end else if (!(3'h0 == state_cache)) begin // @[cache.scala 47:26]
+      if (!(3'h1 == state_cache)) begin // @[cache.scala 47:26]
+        if (3'h2 == state_cache) begin // @[cache.scala 47:26]
+          replace_set <= random_num; // @[cache.scala 62:25]
         end
       end
     end
@@ -3684,543 +3682,545 @@ module I_Cache(
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_0 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_593) begin // @[cache.scala 87:50]
-          tagArray_0_0 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_592) begin // @[cache.scala 81:50]
+          tagArray_0_0 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_1 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_601) begin // @[cache.scala 87:50]
-          tagArray_0_1 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_600) begin // @[cache.scala 81:50]
+          tagArray_0_1 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_2 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_609) begin // @[cache.scala 87:50]
-          tagArray_0_2 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_608) begin // @[cache.scala 81:50]
+          tagArray_0_2 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_3 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_617) begin // @[cache.scala 87:50]
-          tagArray_0_3 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_616) begin // @[cache.scala 81:50]
+          tagArray_0_3 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_4 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_625) begin // @[cache.scala 87:50]
-          tagArray_0_4 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_624) begin // @[cache.scala 81:50]
+          tagArray_0_4 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_5 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_633) begin // @[cache.scala 87:50]
-          tagArray_0_5 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_632) begin // @[cache.scala 81:50]
+          tagArray_0_5 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_6 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_641) begin // @[cache.scala 87:50]
-          tagArray_0_6 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_640) begin // @[cache.scala 81:50]
+          tagArray_0_6 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_7 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_649) begin // @[cache.scala 87:50]
-          tagArray_0_7 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_648) begin // @[cache.scala 81:50]
+          tagArray_0_7 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_8 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_657) begin // @[cache.scala 87:50]
-          tagArray_0_8 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_656) begin // @[cache.scala 81:50]
+          tagArray_0_8 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_9 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_665) begin // @[cache.scala 87:50]
-          tagArray_0_9 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_664) begin // @[cache.scala 81:50]
+          tagArray_0_9 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_10 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_673) begin // @[cache.scala 87:50]
-          tagArray_0_10 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_672) begin // @[cache.scala 81:50]
+          tagArray_0_10 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_11 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_681) begin // @[cache.scala 87:50]
-          tagArray_0_11 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_680) begin // @[cache.scala 81:50]
+          tagArray_0_11 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_12 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_689) begin // @[cache.scala 87:50]
-          tagArray_0_12 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_688) begin // @[cache.scala 81:50]
+          tagArray_0_12 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_13 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_697) begin // @[cache.scala 87:50]
-          tagArray_0_13 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_696) begin // @[cache.scala 81:50]
+          tagArray_0_13 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_14 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_705) begin // @[cache.scala 87:50]
-          tagArray_0_14 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_704) begin // @[cache.scala 81:50]
+          tagArray_0_14 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_0_15 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (_GEN_721 & _GEN_713) begin // @[cache.scala 87:50]
-          tagArray_0_15 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (_GEN_720 & _GEN_712) begin // @[cache.scala 81:50]
+          tagArray_0_15 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_0 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_593) begin // @[cache.scala 87:50]
-          tagArray_1_0 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_592) begin // @[cache.scala 81:50]
+          tagArray_1_0 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_1 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_601) begin // @[cache.scala 87:50]
-          tagArray_1_1 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_600) begin // @[cache.scala 81:50]
+          tagArray_1_1 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_2 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_609) begin // @[cache.scala 87:50]
-          tagArray_1_2 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_608) begin // @[cache.scala 81:50]
+          tagArray_1_2 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_3 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_617) begin // @[cache.scala 87:50]
-          tagArray_1_3 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_616) begin // @[cache.scala 81:50]
+          tagArray_1_3 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_4 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_625) begin // @[cache.scala 87:50]
-          tagArray_1_4 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_624) begin // @[cache.scala 81:50]
+          tagArray_1_4 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_5 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_633) begin // @[cache.scala 87:50]
-          tagArray_1_5 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_632) begin // @[cache.scala 81:50]
+          tagArray_1_5 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_6 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_641) begin // @[cache.scala 87:50]
-          tagArray_1_6 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_640) begin // @[cache.scala 81:50]
+          tagArray_1_6 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_7 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_649) begin // @[cache.scala 87:50]
-          tagArray_1_7 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_648) begin // @[cache.scala 81:50]
+          tagArray_1_7 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_8 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_657) begin // @[cache.scala 87:50]
-          tagArray_1_8 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_656) begin // @[cache.scala 81:50]
+          tagArray_1_8 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_9 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_665) begin // @[cache.scala 87:50]
-          tagArray_1_9 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_664) begin // @[cache.scala 81:50]
+          tagArray_1_9 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_10 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_673) begin // @[cache.scala 87:50]
-          tagArray_1_10 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_672) begin // @[cache.scala 81:50]
+          tagArray_1_10 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_11 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_681) begin // @[cache.scala 87:50]
-          tagArray_1_11 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_680) begin // @[cache.scala 81:50]
+          tagArray_1_11 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_12 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_689) begin // @[cache.scala 87:50]
-          tagArray_1_12 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_688) begin // @[cache.scala 81:50]
+          tagArray_1_12 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_13 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_697) begin // @[cache.scala 87:50]
-          tagArray_1_13 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_696) begin // @[cache.scala 81:50]
+          tagArray_1_13 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_14 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_705) begin // @[cache.scala 87:50]
-          tagArray_1_14 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_704) begin // @[cache.scala 81:50]
+          tagArray_1_14 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 31:29]
       tagArray_1_15 <= 24'h0; // @[cache.scala 31:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        if (replace_set & _GEN_713) begin // @[cache.scala 87:50]
-          tagArray_1_15 <= tag; // @[cache.scala 87:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        if (replace_set & _GEN_712) begin // @[cache.scala 81:50]
+          tagArray_1_15 <= tag; // @[cache.scala 81:50]
         end
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_0 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_0 <= _GEN_206;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_0 <= _GEN_205;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_1 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_1 <= _GEN_207;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_1 <= _GEN_206;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_2 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_2 <= _GEN_208;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_2 <= _GEN_207;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_3 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_3 <= _GEN_209;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_3 <= _GEN_208;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_4 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_4 <= _GEN_210;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_4 <= _GEN_209;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_5 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_5 <= _GEN_211;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_5 <= _GEN_210;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_6 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_6 <= _GEN_212;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_6 <= _GEN_211;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_7 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_7 <= _GEN_213;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_7 <= _GEN_212;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_8 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_8 <= _GEN_214;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_8 <= _GEN_213;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_9 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_9 <= _GEN_215;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_9 <= _GEN_214;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_10 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_10 <= _GEN_216;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_10 <= _GEN_215;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_11 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_11 <= _GEN_217;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_11 <= _GEN_216;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_12 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_12 <= _GEN_218;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_12 <= _GEN_217;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_13 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_13 <= _GEN_219;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_13 <= _GEN_218;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_14 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_14 <= _GEN_220;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_14 <= _GEN_219;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_0_15 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_0_15 <= _GEN_221;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_0_15 <= _GEN_220;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_0 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_0 <= _GEN_222;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_0 <= _GEN_221;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_1 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_1 <= _GEN_223;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_1 <= _GEN_222;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_2 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_2 <= _GEN_224;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_2 <= _GEN_223;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_3 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_3 <= _GEN_225;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_3 <= _GEN_224;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_4 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_4 <= _GEN_226;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_4 <= _GEN_225;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_5 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_5 <= _GEN_227;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_5 <= _GEN_226;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_6 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_6 <= _GEN_228;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_6 <= _GEN_227;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_7 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_7 <= _GEN_229;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_7 <= _GEN_228;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_8 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_8 <= _GEN_230;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_8 <= _GEN_229;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_9 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_9 <= _GEN_231;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_9 <= _GEN_230;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_10 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_10 <= _GEN_232;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_10 <= _GEN_231;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_11 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_11 <= _GEN_233;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_11 <= _GEN_232;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_12 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_12 <= _GEN_234;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_12 <= _GEN_233;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_13 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_13 <= _GEN_235;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_13 <= _GEN_234;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_14 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_14 <= _GEN_236;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_14 <= _GEN_235;
       end
     end
     if (reset) begin // @[cache.scala 32:29]
       validArray_1_15 <= 1'h0; // @[cache.scala 32:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 83:58]
-      if (to_sram_r_bits_last) begin // @[cache.scala 85:35]
-        validArray_1_15 <= _GEN_237;
+    end else if (state_cache == 3'h3 & _off_T) begin // @[cache.scala 77:58]
+      if (to_sram_r_bits_last) begin // @[cache.scala 79:35]
+        validArray_1_15 <= _GEN_236;
       end
     end
-    if (reset) begin // @[cache.scala 47:24]
-      off <= 2'h0; // @[cache.scala 47:24]
-    end else if (!(3'h0 == state_cache)) begin // @[cache.scala 51:26]
-      if (!(3'h1 == state_cache)) begin // @[cache.scala 51:26]
-        if (3'h2 == state_cache) begin // @[cache.scala 51:26]
-          off <= 2'h0; // @[cache.scala 67:19]
+    if (reset) begin // @[cache.scala 43:24]
+      off <= 2'h0; // @[cache.scala 43:24]
+    end else if (!(3'h0 == state_cache)) begin // @[cache.scala 47:26]
+      if (!(3'h1 == state_cache)) begin // @[cache.scala 47:26]
+        if (3'h2 == state_cache) begin // @[cache.scala 47:26]
+          off <= 2'h0; // @[cache.scala 61:19]
         end else begin
-          off <= _GEN_68;
+          off <= _GEN_67;
         end
       end
     end
-    if (reset) begin // @[cache.scala 50:30]
-      state_cache <= 3'h0; // @[cache.scala 50:30]
-    end else if (3'h0 == state_cache) begin // @[cache.scala 51:26]
-      if (hit) begin // @[cache.scala 53:24]
-        state_cache <= 3'h1; // @[cache.scala 54:29]
-      end else if (miss) begin // @[cache.scala 55:30]
-        state_cache <= 3'h2; // @[cache.scala 56:29]
+    if (reset) begin // @[cache.scala 46:30]
+      state_cache <= 3'h0; // @[cache.scala 46:30]
+    end else if (3'h0 == state_cache) begin // @[cache.scala 47:26]
+      if (_T_1) begin // @[cache.scala 49:34]
+        if (hit) begin // @[cache.scala 50:35]
+          state_cache <= 3'h1;
+        end else begin
+          state_cache <= 3'h2;
+        end
       end else begin
-        state_cache <= 3'h0; // @[cache.scala 58:29]
+        state_cache <= 3'h0; // @[cache.scala 52:29]
       end
-    end else if (3'h1 == state_cache) begin // @[cache.scala 51:26]
-      state_cache <= 3'h0; // @[cache.scala 62:25]
-    end else if (3'h2 == state_cache) begin // @[cache.scala 51:26]
-      state_cache <= _state_cache_T_1; // @[cache.scala 66:25]
+    end else if (3'h1 == state_cache) begin // @[cache.scala 47:26]
+      state_cache <= 3'h0; // @[cache.scala 56:25]
+    end else if (3'h2 == state_cache) begin // @[cache.scala 47:26]
+      state_cache <= _state_cache_T_2; // @[cache.scala 60:25]
     end else begin
-      state_cache <= _GEN_67;
+      state_cache <= _GEN_66;
     end
   end
 // Register and memory initialization
@@ -5354,8 +5354,8 @@ module top(
   wire  icache_clock; // @[core.scala 49:27]
   wire  icache_reset; // @[core.scala 49:27]
   wire  icache_from_IFU_ready; // @[core.scala 49:27]
+  wire  icache_from_IFU_valid; // @[core.scala 49:27]
   wire [31:0] icache_from_IFU_bits_addr; // @[core.scala 49:27]
-  wire  icache_to_IFU_ready; // @[core.scala 49:27]
   wire  icache_to_IFU_valid; // @[core.scala 49:27]
   wire [31:0] icache_to_IFU_bits_data; // @[core.scala 49:27]
   wire  icache_to_sram_ar_ready; // @[core.scala 49:27]
@@ -5571,8 +5571,8 @@ module top(
     .clock(icache_clock),
     .reset(icache_reset),
     .from_IFU_ready(icache_from_IFU_ready),
+    .from_IFU_valid(icache_from_IFU_valid),
     .from_IFU_bits_addr(icache_from_IFU_bits_addr),
-    .to_IFU_ready(icache_to_IFU_ready),
     .to_IFU_valid(icache_to_IFU_valid),
     .to_IFU_bits_data(icache_to_IFU_bits_data),
     .to_sram_ar_ready(icache_to_sram_ar_ready),
@@ -5695,8 +5695,8 @@ module top(
   assign IFU_i_from_cache_bits_data = icache_to_IFU_bits_data; // @[Connect.scala 15:22]
   assign icache_clock = clock;
   assign icache_reset = reset;
+  assign icache_from_IFU_valid = IFU_i_to_cache_valid; // @[Connect.scala 16:22]
   assign icache_from_IFU_bits_addr = IFU_i_to_cache_bits_addr; // @[Connect.scala 15:22]
-  assign icache_to_IFU_ready = IFU_i_from_cache_ready; // @[Connect.scala 17:22]
   assign icache_to_sram_ar_ready = sram_i_axi_ar_ready; // @[Connect.scala 17:22]
   assign icache_to_sram_r_valid = sram_i_axi_r_valid; // @[Connect.scala 16:22]
   assign icache_to_sram_r_bits_data = sram_i_axi_r_bits_data; // @[Connect.scala 15:22]
