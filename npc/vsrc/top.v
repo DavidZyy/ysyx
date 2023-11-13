@@ -2500,7 +2500,7 @@ module I_Cache(
   reg  dataArray_15_3_cachedata_MPORT_en_pipe_0;
   reg  dataArray_15_3_cachedata_MPORT_addr_pipe_0;
   reg  replace_set; // @[cache.scala 21:30]
-  wire [3:0] EntId = from_IFU_bits_addr[3:0]; // @[cache.scala 22:41]
+  wire [3:0] EntId = from_IFU_bits_addr[3:0] / 3'h4; // @[cache.scala 22:59]
   wire [3:0] CacheLineId = from_IFU_bits_addr[7:4]; // @[cache.scala 23:41]
   wire [23:0] tag = from_IFU_bits_addr[31:8]; // @[cache.scala 24:39]
   reg  random_num; // @[cache.scala 27:29]
