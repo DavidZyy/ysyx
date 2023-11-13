@@ -131,8 +131,10 @@ void get_cpu() {
 
 // execute on inst, until WB stage
 void npc_exec_once() {
-  while(!top->io_out_wb){
+  int n=10000;
+  while(!top->io_out_wb && n){
     single_cycle();
+    n--;
   }
   single_cycle();
     get_cpu();
@@ -229,7 +231,7 @@ int main(int argc, char *argv[]) {
     // dump_gpr();
     // printf("\n\n");
     // vga_update_screen();
-    nemu_exec_once();
+    // nemu_exec_once();
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
     
     if(terminal)
