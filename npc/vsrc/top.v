@@ -812,7 +812,6 @@ module Lsu_axi(
   input         axi_aw_ready,
   output        axi_aw_valid,
   output [31:0] axi_aw_bits_addr,
-  input         axi_w_ready,
   output        axi_w_valid,
   output [31:0] axi_w_bits_data,
   output [3:0]  axi_w_bits_strb,
@@ -827,13 +826,12 @@ module Lsu_axi(
   wire  _state_lsu_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
   wire [2:0] _state_lsu_T_3 = _state_lsu_T_2 ? 3'h5 : 3'h2; // @[lsu.scala 184:29]
   wire  _state_lsu_T_4 = axi_aw_ready & axi_aw_valid; // @[Decoupled.scala 51:35]
-  wire  _state_lsu_T_5 = axi_w_ready & axi_w_valid; // @[Decoupled.scala 51:35]
-  wire [2:0] _state_lsu_T_7 = _state_lsu_T_4 & _state_lsu_T_5 ? 3'h4 : 3'h3; // @[lsu.scala 187:29]
-  wire  _state_lsu_T_8 = axi_b_ready & axi_b_valid; // @[Decoupled.scala 51:35]
-  wire [2:0] _state_lsu_T_9 = _state_lsu_T_8 ? 3'h5 : 3'h4; // @[lsu.scala 190:29]
+  wire [2:0] _state_lsu_T_5 = _state_lsu_T_4 ? 3'h4 : 3'h3; // @[lsu.scala 187:29]
+  wire  _state_lsu_T_6 = axi_b_ready & axi_b_valid; // @[Decoupled.scala 51:35]
+  wire [2:0] _state_lsu_T_7 = _state_lsu_T_6 ? 3'h5 : 3'h4; // @[lsu.scala 190:29]
   wire [2:0] _GEN_2 = 3'h5 == state_lsu ? 3'h0 : state_lsu; // @[lsu.scala 168:24 193:23 167:28]
-  wire [2:0] _GEN_3 = 3'h4 == state_lsu ? _state_lsu_T_9 : _GEN_2; // @[lsu.scala 168:24 190:23]
-  wire [2:0] _GEN_4 = 3'h3 == state_lsu ? _state_lsu_T_7 : _GEN_3; // @[lsu.scala 168:24 187:23]
+  wire [2:0] _GEN_3 = 3'h4 == state_lsu ? _state_lsu_T_7 : _GEN_2; // @[lsu.scala 168:24 190:23]
+  wire [2:0] _GEN_4 = 3'h3 == state_lsu ? _state_lsu_T_5 : _GEN_3; // @[lsu.scala 168:24 187:23]
   wire [1:0] addr_low_2 = io_in_addr[1:0]; // @[lsu.scala 200:31]
   wire [23:0] _lb_rdata_T_2 = axi_r_bits_data[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 77:12]
   wire [31:0] _lb_rdata_T_4 = {_lb_rdata_T_2,axi_r_bits_data[7:0]}; // @[Cat.scala 33:92]
@@ -1174,7 +1172,6 @@ module EXU(
   input         lsu_axi_master_aw_ready,
   output        lsu_axi_master_aw_valid,
   output [31:0] lsu_axi_master_aw_bits_addr,
-  input         lsu_axi_master_w_ready,
   output        lsu_axi_master_w_valid,
   output [31:0] lsu_axi_master_w_bits_data,
   output [3:0]  lsu_axi_master_w_bits_strb,
@@ -1214,7 +1211,6 @@ module EXU(
   wire  Lsu_i_axi_aw_ready; // @[EXU.scala 25:37]
   wire  Lsu_i_axi_aw_valid; // @[EXU.scala 25:37]
   wire [31:0] Lsu_i_axi_aw_bits_addr; // @[EXU.scala 25:37]
-  wire  Lsu_i_axi_w_ready; // @[EXU.scala 25:37]
   wire  Lsu_i_axi_w_valid; // @[EXU.scala 25:37]
   wire [31:0] Lsu_i_axi_w_bits_data; // @[EXU.scala 25:37]
   wire [3:0] Lsu_i_axi_w_bits_strb; // @[EXU.scala 25:37]
@@ -1280,7 +1276,6 @@ module EXU(
     .axi_aw_ready(Lsu_i_axi_aw_ready),
     .axi_aw_valid(Lsu_i_axi_aw_valid),
     .axi_aw_bits_addr(Lsu_i_axi_aw_bits_addr),
-    .axi_w_ready(Lsu_i_axi_w_ready),
     .axi_w_valid(Lsu_i_axi_w_valid),
     .axi_w_bits_data(Lsu_i_axi_w_bits_data),
     .axi_w_bits_strb(Lsu_i_axi_w_bits_strb),
@@ -1354,7 +1349,6 @@ module EXU(
   assign Lsu_i_axi_r_valid = lsu_axi_master_r_valid; // @[EXU.scala 118:20]
   assign Lsu_i_axi_r_bits_data = lsu_axi_master_r_bits_data; // @[EXU.scala 118:20]
   assign Lsu_i_axi_aw_ready = lsu_axi_master_aw_ready; // @[EXU.scala 118:20]
-  assign Lsu_i_axi_w_ready = lsu_axi_master_w_ready; // @[EXU.scala 118:20]
   assign Lsu_i_axi_b_valid = lsu_axi_master_b_valid; // @[EXU.scala 118:20]
   assign Csr_i_clock = clock;
   assign Csr_i_reset = reset;
@@ -5218,7 +5212,6 @@ module top(
   wire  EXU_i_lsu_axi_master_aw_ready; // @[core.scala 35:27]
   wire  EXU_i_lsu_axi_master_aw_valid; // @[core.scala 35:27]
   wire [31:0] EXU_i_lsu_axi_master_aw_bits_addr; // @[core.scala 35:27]
-  wire  EXU_i_lsu_axi_master_w_ready; // @[core.scala 35:27]
   wire  EXU_i_lsu_axi_master_w_valid; // @[core.scala 35:27]
   wire [31:0] EXU_i_lsu_axi_master_w_bits_data; // @[core.scala 35:27]
   wire [3:0] EXU_i_lsu_axi_master_w_bits_strb; // @[core.scala 35:27]
@@ -5437,7 +5430,6 @@ module top(
     .lsu_axi_master_aw_ready(EXU_i_lsu_axi_master_aw_ready),
     .lsu_axi_master_aw_valid(EXU_i_lsu_axi_master_aw_valid),
     .lsu_axi_master_aw_bits_addr(EXU_i_lsu_axi_master_aw_bits_addr),
-    .lsu_axi_master_w_ready(EXU_i_lsu_axi_master_w_ready),
     .lsu_axi_master_w_valid(EXU_i_lsu_axi_master_w_valid),
     .lsu_axi_master_w_bits_data(EXU_i_lsu_axi_master_w_bits_data),
     .lsu_axi_master_w_bits_strb(EXU_i_lsu_axi_master_w_bits_strb),
@@ -5592,7 +5584,6 @@ module top(
   assign EXU_i_lsu_axi_master_r_valid = sram_i2_axi_r_valid; // @[Connect.scala 16:22]
   assign EXU_i_lsu_axi_master_r_bits_data = sram_i2_axi_r_bits_data; // @[Connect.scala 15:22]
   assign EXU_i_lsu_axi_master_aw_ready = sram_i2_axi_aw_ready; // @[Connect.scala 17:22]
-  assign EXU_i_lsu_axi_master_w_ready = sram_i2_axi_w_ready; // @[Connect.scala 17:22]
   assign EXU_i_lsu_axi_master_b_valid = sram_i2_axi_b_valid; // @[Connect.scala 16:22]
   assign WBU_i_from_EXU_valid = EXU_i_to_WBU_valid; // @[Connect.scala 16:22]
   assign WBU_i_from_EXU_bits_alu_result = EXU_i_to_WBU_bits_alu_result; // @[Connect.scala 15:22]
