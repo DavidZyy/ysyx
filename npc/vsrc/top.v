@@ -817,6 +817,7 @@ module Lsu_cache(
   reg [31:0] _RAND_0;
 `endif // RANDOMIZE_REG_INIT
   reg [2:0] state_lsu; // @[lsu.scala 306:28]
+  wire  _T_1 = 3'h1 == state_lsu; // @[lsu.scala 307:24]
   wire  _state_lsu_T = to_cache_ready & to_cache_valid; // @[Decoupled.scala 51:35]
   wire  _state_lsu_T_2 = from_cache_ready & from_cache_valid; // @[Decoupled.scala 51:35]
   wire [2:0] _state_lsu_T_3 = _state_lsu_T_2 ? 3'h5 : 3'h2; // @[lsu.scala 323:29]
@@ -872,7 +873,7 @@ module Lsu_cache(
   assign io_out_rdata = 4'h3 == io_in_op ? from_cache_bits_data : _io_out_rdata_T_9; // @[Mux.scala 81:58]
   assign io_out_end = 3'h5 == state_lsu; // @[Mux.scala 81:61]
   assign io_out_idle = 3'h0 == state_lsu; // @[Mux.scala 81:61]
-  assign to_cache_valid = 3'h1 == state_lsu; // @[Mux.scala 81:61]
+  assign to_cache_valid = _T_3 | _T_1; // @[Mux.scala 81:58]
   assign to_cache_bits_addr = io_in_addr; // @[lsu.scala 421:28]
   assign to_cache_bits_wdata = io_in_wdata; // @[lsu.scala 422:28]
   assign to_cache_bits_is_write = _T_4 | _T_3; // @[Mux.scala 81:58]
