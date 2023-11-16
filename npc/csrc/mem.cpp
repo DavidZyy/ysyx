@@ -134,7 +134,7 @@ extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
 extern word_t text_max;
 extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
   // printf("%x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
-  pmem_read(raddr, rdata);
+  // pmem_read(raddr, rdata);
   // store also call read
   if(raddr >= text_max) {
     // mtrace here, if small, is instruction fetch
@@ -144,6 +144,7 @@ extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
     // inst trace here
     IFDEF(CONFIG_ITRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
   }
+  pmem_read(raddr, rdata);
 }
 
 extern "C" void vaddr_write(sword_t waddr, sword_t wdata, char wmask) {
