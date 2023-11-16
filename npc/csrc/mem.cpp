@@ -101,7 +101,8 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
     vgactl_port_base[1] = wdata;
     npc_write_device = 1;
   } else {
-    if(!in_pmem(waddr)) out_of_bound(waddr);
+    // if(!in_pmem(waddr)) out_of_bound(waddr);
+    if(!in_pmem(waddr)) return;
 
     char addr_low = waddr & align_mask;
 
