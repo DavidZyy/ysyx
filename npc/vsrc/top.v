@@ -811,7 +811,8 @@ module Lsu_cache(
   output [31:0] to_cache_bits_wmask,
   output        from_cache_ready,
   input         from_cache_valid,
-  input  [31:0] from_cache_bits_data
+  input  [31:0] from_cache_bits_data,
+  input         from_cache_bits_bresp
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -819,14 +820,15 @@ module Lsu_cache(
   reg [2:0] state_lsu; // @[lsu.scala 306:28]
   wire  _T_1 = 3'h1 == state_lsu; // @[lsu.scala 307:24]
   wire  _state_lsu_T = to_cache_ready & to_cache_valid; // @[Decoupled.scala 51:35]
+  wire  _T_2 = 3'h2 == state_lsu; // @[lsu.scala 307:24]
   wire  _state_lsu_T_2 = from_cache_ready & from_cache_valid; // @[Decoupled.scala 51:35]
   wire [2:0] _state_lsu_T_3 = _state_lsu_T_2 ? 3'h5 : 3'h2; // @[lsu.scala 323:29]
   wire  _T_3 = 3'h3 == state_lsu; // @[lsu.scala 307:24]
   wire [2:0] _state_lsu_T_5 = _state_lsu_T ? 3'h4 : 3'h3; // @[lsu.scala 328:29]
   wire  _T_4 = 3'h4 == state_lsu; // @[lsu.scala 307:24]
-  wire [2:0] _state_lsu_T_7 = _state_lsu_T_2 ? 3'h5 : 3'h4; // @[lsu.scala 331:29]
+  wire [2:0] _state_lsu_T_8 = _state_lsu_T_2 & from_cache_bits_bresp ? 3'h5 : 3'h4; // @[lsu.scala 331:29]
   wire [2:0] _GEN_2 = 3'h5 == state_lsu ? 3'h0 : state_lsu; // @[lsu.scala 307:24 335:23 306:28]
-  wire [2:0] _GEN_3 = 3'h4 == state_lsu ? _state_lsu_T_7 : _GEN_2; // @[lsu.scala 307:24 331:23]
+  wire [2:0] _GEN_3 = 3'h4 == state_lsu ? _state_lsu_T_8 : _GEN_2; // @[lsu.scala 307:24 331:23]
   wire [2:0] _GEN_4 = 3'h3 == state_lsu ? _state_lsu_T_5 : _GEN_3; // @[lsu.scala 307:24 328:23]
   wire [1:0] addr_low_2 = io_in_addr[1:0]; // @[lsu.scala 342:31]
   wire [23:0] _lb_rdata_T_2 = from_cache_bits_data[7] ? 24'hffffff : 24'h0; // @[Bitwise.scala 77:12]
@@ -879,7 +881,7 @@ module Lsu_cache(
   assign to_cache_bits_wdata = io_in_wdata; // @[lsu.scala 422:28]
   assign to_cache_bits_is_write = _T_4 | _T_3; // @[Mux.scala 81:58]
   assign to_cache_bits_wmask = {{28'd0}, wmask}; // @[lsu.scala 423:28]
-  assign from_cache_ready = 3'h2 == state_lsu; // @[Mux.scala 81:61]
+  assign from_cache_ready = _T_4 | _T_2; // @[Mux.scala 81:58]
   always @(posedge clock) begin
     if (reset) begin // @[lsu.scala 306:28]
       state_lsu <= 3'h0; // @[lsu.scala 306:28]
@@ -1166,7 +1168,8 @@ module EXU(
   output        lsu_to_cache_bits_is_write,
   output [31:0] lsu_to_cache_bits_wmask,
   input         lsu_from_cache_valid,
-  input  [31:0] lsu_from_cache_bits_data
+  input  [31:0] lsu_from_cache_bits_data,
+  input         lsu_from_cache_bits_bresp
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -1202,6 +1205,7 @@ module EXU(
   wire  Lsu_i_from_cache_ready; // @[EXU.scala 28:35]
   wire  Lsu_i_from_cache_valid; // @[EXU.scala 28:35]
   wire [31:0] Lsu_i_from_cache_bits_data; // @[EXU.scala 28:35]
+  wire  Lsu_i_from_cache_bits_bresp; // @[EXU.scala 28:35]
   wire  Csr_i_clock; // @[EXU.scala 29:35]
   wire  Csr_i_reset; // @[EXU.scala 29:35]
   wire [2:0] Csr_i_io_in_op; // @[EXU.scala 29:35]
@@ -1261,7 +1265,8 @@ module EXU(
     .to_cache_bits_wmask(Lsu_i_to_cache_bits_wmask),
     .from_cache_ready(Lsu_i_from_cache_ready),
     .from_cache_valid(Lsu_i_from_cache_valid),
-    .from_cache_bits_data(Lsu_i_from_cache_bits_data)
+    .from_cache_bits_data(Lsu_i_from_cache_bits_data),
+    .from_cache_bits_bresp(Lsu_i_from_cache_bits_bresp)
   );
   Csr Csr_i ( // @[EXU.scala 29:35]
     .clock(Csr_i_clock),
@@ -1326,6 +1331,7 @@ module EXU(
   assign Lsu_i_to_cache_ready = lsu_to_cache_ready; // @[EXU.scala 122:20]
   assign Lsu_i_from_cache_valid = lsu_from_cache_valid; // @[EXU.scala 123:20]
   assign Lsu_i_from_cache_bits_data = lsu_from_cache_bits_data; // @[EXU.scala 123:20]
+  assign Lsu_i_from_cache_bits_bresp = lsu_from_cache_bits_bresp; // @[EXU.scala 123:20]
   assign Csr_i_clock = clock;
   assign Csr_i_reset = reset;
   assign Csr_i_io_in_op = from_ISU_bits_ctrl_sig_csr_op; // @[EXU.scala 94:25]
@@ -1688,6 +1694,7 @@ module D_Cache(
   input  [31:0] from_LSU_bits_wmask,
   output        to_LSU_valid,
   output [31:0] to_LSU_bits_data,
+  output        to_LSU_bits_bresp,
   input         to_sram_ar_ready,
   output        to_sram_ar_valid,
   output [31:0] to_sram_ar_bits_addr,
@@ -4254,70 +4261,70 @@ module D_Cache(
   wire [31:0] _GEN_1019 = _GEN_1115 & _GEN_1135 ? dataArray_15_1_toMemData_MPORT_data : _GEN_1018; // @[dcache.scala 140:{27,27}]
   wire [31:0] _GEN_1020 = _GEN_1115 & _GEN_1137 ? dataArray_15_2_toMemData_MPORT_data : _GEN_1019; // @[dcache.scala 140:{27,27}]
   wire [2:0] _GEN_1854 = {{1'd0}, off}; // @[dcache.scala 142:34]
-  wire [31:0] _GEN_1022 = dataArray_0_0_cachedata_MPORT_data; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1023 = _GEN_1116 & _GEN_1390 ? dataArray_0_1_cachedata_MPORT_data : _GEN_1022; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1024 = _GEN_1116 & _GEN_1392 ? dataArray_0_2_cachedata_MPORT_data : _GEN_1023; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1025 = _GEN_1116 & _GEN_1394 ? dataArray_0_3_cachedata_MPORT_data : _GEN_1024; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1026 = _GEN_1087 & _GEN_1396 ? dataArray_1_0_cachedata_MPORT_data : _GEN_1025; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1027 = _GEN_1087 & _GEN_1390 ? dataArray_1_1_cachedata_MPORT_data : _GEN_1026; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1028 = _GEN_1087 & _GEN_1392 ? dataArray_1_2_cachedata_MPORT_data : _GEN_1027; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1029 = _GEN_1087 & _GEN_1394 ? dataArray_1_3_cachedata_MPORT_data : _GEN_1028; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1030 = _GEN_1089 & _GEN_1396 ? dataArray_2_0_cachedata_MPORT_data : _GEN_1029; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1031 = _GEN_1089 & _GEN_1390 ? dataArray_2_1_cachedata_MPORT_data : _GEN_1030; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1032 = _GEN_1089 & _GEN_1392 ? dataArray_2_2_cachedata_MPORT_data : _GEN_1031; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1033 = _GEN_1089 & _GEN_1394 ? dataArray_2_3_cachedata_MPORT_data : _GEN_1032; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1034 = _GEN_1091 & _GEN_1396 ? dataArray_3_0_cachedata_MPORT_data : _GEN_1033; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1035 = _GEN_1091 & _GEN_1390 ? dataArray_3_1_cachedata_MPORT_data : _GEN_1034; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1036 = _GEN_1091 & _GEN_1392 ? dataArray_3_2_cachedata_MPORT_data : _GEN_1035; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1037 = _GEN_1091 & _GEN_1394 ? dataArray_3_3_cachedata_MPORT_data : _GEN_1036; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1038 = _GEN_1093 & _GEN_1396 ? dataArray_4_0_cachedata_MPORT_data : _GEN_1037; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1039 = _GEN_1093 & _GEN_1390 ? dataArray_4_1_cachedata_MPORT_data : _GEN_1038; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1040 = _GEN_1093 & _GEN_1392 ? dataArray_4_2_cachedata_MPORT_data : _GEN_1039; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1041 = _GEN_1093 & _GEN_1394 ? dataArray_4_3_cachedata_MPORT_data : _GEN_1040; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1042 = _GEN_1095 & _GEN_1396 ? dataArray_5_0_cachedata_MPORT_data : _GEN_1041; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1043 = _GEN_1095 & _GEN_1390 ? dataArray_5_1_cachedata_MPORT_data : _GEN_1042; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1044 = _GEN_1095 & _GEN_1392 ? dataArray_5_2_cachedata_MPORT_data : _GEN_1043; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1045 = _GEN_1095 & _GEN_1394 ? dataArray_5_3_cachedata_MPORT_data : _GEN_1044; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1046 = _GEN_1097 & _GEN_1396 ? dataArray_6_0_cachedata_MPORT_data : _GEN_1045; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1047 = _GEN_1097 & _GEN_1390 ? dataArray_6_1_cachedata_MPORT_data : _GEN_1046; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1048 = _GEN_1097 & _GEN_1392 ? dataArray_6_2_cachedata_MPORT_data : _GEN_1047; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1049 = _GEN_1097 & _GEN_1394 ? dataArray_6_3_cachedata_MPORT_data : _GEN_1048; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1050 = _GEN_1099 & _GEN_1396 ? dataArray_7_0_cachedata_MPORT_data : _GEN_1049; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1051 = _GEN_1099 & _GEN_1390 ? dataArray_7_1_cachedata_MPORT_data : _GEN_1050; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1052 = _GEN_1099 & _GEN_1392 ? dataArray_7_2_cachedata_MPORT_data : _GEN_1051; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1053 = _GEN_1099 & _GEN_1394 ? dataArray_7_3_cachedata_MPORT_data : _GEN_1052; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1054 = _GEN_1101 & _GEN_1396 ? dataArray_8_0_cachedata_MPORT_data : _GEN_1053; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1055 = _GEN_1101 & _GEN_1390 ? dataArray_8_1_cachedata_MPORT_data : _GEN_1054; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1056 = _GEN_1101 & _GEN_1392 ? dataArray_8_2_cachedata_MPORT_data : _GEN_1055; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1057 = _GEN_1101 & _GEN_1394 ? dataArray_8_3_cachedata_MPORT_data : _GEN_1056; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1058 = _GEN_1103 & _GEN_1396 ? dataArray_9_0_cachedata_MPORT_data : _GEN_1057; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1059 = _GEN_1103 & _GEN_1390 ? dataArray_9_1_cachedata_MPORT_data : _GEN_1058; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1060 = _GEN_1103 & _GEN_1392 ? dataArray_9_2_cachedata_MPORT_data : _GEN_1059; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1061 = _GEN_1103 & _GEN_1394 ? dataArray_9_3_cachedata_MPORT_data : _GEN_1060; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1062 = _GEN_1105 & _GEN_1396 ? dataArray_10_0_cachedata_MPORT_data : _GEN_1061; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1063 = _GEN_1105 & _GEN_1390 ? dataArray_10_1_cachedata_MPORT_data : _GEN_1062; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1064 = _GEN_1105 & _GEN_1392 ? dataArray_10_2_cachedata_MPORT_data : _GEN_1063; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1065 = _GEN_1105 & _GEN_1394 ? dataArray_10_3_cachedata_MPORT_data : _GEN_1064; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1066 = _GEN_1107 & _GEN_1396 ? dataArray_11_0_cachedata_MPORT_data : _GEN_1065; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1067 = _GEN_1107 & _GEN_1390 ? dataArray_11_1_cachedata_MPORT_data : _GEN_1066; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1068 = _GEN_1107 & _GEN_1392 ? dataArray_11_2_cachedata_MPORT_data : _GEN_1067; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1069 = _GEN_1107 & _GEN_1394 ? dataArray_11_3_cachedata_MPORT_data : _GEN_1068; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1070 = _GEN_1109 & _GEN_1396 ? dataArray_12_0_cachedata_MPORT_data : _GEN_1069; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1071 = _GEN_1109 & _GEN_1390 ? dataArray_12_1_cachedata_MPORT_data : _GEN_1070; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1072 = _GEN_1109 & _GEN_1392 ? dataArray_12_2_cachedata_MPORT_data : _GEN_1071; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1073 = _GEN_1109 & _GEN_1394 ? dataArray_12_3_cachedata_MPORT_data : _GEN_1072; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1074 = _GEN_1111 & _GEN_1396 ? dataArray_13_0_cachedata_MPORT_data : _GEN_1073; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1075 = _GEN_1111 & _GEN_1390 ? dataArray_13_1_cachedata_MPORT_data : _GEN_1074; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1076 = _GEN_1111 & _GEN_1392 ? dataArray_13_2_cachedata_MPORT_data : _GEN_1075; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1077 = _GEN_1111 & _GEN_1394 ? dataArray_13_3_cachedata_MPORT_data : _GEN_1076; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1078 = _GEN_1113 & _GEN_1396 ? dataArray_14_0_cachedata_MPORT_data : _GEN_1077; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1079 = _GEN_1113 & _GEN_1390 ? dataArray_14_1_cachedata_MPORT_data : _GEN_1078; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1080 = _GEN_1113 & _GEN_1392 ? dataArray_14_2_cachedata_MPORT_data : _GEN_1079; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1081 = _GEN_1113 & _GEN_1394 ? dataArray_14_3_cachedata_MPORT_data : _GEN_1080; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1082 = _GEN_1115 & _GEN_1396 ? dataArray_15_0_cachedata_MPORT_data : _GEN_1081; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1083 = _GEN_1115 & _GEN_1390 ? dataArray_15_1_cachedata_MPORT_data : _GEN_1082; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1084 = _GEN_1115 & _GEN_1392 ? dataArray_15_2_cachedata_MPORT_data : _GEN_1083; // @[dcache.scala 145:{28,28}]
-  wire [31:0] _GEN_1085 = _GEN_1115 & _GEN_1394 ? dataArray_15_3_cachedata_MPORT_data : _GEN_1084; // @[dcache.scala 145:{28,28}]
+  wire [31:0] _GEN_1022 = dataArray_0_0_cachedata_MPORT_data; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1023 = _GEN_1116 & _GEN_1390 ? dataArray_0_1_cachedata_MPORT_data : _GEN_1022; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1024 = _GEN_1116 & _GEN_1392 ? dataArray_0_2_cachedata_MPORT_data : _GEN_1023; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1025 = _GEN_1116 & _GEN_1394 ? dataArray_0_3_cachedata_MPORT_data : _GEN_1024; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1026 = _GEN_1087 & _GEN_1396 ? dataArray_1_0_cachedata_MPORT_data : _GEN_1025; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1027 = _GEN_1087 & _GEN_1390 ? dataArray_1_1_cachedata_MPORT_data : _GEN_1026; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1028 = _GEN_1087 & _GEN_1392 ? dataArray_1_2_cachedata_MPORT_data : _GEN_1027; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1029 = _GEN_1087 & _GEN_1394 ? dataArray_1_3_cachedata_MPORT_data : _GEN_1028; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1030 = _GEN_1089 & _GEN_1396 ? dataArray_2_0_cachedata_MPORT_data : _GEN_1029; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1031 = _GEN_1089 & _GEN_1390 ? dataArray_2_1_cachedata_MPORT_data : _GEN_1030; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1032 = _GEN_1089 & _GEN_1392 ? dataArray_2_2_cachedata_MPORT_data : _GEN_1031; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1033 = _GEN_1089 & _GEN_1394 ? dataArray_2_3_cachedata_MPORT_data : _GEN_1032; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1034 = _GEN_1091 & _GEN_1396 ? dataArray_3_0_cachedata_MPORT_data : _GEN_1033; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1035 = _GEN_1091 & _GEN_1390 ? dataArray_3_1_cachedata_MPORT_data : _GEN_1034; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1036 = _GEN_1091 & _GEN_1392 ? dataArray_3_2_cachedata_MPORT_data : _GEN_1035; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1037 = _GEN_1091 & _GEN_1394 ? dataArray_3_3_cachedata_MPORT_data : _GEN_1036; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1038 = _GEN_1093 & _GEN_1396 ? dataArray_4_0_cachedata_MPORT_data : _GEN_1037; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1039 = _GEN_1093 & _GEN_1390 ? dataArray_4_1_cachedata_MPORT_data : _GEN_1038; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1040 = _GEN_1093 & _GEN_1392 ? dataArray_4_2_cachedata_MPORT_data : _GEN_1039; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1041 = _GEN_1093 & _GEN_1394 ? dataArray_4_3_cachedata_MPORT_data : _GEN_1040; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1042 = _GEN_1095 & _GEN_1396 ? dataArray_5_0_cachedata_MPORT_data : _GEN_1041; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1043 = _GEN_1095 & _GEN_1390 ? dataArray_5_1_cachedata_MPORT_data : _GEN_1042; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1044 = _GEN_1095 & _GEN_1392 ? dataArray_5_2_cachedata_MPORT_data : _GEN_1043; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1045 = _GEN_1095 & _GEN_1394 ? dataArray_5_3_cachedata_MPORT_data : _GEN_1044; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1046 = _GEN_1097 & _GEN_1396 ? dataArray_6_0_cachedata_MPORT_data : _GEN_1045; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1047 = _GEN_1097 & _GEN_1390 ? dataArray_6_1_cachedata_MPORT_data : _GEN_1046; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1048 = _GEN_1097 & _GEN_1392 ? dataArray_6_2_cachedata_MPORT_data : _GEN_1047; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1049 = _GEN_1097 & _GEN_1394 ? dataArray_6_3_cachedata_MPORT_data : _GEN_1048; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1050 = _GEN_1099 & _GEN_1396 ? dataArray_7_0_cachedata_MPORT_data : _GEN_1049; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1051 = _GEN_1099 & _GEN_1390 ? dataArray_7_1_cachedata_MPORT_data : _GEN_1050; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1052 = _GEN_1099 & _GEN_1392 ? dataArray_7_2_cachedata_MPORT_data : _GEN_1051; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1053 = _GEN_1099 & _GEN_1394 ? dataArray_7_3_cachedata_MPORT_data : _GEN_1052; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1054 = _GEN_1101 & _GEN_1396 ? dataArray_8_0_cachedata_MPORT_data : _GEN_1053; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1055 = _GEN_1101 & _GEN_1390 ? dataArray_8_1_cachedata_MPORT_data : _GEN_1054; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1056 = _GEN_1101 & _GEN_1392 ? dataArray_8_2_cachedata_MPORT_data : _GEN_1055; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1057 = _GEN_1101 & _GEN_1394 ? dataArray_8_3_cachedata_MPORT_data : _GEN_1056; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1058 = _GEN_1103 & _GEN_1396 ? dataArray_9_0_cachedata_MPORT_data : _GEN_1057; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1059 = _GEN_1103 & _GEN_1390 ? dataArray_9_1_cachedata_MPORT_data : _GEN_1058; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1060 = _GEN_1103 & _GEN_1392 ? dataArray_9_2_cachedata_MPORT_data : _GEN_1059; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1061 = _GEN_1103 & _GEN_1394 ? dataArray_9_3_cachedata_MPORT_data : _GEN_1060; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1062 = _GEN_1105 & _GEN_1396 ? dataArray_10_0_cachedata_MPORT_data : _GEN_1061; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1063 = _GEN_1105 & _GEN_1390 ? dataArray_10_1_cachedata_MPORT_data : _GEN_1062; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1064 = _GEN_1105 & _GEN_1392 ? dataArray_10_2_cachedata_MPORT_data : _GEN_1063; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1065 = _GEN_1105 & _GEN_1394 ? dataArray_10_3_cachedata_MPORT_data : _GEN_1064; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1066 = _GEN_1107 & _GEN_1396 ? dataArray_11_0_cachedata_MPORT_data : _GEN_1065; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1067 = _GEN_1107 & _GEN_1390 ? dataArray_11_1_cachedata_MPORT_data : _GEN_1066; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1068 = _GEN_1107 & _GEN_1392 ? dataArray_11_2_cachedata_MPORT_data : _GEN_1067; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1069 = _GEN_1107 & _GEN_1394 ? dataArray_11_3_cachedata_MPORT_data : _GEN_1068; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1070 = _GEN_1109 & _GEN_1396 ? dataArray_12_0_cachedata_MPORT_data : _GEN_1069; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1071 = _GEN_1109 & _GEN_1390 ? dataArray_12_1_cachedata_MPORT_data : _GEN_1070; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1072 = _GEN_1109 & _GEN_1392 ? dataArray_12_2_cachedata_MPORT_data : _GEN_1071; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1073 = _GEN_1109 & _GEN_1394 ? dataArray_12_3_cachedata_MPORT_data : _GEN_1072; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1074 = _GEN_1111 & _GEN_1396 ? dataArray_13_0_cachedata_MPORT_data : _GEN_1073; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1075 = _GEN_1111 & _GEN_1390 ? dataArray_13_1_cachedata_MPORT_data : _GEN_1074; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1076 = _GEN_1111 & _GEN_1392 ? dataArray_13_2_cachedata_MPORT_data : _GEN_1075; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1077 = _GEN_1111 & _GEN_1394 ? dataArray_13_3_cachedata_MPORT_data : _GEN_1076; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1078 = _GEN_1113 & _GEN_1396 ? dataArray_14_0_cachedata_MPORT_data : _GEN_1077; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1079 = _GEN_1113 & _GEN_1390 ? dataArray_14_1_cachedata_MPORT_data : _GEN_1078; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1080 = _GEN_1113 & _GEN_1392 ? dataArray_14_2_cachedata_MPORT_data : _GEN_1079; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1081 = _GEN_1113 & _GEN_1394 ? dataArray_14_3_cachedata_MPORT_data : _GEN_1080; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1082 = _GEN_1115 & _GEN_1396 ? dataArray_15_0_cachedata_MPORT_data : _GEN_1081; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1083 = _GEN_1115 & _GEN_1390 ? dataArray_15_1_cachedata_MPORT_data : _GEN_1082; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1084 = _GEN_1115 & _GEN_1392 ? dataArray_15_2_cachedata_MPORT_data : _GEN_1083; // @[dcache.scala 145:{29,29}]
+  wire [31:0] _GEN_1085 = _GEN_1115 & _GEN_1394 ? dataArray_15_3_cachedata_MPORT_data : _GEN_1084; // @[dcache.scala 145:{29,29}]
   assign dataArray_0_0_cachedata_MPORT_en = dataArray_0_0_cachedata_MPORT_en_pipe_0;
   assign dataArray_0_0_cachedata_MPORT_addr = dataArray_0_0_cachedata_MPORT_addr_pipe_0;
   assign dataArray_0_0_cachedata_MPORT_data = dataArray_0_0[dataArray_0_0_cachedata_MPORT_addr]; // @[dcache.scala 29:33]
@@ -5408,7 +5415,8 @@ module D_Cache(
   assign dataArray_15_3_MPORT_1_en = state_dcache == 4'h2;
   assign from_LSU_ready = 4'h0 == state_dcache; // @[Mux.scala 81:61]
   assign to_LSU_valid = _T_3 | _T_2; // @[Mux.scala 81:58]
-  assign to_LSU_bits_data = hit ? _GEN_1085 : 32'h0; // @[dcache.scala 145:28]
+  assign to_LSU_bits_data = hit ? _GEN_1085 : 32'h0; // @[dcache.scala 145:29]
+  assign to_LSU_bits_bresp = 4'h2 == state_dcache; // @[Mux.scala 81:61]
   assign to_sram_ar_valid = 4'h7 == state_dcache; // @[Mux.scala 81:61]
   assign to_sram_ar_bits_addr = _to_sram_ar_bits_addr_T_3[31:0]; // @[dcache.scala 129:27]
   assign to_sram_ar_bits_len = {{6'd0}, _to_sram_ar_bits_len_T_1}; // @[dcache.scala 131:27]
@@ -8852,6 +8860,7 @@ module top(
   wire [31:0] EXU_i_lsu_to_cache_bits_wmask; // @[core.scala 36:27]
   wire  EXU_i_lsu_from_cache_valid; // @[core.scala 36:27]
   wire [31:0] EXU_i_lsu_from_cache_bits_data; // @[core.scala 36:27]
+  wire  EXU_i_lsu_from_cache_bits_bresp; // @[core.scala 36:27]
   wire  WBU_i_from_EXU_ready; // @[core.scala 37:27]
   wire  WBU_i_from_EXU_valid; // @[core.scala 37:27]
   wire [31:0] WBU_i_from_EXU_bits_alu_result; // @[core.scala 37:27]
@@ -8901,6 +8910,7 @@ module top(
   wire [31:0] dcache_from_LSU_bits_wmask; // @[core.scala 62:27]
   wire  dcache_to_LSU_valid; // @[core.scala 62:27]
   wire [31:0] dcache_to_LSU_bits_data; // @[core.scala 62:27]
+  wire  dcache_to_LSU_bits_bresp; // @[core.scala 62:27]
   wire  dcache_to_sram_ar_ready; // @[core.scala 62:27]
   wire  dcache_to_sram_ar_valid; // @[core.scala 62:27]
   wire [31:0] dcache_to_sram_ar_bits_addr; // @[core.scala 62:27]
@@ -9064,7 +9074,8 @@ module top(
     .lsu_to_cache_bits_is_write(EXU_i_lsu_to_cache_bits_is_write),
     .lsu_to_cache_bits_wmask(EXU_i_lsu_to_cache_bits_wmask),
     .lsu_from_cache_valid(EXU_i_lsu_from_cache_valid),
-    .lsu_from_cache_bits_data(EXU_i_lsu_from_cache_bits_data)
+    .lsu_from_cache_bits_data(EXU_i_lsu_from_cache_bits_data),
+    .lsu_from_cache_bits_bresp(EXU_i_lsu_from_cache_bits_bresp)
   );
   WBU WBU_i ( // @[core.scala 37:27]
     .from_EXU_ready(WBU_i_from_EXU_ready),
@@ -9122,6 +9133,7 @@ module top(
     .from_LSU_bits_wmask(dcache_from_LSU_bits_wmask),
     .to_LSU_valid(dcache_to_LSU_valid),
     .to_LSU_bits_data(dcache_to_LSU_bits_data),
+    .to_LSU_bits_bresp(dcache_to_LSU_bits_bresp),
     .to_sram_ar_ready(dcache_to_sram_ar_ready),
     .to_sram_ar_valid(dcache_to_sram_ar_valid),
     .to_sram_ar_bits_addr(dcache_to_sram_ar_bits_addr),
@@ -9214,6 +9226,7 @@ module top(
   assign EXU_i_lsu_to_cache_ready = dcache_from_LSU_ready; // @[Connect.scala 17:22]
   assign EXU_i_lsu_from_cache_valid = dcache_to_LSU_valid; // @[Connect.scala 16:22]
   assign EXU_i_lsu_from_cache_bits_data = dcache_to_LSU_bits_data; // @[Connect.scala 15:22]
+  assign EXU_i_lsu_from_cache_bits_bresp = dcache_to_LSU_bits_bresp; // @[Connect.scala 15:22]
   assign WBU_i_from_EXU_valid = EXU_i_to_WBU_valid; // @[Connect.scala 16:22]
   assign WBU_i_from_EXU_bits_alu_result = EXU_i_to_WBU_bits_alu_result; // @[Connect.scala 15:22]
   assign WBU_i_from_EXU_bits_mdu_result = EXU_i_to_WBU_bits_mdu_result; // @[Connect.scala 15:22]
