@@ -217,8 +217,8 @@ int main(int argc, char *argv[]) {
   top->reset = 0;
 
   uint64_t i;
-  uint64_t times = -1;
-  // uint64_t times = 100;
+  // uint64_t times = -1;
+  uint64_t times = 1000;
 
   int begin = 1;
 
@@ -230,7 +230,7 @@ int main(int argc, char *argv[]) {
     // dump_gpr();
     // printf("\n\n");
     // vga_update_screen();
-    // nemu_exec_once();
+    nemu_exec_once();
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
     
     if(terminal)
