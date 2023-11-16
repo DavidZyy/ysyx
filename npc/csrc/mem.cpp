@@ -148,9 +148,10 @@ extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
 }
 
 extern "C" void vaddr_write(sword_t waddr, sword_t wdata, char wmask) {
-  pmem_write(waddr, wdata, wmask);
+  // pmem_write(waddr, wdata, wmask);
   IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
   IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
+  pmem_write(waddr, wdata, wmask);
 }
 
 long load_img(const char *img_file) {
