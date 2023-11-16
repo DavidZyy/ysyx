@@ -38,7 +38,9 @@ static inline bool in_vmem(paddr_t addr) {
   return (addr >= FB_ADDR) && (addr < FB_ADDR+SCREEN_SZ);
 }
 
+extern int terminal;
 static void out_of_bound(paddr_t addr) {
+  terminal = 1;
   panic("npc: address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
       addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_pc);
 }
