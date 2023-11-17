@@ -2004,7 +2004,7 @@ module D_Cache(
   wire  hit = hitArray_0 | hitArray_1; // @[dcache.scala 38:33]
   wire  SetId = _GEN_47 == tag; // @[Mux.scala 81:61]
   wire [4:0] hitCacheAddr_hi = {SetId,CacheLineId}; // @[Cat.scala 33:92]
-  reg [2:0] off; // @[dcache.scala 49:24]
+  reg [1:0] off; // @[dcache.scala 49:24]
   reg [3:0] state_dcache; // @[dcache.scala 55:31]
   wire  _T_1 = from_LSU_ready & from_LSU_valid; // @[Decoupled.scala 51:35]
   wire [3:0] _state_dcache_T = from_LSU_bits_is_write ? 4'h2 : 4'h1; // @[dcache.scala 60:40]
@@ -2062,107 +2062,108 @@ module D_Cache(
   wire  _T_5 = 4'h4 == state_dcache; // @[dcache.scala 56:27]
   wire  _state_dcache_T_2 = to_sram_aw_ready & to_sram_aw_valid; // @[Decoupled.scala 51:35]
   wire [3:0] _state_dcache_T_3 = _state_dcache_T_2 ? 4'h5 : 4'h4; // @[dcache.scala 79:32]
-  wire [3:0] _state_dcache_T_4 = to_sram_w_bits_last ? 4'h6 : 4'h5; // @[dcache.scala 83:32]
+  wire [1:0] _state_dcache_T_4 = ~off; // @[dcache.scala 83:33]
+  wire [3:0] _state_dcache_T_6 = _state_dcache_T_4 == 2'h0 ? 4'h6 : 4'h5; // @[dcache.scala 83:32]
   wire  _off_T = to_sram_w_ready & to_sram_w_valid; // @[Decoupled.scala 51:35]
-  wire [2:0] _off_T_2 = off + 3'h1; // @[dcache.scala 84:52]
-  wire [2:0] _off_T_3 = _off_T ? _off_T_2 : off; // @[dcache.scala 84:32]
+  wire [1:0] _off_T_2 = off + 2'h1; // @[dcache.scala 84:52]
+  wire [1:0] _off_T_3 = _off_T ? _off_T_2 : off; // @[dcache.scala 84:32]
   wire  _T_8 = 4'h7 == state_dcache; // @[dcache.scala 56:27]
-  wire  _state_dcache_T_5 = to_sram_ar_ready & to_sram_ar_valid; // @[Decoupled.scala 51:35]
-  wire [3:0] _state_dcache_T_6 = _state_dcache_T_5 ? 4'h8 : 4'h7; // @[dcache.scala 91:32]
-  wire [3:0] _state_dcache_T_7 = to_sram_r_bits_last ? 4'h9 : 4'h8; // @[dcache.scala 96:32]
+  wire  _state_dcache_T_7 = to_sram_ar_ready & to_sram_ar_valid; // @[Decoupled.scala 51:35]
+  wire [3:0] _state_dcache_T_8 = _state_dcache_T_7 ? 4'h8 : 4'h7; // @[dcache.scala 92:32]
+  wire [3:0] _state_dcache_T_9 = to_sram_r_bits_last ? 4'h9 : 4'h8; // @[dcache.scala 97:32]
   wire  _off_T_4 = to_sram_r_ready & to_sram_r_valid; // @[Decoupled.scala 51:35]
-  wire [2:0] _off_T_7 = _off_T_4 ? _off_T_2 : off; // @[dcache.scala 97:32]
-  wire [3:0] _GEN_100 = 4'h9 == state_dcache ? _state_dcache_T : state_dcache; // @[dcache.scala 102:26 56:27 55:31]
-  wire [3:0] _GEN_101 = 4'h8 == state_dcache ? _state_dcache_T_7 : _GEN_100; // @[dcache.scala 56:27 96:26]
-  wire [2:0] _GEN_102 = 4'h8 == state_dcache ? _off_T_7 : off; // @[dcache.scala 49:24 56:27 97:26]
-  wire [3:0] _GEN_103 = 4'h7 == state_dcache ? _state_dcache_T_6 : _GEN_101; // @[dcache.scala 56:27 91:26]
-  wire [2:0] _GEN_104 = 4'h7 == state_dcache ? 3'h0 : _GEN_102; // @[dcache.scala 56:27 92:25]
-  wire [3:0] _GEN_105 = 4'h6 == state_dcache ? 4'h7 : _GEN_103; // @[dcache.scala 56:27 87:26]
-  wire [2:0] _GEN_106 = 4'h6 == state_dcache ? off : _GEN_104; // @[dcache.scala 49:24 56:27]
-  wire [3:0] _GEN_107 = 4'h5 == state_dcache ? _state_dcache_T_4 : _GEN_105; // @[dcache.scala 56:27 83:26]
-  wire [2:0] _GEN_108 = 4'h5 == state_dcache ? _off_T_3 : _GEN_106; // @[dcache.scala 56:27 84:26]
+  wire [1:0] _off_T_7 = _off_T_4 ? _off_T_2 : off; // @[dcache.scala 98:32]
+  wire [3:0] _GEN_100 = 4'h9 == state_dcache ? _state_dcache_T : state_dcache; // @[dcache.scala 103:26 56:27 55:31]
+  wire [3:0] _GEN_101 = 4'h8 == state_dcache ? _state_dcache_T_9 : _GEN_100; // @[dcache.scala 56:27 97:26]
+  wire [1:0] _GEN_102 = 4'h8 == state_dcache ? _off_T_7 : off; // @[dcache.scala 49:24 56:27 98:26]
+  wire [3:0] _GEN_103 = 4'h7 == state_dcache ? _state_dcache_T_8 : _GEN_101; // @[dcache.scala 56:27 92:26]
+  wire [1:0] _GEN_104 = 4'h7 == state_dcache ? 2'h0 : _GEN_102; // @[dcache.scala 56:27 93:25]
+  wire [3:0] _GEN_105 = 4'h6 == state_dcache ? 4'h7 : _GEN_103; // @[dcache.scala 56:27 88:26]
+  wire [1:0] _GEN_106 = 4'h6 == state_dcache ? off : _GEN_104; // @[dcache.scala 49:24 56:27]
+  wire [3:0] _GEN_107 = 4'h5 == state_dcache ? _state_dcache_T_6 : _GEN_105; // @[dcache.scala 56:27 83:26]
+  wire [1:0] _GEN_108 = 4'h5 == state_dcache ? _off_T_3 : _GEN_106; // @[dcache.scala 56:27 84:26]
   wire [3:0] _GEN_109 = 4'h4 == state_dcache ? _state_dcache_T_3 : _GEN_107; // @[dcache.scala 56:27 79:26]
-  wire [2:0] _GEN_110 = 4'h4 == state_dcache ? 3'h0 : _GEN_108; // @[dcache.scala 56:27 80:26]
+  wire [1:0] _GEN_110 = 4'h4 == state_dcache ? 2'h0 : _GEN_108; // @[dcache.scala 56:27 80:26]
   wire [3:0] _GEN_111 = 4'h3 == state_dcache ? _state_dcache_T_1 : _GEN_109; // @[dcache.scala 56:27 76:26]
-  wire [2:0] _GEN_112 = 4'h3 == state_dcache ? off : _GEN_110; // @[dcache.scala 49:24 56:27]
-  wire [7:0] replaceCacheAddr = {replace_set,CacheLineId,off}; // @[Cat.scala 33:92]
-  wire  _T_11 = state_dcache == 4'h8; // @[dcache.scala 112:25]
-  wire  _GEN_120 = _GEN_418 & _GEN_448 | validArray_0_0; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_121 = _GEN_418 & _GEN_419 | validArray_0_1; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_122 = _GEN_418 & _GEN_421 | validArray_0_2; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_123 = _GEN_418 & _GEN_423 | validArray_0_3; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_124 = _GEN_418 & _GEN_425 | validArray_0_4; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_125 = _GEN_418 & _GEN_427 | validArray_0_5; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_126 = _GEN_418 & _GEN_429 | validArray_0_6; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_127 = _GEN_418 & _GEN_431 | validArray_0_7; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_128 = _GEN_418 & _GEN_433 | validArray_0_8; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_129 = _GEN_418 & _GEN_435 | validArray_0_9; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_130 = _GEN_418 & _GEN_437 | validArray_0_10; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_131 = _GEN_418 & _GEN_439 | validArray_0_11; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_132 = _GEN_418 & _GEN_441 | validArray_0_12; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_133 = _GEN_418 & _GEN_443 | validArray_0_13; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_134 = _GEN_418 & _GEN_445 | validArray_0_14; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_135 = _GEN_418 & _GEN_447 | validArray_0_15; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_136 = replace_set & _GEN_448 | validArray_1_0; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_137 = replace_set & _GEN_419 | validArray_1_1; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_138 = replace_set & _GEN_421 | validArray_1_2; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_139 = replace_set & _GEN_423 | validArray_1_3; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_140 = replace_set & _GEN_425 | validArray_1_4; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_141 = replace_set & _GEN_427 | validArray_1_5; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_142 = replace_set & _GEN_429 | validArray_1_6; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_143 = replace_set & _GEN_431 | validArray_1_7; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_144 = replace_set & _GEN_433 | validArray_1_8; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_145 = replace_set & _GEN_435 | validArray_1_9; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_146 = replace_set & _GEN_437 | validArray_1_10; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_147 = replace_set & _GEN_439 | validArray_1_11; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_148 = replace_set & _GEN_441 | validArray_1_12; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_149 = replace_set & _GEN_443 | validArray_1_13; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_150 = replace_set & _GEN_445 | validArray_1_14; // @[dcache.scala 115:{50,50} 32:29]
-  wire  _GEN_151 = replace_set & _GEN_447 | validArray_1_15; // @[dcache.scala 115:{50,50} 32:29]
-  wire [5:0] _indata_T = 4'h8 * ByteId; // @[dcache.scala 125:45]
-  wire [94:0] _GEN_722 = {{63'd0}, from_LSU_bits_wdata}; // @[dcache.scala 125:28]
-  wire [94:0] _indata_T_1 = _GEN_722 << _indata_T; // @[dcache.scala 125:28]
-  wire [94:0] _GEN_592 = {{63'd0}, from_LSU_bits_wmask}; // @[dcache.scala 125:56]
-  wire [94:0] _indata_T_2 = _indata_T_1 & _GEN_592; // @[dcache.scala 125:56]
-  wire [31:0] _indata_T_3 = ~from_LSU_bits_wmask; // @[dcache.scala 125:78]
-  wire [31:0] _indata_T_4 = dataArray_outdata_data & _indata_T_3; // @[dcache.scala 125:76]
-  wire [94:0] _GEN_593 = {{63'd0}, _indata_T_4}; // @[dcache.scala 125:65]
-  wire [94:0] indata = _indata_T_2 | _GEN_593; // @[dcache.scala 125:65]
-  wire  _GEN_317 = ~SetId & _GEN_448 | dirtyArray_0_0; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_318 = ~SetId & _GEN_419 | dirtyArray_0_1; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_319 = ~SetId & _GEN_421 | dirtyArray_0_2; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_320 = ~SetId & _GEN_423 | dirtyArray_0_3; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_321 = ~SetId & _GEN_425 | dirtyArray_0_4; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_322 = ~SetId & _GEN_427 | dirtyArray_0_5; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_323 = ~SetId & _GEN_429 | dirtyArray_0_6; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_324 = ~SetId & _GEN_431 | dirtyArray_0_7; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_325 = ~SetId & _GEN_433 | dirtyArray_0_8; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_326 = ~SetId & _GEN_435 | dirtyArray_0_9; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_327 = ~SetId & _GEN_437 | dirtyArray_0_10; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_328 = ~SetId & _GEN_439 | dirtyArray_0_11; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_329 = ~SetId & _GEN_441 | dirtyArray_0_12; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_330 = ~SetId & _GEN_443 | dirtyArray_0_13; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_331 = ~SetId & _GEN_445 | dirtyArray_0_14; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_332 = ~SetId & _GEN_447 | dirtyArray_0_15; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_333 = SetId & _GEN_448 | dirtyArray_1_0; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_334 = SetId & _GEN_419 | dirtyArray_1_1; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_335 = SetId & _GEN_421 | dirtyArray_1_2; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_336 = SetId & _GEN_423 | dirtyArray_1_3; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_337 = SetId & _GEN_425 | dirtyArray_1_4; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_338 = SetId & _GEN_427 | dirtyArray_1_5; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_339 = SetId & _GEN_429 | dirtyArray_1_6; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_340 = SetId & _GEN_431 | dirtyArray_1_7; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_341 = SetId & _GEN_433 | dirtyArray_1_8; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_342 = SetId & _GEN_435 | dirtyArray_1_9; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_343 = SetId & _GEN_437 | dirtyArray_1_10; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_344 = SetId & _GEN_439 | dirtyArray_1_11; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_345 = SetId & _GEN_441 | dirtyArray_1_12; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_346 = SetId & _GEN_443 | dirtyArray_1_13; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_347 = SetId & _GEN_445 | dirtyArray_1_14; // @[dcache.scala 128:{46,46} 33:29]
-  wire  _GEN_348 = SetId & _GEN_447 | dirtyArray_1_15; // @[dcache.scala 128:{46,46} 33:29]
-  wire [31:0] _to_sram_ar_bits_addr_T = {{4'd0}, from_LSU_bits_addr[31:4]}; // @[dcache.scala 138:93]
-  wire [35:0] _GEN_675 = {_to_sram_ar_bits_addr_T, 4'h0}; // @[dcache.scala 138:106]
-  wire [38:0] _to_sram_ar_bits_addr_T_1 = {{3'd0}, _GEN_675}; // @[dcache.scala 138:106]
+  wire [1:0] _GEN_112 = 4'h3 == state_dcache ? off : _GEN_110; // @[dcache.scala 49:24 56:27]
+  wire [4:0] replaceCacheAddr_hi = {replace_set,CacheLineId}; // @[Cat.scala 33:92]
+  wire  _T_11 = state_dcache == 4'h8; // @[dcache.scala 113:25]
+  wire  _GEN_120 = _GEN_418 & _GEN_448 | validArray_0_0; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_121 = _GEN_418 & _GEN_419 | validArray_0_1; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_122 = _GEN_418 & _GEN_421 | validArray_0_2; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_123 = _GEN_418 & _GEN_423 | validArray_0_3; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_124 = _GEN_418 & _GEN_425 | validArray_0_4; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_125 = _GEN_418 & _GEN_427 | validArray_0_5; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_126 = _GEN_418 & _GEN_429 | validArray_0_6; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_127 = _GEN_418 & _GEN_431 | validArray_0_7; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_128 = _GEN_418 & _GEN_433 | validArray_0_8; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_129 = _GEN_418 & _GEN_435 | validArray_0_9; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_130 = _GEN_418 & _GEN_437 | validArray_0_10; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_131 = _GEN_418 & _GEN_439 | validArray_0_11; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_132 = _GEN_418 & _GEN_441 | validArray_0_12; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_133 = _GEN_418 & _GEN_443 | validArray_0_13; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_134 = _GEN_418 & _GEN_445 | validArray_0_14; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_135 = _GEN_418 & _GEN_447 | validArray_0_15; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_136 = replace_set & _GEN_448 | validArray_1_0; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_137 = replace_set & _GEN_419 | validArray_1_1; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_138 = replace_set & _GEN_421 | validArray_1_2; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_139 = replace_set & _GEN_423 | validArray_1_3; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_140 = replace_set & _GEN_425 | validArray_1_4; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_141 = replace_set & _GEN_427 | validArray_1_5; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_142 = replace_set & _GEN_429 | validArray_1_6; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_143 = replace_set & _GEN_431 | validArray_1_7; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_144 = replace_set & _GEN_433 | validArray_1_8; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_145 = replace_set & _GEN_435 | validArray_1_9; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_146 = replace_set & _GEN_437 | validArray_1_10; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_147 = replace_set & _GEN_439 | validArray_1_11; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_148 = replace_set & _GEN_441 | validArray_1_12; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_149 = replace_set & _GEN_443 | validArray_1_13; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_150 = replace_set & _GEN_445 | validArray_1_14; // @[dcache.scala 116:{50,50} 32:29]
+  wire  _GEN_151 = replace_set & _GEN_447 | validArray_1_15; // @[dcache.scala 116:{50,50} 32:29]
+  wire [5:0] _indata_T = 4'h8 * ByteId; // @[dcache.scala 126:45]
+  wire [94:0] _GEN_722 = {{63'd0}, from_LSU_bits_wdata}; // @[dcache.scala 126:28]
+  wire [94:0] _indata_T_1 = _GEN_722 << _indata_T; // @[dcache.scala 126:28]
+  wire [94:0] _GEN_592 = {{63'd0}, from_LSU_bits_wmask}; // @[dcache.scala 126:56]
+  wire [94:0] _indata_T_2 = _indata_T_1 & _GEN_592; // @[dcache.scala 126:56]
+  wire [31:0] _indata_T_3 = ~from_LSU_bits_wmask; // @[dcache.scala 126:78]
+  wire [31:0] _indata_T_4 = dataArray_outdata_data & _indata_T_3; // @[dcache.scala 126:76]
+  wire [94:0] _GEN_593 = {{63'd0}, _indata_T_4}; // @[dcache.scala 126:65]
+  wire [94:0] indata = _indata_T_2 | _GEN_593; // @[dcache.scala 126:65]
+  wire  _GEN_317 = ~SetId & _GEN_448 | dirtyArray_0_0; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_318 = ~SetId & _GEN_419 | dirtyArray_0_1; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_319 = ~SetId & _GEN_421 | dirtyArray_0_2; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_320 = ~SetId & _GEN_423 | dirtyArray_0_3; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_321 = ~SetId & _GEN_425 | dirtyArray_0_4; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_322 = ~SetId & _GEN_427 | dirtyArray_0_5; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_323 = ~SetId & _GEN_429 | dirtyArray_0_6; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_324 = ~SetId & _GEN_431 | dirtyArray_0_7; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_325 = ~SetId & _GEN_433 | dirtyArray_0_8; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_326 = ~SetId & _GEN_435 | dirtyArray_0_9; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_327 = ~SetId & _GEN_437 | dirtyArray_0_10; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_328 = ~SetId & _GEN_439 | dirtyArray_0_11; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_329 = ~SetId & _GEN_441 | dirtyArray_0_12; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_330 = ~SetId & _GEN_443 | dirtyArray_0_13; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_331 = ~SetId & _GEN_445 | dirtyArray_0_14; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_332 = ~SetId & _GEN_447 | dirtyArray_0_15; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_333 = SetId & _GEN_448 | dirtyArray_1_0; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_334 = SetId & _GEN_419 | dirtyArray_1_1; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_335 = SetId & _GEN_421 | dirtyArray_1_2; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_336 = SetId & _GEN_423 | dirtyArray_1_3; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_337 = SetId & _GEN_425 | dirtyArray_1_4; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_338 = SetId & _GEN_427 | dirtyArray_1_5; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_339 = SetId & _GEN_429 | dirtyArray_1_6; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_340 = SetId & _GEN_431 | dirtyArray_1_7; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_341 = SetId & _GEN_433 | dirtyArray_1_8; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_342 = SetId & _GEN_435 | dirtyArray_1_9; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_343 = SetId & _GEN_437 | dirtyArray_1_10; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_344 = SetId & _GEN_439 | dirtyArray_1_11; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_345 = SetId & _GEN_441 | dirtyArray_1_12; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_346 = SetId & _GEN_443 | dirtyArray_1_13; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_347 = SetId & _GEN_445 | dirtyArray_1_14; // @[dcache.scala 129:{46,46} 33:29]
+  wire  _GEN_348 = SetId & _GEN_447 | dirtyArray_1_15; // @[dcache.scala 129:{46,46} 33:29]
+  wire [31:0] _to_sram_ar_bits_addr_T = {{4'd0}, from_LSU_bits_addr[31:4]}; // @[dcache.scala 139:93]
+  wire [35:0] _GEN_675 = {_to_sram_ar_bits_addr_T, 4'h0}; // @[dcache.scala 139:106]
+  wire [38:0] _to_sram_ar_bits_addr_T_1 = {{3'd0}, _GEN_675}; // @[dcache.scala 139:106]
   wire [38:0] _to_sram_ar_bits_addr_T_3 = _T_8 ? _to_sram_ar_bits_addr_T_1 : 39'h0; // @[Mux.scala 81:58]
   wire [1:0] _to_sram_ar_bits_len_T_1 = _T_8 ? 2'h3 : 2'h0; // @[Mux.scala 81:58]
   wire [23:0] _GEN_387 = _GEN_418 & _GEN_419 ? tagArray_0_1 : tagArray_0_0; // @[Cat.scala 33:{92,92}]
@@ -2205,7 +2206,7 @@ module D_Cache(
   assign dataArray_toMemData_addr = dataArray_toMemData_addr_pipe_0;
   assign dataArray_toMemData_data = dataArray[dataArray_toMemData_addr]; // @[dcache.scala 30:33]
   assign dataArray_MPORT_data = to_sram_r_bits_data;
-  assign dataArray_MPORT_addr = replaceCacheAddr[6:0];
+  assign dataArray_MPORT_addr = {replaceCacheAddr_hi,off};
   assign dataArray_MPORT_mask = 1'h1;
   assign dataArray_MPORT_en = _T_11 & _off_T_4;
   assign dataArray_MPORT_1_data = indata[31:0];
@@ -2214,18 +2215,18 @@ module D_Cache(
   assign dataArray_MPORT_1_en = state_dcache == 4'h2;
   assign from_LSU_ready = 4'h0 == state_dcache; // @[Mux.scala 81:61]
   assign to_LSU_valid = _T_3 | _T_2; // @[Mux.scala 81:58]
-  assign to_LSU_bits_data = hit ? dataArray_outdata_data : 32'h0; // @[dcache.scala 154:29]
+  assign to_LSU_bits_data = hit ? dataArray_outdata_data : 32'h0; // @[dcache.scala 155:29]
   assign to_LSU_bits_bresp = 4'h2 == state_dcache; // @[Mux.scala 81:61]
   assign to_sram_ar_valid = 4'h7 == state_dcache; // @[Mux.scala 81:61]
-  assign to_sram_ar_bits_addr = _to_sram_ar_bits_addr_T_3[31:0]; // @[dcache.scala 138:27]
-  assign to_sram_ar_bits_len = {{6'd0}, _to_sram_ar_bits_len_T_1}; // @[dcache.scala 140:27]
+  assign to_sram_ar_bits_addr = _to_sram_ar_bits_addr_T_3[31:0]; // @[dcache.scala 139:27]
+  assign to_sram_ar_bits_len = {{6'd0}, _to_sram_ar_bits_len_T_1}; // @[dcache.scala 141:27]
   assign to_sram_r_ready = 4'h8 == state_dcache; // @[Mux.scala 81:61]
   assign to_sram_aw_valid = 4'h4 == state_dcache; // @[Mux.scala 81:61]
-  assign to_sram_aw_bits_addr = {{2'd0}, _to_sram_aw_bits_addr_T_2}; // @[dcache.scala 144:27]
-  assign to_sram_aw_bits_len = {{6'd0}, _to_sram_aw_bits_len_T_1}; // @[dcache.scala 146:27]
+  assign to_sram_aw_bits_addr = {{2'd0}, _to_sram_aw_bits_addr_T_2}; // @[dcache.scala 145:27]
+  assign to_sram_aw_bits_len = {{6'd0}, _to_sram_aw_bits_len_T_1}; // @[dcache.scala 147:27]
   assign to_sram_w_valid = 4'h5 == state_dcache; // @[Mux.scala 81:61]
-  assign to_sram_w_bits_data = dataArray_toMemData_data; // @[dcache.scala 149:27]
-  assign to_sram_w_bits_last = off == 3'h4; // @[dcache.scala 151:34]
+  assign to_sram_w_bits_data = dataArray_toMemData_data; // @[dcache.scala 150:27]
+  assign to_sram_w_bits_last = state_dcache == 4'h6; // @[dcache.scala 152:47]
   always @(posedge clock) begin
     if (dataArray_MPORT_en & dataArray_MPORT_mask) begin
       dataArray[dataArray_MPORT_addr] <= dataArray_MPORT_data; // @[dcache.scala 30:33]
@@ -2239,7 +2240,7 @@ module D_Cache(
     end
     dataArray_toMemData_en_pipe_0 <= 1'h1;
     if (1'h1) begin
-      dataArray_toMemData_addr_pipe_0 <= replaceCacheAddr[6:0];
+      dataArray_toMemData_addr_pipe_0 <= {replaceCacheAddr_hi,off};
     end
     if (reset) begin // @[dcache.scala 19:30]
       replace_set <= 1'h0; // @[dcache.scala 19:30]
@@ -2257,678 +2258,678 @@ module D_Cache(
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_0 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_448) begin // @[dcache.scala 116:50]
-          tagArray_0_0 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_448) begin // @[dcache.scala 117:50]
+          tagArray_0_0 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_1 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_419) begin // @[dcache.scala 116:50]
-          tagArray_0_1 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_419) begin // @[dcache.scala 117:50]
+          tagArray_0_1 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_2 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_421) begin // @[dcache.scala 116:50]
-          tagArray_0_2 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_421) begin // @[dcache.scala 117:50]
+          tagArray_0_2 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_3 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_423) begin // @[dcache.scala 116:50]
-          tagArray_0_3 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_423) begin // @[dcache.scala 117:50]
+          tagArray_0_3 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_4 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_425) begin // @[dcache.scala 116:50]
-          tagArray_0_4 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_425) begin // @[dcache.scala 117:50]
+          tagArray_0_4 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_5 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_427) begin // @[dcache.scala 116:50]
-          tagArray_0_5 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_427) begin // @[dcache.scala 117:50]
+          tagArray_0_5 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_6 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_429) begin // @[dcache.scala 116:50]
-          tagArray_0_6 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_429) begin // @[dcache.scala 117:50]
+          tagArray_0_6 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_7 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_431) begin // @[dcache.scala 116:50]
-          tagArray_0_7 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_431) begin // @[dcache.scala 117:50]
+          tagArray_0_7 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_8 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_433) begin // @[dcache.scala 116:50]
-          tagArray_0_8 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_433) begin // @[dcache.scala 117:50]
+          tagArray_0_8 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_9 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_435) begin // @[dcache.scala 116:50]
-          tagArray_0_9 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_435) begin // @[dcache.scala 117:50]
+          tagArray_0_9 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_10 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_437) begin // @[dcache.scala 116:50]
-          tagArray_0_10 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_437) begin // @[dcache.scala 117:50]
+          tagArray_0_10 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_11 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_439) begin // @[dcache.scala 116:50]
-          tagArray_0_11 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_439) begin // @[dcache.scala 117:50]
+          tagArray_0_11 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_12 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_441) begin // @[dcache.scala 116:50]
-          tagArray_0_12 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_441) begin // @[dcache.scala 117:50]
+          tagArray_0_12 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_13 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_443) begin // @[dcache.scala 116:50]
-          tagArray_0_13 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_443) begin // @[dcache.scala 117:50]
+          tagArray_0_13 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_14 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_445) begin // @[dcache.scala 116:50]
-          tagArray_0_14 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_445) begin // @[dcache.scala 117:50]
+          tagArray_0_14 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_0_15 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (_GEN_418 & _GEN_447) begin // @[dcache.scala 116:50]
-          tagArray_0_15 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (_GEN_418 & _GEN_447) begin // @[dcache.scala 117:50]
+          tagArray_0_15 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_0 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_448) begin // @[dcache.scala 116:50]
-          tagArray_1_0 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_448) begin // @[dcache.scala 117:50]
+          tagArray_1_0 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_1 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_419) begin // @[dcache.scala 116:50]
-          tagArray_1_1 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_419) begin // @[dcache.scala 117:50]
+          tagArray_1_1 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_2 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_421) begin // @[dcache.scala 116:50]
-          tagArray_1_2 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_421) begin // @[dcache.scala 117:50]
+          tagArray_1_2 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_3 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_423) begin // @[dcache.scala 116:50]
-          tagArray_1_3 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_423) begin // @[dcache.scala 117:50]
+          tagArray_1_3 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_4 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_425) begin // @[dcache.scala 116:50]
-          tagArray_1_4 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_425) begin // @[dcache.scala 117:50]
+          tagArray_1_4 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_5 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_427) begin // @[dcache.scala 116:50]
-          tagArray_1_5 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_427) begin // @[dcache.scala 117:50]
+          tagArray_1_5 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_6 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_429) begin // @[dcache.scala 116:50]
-          tagArray_1_6 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_429) begin // @[dcache.scala 117:50]
+          tagArray_1_6 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_7 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_431) begin // @[dcache.scala 116:50]
-          tagArray_1_7 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_431) begin // @[dcache.scala 117:50]
+          tagArray_1_7 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_8 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_433) begin // @[dcache.scala 116:50]
-          tagArray_1_8 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_433) begin // @[dcache.scala 117:50]
+          tagArray_1_8 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_9 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_435) begin // @[dcache.scala 116:50]
-          tagArray_1_9 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_435) begin // @[dcache.scala 117:50]
+          tagArray_1_9 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_10 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_437) begin // @[dcache.scala 116:50]
-          tagArray_1_10 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_437) begin // @[dcache.scala 117:50]
+          tagArray_1_10 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_11 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_439) begin // @[dcache.scala 116:50]
-          tagArray_1_11 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_439) begin // @[dcache.scala 117:50]
+          tagArray_1_11 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_12 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_441) begin // @[dcache.scala 116:50]
-          tagArray_1_12 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_441) begin // @[dcache.scala 117:50]
+          tagArray_1_12 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_13 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_443) begin // @[dcache.scala 116:50]
-          tagArray_1_13 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_443) begin // @[dcache.scala 117:50]
+          tagArray_1_13 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_14 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_445) begin // @[dcache.scala 116:50]
-          tagArray_1_14 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_445) begin // @[dcache.scala 117:50]
+          tagArray_1_14 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 31:29]
       tagArray_1_15 <= 24'h0; // @[dcache.scala 31:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
-        if (replace_set & _GEN_447) begin // @[dcache.scala 116:50]
-          tagArray_1_15 <= tag; // @[dcache.scala 116:50]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
+        if (replace_set & _GEN_447) begin // @[dcache.scala 117:50]
+          tagArray_1_15 <= tag; // @[dcache.scala 117:50]
         end
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_0 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_0 <= _GEN_120;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_1 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_1 <= _GEN_121;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_2 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_2 <= _GEN_122;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_3 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_3 <= _GEN_123;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_4 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_4 <= _GEN_124;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_5 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_5 <= _GEN_125;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_6 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_6 <= _GEN_126;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_7 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_7 <= _GEN_127;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_8 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_8 <= _GEN_128;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_9 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_9 <= _GEN_129;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_10 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_10 <= _GEN_130;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_11 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_11 <= _GEN_131;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_12 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_12 <= _GEN_132;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_13 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_13 <= _GEN_133;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_14 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_14 <= _GEN_134;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_0_15 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_0_15 <= _GEN_135;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_0 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_0 <= _GEN_136;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_1 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_1 <= _GEN_137;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_2 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_2 <= _GEN_138;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_3 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_3 <= _GEN_139;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_4 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_4 <= _GEN_140;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_5 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_5 <= _GEN_141;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_6 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_6 <= _GEN_142;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_7 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_7 <= _GEN_143;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_8 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_8 <= _GEN_144;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_9 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_9 <= _GEN_145;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_10 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_10 <= _GEN_146;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_11 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_11 <= _GEN_147;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_12 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_12 <= _GEN_148;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_13 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_13 <= _GEN_149;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_14 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_14 <= _GEN_150;
       end
     end
     if (reset) begin // @[dcache.scala 32:29]
       validArray_1_15 <= 1'h0; // @[dcache.scala 32:29]
-    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 112:59]
-      if (to_sram_r_bits_last) begin // @[dcache.scala 114:35]
+    end else if (state_dcache == 4'h8 & _off_T_4) begin // @[dcache.scala 113:59]
+      if (to_sram_r_bits_last) begin // @[dcache.scala 115:35]
         validArray_1_15 <= _GEN_151;
       end
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_0 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_0 <= _GEN_317;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_1 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_1 <= _GEN_318;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_2 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_2 <= _GEN_319;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_3 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_3 <= _GEN_320;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_4 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_4 <= _GEN_321;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_5 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_5 <= _GEN_322;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_6 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_6 <= _GEN_323;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_7 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_7 <= _GEN_324;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_8 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_8 <= _GEN_325;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_9 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_9 <= _GEN_326;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_10 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_10 <= _GEN_327;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_11 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_11 <= _GEN_328;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_12 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_12 <= _GEN_329;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_13 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_13 <= _GEN_330;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_14 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_14 <= _GEN_331;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_0_15 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_0_15 <= _GEN_332;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_0 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_0 <= _GEN_333;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_1 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_1 <= _GEN_334;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_2 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_2 <= _GEN_335;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_3 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_3 <= _GEN_336;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_4 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_4 <= _GEN_337;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_5 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_5 <= _GEN_338;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_6 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_6 <= _GEN_339;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_7 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_7 <= _GEN_340;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_8 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_8 <= _GEN_341;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_9 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_9 <= _GEN_342;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_10 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_10 <= _GEN_343;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_11 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_11 <= _GEN_344;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_12 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_12 <= _GEN_345;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_13 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_13 <= _GEN_346;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_14 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_14 <= _GEN_347;
     end
     if (reset) begin // @[dcache.scala 33:29]
       dirtyArray_1_15 <= 1'h0; // @[dcache.scala 33:29]
-    end else if (state_dcache == 4'h2) begin // @[dcache.scala 126:39]
+    end else if (state_dcache == 4'h2) begin // @[dcache.scala 127:39]
       dirtyArray_1_15 <= _GEN_348;
     end
     if (reset) begin // @[dcache.scala 49:24]
-      off <= 3'h0; // @[dcache.scala 49:24]
+      off <= 2'h0; // @[dcache.scala 49:24]
     end else if (!(4'h0 == state_dcache)) begin // @[dcache.scala 56:27]
       if (!(4'h1 == state_dcache)) begin // @[dcache.scala 56:27]
         if (!(4'h2 == state_dcache)) begin // @[dcache.scala 56:27]
@@ -3202,7 +3203,7 @@ initial begin
   _RAND_102 = {1{`RANDOM}};
   dirtyArray_1_15 = _RAND_102[0:0];
   _RAND_103 = {1{`RANDOM}};
-  off = _RAND_103[2:0];
+  off = _RAND_103[1:0];
   _RAND_104 = {1{`RANDOM}};
   state_dcache = _RAND_104[3:0];
 `endif // RANDOMIZE_REG_INIT
@@ -3230,7 +3231,8 @@ module sram_axi_rw(
   input  [7:0]  axi_aw_bits_len,
   output        axi_w_ready,
   input         axi_w_valid,
-  input  [31:0] axi_w_bits_data
+  input  [31:0] axi_w_bits_data,
+  input         axi_w_bits_last
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
@@ -3239,13 +3241,13 @@ module sram_axi_rw(
   reg [31:0] _RAND_3;
   reg [31:0] _RAND_4;
 `endif // RANDOMIZE_REG_INIT
-  wire  RamBB_i1_clock; // @[sram_Axi.scala 156:26]
-  wire [31:0] RamBB_i1_addr; // @[sram_Axi.scala 156:26]
-  wire  RamBB_i1_mem_wen; // @[sram_Axi.scala 156:26]
-  wire  RamBB_i1_valid; // @[sram_Axi.scala 156:26]
-  wire [31:0] RamBB_i1_wdata; // @[sram_Axi.scala 156:26]
-  wire [3:0] RamBB_i1_wmask; // @[sram_Axi.scala 156:26]
-  wire [31:0] RamBB_i1_rdata; // @[sram_Axi.scala 156:26]
+  wire  RamBB_i1_clock; // @[sram_Axi.scala 157:26]
+  wire [31:0] RamBB_i1_addr; // @[sram_Axi.scala 157:26]
+  wire  RamBB_i1_mem_wen; // @[sram_Axi.scala 157:26]
+  wire  RamBB_i1_valid; // @[sram_Axi.scala 157:26]
+  wire [31:0] RamBB_i1_wdata; // @[sram_Axi.scala 157:26]
+  wire [3:0] RamBB_i1_wmask; // @[sram_Axi.scala 157:26]
+  wire [31:0] RamBB_i1_rdata; // @[sram_Axi.scala 157:26]
   reg  delay; // @[sram_Axi.scala 89:24]
   reg [7:0] reg_AxLen; // @[sram_Axi.scala 92:28]
   reg [31:0] reg_addr; // @[sram_Axi.scala 93:28]
@@ -3258,7 +3260,6 @@ module sram_axi_rw(
   wire [2:0] _state_sram_T_1 = reg_AxLen == 8'h0 ? 3'h3 : 3'h2; // @[sram_Axi.scala 120:34]
   wire  _delay_T_1 = delay - 1'h1; // @[sram_Axi.scala 124:28]
   wire  _T_5 = 3'h2 == state_sram; // @[sram_Axi.scala 100:25]
-  wire  _state_sram_T_2 = reg_AxLen == 8'h1; // @[sram_Axi.scala 127:42]
   wire [2:0] _state_sram_T_3 = reg_AxLen == 8'h1 ? 3'h3 : 3'h2; // @[sram_Axi.scala 127:31]
   wire  _reg_AxLen_T = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
   wire [7:0] _reg_AxLen_T_2 = reg_AxLen - 8'h1; // @[sram_Axi.scala 128:53]
@@ -3270,16 +3271,16 @@ module sram_axi_rw(
   wire [2:0] _state_sram_T_5 = _state_sram_T ? 3'h6 : 3'h5; // @[sram_Axi.scala 138:34]
   wire [2:0] _GEN_9 = _T_4 ? _state_sram_T_5 : 3'h4; // @[sram_Axi.scala 137:34 138:28 140:28]
   wire  _T_9 = 3'h5 == state_sram; // @[sram_Axi.scala 100:25]
-  wire [2:0] _state_sram_T_7 = _state_sram_T_2 ? 3'h6 : 3'h5; // @[sram_Axi.scala 145:31]
+  wire [2:0] _state_sram_T_6 = axi_w_bits_last ? 3'h6 : 3'h5; // @[sram_Axi.scala 146:31]
   wire  _reg_AxLen_T_4 = axi_w_ready & axi_w_valid; // @[Decoupled.scala 51:35]
-  wire [7:0] _reg_AxLen_T_7 = _reg_AxLen_T_4 ? _reg_AxLen_T_2 : reg_AxLen; // @[sram_Axi.scala 146:31]
-  wire [31:0] _reg_addr_T_9 = _reg_AxLen_T_4 ? _reg_addr_T_2 : reg_addr; // @[sram_Axi.scala 148:30]
+  wire [7:0] _reg_AxLen_T_7 = _reg_AxLen_T_4 ? _reg_AxLen_T_2 : reg_AxLen; // @[sram_Axi.scala 147:31]
+  wire [31:0] _reg_addr_T_9 = _reg_AxLen_T_4 ? _reg_addr_T_2 : reg_addr; // @[sram_Axi.scala 149:30]
   wire [31:0] _reg_addr_T_11 = 2'h1 == reg_burst ? _reg_addr_T_9 : reg_addr; // @[Mux.scala 81:58]
   wire  _T_10 = 3'h6 == state_sram; // @[sram_Axi.scala 100:25]
-  wire [2:0] _GEN_10 = 3'h6 == state_sram ? 3'h0 : state_sram; // @[sram_Axi.scala 100:25 152:24 99:29]
-  wire [2:0] _GEN_11 = 3'h5 == state_sram ? _state_sram_T_7 : _GEN_10; // @[sram_Axi.scala 100:25 145:25]
-  wire [7:0] _GEN_12 = 3'h5 == state_sram ? _reg_AxLen_T_7 : reg_AxLen; // @[sram_Axi.scala 100:25 146:25 92:28]
-  wire [31:0] _GEN_13 = 3'h5 == state_sram ? _reg_addr_T_11 : reg_addr; // @[sram_Axi.scala 100:25 147:25 93:28]
+  wire [2:0] _GEN_10 = 3'h6 == state_sram ? 3'h0 : state_sram; // @[sram_Axi.scala 100:25 153:24 99:29]
+  wire [2:0] _GEN_11 = 3'h5 == state_sram ? _state_sram_T_6 : _GEN_10; // @[sram_Axi.scala 100:25 146:25]
+  wire [7:0] _GEN_12 = 3'h5 == state_sram ? _reg_AxLen_T_7 : reg_AxLen; // @[sram_Axi.scala 100:25 147:25 92:28]
+  wire [31:0] _GEN_13 = 3'h5 == state_sram ? _reg_addr_T_11 : reg_addr; // @[sram_Axi.scala 100:25 148:25 93:28]
   wire [2:0] _GEN_14 = 3'h4 == state_sram ? _GEN_9 : _GEN_11; // @[sram_Axi.scala 100:25]
   wire  _GEN_15 = 3'h4 == state_sram ? _delay_T_1 : delay; // @[sram_Axi.scala 100:25 142:19 89:24]
   wire [7:0] _GEN_16 = 3'h4 == state_sram ? reg_AxLen : _GEN_12; // @[sram_Axi.scala 100:25 92:28]
@@ -3288,7 +3289,7 @@ module sram_axi_rw(
   wire  _GEN_19 = 3'h3 == state_sram ? delay : _GEN_15; // @[sram_Axi.scala 100:25 89:24]
   wire [7:0] _GEN_20 = 3'h3 == state_sram ? reg_AxLen : _GEN_16; // @[sram_Axi.scala 100:25 92:28]
   wire [31:0] _GEN_21 = 3'h3 == state_sram ? reg_addr : _GEN_17; // @[sram_Axi.scala 100:25 93:28]
-  RamBB RamBB_i1 ( // @[sram_Axi.scala 156:26]
+  RamBB RamBB_i1 ( // @[sram_Axi.scala 157:26]
     .clock(RamBB_i1_clock),
     .addr(RamBB_i1_addr),
     .mem_wen(RamBB_i1_mem_wen),
@@ -3299,16 +3300,16 @@ module sram_axi_rw(
   );
   assign axi_ar_ready = 3'h0 == state_sram; // @[Mux.scala 81:61]
   assign axi_r_valid = _T_6 | _T_5; // @[Mux.scala 81:58]
-  assign axi_r_bits_data = RamBB_i1_rdata; // @[sram_Axi.scala 175:21]
-  assign axi_r_bits_last = state_sram == 3'h3; // @[sram_Axi.scala 177:39]
+  assign axi_r_bits_data = RamBB_i1_rdata; // @[sram_Axi.scala 176:21]
+  assign axi_r_bits_last = state_sram == 3'h3; // @[sram_Axi.scala 178:39]
   assign axi_aw_ready = 3'h0 == state_sram; // @[Mux.scala 81:61]
   assign axi_w_ready = _T_10 | _T_9; // @[Mux.scala 81:58]
-  assign RamBB_i1_clock = clock; // @[sram_Axi.scala 157:25]
-  assign RamBB_i1_addr = reg_addr; // @[sram_Axi.scala 158:25]
+  assign RamBB_i1_clock = clock; // @[sram_Axi.scala 158:25]
+  assign RamBB_i1_addr = reg_addr; // @[sram_Axi.scala 159:25]
   assign RamBB_i1_mem_wen = _T_10 | _T_9; // @[Mux.scala 81:58]
   assign RamBB_i1_valid = _T_10 | (_T_9 | (_T_6 | _T_5)); // @[Mux.scala 81:58]
-  assign RamBB_i1_wdata = axi_w_bits_data; // @[sram_Axi.scala 169:25]
-  assign RamBB_i1_wmask = 4'hf; // @[sram_Axi.scala 170:25]
+  assign RamBB_i1_wdata = axi_w_bits_data; // @[sram_Axi.scala 170:25]
+  assign RamBB_i1_wmask = 4'hf; // @[sram_Axi.scala 171:25]
   always @(posedge clock) begin
     if (reset) begin // @[sram_Axi.scala 89:24]
       delay <= 1'h0; // @[sram_Axi.scala 89:24]
@@ -3656,6 +3657,7 @@ module top(
   wire  sram_i2_axi_w_ready; // @[core.scala 64:27]
   wire  sram_i2_axi_w_valid; // @[core.scala 64:27]
   wire [31:0] sram_i2_axi_w_bits_data; // @[core.scala 64:27]
+  wire  sram_i2_axi_w_bits_last; // @[core.scala 64:27]
   wire  _EXU_i_from_ISU_bits_T = ISU_i_to_EXU_valid & EXU_i_from_ISU_ready; // @[Connect.scala 26:58]
   reg [31:0] EXU_i_from_ISU_bits_r_imm; // @[Reg.scala 19:16]
   reg [31:0] EXU_i_from_ISU_bits_r_pc; // @[Reg.scala 19:16]
@@ -3880,7 +3882,8 @@ module top(
     .axi_aw_bits_len(sram_i2_axi_aw_bits_len),
     .axi_w_ready(sram_i2_axi_w_ready),
     .axi_w_valid(sram_i2_axi_w_valid),
-    .axi_w_bits_data(sram_i2_axi_w_bits_data)
+    .axi_w_bits_data(sram_i2_axi_w_bits_data),
+    .axi_w_bits_last(sram_i2_axi_w_bits_last)
   );
   assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[core.scala 84:20]
   assign io_out_pc = IFU_i_to_IDU_bits_pc; // @[core.scala 85:20]
@@ -3987,6 +3990,7 @@ module top(
   assign sram_i2_axi_aw_bits_len = dcache_to_sram_aw_bits_len; // @[Connect.scala 15:22]
   assign sram_i2_axi_w_valid = dcache_to_sram_w_valid; // @[Connect.scala 16:22]
   assign sram_i2_axi_w_bits_data = dcache_to_sram_w_bits_data; // @[Connect.scala 15:22]
+  assign sram_i2_axi_w_bits_last = dcache_to_sram_w_bits_last; // @[Connect.scala 15:22]
   always @(posedge clock) begin
     if (_EXU_i_from_ISU_bits_T) begin // @[Reg.scala 20:18]
       EXU_i_from_ISU_bits_r_imm <= ISU_i_to_EXU_bits_imm; // @[Reg.scala 20:22]
