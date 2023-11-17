@@ -158,7 +158,7 @@ extern "C" void vaddr_write(sword_t waddr, sword_t wdata, char wmask) {
 void init_pmem() {
   uint32_t *temp = (uint32_t *)pmem;
   for(int i=0; i<CONFIG_MSIZE/sizeof(int); i++) {
-    assert(temp < pmem + CONFIG_MSIZE)
+    assert(temp < pmem + CONFIG_MSIZE);
     *temp = 0xdeadbeef;
     temp++;
   }
