@@ -1432,7 +1432,7 @@ module WBU(
   assign to_ISU_bits_rd = from_EXU_bits_rd; // @[WBU.scala 20:25]
   assign to_IFU_valid = from_EXU_valid; // @[WBU.scala 16:20]
 endmodule
-module IFU_cache(
+module IFU(
   input         clock,
   input         reset,
   output        to_IDU_valid,
@@ -1444,53 +1444,53 @@ module IFU_cache(
   input  [31:0] from_EXU_bits_csr_addr,
   output        from_WBU_ready,
   input         from_WBU_valid,
-  input         to_cache_ready,
-  output        to_cache_valid,
-  output [31:0] to_cache_bits_addr,
-  output        from_cache_ready,
-  input         from_cache_valid,
-  input  [31:0] from_cache_bits_data
+  input         axi_ar_ready,
+  output        axi_ar_valid,
+  output [31:0] axi_ar_bits_addr,
+  output        axi_r_ready,
+  input         axi_r_valid,
+  input  [31:0] axi_r_bits_data
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
 `endif // RANDOMIZE_REG_INIT
-  reg [31:0] reg_PC; // @[IFU.scala 148:26]
-  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 156:27]
+  reg [31:0] reg_PC; // @[IFU.scala 34:26]
+  wire [31:0] _next_PC_T_1 = reg_PC + 32'h4; // @[IFU.scala 42:27]
   wire  _reg_PC_T = from_WBU_ready & from_WBU_valid; // @[Decoupled.scala 51:35]
-  reg [1:0] state_ifu; // @[IFU.scala 164:28]
-  wire  _state_ifu_T = to_cache_ready & to_cache_valid; // @[Decoupled.scala 51:35]
-  wire [1:0] _state_ifu_T_1 = _state_ifu_T ? 2'h1 : 2'h0; // @[IFU.scala 166:26]
-  wire  _state_ifu_T_2 = from_cache_ready & from_cache_valid; // @[Decoupled.scala 51:35]
+  reg [1:0] state_ifu; // @[IFU.scala 50:28]
+  wire  _state_ifu_T = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
+  wire [1:0] _state_ifu_T_1 = _state_ifu_T ? 2'h1 : 2'h0; // @[IFU.scala 52:26]
+  wire  _state_ifu_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
   assign to_IDU_valid = 2'h2 == state_ifu; // @[Mux.scala 81:61]
-  assign to_IDU_bits_inst = to_IDU_valid ? from_cache_bits_data : 32'h13; // @[IFU.scala 178:28]
-  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 179:22]
+  assign to_IDU_bits_inst = to_IDU_valid ? axi_r_bits_data : 32'h13; // @[IFU.scala 70:28]
+  assign to_IDU_bits_pc = reg_PC; // @[IFU.scala 71:22]
   assign from_WBU_ready = 2'h2 == state_ifu; // @[Mux.scala 81:61]
-  assign to_cache_valid = 2'h0 == state_ifu; // @[Mux.scala 81:61]
-  assign to_cache_bits_addr = reg_PC; // @[IFU.scala 173:24]
-  assign from_cache_ready = 2'h1 == state_ifu; // @[Mux.scala 81:61]
+  assign axi_ar_valid = 2'h0 == state_ifu; // @[Mux.scala 81:61]
+  assign axi_ar_bits_addr = reg_PC; // @[IFU.scala 59:22]
+  assign axi_r_ready = 2'h1 == state_ifu; // @[Mux.scala 81:61]
   always @(posedge clock) begin
-    if (reset) begin // @[IFU.scala 148:26]
-      reg_PC <= 32'h80000000; // @[IFU.scala 148:26]
-    end else if (_reg_PC_T) begin // @[IFU.scala 160:18]
-      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 151:38]
-        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 152:17]
-      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 153:45]
-        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 154:17]
+    if (reset) begin // @[IFU.scala 34:26]
+      reg_PC <= 32'h80000000; // @[IFU.scala 34:26]
+    end else if (_reg_PC_T) begin // @[IFU.scala 46:18]
+      if (from_EXU_bits_bru_ctrl_br) begin // @[IFU.scala 37:38]
+        reg_PC <= from_EXU_bits_bru_addr; // @[IFU.scala 38:17]
+      end else if (from_EXU_bits_csr_ctrl_br) begin // @[IFU.scala 39:45]
+        reg_PC <= from_EXU_bits_csr_addr; // @[IFU.scala 40:17]
       end else begin
-        reg_PC <= _next_PC_T_1; // @[IFU.scala 156:17]
+        reg_PC <= _next_PC_T_1; // @[IFU.scala 42:17]
       end
     end
-    if (reset) begin // @[IFU.scala 164:28]
-      state_ifu <= 2'h0; // @[IFU.scala 164:28]
+    if (reset) begin // @[IFU.scala 50:28]
+      state_ifu <= 2'h0; // @[IFU.scala 50:28]
     end else if (2'h2 == state_ifu) begin // @[Mux.scala 81:58]
-      if (_reg_PC_T) begin // @[IFU.scala 168:28]
+      if (_reg_PC_T) begin // @[IFU.scala 54:28]
         state_ifu <= 2'h0;
       end else begin
         state_ifu <= 2'h2;
       end
     end else if (2'h1 == state_ifu) begin // @[Mux.scala 81:58]
-      if (_state_ifu_T_2) begin // @[IFU.scala 167:28]
+      if (_state_ifu_T_2) begin // @[IFU.scala 53:28]
         state_ifu <= 2'h2;
       end else begin
         state_ifu <= 2'h1;
@@ -1549,1157 +1549,42 @@ end // initial
 `endif
 `endif // SYNTHESIS
 endmodule
-module iCacheV2(
-  input         clock,
-  input         reset,
-  output        from_IFU_ready,
-  input         from_IFU_valid,
-  input  [31:0] from_IFU_bits_addr,
-  output        to_IFU_valid,
-  output [31:0] to_IFU_bits_data,
-  input         to_sram_ar_ready,
-  output        to_sram_ar_valid,
-  output [31:0] to_sram_ar_bits_addr,
-  output [7:0]  to_sram_ar_bits_len,
-  output        to_sram_r_ready,
-  input         to_sram_r_valid,
-  input  [31:0] to_sram_r_bits_data,
-  input         to_sram_r_bits_last
-);
-`ifdef RANDOMIZE_MEM_INIT
-  reg [31:0] _RAND_0;
-`endif // RANDOMIZE_MEM_INIT
-`ifdef RANDOMIZE_REG_INIT
-  reg [31:0] _RAND_1;
-  reg [31:0] _RAND_2;
-  reg [31:0] _RAND_3;
-  reg [31:0] _RAND_4;
-  reg [31:0] _RAND_5;
-  reg [31:0] _RAND_6;
-  reg [31:0] _RAND_7;
-  reg [31:0] _RAND_8;
-  reg [31:0] _RAND_9;
-  reg [31:0] _RAND_10;
-  reg [31:0] _RAND_11;
-  reg [31:0] _RAND_12;
-  reg [31:0] _RAND_13;
-  reg [31:0] _RAND_14;
-  reg [31:0] _RAND_15;
-  reg [31:0] _RAND_16;
-  reg [31:0] _RAND_17;
-  reg [31:0] _RAND_18;
-  reg [31:0] _RAND_19;
-  reg [31:0] _RAND_20;
-  reg [31:0] _RAND_21;
-  reg [31:0] _RAND_22;
-  reg [31:0] _RAND_23;
-  reg [31:0] _RAND_24;
-  reg [31:0] _RAND_25;
-  reg [31:0] _RAND_26;
-  reg [31:0] _RAND_27;
-  reg [31:0] _RAND_28;
-  reg [31:0] _RAND_29;
-  reg [31:0] _RAND_30;
-  reg [31:0] _RAND_31;
-  reg [31:0] _RAND_32;
-  reg [31:0] _RAND_33;
-  reg [31:0] _RAND_34;
-  reg [31:0] _RAND_35;
-  reg [31:0] _RAND_36;
-  reg [31:0] _RAND_37;
-  reg [31:0] _RAND_38;
-  reg [31:0] _RAND_39;
-  reg [31:0] _RAND_40;
-  reg [31:0] _RAND_41;
-  reg [31:0] _RAND_42;
-  reg [31:0] _RAND_43;
-  reg [31:0] _RAND_44;
-  reg [31:0] _RAND_45;
-  reg [31:0] _RAND_46;
-  reg [31:0] _RAND_47;
-  reg [31:0] _RAND_48;
-  reg [31:0] _RAND_49;
-  reg [31:0] _RAND_50;
-  reg [31:0] _RAND_51;
-  reg [31:0] _RAND_52;
-  reg [31:0] _RAND_53;
-  reg [31:0] _RAND_54;
-  reg [31:0] _RAND_55;
-  reg [31:0] _RAND_56;
-  reg [31:0] _RAND_57;
-  reg [31:0] _RAND_58;
-  reg [31:0] _RAND_59;
-  reg [31:0] _RAND_60;
-  reg [31:0] _RAND_61;
-  reg [31:0] _RAND_62;
-  reg [31:0] _RAND_63;
-  reg [31:0] _RAND_64;
-  reg [31:0] _RAND_65;
-  reg [31:0] _RAND_66;
-  reg [31:0] _RAND_67;
-  reg [31:0] _RAND_68;
-  reg [31:0] _RAND_69;
-  reg [31:0] _RAND_70;
-`endif // RANDOMIZE_REG_INIT
-  reg [31:0] dataArray [0:127]; // @[icache.scala 127:33]
-  wire  dataArray_cachedata_en; // @[icache.scala 127:33]
-  wire [6:0] dataArray_cachedata_addr; // @[icache.scala 127:33]
-  wire [31:0] dataArray_cachedata_data; // @[icache.scala 127:33]
-  wire [31:0] dataArray_MPORT_data; // @[icache.scala 127:33]
-  wire [6:0] dataArray_MPORT_addr; // @[icache.scala 127:33]
-  wire  dataArray_MPORT_mask; // @[icache.scala 127:33]
-  wire  dataArray_MPORT_en; // @[icache.scala 127:33]
-  reg  dataArray_cachedata_en_pipe_0;
-  reg [6:0] dataArray_cachedata_addr_pipe_0;
-  reg  replace_set; // @[icache.scala 117:30]
-  wire [1:0] EntId = from_IFU_bits_addr[3:2]; // @[icache.scala 118:41]
-  wire [3:0] CacheLineId = from_IFU_bits_addr[7:4]; // @[icache.scala 119:41]
-  wire [23:0] tag = from_IFU_bits_addr[31:8]; // @[icache.scala 120:41]
-  reg  random_num; // @[icache.scala 123:29]
-  reg [23:0] tagArray_0_0; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_1; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_2; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_3; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_4; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_5; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_6; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_7; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_8; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_9; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_10; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_11; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_12; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_13; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_14; // @[icache.scala 128:29]
-  reg [23:0] tagArray_0_15; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_0; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_1; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_2; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_3; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_4; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_5; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_6; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_7; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_8; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_9; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_10; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_11; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_12; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_13; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_14; // @[icache.scala 128:29]
-  reg [23:0] tagArray_1_15; // @[icache.scala 128:29]
-  reg  validArray_0_0; // @[icache.scala 129:29]
-  reg  validArray_0_1; // @[icache.scala 129:29]
-  reg  validArray_0_2; // @[icache.scala 129:29]
-  reg  validArray_0_3; // @[icache.scala 129:29]
-  reg  validArray_0_4; // @[icache.scala 129:29]
-  reg  validArray_0_5; // @[icache.scala 129:29]
-  reg  validArray_0_6; // @[icache.scala 129:29]
-  reg  validArray_0_7; // @[icache.scala 129:29]
-  reg  validArray_0_8; // @[icache.scala 129:29]
-  reg  validArray_0_9; // @[icache.scala 129:29]
-  reg  validArray_0_10; // @[icache.scala 129:29]
-  reg  validArray_0_11; // @[icache.scala 129:29]
-  reg  validArray_0_12; // @[icache.scala 129:29]
-  reg  validArray_0_13; // @[icache.scala 129:29]
-  reg  validArray_0_14; // @[icache.scala 129:29]
-  reg  validArray_0_15; // @[icache.scala 129:29]
-  reg  validArray_1_0; // @[icache.scala 129:29]
-  reg  validArray_1_1; // @[icache.scala 129:29]
-  reg  validArray_1_2; // @[icache.scala 129:29]
-  reg  validArray_1_3; // @[icache.scala 129:29]
-  reg  validArray_1_4; // @[icache.scala 129:29]
-  reg  validArray_1_5; // @[icache.scala 129:29]
-  reg  validArray_1_6; // @[icache.scala 129:29]
-  reg  validArray_1_7; // @[icache.scala 129:29]
-  reg  validArray_1_8; // @[icache.scala 129:29]
-  reg  validArray_1_9; // @[icache.scala 129:29]
-  reg  validArray_1_10; // @[icache.scala 129:29]
-  reg  validArray_1_11; // @[icache.scala 129:29]
-  reg  validArray_1_12; // @[icache.scala 129:29]
-  reg  validArray_1_13; // @[icache.scala 129:29]
-  reg  validArray_1_14; // @[icache.scala 129:29]
-  reg  validArray_1_15; // @[icache.scala 129:29]
-  wire [23:0] _GEN_1 = 4'h1 == CacheLineId ? tagArray_0_1 : tagArray_0_0; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_2 = 4'h2 == CacheLineId ? tagArray_0_2 : _GEN_1; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_3 = 4'h3 == CacheLineId ? tagArray_0_3 : _GEN_2; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_4 = 4'h4 == CacheLineId ? tagArray_0_4 : _GEN_3; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_5 = 4'h5 == CacheLineId ? tagArray_0_5 : _GEN_4; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_6 = 4'h6 == CacheLineId ? tagArray_0_6 : _GEN_5; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_7 = 4'h7 == CacheLineId ? tagArray_0_7 : _GEN_6; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_8 = 4'h8 == CacheLineId ? tagArray_0_8 : _GEN_7; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_9 = 4'h9 == CacheLineId ? tagArray_0_9 : _GEN_8; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_10 = 4'ha == CacheLineId ? tagArray_0_10 : _GEN_9; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_11 = 4'hb == CacheLineId ? tagArray_0_11 : _GEN_10; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_12 = 4'hc == CacheLineId ? tagArray_0_12 : _GEN_11; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_13 = 4'hd == CacheLineId ? tagArray_0_13 : _GEN_12; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_14 = 4'he == CacheLineId ? tagArray_0_14 : _GEN_13; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_15 = 4'hf == CacheLineId ? tagArray_0_15 : _GEN_14; // @[icache.scala 132:{14,14}]
-  wire  _GEN_17 = 4'h1 == CacheLineId ? validArray_0_1 : validArray_0_0; // @[icache.scala 132:{44,44}]
-  wire  _GEN_18 = 4'h2 == CacheLineId ? validArray_0_2 : _GEN_17; // @[icache.scala 132:{44,44}]
-  wire  _GEN_19 = 4'h3 == CacheLineId ? validArray_0_3 : _GEN_18; // @[icache.scala 132:{44,44}]
-  wire  _GEN_20 = 4'h4 == CacheLineId ? validArray_0_4 : _GEN_19; // @[icache.scala 132:{44,44}]
-  wire  _GEN_21 = 4'h5 == CacheLineId ? validArray_0_5 : _GEN_20; // @[icache.scala 132:{44,44}]
-  wire  _GEN_22 = 4'h6 == CacheLineId ? validArray_0_6 : _GEN_21; // @[icache.scala 132:{44,44}]
-  wire  _GEN_23 = 4'h7 == CacheLineId ? validArray_0_7 : _GEN_22; // @[icache.scala 132:{44,44}]
-  wire  _GEN_24 = 4'h8 == CacheLineId ? validArray_0_8 : _GEN_23; // @[icache.scala 132:{44,44}]
-  wire  _GEN_25 = 4'h9 == CacheLineId ? validArray_0_9 : _GEN_24; // @[icache.scala 132:{44,44}]
-  wire  _GEN_26 = 4'ha == CacheLineId ? validArray_0_10 : _GEN_25; // @[icache.scala 132:{44,44}]
-  wire  _GEN_27 = 4'hb == CacheLineId ? validArray_0_11 : _GEN_26; // @[icache.scala 132:{44,44}]
-  wire  _GEN_28 = 4'hc == CacheLineId ? validArray_0_12 : _GEN_27; // @[icache.scala 132:{44,44}]
-  wire  _GEN_29 = 4'hd == CacheLineId ? validArray_0_13 : _GEN_28; // @[icache.scala 132:{44,44}]
-  wire  _GEN_30 = 4'he == CacheLineId ? validArray_0_14 : _GEN_29; // @[icache.scala 132:{44,44}]
-  wire  _GEN_31 = 4'hf == CacheLineId ? validArray_0_15 : _GEN_30; // @[icache.scala 132:{44,44}]
-  wire  hitArray_0 = tag == _GEN_15 & _GEN_31; // @[icache.scala 132:44]
-  wire [23:0] _GEN_33 = 4'h1 == CacheLineId ? tagArray_1_1 : tagArray_1_0; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_34 = 4'h2 == CacheLineId ? tagArray_1_2 : _GEN_33; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_35 = 4'h3 == CacheLineId ? tagArray_1_3 : _GEN_34; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_36 = 4'h4 == CacheLineId ? tagArray_1_4 : _GEN_35; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_37 = 4'h5 == CacheLineId ? tagArray_1_5 : _GEN_36; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_38 = 4'h6 == CacheLineId ? tagArray_1_6 : _GEN_37; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_39 = 4'h7 == CacheLineId ? tagArray_1_7 : _GEN_38; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_40 = 4'h8 == CacheLineId ? tagArray_1_8 : _GEN_39; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_41 = 4'h9 == CacheLineId ? tagArray_1_9 : _GEN_40; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_42 = 4'ha == CacheLineId ? tagArray_1_10 : _GEN_41; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_43 = 4'hb == CacheLineId ? tagArray_1_11 : _GEN_42; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_44 = 4'hc == CacheLineId ? tagArray_1_12 : _GEN_43; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_45 = 4'hd == CacheLineId ? tagArray_1_13 : _GEN_44; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_46 = 4'he == CacheLineId ? tagArray_1_14 : _GEN_45; // @[icache.scala 132:{14,14}]
-  wire [23:0] _GEN_47 = 4'hf == CacheLineId ? tagArray_1_15 : _GEN_46; // @[icache.scala 132:{14,14}]
-  wire  _GEN_49 = 4'h1 == CacheLineId ? validArray_1_1 : validArray_1_0; // @[icache.scala 132:{44,44}]
-  wire  _GEN_50 = 4'h2 == CacheLineId ? validArray_1_2 : _GEN_49; // @[icache.scala 132:{44,44}]
-  wire  _GEN_51 = 4'h3 == CacheLineId ? validArray_1_3 : _GEN_50; // @[icache.scala 132:{44,44}]
-  wire  _GEN_52 = 4'h4 == CacheLineId ? validArray_1_4 : _GEN_51; // @[icache.scala 132:{44,44}]
-  wire  _GEN_53 = 4'h5 == CacheLineId ? validArray_1_5 : _GEN_52; // @[icache.scala 132:{44,44}]
-  wire  _GEN_54 = 4'h6 == CacheLineId ? validArray_1_6 : _GEN_53; // @[icache.scala 132:{44,44}]
-  wire  _GEN_55 = 4'h7 == CacheLineId ? validArray_1_7 : _GEN_54; // @[icache.scala 132:{44,44}]
-  wire  _GEN_56 = 4'h8 == CacheLineId ? validArray_1_8 : _GEN_55; // @[icache.scala 132:{44,44}]
-  wire  _GEN_57 = 4'h9 == CacheLineId ? validArray_1_9 : _GEN_56; // @[icache.scala 132:{44,44}]
-  wire  _GEN_58 = 4'ha == CacheLineId ? validArray_1_10 : _GEN_57; // @[icache.scala 132:{44,44}]
-  wire  _GEN_59 = 4'hb == CacheLineId ? validArray_1_11 : _GEN_58; // @[icache.scala 132:{44,44}]
-  wire  _GEN_60 = 4'hc == CacheLineId ? validArray_1_12 : _GEN_59; // @[icache.scala 132:{44,44}]
-  wire  _GEN_61 = 4'hd == CacheLineId ? validArray_1_13 : _GEN_60; // @[icache.scala 132:{44,44}]
-  wire  _GEN_62 = 4'he == CacheLineId ? validArray_1_14 : _GEN_61; // @[icache.scala 132:{44,44}]
-  wire  _GEN_63 = 4'hf == CacheLineId ? validArray_1_15 : _GEN_62; // @[icache.scala 132:{44,44}]
-  wire  hitArray_1 = tag == _GEN_47 & _GEN_63; // @[icache.scala 132:44]
-  wire  hit = hitArray_0 | hitArray_1; // @[icache.scala 134:33]
-  wire  SetId = _GEN_47 == tag; // @[Mux.scala 81:61]
-  wire [4:0] hitCacheAddr_hi = {SetId,CacheLineId}; // @[Cat.scala 33:92]
-  reg [1:0] off; // @[icache.scala 143:24]
-  reg [2:0] state_cache; // @[icache.scala 146:30]
-  wire  _T_1 = from_IFU_ready & from_IFU_valid; // @[Decoupled.scala 51:35]
-  wire  _T_3 = 3'h2 == state_cache; // @[icache.scala 147:26]
-  wire  _state_cache_T_1 = to_sram_ar_ready & to_sram_ar_valid; // @[Decoupled.scala 51:35]
-  wire [2:0] _state_cache_T_2 = _state_cache_T_1 ? 3'h3 : 3'h2; // @[icache.scala 160:31]
-  wire [2:0] _state_cache_T_3 = to_sram_r_bits_last ? 3'h4 : 3'h3; // @[icache.scala 166:31]
-  wire  _off_T = to_sram_r_ready & to_sram_r_valid; // @[Decoupled.scala 51:35]
-  wire [1:0] _off_T_2 = off + 2'h1; // @[icache.scala 167:51]
-  wire [1:0] _off_T_3 = _off_T ? _off_T_2 : off; // @[icache.scala 167:31]
-  wire [2:0] _GEN_65 = 3'h4 == state_cache ? 3'h1 : state_cache; // @[icache.scala 147:26 172:25 146:30]
-  wire [2:0] _GEN_66 = 3'h3 == state_cache ? _state_cache_T_3 : _GEN_65; // @[icache.scala 147:26 166:25]
-  wire [1:0] _GEN_67 = 3'h3 == state_cache ? _off_T_3 : off; // @[icache.scala 143:24 147:26 167:25]
-  wire [4:0] replaceCacheAddr_hi = {replace_set,CacheLineId}; // @[Cat.scala 33:92]
-  wire  _T_6 = state_cache == 3'h3; // @[icache.scala 180:24]
-  wire  _GEN_274 = ~replace_set; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_275 = 4'h0 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_77 = ~replace_set & 4'h0 == CacheLineId | validArray_0_0; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_278 = 4'h1 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_78 = ~replace_set & 4'h1 == CacheLineId | validArray_0_1; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_281 = 4'h2 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_79 = ~replace_set & 4'h2 == CacheLineId | validArray_0_2; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_284 = 4'h3 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_80 = ~replace_set & 4'h3 == CacheLineId | validArray_0_3; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_287 = 4'h4 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_81 = ~replace_set & 4'h4 == CacheLineId | validArray_0_4; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_290 = 4'h5 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_82 = ~replace_set & 4'h5 == CacheLineId | validArray_0_5; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_293 = 4'h6 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_83 = ~replace_set & 4'h6 == CacheLineId | validArray_0_6; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_296 = 4'h7 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_84 = ~replace_set & 4'h7 == CacheLineId | validArray_0_7; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_299 = 4'h8 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_85 = ~replace_set & 4'h8 == CacheLineId | validArray_0_8; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_302 = 4'h9 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_86 = ~replace_set & 4'h9 == CacheLineId | validArray_0_9; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_305 = 4'ha == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_87 = ~replace_set & 4'ha == CacheLineId | validArray_0_10; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_308 = 4'hb == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_88 = ~replace_set & 4'hb == CacheLineId | validArray_0_11; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_311 = 4'hc == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_89 = ~replace_set & 4'hc == CacheLineId | validArray_0_12; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_314 = 4'hd == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_90 = ~replace_set & 4'hd == CacheLineId | validArray_0_13; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_317 = 4'he == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_91 = ~replace_set & 4'he == CacheLineId | validArray_0_14; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_320 = 4'hf == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_92 = ~replace_set & 4'hf == CacheLineId | validArray_0_15; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_93 = replace_set & 4'h0 == CacheLineId | validArray_1_0; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_94 = replace_set & 4'h1 == CacheLineId | validArray_1_1; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_95 = replace_set & 4'h2 == CacheLineId | validArray_1_2; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_96 = replace_set & 4'h3 == CacheLineId | validArray_1_3; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_97 = replace_set & 4'h4 == CacheLineId | validArray_1_4; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_98 = replace_set & 4'h5 == CacheLineId | validArray_1_5; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_99 = replace_set & 4'h6 == CacheLineId | validArray_1_6; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_100 = replace_set & 4'h7 == CacheLineId | validArray_1_7; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_101 = replace_set & 4'h8 == CacheLineId | validArray_1_8; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_102 = replace_set & 4'h9 == CacheLineId | validArray_1_9; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_103 = replace_set & 4'ha == CacheLineId | validArray_1_10; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_104 = replace_set & 4'hb == CacheLineId | validArray_1_11; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_105 = replace_set & 4'hc == CacheLineId | validArray_1_12; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_106 = replace_set & 4'hd == CacheLineId | validArray_1_13; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_107 = replace_set & 4'he == CacheLineId | validArray_1_14; // @[icache.scala 129:29 183:{50,50}]
-  wire  _GEN_108 = replace_set & 4'hf == CacheLineId | validArray_1_15; // @[icache.scala 129:29 183:{50,50}]
-  wire [31:0] _to_sram_ar_bits_addr_T = {{4'd0}, from_IFU_bits_addr[31:4]}; // @[icache.scala 191:91]
-  wire [35:0] _GEN_403 = {_to_sram_ar_bits_addr_T, 4'h0}; // @[icache.scala 191:104]
-  wire [38:0] _to_sram_ar_bits_addr_T_1 = {{3'd0}, _GEN_403}; // @[icache.scala 191:104]
-  wire [38:0] _to_sram_ar_bits_addr_T_3 = _T_3 ? _to_sram_ar_bits_addr_T_1 : 39'h0; // @[Mux.scala 81:58]
-  wire [1:0] _to_sram_ar_bits_len_T_1 = _T_3 ? 2'h3 : 2'h0; // @[Mux.scala 81:58]
-  assign dataArray_cachedata_en = dataArray_cachedata_en_pipe_0;
-  assign dataArray_cachedata_addr = dataArray_cachedata_addr_pipe_0;
-  assign dataArray_cachedata_data = dataArray[dataArray_cachedata_addr]; // @[icache.scala 127:33]
-  assign dataArray_MPORT_data = to_sram_r_bits_data;
-  assign dataArray_MPORT_addr = {replaceCacheAddr_hi,off};
-  assign dataArray_MPORT_mask = 1'h1;
-  assign dataArray_MPORT_en = _T_6 & _off_T;
-  assign from_IFU_ready = 3'h0 == state_cache; // @[Mux.scala 81:61]
-  assign to_IFU_valid = 3'h1 == state_cache; // @[Mux.scala 81:61]
-  assign to_IFU_bits_data = hit ? dataArray_cachedata_data : 32'h13; // @[icache.scala 208:28]
-  assign to_sram_ar_valid = 3'h2 == state_cache; // @[Mux.scala 81:61]
-  assign to_sram_ar_bits_addr = _to_sram_ar_bits_addr_T_3[31:0]; // @[icache.scala 191:27]
-  assign to_sram_ar_bits_len = {{6'd0}, _to_sram_ar_bits_len_T_1}; // @[icache.scala 193:27]
-  assign to_sram_r_ready = 3'h3 == state_cache; // @[Mux.scala 81:61]
-  always @(posedge clock) begin
-    if (dataArray_MPORT_en & dataArray_MPORT_mask) begin
-      dataArray[dataArray_MPORT_addr] <= dataArray_MPORT_data; // @[icache.scala 127:33]
-    end
-    dataArray_cachedata_en_pipe_0 <= 1'h1;
-    if (1'h1) begin
-      dataArray_cachedata_addr_pipe_0 <= {hitCacheAddr_hi,EntId};
-    end
-    if (reset) begin // @[icache.scala 117:30]
-      replace_set <= 1'h0; // @[icache.scala 117:30]
-    end else if (!(3'h0 == state_cache)) begin // @[icache.scala 147:26]
-      if (!(3'h1 == state_cache)) begin // @[icache.scala 147:26]
-        if (3'h2 == state_cache) begin // @[icache.scala 147:26]
-          replace_set <= random_num; // @[icache.scala 162:25]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 123:29]
-      random_num <= 1'h0; // @[icache.scala 123:29]
-    end else begin
-      random_num <= random_num + 1'h1; // @[icache.scala 124:16]
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_0 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_275) begin // @[icache.scala 184:50]
-          tagArray_0_0 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_1 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_278) begin // @[icache.scala 184:50]
-          tagArray_0_1 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_2 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_281) begin // @[icache.scala 184:50]
-          tagArray_0_2 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_3 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_284) begin // @[icache.scala 184:50]
-          tagArray_0_3 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_4 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_287) begin // @[icache.scala 184:50]
-          tagArray_0_4 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_5 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_290) begin // @[icache.scala 184:50]
-          tagArray_0_5 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_6 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_293) begin // @[icache.scala 184:50]
-          tagArray_0_6 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_7 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_296) begin // @[icache.scala 184:50]
-          tagArray_0_7 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_8 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_299) begin // @[icache.scala 184:50]
-          tagArray_0_8 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_9 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_302) begin // @[icache.scala 184:50]
-          tagArray_0_9 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_10 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_305) begin // @[icache.scala 184:50]
-          tagArray_0_10 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_11 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_308) begin // @[icache.scala 184:50]
-          tagArray_0_11 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_12 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_311) begin // @[icache.scala 184:50]
-          tagArray_0_12 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_13 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_314) begin // @[icache.scala 184:50]
-          tagArray_0_13 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_14 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_317) begin // @[icache.scala 184:50]
-          tagArray_0_14 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_0_15 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (_GEN_274 & _GEN_320) begin // @[icache.scala 184:50]
-          tagArray_0_15 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_0 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_275) begin // @[icache.scala 184:50]
-          tagArray_1_0 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_1 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_278) begin // @[icache.scala 184:50]
-          tagArray_1_1 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_2 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_281) begin // @[icache.scala 184:50]
-          tagArray_1_2 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_3 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_284) begin // @[icache.scala 184:50]
-          tagArray_1_3 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_4 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_287) begin // @[icache.scala 184:50]
-          tagArray_1_4 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_5 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_290) begin // @[icache.scala 184:50]
-          tagArray_1_5 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_6 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_293) begin // @[icache.scala 184:50]
-          tagArray_1_6 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_7 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_296) begin // @[icache.scala 184:50]
-          tagArray_1_7 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_8 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_299) begin // @[icache.scala 184:50]
-          tagArray_1_8 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_9 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_302) begin // @[icache.scala 184:50]
-          tagArray_1_9 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_10 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_305) begin // @[icache.scala 184:50]
-          tagArray_1_10 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_11 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_308) begin // @[icache.scala 184:50]
-          tagArray_1_11 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_12 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_311) begin // @[icache.scala 184:50]
-          tagArray_1_12 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_13 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_314) begin // @[icache.scala 184:50]
-          tagArray_1_13 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_14 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_317) begin // @[icache.scala 184:50]
-          tagArray_1_14 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 128:29]
-      tagArray_1_15 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        if (replace_set & _GEN_320) begin // @[icache.scala 184:50]
-          tagArray_1_15 <= tag; // @[icache.scala 184:50]
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_0 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_0 <= _GEN_77;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_1 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_1 <= _GEN_78;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_2 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_2 <= _GEN_79;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_3 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_3 <= _GEN_80;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_4 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_4 <= _GEN_81;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_5 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_5 <= _GEN_82;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_6 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_6 <= _GEN_83;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_7 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_7 <= _GEN_84;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_8 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_8 <= _GEN_85;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_9 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_9 <= _GEN_86;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_10 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_10 <= _GEN_87;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_11 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_11 <= _GEN_88;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_12 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_12 <= _GEN_89;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_13 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_13 <= _GEN_90;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_14 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_14 <= _GEN_91;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_0_15 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_0_15 <= _GEN_92;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_0 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_0 <= _GEN_93;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_1 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_1 <= _GEN_94;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_2 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_2 <= _GEN_95;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_3 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_3 <= _GEN_96;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_4 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_4 <= _GEN_97;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_5 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_5 <= _GEN_98;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_6 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_6 <= _GEN_99;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_7 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_7 <= _GEN_100;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_8 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_8 <= _GEN_101;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_9 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_9 <= _GEN_102;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_10 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_10 <= _GEN_103;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_11 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_11 <= _GEN_104;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_12 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_12 <= _GEN_105;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_13 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_13 <= _GEN_106;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_14 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_14 <= _GEN_107;
-      end
-    end
-    if (reset) begin // @[icache.scala 129:29]
-      validArray_1_15 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
-        validArray_1_15 <= _GEN_108;
-      end
-    end
-    if (reset) begin // @[icache.scala 143:24]
-      off <= 2'h0; // @[icache.scala 143:24]
-    end else if (!(3'h0 == state_cache)) begin // @[icache.scala 147:26]
-      if (!(3'h1 == state_cache)) begin // @[icache.scala 147:26]
-        if (3'h2 == state_cache) begin // @[icache.scala 147:26]
-          off <= 2'h0; // @[icache.scala 161:25]
-        end else begin
-          off <= _GEN_67;
-        end
-      end
-    end
-    if (reset) begin // @[icache.scala 146:30]
-      state_cache <= 3'h0; // @[icache.scala 146:30]
-    end else if (3'h0 == state_cache) begin // @[icache.scala 147:26]
-      if (_T_1) begin // @[icache.scala 149:34]
-        if (hit) begin // @[icache.scala 150:35]
-          state_cache <= 3'h1;
-        end else begin
-          state_cache <= 3'h2;
-        end
-      end else begin
-        state_cache <= 3'h0; // @[icache.scala 152:29]
-      end
-    end else if (3'h1 == state_cache) begin // @[icache.scala 147:26]
-      state_cache <= 3'h0; // @[icache.scala 156:25]
-    end else if (3'h2 == state_cache) begin // @[icache.scala 147:26]
-      state_cache <= _state_cache_T_2; // @[icache.scala 160:25]
-    end else begin
-      state_cache <= _GEN_66;
-    end
-  end
-// Register and memory initialization
-`ifdef RANDOMIZE_GARBAGE_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_INVALID_ASSIGN
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_REG_INIT
-`define RANDOMIZE
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-`define RANDOMIZE
-`endif
-`ifndef RANDOM
-`define RANDOM $random
-`endif
-`ifdef RANDOMIZE_MEM_INIT
-  integer initvar;
-`endif
-`ifndef SYNTHESIS
-`ifdef FIRRTL_BEFORE_INITIAL
-`FIRRTL_BEFORE_INITIAL
-`endif
-initial begin
-  `ifdef RANDOMIZE
-    `ifdef INIT_RANDOM
-      `INIT_RANDOM
-    `endif
-    `ifndef VERILATOR
-      `ifdef RANDOMIZE_DELAY
-        #`RANDOMIZE_DELAY begin end
-      `else
-        #0.002 begin end
-      `endif
-    `endif
-`ifdef RANDOMIZE_MEM_INIT
-  _RAND_0 = {1{`RANDOM}};
-  for (initvar = 0; initvar < 128; initvar = initvar+1)
-    dataArray[initvar] = _RAND_0[31:0];
-`endif // RANDOMIZE_MEM_INIT
-`ifdef RANDOMIZE_REG_INIT
-  _RAND_1 = {1{`RANDOM}};
-  dataArray_cachedata_en_pipe_0 = _RAND_1[0:0];
-  _RAND_2 = {1{`RANDOM}};
-  dataArray_cachedata_addr_pipe_0 = _RAND_2[6:0];
-  _RAND_3 = {1{`RANDOM}};
-  replace_set = _RAND_3[0:0];
-  _RAND_4 = {1{`RANDOM}};
-  random_num = _RAND_4[0:0];
-  _RAND_5 = {1{`RANDOM}};
-  tagArray_0_0 = _RAND_5[23:0];
-  _RAND_6 = {1{`RANDOM}};
-  tagArray_0_1 = _RAND_6[23:0];
-  _RAND_7 = {1{`RANDOM}};
-  tagArray_0_2 = _RAND_7[23:0];
-  _RAND_8 = {1{`RANDOM}};
-  tagArray_0_3 = _RAND_8[23:0];
-  _RAND_9 = {1{`RANDOM}};
-  tagArray_0_4 = _RAND_9[23:0];
-  _RAND_10 = {1{`RANDOM}};
-  tagArray_0_5 = _RAND_10[23:0];
-  _RAND_11 = {1{`RANDOM}};
-  tagArray_0_6 = _RAND_11[23:0];
-  _RAND_12 = {1{`RANDOM}};
-  tagArray_0_7 = _RAND_12[23:0];
-  _RAND_13 = {1{`RANDOM}};
-  tagArray_0_8 = _RAND_13[23:0];
-  _RAND_14 = {1{`RANDOM}};
-  tagArray_0_9 = _RAND_14[23:0];
-  _RAND_15 = {1{`RANDOM}};
-  tagArray_0_10 = _RAND_15[23:0];
-  _RAND_16 = {1{`RANDOM}};
-  tagArray_0_11 = _RAND_16[23:0];
-  _RAND_17 = {1{`RANDOM}};
-  tagArray_0_12 = _RAND_17[23:0];
-  _RAND_18 = {1{`RANDOM}};
-  tagArray_0_13 = _RAND_18[23:0];
-  _RAND_19 = {1{`RANDOM}};
-  tagArray_0_14 = _RAND_19[23:0];
-  _RAND_20 = {1{`RANDOM}};
-  tagArray_0_15 = _RAND_20[23:0];
-  _RAND_21 = {1{`RANDOM}};
-  tagArray_1_0 = _RAND_21[23:0];
-  _RAND_22 = {1{`RANDOM}};
-  tagArray_1_1 = _RAND_22[23:0];
-  _RAND_23 = {1{`RANDOM}};
-  tagArray_1_2 = _RAND_23[23:0];
-  _RAND_24 = {1{`RANDOM}};
-  tagArray_1_3 = _RAND_24[23:0];
-  _RAND_25 = {1{`RANDOM}};
-  tagArray_1_4 = _RAND_25[23:0];
-  _RAND_26 = {1{`RANDOM}};
-  tagArray_1_5 = _RAND_26[23:0];
-  _RAND_27 = {1{`RANDOM}};
-  tagArray_1_6 = _RAND_27[23:0];
-  _RAND_28 = {1{`RANDOM}};
-  tagArray_1_7 = _RAND_28[23:0];
-  _RAND_29 = {1{`RANDOM}};
-  tagArray_1_8 = _RAND_29[23:0];
-  _RAND_30 = {1{`RANDOM}};
-  tagArray_1_9 = _RAND_30[23:0];
-  _RAND_31 = {1{`RANDOM}};
-  tagArray_1_10 = _RAND_31[23:0];
-  _RAND_32 = {1{`RANDOM}};
-  tagArray_1_11 = _RAND_32[23:0];
-  _RAND_33 = {1{`RANDOM}};
-  tagArray_1_12 = _RAND_33[23:0];
-  _RAND_34 = {1{`RANDOM}};
-  tagArray_1_13 = _RAND_34[23:0];
-  _RAND_35 = {1{`RANDOM}};
-  tagArray_1_14 = _RAND_35[23:0];
-  _RAND_36 = {1{`RANDOM}};
-  tagArray_1_15 = _RAND_36[23:0];
-  _RAND_37 = {1{`RANDOM}};
-  validArray_0_0 = _RAND_37[0:0];
-  _RAND_38 = {1{`RANDOM}};
-  validArray_0_1 = _RAND_38[0:0];
-  _RAND_39 = {1{`RANDOM}};
-  validArray_0_2 = _RAND_39[0:0];
-  _RAND_40 = {1{`RANDOM}};
-  validArray_0_3 = _RAND_40[0:0];
-  _RAND_41 = {1{`RANDOM}};
-  validArray_0_4 = _RAND_41[0:0];
-  _RAND_42 = {1{`RANDOM}};
-  validArray_0_5 = _RAND_42[0:0];
-  _RAND_43 = {1{`RANDOM}};
-  validArray_0_6 = _RAND_43[0:0];
-  _RAND_44 = {1{`RANDOM}};
-  validArray_0_7 = _RAND_44[0:0];
-  _RAND_45 = {1{`RANDOM}};
-  validArray_0_8 = _RAND_45[0:0];
-  _RAND_46 = {1{`RANDOM}};
-  validArray_0_9 = _RAND_46[0:0];
-  _RAND_47 = {1{`RANDOM}};
-  validArray_0_10 = _RAND_47[0:0];
-  _RAND_48 = {1{`RANDOM}};
-  validArray_0_11 = _RAND_48[0:0];
-  _RAND_49 = {1{`RANDOM}};
-  validArray_0_12 = _RAND_49[0:0];
-  _RAND_50 = {1{`RANDOM}};
-  validArray_0_13 = _RAND_50[0:0];
-  _RAND_51 = {1{`RANDOM}};
-  validArray_0_14 = _RAND_51[0:0];
-  _RAND_52 = {1{`RANDOM}};
-  validArray_0_15 = _RAND_52[0:0];
-  _RAND_53 = {1{`RANDOM}};
-  validArray_1_0 = _RAND_53[0:0];
-  _RAND_54 = {1{`RANDOM}};
-  validArray_1_1 = _RAND_54[0:0];
-  _RAND_55 = {1{`RANDOM}};
-  validArray_1_2 = _RAND_55[0:0];
-  _RAND_56 = {1{`RANDOM}};
-  validArray_1_3 = _RAND_56[0:0];
-  _RAND_57 = {1{`RANDOM}};
-  validArray_1_4 = _RAND_57[0:0];
-  _RAND_58 = {1{`RANDOM}};
-  validArray_1_5 = _RAND_58[0:0];
-  _RAND_59 = {1{`RANDOM}};
-  validArray_1_6 = _RAND_59[0:0];
-  _RAND_60 = {1{`RANDOM}};
-  validArray_1_7 = _RAND_60[0:0];
-  _RAND_61 = {1{`RANDOM}};
-  validArray_1_8 = _RAND_61[0:0];
-  _RAND_62 = {1{`RANDOM}};
-  validArray_1_9 = _RAND_62[0:0];
-  _RAND_63 = {1{`RANDOM}};
-  validArray_1_10 = _RAND_63[0:0];
-  _RAND_64 = {1{`RANDOM}};
-  validArray_1_11 = _RAND_64[0:0];
-  _RAND_65 = {1{`RANDOM}};
-  validArray_1_12 = _RAND_65[0:0];
-  _RAND_66 = {1{`RANDOM}};
-  validArray_1_13 = _RAND_66[0:0];
-  _RAND_67 = {1{`RANDOM}};
-  validArray_1_14 = _RAND_67[0:0];
-  _RAND_68 = {1{`RANDOM}};
-  validArray_1_15 = _RAND_68[0:0];
-  _RAND_69 = {1{`RANDOM}};
-  off = _RAND_69[1:0];
-  _RAND_70 = {1{`RANDOM}};
-  state_cache = _RAND_70[2:0];
-`endif // RANDOMIZE_REG_INIT
-  `endif // RANDOMIZE
-end // initial
-`ifdef FIRRTL_AFTER_INITIAL
-`FIRRTL_AFTER_INITIAL
-`endif
-`endif // SYNTHESIS
-endmodule
-module sram_axi_rw(
+module SRAM(
   input         clock,
   input         reset,
   output        axi_ar_ready,
   input         axi_ar_valid,
   input  [31:0] axi_ar_bits_addr,
-  input  [7:0]  axi_ar_bits_len,
   input         axi_r_ready,
   output        axi_r_valid,
-  output [31:0] axi_r_bits_data,
-  output        axi_r_bits_last,
-  output        axi_aw_ready,
-  input         axi_aw_valid,
-  input  [31:0] axi_aw_bits_addr,
-  input  [7:0]  axi_aw_bits_len,
-  input  [1:0]  axi_aw_bits_burst,
-  output        axi_w_ready,
-  input         axi_w_valid,
-  input  [31:0] axi_w_bits_data,
-  input  [3:0]  axi_w_bits_strb
+  output [31:0] axi_r_bits_data
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [31:0] _RAND_0;
   reg [31:0] _RAND_1;
-  reg [31:0] _RAND_2;
-  reg [31:0] _RAND_3;
-  reg [31:0] _RAND_4;
 `endif // RANDOMIZE_REG_INIT
-  wire  RamBB_i1_clock; // @[sram_Axi.scala 155:26]
-  wire [31:0] RamBB_i1_addr; // @[sram_Axi.scala 155:26]
-  wire  RamBB_i1_mem_wen; // @[sram_Axi.scala 155:26]
-  wire  RamBB_i1_valid; // @[sram_Axi.scala 155:26]
-  wire [31:0] RamBB_i1_wdata; // @[sram_Axi.scala 155:26]
-  wire [3:0] RamBB_i1_wmask; // @[sram_Axi.scala 155:26]
-  wire [31:0] RamBB_i1_rdata; // @[sram_Axi.scala 155:26]
-  reg  delay; // @[sram_Axi.scala 89:24]
-  reg [7:0] reg_AxLen; // @[sram_Axi.scala 92:28]
-  reg [31:0] reg_addr; // @[sram_Axi.scala 93:28]
-  reg [1:0] reg_burst; // @[sram_Axi.scala 94:28]
-  reg [2:0] state_sram; // @[sram_Axi.scala 98:29]
+  wire  RamBB_i1_clock; // @[sram_AxiLite.scala 77:26]
+  wire [31:0] RamBB_i1_addr; // @[sram_AxiLite.scala 77:26]
+  wire  RamBB_i1_mem_wen; // @[sram_AxiLite.scala 77:26]
+  wire  RamBB_i1_valid; // @[sram_AxiLite.scala 77:26]
+  wire [31:0] RamBB_i1_wdata; // @[sram_AxiLite.scala 77:26]
+  wire [3:0] RamBB_i1_wmask; // @[sram_AxiLite.scala 77:26]
+  wire [31:0] RamBB_i1_rdata; // @[sram_AxiLite.scala 77:26]
+  reg  delay; // @[sram_AxiLite.scala 42:24]
+  reg [2:0] state; // @[sram_AxiLite.scala 46:24]
   wire  _T_1 = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
-  wire  _T_2 = axi_aw_ready & axi_aw_valid; // @[Decoupled.scala 51:35]
-  wire  _T_4 = ~delay; // @[sram_Axi.scala 118:25]
-  wire  _state_sram_T = reg_AxLen == 8'h0; // @[sram_Axi.scala 119:45]
-  wire [2:0] _state_sram_T_1 = reg_AxLen == 8'h0 ? 3'h3 : 3'h2; // @[sram_Axi.scala 119:34]
-  wire  _delay_T_1 = delay - 1'h1; // @[sram_Axi.scala 123:28]
-  wire  _T_5 = 3'h2 == state_sram; // @[sram_Axi.scala 99:25]
-  wire  _state_sram_T_2 = reg_AxLen == 8'h1; // @[sram_Axi.scala 126:42]
-  wire [2:0] _state_sram_T_3 = reg_AxLen == 8'h1 ? 3'h3 : 3'h2; // @[sram_Axi.scala 126:31]
-  wire  _reg_AxLen_T = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
-  wire [7:0] _reg_AxLen_T_2 = reg_AxLen - 8'h1; // @[sram_Axi.scala 127:53]
-  wire [7:0] _reg_AxLen_T_3 = _reg_AxLen_T ? _reg_AxLen_T_2 : reg_AxLen; // @[sram_Axi.scala 127:31]
-  wire [31:0] _reg_addr_T_2 = reg_addr + 32'h4; // @[sram_Axi.scala 129:53]
-  wire [31:0] _reg_addr_T_3 = _reg_AxLen_T ? _reg_addr_T_2 : reg_addr; // @[sram_Axi.scala 129:30]
-  wire [31:0] _reg_addr_T_5 = 2'h1 == reg_burst ? _reg_addr_T_3 : reg_addr; // @[Mux.scala 81:58]
-  wire  _T_6 = 3'h3 == state_sram; // @[sram_Axi.scala 99:25]
-  wire [2:0] _state_sram_T_5 = _state_sram_T ? 3'h6 : 3'h5; // @[sram_Axi.scala 137:34]
-  wire [2:0] _GEN_9 = _T_4 ? _state_sram_T_5 : 3'h4; // @[sram_Axi.scala 136:34 137:28 139:28]
-  wire  _T_9 = 3'h5 == state_sram; // @[sram_Axi.scala 99:25]
-  wire [2:0] _state_sram_T_7 = _state_sram_T_2 ? 3'h6 : 3'h5; // @[sram_Axi.scala 144:31]
-  wire  _reg_AxLen_T_4 = axi_w_ready & axi_w_valid; // @[Decoupled.scala 51:35]
-  wire [7:0] _reg_AxLen_T_7 = _reg_AxLen_T_4 ? _reg_AxLen_T_2 : reg_AxLen; // @[sram_Axi.scala 145:31]
-  wire [31:0] _reg_addr_T_9 = _reg_AxLen_T_4 ? _reg_addr_T_2 : reg_addr; // @[sram_Axi.scala 147:30]
-  wire [31:0] _reg_addr_T_11 = 2'h1 == reg_burst ? _reg_addr_T_9 : reg_addr; // @[Mux.scala 81:58]
-  wire  _T_10 = 3'h6 == state_sram; // @[sram_Axi.scala 99:25]
-  wire [2:0] _GEN_10 = 3'h6 == state_sram ? 3'h0 : state_sram; // @[sram_Axi.scala 151:24 99:25 98:29]
-  wire [2:0] _GEN_11 = 3'h5 == state_sram ? _state_sram_T_7 : _GEN_10; // @[sram_Axi.scala 144:25 99:25]
-  wire [7:0] _GEN_12 = 3'h5 == state_sram ? _reg_AxLen_T_7 : reg_AxLen; // @[sram_Axi.scala 145:25 99:25 92:28]
-  wire [31:0] _GEN_13 = 3'h5 == state_sram ? _reg_addr_T_11 : reg_addr; // @[sram_Axi.scala 146:25 99:25 93:28]
-  wire [2:0] _GEN_14 = 3'h4 == state_sram ? _GEN_9 : _GEN_11; // @[sram_Axi.scala 99:25]
-  wire  _GEN_15 = 3'h4 == state_sram ? _delay_T_1 : delay; // @[sram_Axi.scala 141:19 89:24 99:25]
-  wire [7:0] _GEN_16 = 3'h4 == state_sram ? reg_AxLen : _GEN_12; // @[sram_Axi.scala 99:25 92:28]
-  wire [31:0] _GEN_17 = 3'h4 == state_sram ? reg_addr : _GEN_13; // @[sram_Axi.scala 99:25 93:28]
-  wire [2:0] _GEN_18 = 3'h3 == state_sram ? 3'h0 : _GEN_14; // @[sram_Axi.scala 133:24 99:25]
-  wire  _GEN_19 = 3'h3 == state_sram ? delay : _GEN_15; // @[sram_Axi.scala 89:24 99:25]
-  wire [7:0] _GEN_20 = 3'h3 == state_sram ? reg_AxLen : _GEN_16; // @[sram_Axi.scala 99:25 92:28]
-  wire [31:0] _GEN_21 = 3'h3 == state_sram ? reg_addr : _GEN_17; // @[sram_Axi.scala 99:25 93:28]
-  RamBB RamBB_i1 ( // @[sram_Axi.scala 155:26]
+  wire  _state_T = ~delay; // @[sram_AxiLite.scala 62:32]
+  wire  _delay_T_1 = delay - 1'h1; // @[sram_AxiLite.scala 63:28]
+  wire  _T_6 = 3'h2 == state; // @[sram_AxiLite.scala 47:20]
+  wire  _state_T_2 = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
+  wire [2:0] _state_T_3 = _state_T_2 ? 3'h0 : 3'h2; // @[sram_AxiLite.scala 66:25]
+  wire [2:0] _state_T_5 = _state_T ? 3'h4 : 3'h3; // @[sram_AxiLite.scala 69:25]
+  wire  _T_8 = 3'h4 == state; // @[sram_AxiLite.scala 47:20]
+  wire [2:0] _GEN_2 = 3'h4 == state ? 3'h4 : state; // @[sram_AxiLite.scala 47:20 73:19 46:24]
+  wire [2:0] _GEN_3 = 3'h3 == state ? _state_T_5 : _GEN_2; // @[sram_AxiLite.scala 47:20 69:19]
+  wire  _GEN_4 = 3'h3 == state ? _delay_T_1 : delay; // @[sram_AxiLite.scala 47:20 70:19 42:24]
+  wire [31:0] _RamBB_i1_io_addr_T_1 = _T_6 ? axi_ar_bits_addr : 32'h0; // @[Mux.scala 81:58]
+  RamBB RamBB_i1 ( // @[sram_AxiLite.scala 77:26]
     .clock(RamBB_i1_clock),
     .addr(RamBB_i1_addr),
     .mem_wen(RamBB_i1_mem_wen),
@@ -2708,87 +1593,43 @@ module sram_axi_rw(
     .wmask(RamBB_i1_wmask),
     .rdata(RamBB_i1_rdata)
   );
-  assign axi_ar_ready = 3'h0 == state_sram; // @[Mux.scala 81:61]
-  assign axi_r_valid = _T_6 | _T_5; // @[Mux.scala 81:58]
-  assign axi_r_bits_data = RamBB_i1_rdata; // @[sram_Axi.scala 174:21]
-  assign axi_r_bits_last = state_sram == 3'h3; // @[sram_Axi.scala 176:39]
-  assign axi_aw_ready = 3'h0 == state_sram; // @[Mux.scala 81:61]
-  assign axi_w_ready = _T_10 | _T_9; // @[Mux.scala 81:58]
-  assign RamBB_i1_clock = clock; // @[sram_Axi.scala 156:25]
-  assign RamBB_i1_addr = reg_addr; // @[sram_Axi.scala 157:25]
-  assign RamBB_i1_mem_wen = _T_10 | _T_9; // @[Mux.scala 81:58]
-  assign RamBB_i1_valid = _T_10 | (_T_9 | (_T_6 | _T_5)); // @[Mux.scala 81:58]
-  assign RamBB_i1_wdata = axi_w_bits_data; // @[sram_Axi.scala 168:25]
-  assign RamBB_i1_wmask = axi_w_bits_strb; // @[sram_Axi.scala 169:25]
+  assign axi_ar_ready = 3'h0 == state; // @[Mux.scala 81:61]
+  assign axi_r_valid = 3'h2 == state; // @[Mux.scala 81:61]
+  assign axi_r_bits_data = RamBB_i1_rdata; // @[sram_AxiLite.scala 96:21]
+  assign RamBB_i1_clock = clock; // @[sram_AxiLite.scala 78:25]
+  assign RamBB_i1_addr = _T_8 ? 32'h0 : _RamBB_i1_io_addr_T_1; // @[Mux.scala 81:58]
+  assign RamBB_i1_mem_wen = 3'h4 == state; // @[Mux.scala 81:61]
+  assign RamBB_i1_valid = _T_8 | _T_6; // @[Mux.scala 81:58]
+  assign RamBB_i1_wdata = 32'h0; // @[sram_AxiLite.scala 90:25]
+  assign RamBB_i1_wmask = 4'h0; // @[sram_AxiLite.scala 91:25]
   always @(posedge clock) begin
-    if (reset) begin // @[sram_Axi.scala 89:24]
-      delay <= 1'h0; // @[sram_Axi.scala 89:24]
-    end else if (3'h0 == state_sram) begin // @[sram_Axi.scala 99:25]
-      delay <= 1'h0; // @[sram_Axi.scala 101:19]
-    end else if (3'h1 == state_sram) begin // @[sram_Axi.scala 99:25]
-      delay <= delay - 1'h1; // @[sram_Axi.scala 123:19]
-    end else if (!(3'h2 == state_sram)) begin // @[sram_Axi.scala 99:25]
-      delay <= _GEN_19;
+    if (reset) begin // @[sram_AxiLite.scala 42:24]
+      delay <= 1'h0; // @[sram_AxiLite.scala 42:24]
+    end else if (3'h0 == state) begin // @[sram_AxiLite.scala 47:20]
+      delay <= 1'h0; // @[sram_AxiLite.scala 49:19]
+    end else if (3'h1 == state) begin // @[sram_AxiLite.scala 47:20]
+      delay <= delay - 1'h1; // @[sram_AxiLite.scala 63:19]
+    end else if (!(3'h2 == state)) begin // @[sram_AxiLite.scala 47:20]
+      delay <= _GEN_4;
     end
-    if (reset) begin // @[sram_Axi.scala 92:28]
-      reg_AxLen <= 8'h0; // @[sram_Axi.scala 92:28]
-    end else if (3'h0 == state_sram) begin // @[sram_Axi.scala 99:25]
-      if (_T_1) begin // @[sram_Axi.scala 103:32]
-        reg_AxLen <= axi_ar_bits_len; // @[sram_Axi.scala 105:28]
-      end else if (_T_2) begin // @[sram_Axi.scala 108:39]
-        reg_AxLen <= axi_aw_bits_len; // @[sram_Axi.scala 110:28]
-      end
-    end else if (!(3'h1 == state_sram)) begin // @[sram_Axi.scala 99:25]
-      if (3'h2 == state_sram) begin // @[sram_Axi.scala 99:25]
-        reg_AxLen <= _reg_AxLen_T_3; // @[sram_Axi.scala 127:25]
+    if (reset) begin // @[sram_AxiLite.scala 46:24]
+      state <= 3'h0; // @[sram_AxiLite.scala 46:24]
+    end else if (3'h0 == state) begin // @[sram_AxiLite.scala 47:20]
+      if (_T_1) begin // @[sram_AxiLite.scala 51:32]
+        state <= 3'h1; // @[sram_AxiLite.scala 52:23]
       end else begin
-        reg_AxLen <= _GEN_20;
+        state <= 3'h0;
       end
-    end
-    if (reset) begin // @[sram_Axi.scala 93:28]
-      reg_addr <= 32'h0; // @[sram_Axi.scala 93:28]
-    end else if (3'h0 == state_sram) begin // @[sram_Axi.scala 99:25]
-      if (_T_1) begin // @[sram_Axi.scala 103:32]
-        reg_addr <= axi_ar_bits_addr; // @[sram_Axi.scala 106:28]
-      end else if (_T_2) begin // @[sram_Axi.scala 108:39]
-        reg_addr <= axi_aw_bits_addr; // @[sram_Axi.scala 111:28]
-      end
-    end else if (!(3'h1 == state_sram)) begin // @[sram_Axi.scala 99:25]
-      if (3'h2 == state_sram) begin // @[sram_Axi.scala 99:25]
-        reg_addr <= _reg_addr_T_5; // @[sram_Axi.scala 128:25]
+    end else if (3'h1 == state) begin // @[sram_AxiLite.scala 47:20]
+      if (~delay) begin // @[sram_AxiLite.scala 62:25]
+        state <= 3'h2;
       end else begin
-        reg_addr <= _GEN_21;
+        state <= 3'h1;
       end
-    end
-    if (reset) begin // @[sram_Axi.scala 94:28]
-      reg_burst <= 2'h3; // @[sram_Axi.scala 94:28]
-    end else if (3'h0 == state_sram) begin // @[sram_Axi.scala 99:25]
-      if (_T_1) begin // @[sram_Axi.scala 103:32]
-        reg_burst <= 2'h1; // @[sram_Axi.scala 107:28]
-      end else if (_T_2) begin // @[sram_Axi.scala 108:39]
-        reg_burst <= axi_aw_bits_burst; // @[sram_Axi.scala 112:28]
-      end
-    end
-    if (reset) begin // @[sram_Axi.scala 98:29]
-      state_sram <= 3'h0; // @[sram_Axi.scala 98:29]
-    end else if (3'h0 == state_sram) begin // @[sram_Axi.scala 99:25]
-      if (_T_1) begin // @[sram_Axi.scala 103:32]
-        state_sram <= 3'h1; // @[sram_Axi.scala 104:28]
-      end else if (_T_2) begin // @[sram_Axi.scala 108:39]
-        state_sram <= 3'h4; // @[sram_Axi.scala 109:28]
-      end else begin
-        state_sram <= 3'h0; // @[sram_Axi.scala 114:28]
-      end
-    end else if (3'h1 == state_sram) begin // @[sram_Axi.scala 99:25]
-      if (~delay) begin // @[sram_Axi.scala 118:34]
-        state_sram <= _state_sram_T_1; // @[sram_Axi.scala 119:28]
-      end else begin
-        state_sram <= 3'h1; // @[sram_Axi.scala 121:28]
-      end
-    end else if (3'h2 == state_sram) begin // @[sram_Axi.scala 99:25]
-      state_sram <= _state_sram_T_3; // @[sram_Axi.scala 126:25]
+    end else if (3'h2 == state) begin // @[sram_AxiLite.scala 47:20]
+      state <= _state_T_3; // @[sram_AxiLite.scala 66:19]
     end else begin
-      state_sram <= _GEN_18;
+      state <= _GEN_3;
     end
   end
 // Register and memory initialization
@@ -2830,13 +1671,7 @@ initial begin
   _RAND_0 = {1{`RANDOM}};
   delay = _RAND_0[0:0];
   _RAND_1 = {1{`RANDOM}};
-  reg_AxLen = _RAND_1[7:0];
-  _RAND_2 = {1{`RANDOM}};
-  reg_addr = _RAND_2[31:0];
-  _RAND_3 = {1{`RANDOM}};
-  reg_burst = _RAND_3[1:0];
-  _RAND_4 = {1{`RANDOM}};
-  state_sram = _RAND_4[2:0];
+  state = _RAND_1[2:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -4365,6 +3200,227 @@ end // initial
 `endif
 `endif // SYNTHESIS
 endmodule
+module sram_axi_rw(
+  input         clock,
+  input         reset,
+  output        axi_ar_ready,
+  input         axi_ar_valid,
+  input  [31:0] axi_ar_bits_addr,
+  input  [7:0]  axi_ar_bits_len,
+  input         axi_r_ready,
+  output        axi_r_valid,
+  output [31:0] axi_r_bits_data,
+  output        axi_r_bits_last,
+  output        axi_aw_ready,
+  input         axi_aw_valid,
+  input  [31:0] axi_aw_bits_addr,
+  input  [7:0]  axi_aw_bits_len,
+  output        axi_w_ready,
+  input         axi_w_valid,
+  input  [31:0] axi_w_bits_data
+);
+`ifdef RANDOMIZE_REG_INIT
+  reg [31:0] _RAND_0;
+  reg [31:0] _RAND_1;
+  reg [31:0] _RAND_2;
+  reg [31:0] _RAND_3;
+  reg [31:0] _RAND_4;
+`endif // RANDOMIZE_REG_INIT
+  wire  RamBB_i1_clock; // @[sram_Axi.scala 155:26]
+  wire [31:0] RamBB_i1_addr; // @[sram_Axi.scala 155:26]
+  wire  RamBB_i1_mem_wen; // @[sram_Axi.scala 155:26]
+  wire  RamBB_i1_valid; // @[sram_Axi.scala 155:26]
+  wire [31:0] RamBB_i1_wdata; // @[sram_Axi.scala 155:26]
+  wire [3:0] RamBB_i1_wmask; // @[sram_Axi.scala 155:26]
+  wire [31:0] RamBB_i1_rdata; // @[sram_Axi.scala 155:26]
+  reg  delay; // @[sram_Axi.scala 89:24]
+  reg [7:0] reg_AxLen; // @[sram_Axi.scala 92:28]
+  reg [31:0] reg_addr; // @[sram_Axi.scala 93:28]
+  reg [1:0] reg_burst; // @[sram_Axi.scala 94:28]
+  reg [2:0] state_sram; // @[sram_Axi.scala 98:29]
+  wire  _T_1 = axi_ar_ready & axi_ar_valid; // @[Decoupled.scala 51:35]
+  wire  _T_2 = axi_aw_ready & axi_aw_valid; // @[Decoupled.scala 51:35]
+  wire  _T_4 = ~delay; // @[sram_Axi.scala 118:25]
+  wire  _state_sram_T = reg_AxLen == 8'h0; // @[sram_Axi.scala 119:45]
+  wire [2:0] _state_sram_T_1 = reg_AxLen == 8'h0 ? 3'h3 : 3'h2; // @[sram_Axi.scala 119:34]
+  wire  _delay_T_1 = delay - 1'h1; // @[sram_Axi.scala 123:28]
+  wire  _T_5 = 3'h2 == state_sram; // @[sram_Axi.scala 99:25]
+  wire  _state_sram_T_2 = reg_AxLen == 8'h1; // @[sram_Axi.scala 126:42]
+  wire [2:0] _state_sram_T_3 = reg_AxLen == 8'h1 ? 3'h3 : 3'h2; // @[sram_Axi.scala 126:31]
+  wire  _reg_AxLen_T = axi_r_ready & axi_r_valid; // @[Decoupled.scala 51:35]
+  wire [7:0] _reg_AxLen_T_2 = reg_AxLen - 8'h1; // @[sram_Axi.scala 127:53]
+  wire [7:0] _reg_AxLen_T_3 = _reg_AxLen_T ? _reg_AxLen_T_2 : reg_AxLen; // @[sram_Axi.scala 127:31]
+  wire [31:0] _reg_addr_T_2 = reg_addr + 32'h4; // @[sram_Axi.scala 129:53]
+  wire [31:0] _reg_addr_T_3 = _reg_AxLen_T ? _reg_addr_T_2 : reg_addr; // @[sram_Axi.scala 129:30]
+  wire [31:0] _reg_addr_T_5 = 2'h1 == reg_burst ? _reg_addr_T_3 : reg_addr; // @[Mux.scala 81:58]
+  wire  _T_6 = 3'h3 == state_sram; // @[sram_Axi.scala 99:25]
+  wire [2:0] _state_sram_T_5 = _state_sram_T ? 3'h6 : 3'h5; // @[sram_Axi.scala 137:34]
+  wire [2:0] _GEN_9 = _T_4 ? _state_sram_T_5 : 3'h4; // @[sram_Axi.scala 136:34 137:28 139:28]
+  wire  _T_9 = 3'h5 == state_sram; // @[sram_Axi.scala 99:25]
+  wire [2:0] _state_sram_T_7 = _state_sram_T_2 ? 3'h6 : 3'h5; // @[sram_Axi.scala 144:31]
+  wire  _reg_AxLen_T_4 = axi_w_ready & axi_w_valid; // @[Decoupled.scala 51:35]
+  wire [7:0] _reg_AxLen_T_7 = _reg_AxLen_T_4 ? _reg_AxLen_T_2 : reg_AxLen; // @[sram_Axi.scala 145:31]
+  wire [31:0] _reg_addr_T_9 = _reg_AxLen_T_4 ? _reg_addr_T_2 : reg_addr; // @[sram_Axi.scala 147:30]
+  wire [31:0] _reg_addr_T_11 = 2'h1 == reg_burst ? _reg_addr_T_9 : reg_addr; // @[Mux.scala 81:58]
+  wire  _T_10 = 3'h6 == state_sram; // @[sram_Axi.scala 99:25]
+  wire [2:0] _GEN_10 = 3'h6 == state_sram ? 3'h0 : state_sram; // @[sram_Axi.scala 151:24 99:25 98:29]
+  wire [2:0] _GEN_11 = 3'h5 == state_sram ? _state_sram_T_7 : _GEN_10; // @[sram_Axi.scala 144:25 99:25]
+  wire [7:0] _GEN_12 = 3'h5 == state_sram ? _reg_AxLen_T_7 : reg_AxLen; // @[sram_Axi.scala 145:25 99:25 92:28]
+  wire [31:0] _GEN_13 = 3'h5 == state_sram ? _reg_addr_T_11 : reg_addr; // @[sram_Axi.scala 146:25 99:25 93:28]
+  wire [2:0] _GEN_14 = 3'h4 == state_sram ? _GEN_9 : _GEN_11; // @[sram_Axi.scala 99:25]
+  wire  _GEN_15 = 3'h4 == state_sram ? _delay_T_1 : delay; // @[sram_Axi.scala 141:19 89:24 99:25]
+  wire [7:0] _GEN_16 = 3'h4 == state_sram ? reg_AxLen : _GEN_12; // @[sram_Axi.scala 99:25 92:28]
+  wire [31:0] _GEN_17 = 3'h4 == state_sram ? reg_addr : _GEN_13; // @[sram_Axi.scala 99:25 93:28]
+  wire [2:0] _GEN_18 = 3'h3 == state_sram ? 3'h0 : _GEN_14; // @[sram_Axi.scala 133:24 99:25]
+  wire  _GEN_19 = 3'h3 == state_sram ? delay : _GEN_15; // @[sram_Axi.scala 89:24 99:25]
+  wire [7:0] _GEN_20 = 3'h3 == state_sram ? reg_AxLen : _GEN_16; // @[sram_Axi.scala 99:25 92:28]
+  wire [31:0] _GEN_21 = 3'h3 == state_sram ? reg_addr : _GEN_17; // @[sram_Axi.scala 99:25 93:28]
+  RamBB RamBB_i1 ( // @[sram_Axi.scala 155:26]
+    .clock(RamBB_i1_clock),
+    .addr(RamBB_i1_addr),
+    .mem_wen(RamBB_i1_mem_wen),
+    .valid(RamBB_i1_valid),
+    .wdata(RamBB_i1_wdata),
+    .wmask(RamBB_i1_wmask),
+    .rdata(RamBB_i1_rdata)
+  );
+  assign axi_ar_ready = 3'h0 == state_sram; // @[Mux.scala 81:61]
+  assign axi_r_valid = _T_6 | _T_5; // @[Mux.scala 81:58]
+  assign axi_r_bits_data = RamBB_i1_rdata; // @[sram_Axi.scala 174:21]
+  assign axi_r_bits_last = state_sram == 3'h3; // @[sram_Axi.scala 176:39]
+  assign axi_aw_ready = 3'h0 == state_sram; // @[Mux.scala 81:61]
+  assign axi_w_ready = _T_10 | _T_9; // @[Mux.scala 81:58]
+  assign RamBB_i1_clock = clock; // @[sram_Axi.scala 156:25]
+  assign RamBB_i1_addr = reg_addr; // @[sram_Axi.scala 157:25]
+  assign RamBB_i1_mem_wen = _T_10 | _T_9; // @[Mux.scala 81:58]
+  assign RamBB_i1_valid = _T_10 | (_T_9 | (_T_6 | _T_5)); // @[Mux.scala 81:58]
+  assign RamBB_i1_wdata = axi_w_bits_data; // @[sram_Axi.scala 168:25]
+  assign RamBB_i1_wmask = 4'hf; // @[sram_Axi.scala 169:25]
+  always @(posedge clock) begin
+    if (reset) begin // @[sram_Axi.scala 89:24]
+      delay <= 1'h0; // @[sram_Axi.scala 89:24]
+    end else if (3'h0 == state_sram) begin // @[sram_Axi.scala 99:25]
+      delay <= 1'h0; // @[sram_Axi.scala 101:19]
+    end else if (3'h1 == state_sram) begin // @[sram_Axi.scala 99:25]
+      delay <= delay - 1'h1; // @[sram_Axi.scala 123:19]
+    end else if (!(3'h2 == state_sram)) begin // @[sram_Axi.scala 99:25]
+      delay <= _GEN_19;
+    end
+    if (reset) begin // @[sram_Axi.scala 92:28]
+      reg_AxLen <= 8'h0; // @[sram_Axi.scala 92:28]
+    end else if (3'h0 == state_sram) begin // @[sram_Axi.scala 99:25]
+      if (_T_1) begin // @[sram_Axi.scala 103:32]
+        reg_AxLen <= axi_ar_bits_len; // @[sram_Axi.scala 105:28]
+      end else if (_T_2) begin // @[sram_Axi.scala 108:39]
+        reg_AxLen <= axi_aw_bits_len; // @[sram_Axi.scala 110:28]
+      end
+    end else if (!(3'h1 == state_sram)) begin // @[sram_Axi.scala 99:25]
+      if (3'h2 == state_sram) begin // @[sram_Axi.scala 99:25]
+        reg_AxLen <= _reg_AxLen_T_3; // @[sram_Axi.scala 127:25]
+      end else begin
+        reg_AxLen <= _GEN_20;
+      end
+    end
+    if (reset) begin // @[sram_Axi.scala 93:28]
+      reg_addr <= 32'h0; // @[sram_Axi.scala 93:28]
+    end else if (3'h0 == state_sram) begin // @[sram_Axi.scala 99:25]
+      if (_T_1) begin // @[sram_Axi.scala 103:32]
+        reg_addr <= axi_ar_bits_addr; // @[sram_Axi.scala 106:28]
+      end else if (_T_2) begin // @[sram_Axi.scala 108:39]
+        reg_addr <= axi_aw_bits_addr; // @[sram_Axi.scala 111:28]
+      end
+    end else if (!(3'h1 == state_sram)) begin // @[sram_Axi.scala 99:25]
+      if (3'h2 == state_sram) begin // @[sram_Axi.scala 99:25]
+        reg_addr <= _reg_addr_T_5; // @[sram_Axi.scala 128:25]
+      end else begin
+        reg_addr <= _GEN_21;
+      end
+    end
+    if (reset) begin // @[sram_Axi.scala 94:28]
+      reg_burst <= 2'h3; // @[sram_Axi.scala 94:28]
+    end else if (3'h0 == state_sram) begin // @[sram_Axi.scala 99:25]
+      if (_T_1) begin // @[sram_Axi.scala 103:32]
+        reg_burst <= 2'h1; // @[sram_Axi.scala 107:28]
+      end else if (_T_2) begin // @[sram_Axi.scala 108:39]
+        reg_burst <= 2'h1; // @[sram_Axi.scala 112:28]
+      end
+    end
+    if (reset) begin // @[sram_Axi.scala 98:29]
+      state_sram <= 3'h0; // @[sram_Axi.scala 98:29]
+    end else if (3'h0 == state_sram) begin // @[sram_Axi.scala 99:25]
+      if (_T_1) begin // @[sram_Axi.scala 103:32]
+        state_sram <= 3'h1; // @[sram_Axi.scala 104:28]
+      end else if (_T_2) begin // @[sram_Axi.scala 108:39]
+        state_sram <= 3'h4; // @[sram_Axi.scala 109:28]
+      end else begin
+        state_sram <= 3'h0; // @[sram_Axi.scala 114:28]
+      end
+    end else if (3'h1 == state_sram) begin // @[sram_Axi.scala 99:25]
+      if (~delay) begin // @[sram_Axi.scala 118:34]
+        state_sram <= _state_sram_T_1; // @[sram_Axi.scala 119:28]
+      end else begin
+        state_sram <= 3'h1; // @[sram_Axi.scala 121:28]
+      end
+    end else if (3'h2 == state_sram) begin // @[sram_Axi.scala 99:25]
+      state_sram <= _state_sram_T_3; // @[sram_Axi.scala 126:25]
+    end else begin
+      state_sram <= _GEN_18;
+    end
+  end
+// Register and memory initialization
+`ifdef RANDOMIZE_GARBAGE_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_INVALID_ASSIGN
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_REG_INIT
+`define RANDOMIZE
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+`define RANDOMIZE
+`endif
+`ifndef RANDOM
+`define RANDOM $random
+`endif
+`ifdef RANDOMIZE_MEM_INIT
+  integer initvar;
+`endif
+`ifndef SYNTHESIS
+`ifdef FIRRTL_BEFORE_INITIAL
+`FIRRTL_BEFORE_INITIAL
+`endif
+initial begin
+  `ifdef RANDOMIZE
+    `ifdef INIT_RANDOM
+      `INIT_RANDOM
+    `endif
+    `ifndef VERILATOR
+      `ifdef RANDOMIZE_DELAY
+        #`RANDOMIZE_DELAY begin end
+      `else
+        #0.002 begin end
+      `endif
+    `endif
+`ifdef RANDOMIZE_REG_INIT
+  _RAND_0 = {1{`RANDOM}};
+  delay = _RAND_0[0:0];
+  _RAND_1 = {1{`RANDOM}};
+  reg_AxLen = _RAND_1[7:0];
+  _RAND_2 = {1{`RANDOM}};
+  reg_addr = _RAND_2[31:0];
+  _RAND_3 = {1{`RANDOM}};
+  reg_burst = _RAND_3[1:0];
+  _RAND_4 = {1{`RANDOM}};
+  state_sram = _RAND_4[2:0];
+`endif // RANDOMIZE_REG_INIT
+  `endif // RANDOMIZE
+end // initial
+`ifdef FIRRTL_AFTER_INITIAL
+`FIRRTL_AFTER_INITIAL
+`endif
+`endif // SYNTHESIS
+endmodule
 module top(
   input         clock,
   input         reset,
@@ -4518,57 +3574,31 @@ module top(
   wire [31:0] WBU_i_to_ISU_bits_wdata; // @[core.scala 38:27]
   wire [4:0] WBU_i_to_ISU_bits_rd; // @[core.scala 38:27]
   wire  WBU_i_to_IFU_valid; // @[core.scala 38:27]
-  wire  IFU_i_clock; // @[core.scala 51:27]
-  wire  IFU_i_reset; // @[core.scala 51:27]
-  wire  IFU_i_to_IDU_valid; // @[core.scala 51:27]
-  wire [31:0] IFU_i_to_IDU_bits_inst; // @[core.scala 51:27]
-  wire [31:0] IFU_i_to_IDU_bits_pc; // @[core.scala 51:27]
-  wire  IFU_i_from_EXU_bits_bru_ctrl_br; // @[core.scala 51:27]
-  wire [31:0] IFU_i_from_EXU_bits_bru_addr; // @[core.scala 51:27]
-  wire  IFU_i_from_EXU_bits_csr_ctrl_br; // @[core.scala 51:27]
-  wire [31:0] IFU_i_from_EXU_bits_csr_addr; // @[core.scala 51:27]
-  wire  IFU_i_from_WBU_ready; // @[core.scala 51:27]
-  wire  IFU_i_from_WBU_valid; // @[core.scala 51:27]
-  wire  IFU_i_to_cache_ready; // @[core.scala 51:27]
-  wire  IFU_i_to_cache_valid; // @[core.scala 51:27]
-  wire [31:0] IFU_i_to_cache_bits_addr; // @[core.scala 51:27]
-  wire  IFU_i_from_cache_ready; // @[core.scala 51:27]
-  wire  IFU_i_from_cache_valid; // @[core.scala 51:27]
-  wire [31:0] IFU_i_from_cache_bits_data; // @[core.scala 51:27]
-  wire  icache_clock; // @[core.scala 52:27]
-  wire  icache_reset; // @[core.scala 52:27]
-  wire  icache_from_IFU_ready; // @[core.scala 52:27]
-  wire  icache_from_IFU_valid; // @[core.scala 52:27]
-  wire [31:0] icache_from_IFU_bits_addr; // @[core.scala 52:27]
-  wire  icache_to_IFU_valid; // @[core.scala 52:27]
-  wire [31:0] icache_to_IFU_bits_data; // @[core.scala 52:27]
-  wire  icache_to_sram_ar_ready; // @[core.scala 52:27]
-  wire  icache_to_sram_ar_valid; // @[core.scala 52:27]
-  wire [31:0] icache_to_sram_ar_bits_addr; // @[core.scala 52:27]
-  wire [7:0] icache_to_sram_ar_bits_len; // @[core.scala 52:27]
-  wire  icache_to_sram_r_ready; // @[core.scala 52:27]
-  wire  icache_to_sram_r_valid; // @[core.scala 52:27]
-  wire [31:0] icache_to_sram_r_bits_data; // @[core.scala 52:27]
-  wire  icache_to_sram_r_bits_last; // @[core.scala 52:27]
-  wire  sram_i_clock; // @[core.scala 53:27]
-  wire  sram_i_reset; // @[core.scala 53:27]
-  wire  sram_i_axi_ar_ready; // @[core.scala 53:27]
-  wire  sram_i_axi_ar_valid; // @[core.scala 53:27]
-  wire [31:0] sram_i_axi_ar_bits_addr; // @[core.scala 53:27]
-  wire [7:0] sram_i_axi_ar_bits_len; // @[core.scala 53:27]
-  wire  sram_i_axi_r_ready; // @[core.scala 53:27]
-  wire  sram_i_axi_r_valid; // @[core.scala 53:27]
-  wire [31:0] sram_i_axi_r_bits_data; // @[core.scala 53:27]
-  wire  sram_i_axi_r_bits_last; // @[core.scala 53:27]
-  wire  sram_i_axi_aw_ready; // @[core.scala 53:27]
-  wire  sram_i_axi_aw_valid; // @[core.scala 53:27]
-  wire [31:0] sram_i_axi_aw_bits_addr; // @[core.scala 53:27]
-  wire [7:0] sram_i_axi_aw_bits_len; // @[core.scala 53:27]
-  wire [1:0] sram_i_axi_aw_bits_burst; // @[core.scala 53:27]
-  wire  sram_i_axi_w_ready; // @[core.scala 53:27]
-  wire  sram_i_axi_w_valid; // @[core.scala 53:27]
-  wire [31:0] sram_i_axi_w_bits_data; // @[core.scala 53:27]
-  wire [3:0] sram_i_axi_w_bits_strb; // @[core.scala 53:27]
+  wire  IFU_i_clock; // @[core.scala 41:27]
+  wire  IFU_i_reset; // @[core.scala 41:27]
+  wire  IFU_i_to_IDU_valid; // @[core.scala 41:27]
+  wire [31:0] IFU_i_to_IDU_bits_inst; // @[core.scala 41:27]
+  wire [31:0] IFU_i_to_IDU_bits_pc; // @[core.scala 41:27]
+  wire  IFU_i_from_EXU_bits_bru_ctrl_br; // @[core.scala 41:27]
+  wire [31:0] IFU_i_from_EXU_bits_bru_addr; // @[core.scala 41:27]
+  wire  IFU_i_from_EXU_bits_csr_ctrl_br; // @[core.scala 41:27]
+  wire [31:0] IFU_i_from_EXU_bits_csr_addr; // @[core.scala 41:27]
+  wire  IFU_i_from_WBU_ready; // @[core.scala 41:27]
+  wire  IFU_i_from_WBU_valid; // @[core.scala 41:27]
+  wire  IFU_i_axi_ar_ready; // @[core.scala 41:27]
+  wire  IFU_i_axi_ar_valid; // @[core.scala 41:27]
+  wire [31:0] IFU_i_axi_ar_bits_addr; // @[core.scala 41:27]
+  wire  IFU_i_axi_r_ready; // @[core.scala 41:27]
+  wire  IFU_i_axi_r_valid; // @[core.scala 41:27]
+  wire [31:0] IFU_i_axi_r_bits_data; // @[core.scala 41:27]
+  wire  sram_i_clock; // @[core.scala 42:27]
+  wire  sram_i_reset; // @[core.scala 42:27]
+  wire  sram_i_axi_ar_ready; // @[core.scala 42:27]
+  wire  sram_i_axi_ar_valid; // @[core.scala 42:27]
+  wire [31:0] sram_i_axi_ar_bits_addr; // @[core.scala 42:27]
+  wire  sram_i_axi_r_ready; // @[core.scala 42:27]
+  wire  sram_i_axi_r_valid; // @[core.scala 42:27]
+  wire [31:0] sram_i_axi_r_bits_data; // @[core.scala 42:27]
   wire  dcache_clock; // @[core.scala 63:27]
   wire  dcache_reset; // @[core.scala 63:27]
   wire  dcache_from_LSU_ready; // @[core.scala 63:27]
@@ -4610,11 +3640,9 @@ module top(
   wire  sram_i2_axi_aw_valid; // @[core.scala 64:27]
   wire [31:0] sram_i2_axi_aw_bits_addr; // @[core.scala 64:27]
   wire [7:0] sram_i2_axi_aw_bits_len; // @[core.scala 64:27]
-  wire [1:0] sram_i2_axi_aw_bits_burst; // @[core.scala 64:27]
   wire  sram_i2_axi_w_ready; // @[core.scala 64:27]
   wire  sram_i2_axi_w_valid; // @[core.scala 64:27]
   wire [31:0] sram_i2_axi_w_bits_data; // @[core.scala 64:27]
-  wire [3:0] sram_i2_axi_w_bits_strb; // @[core.scala 64:27]
   wire  _EXU_i_from_ISU_bits_T = ISU_i_to_EXU_valid & EXU_i_from_ISU_ready; // @[Connect.scala 26:58]
   reg [31:0] EXU_i_from_ISU_bits_r_imm; // @[Reg.scala 19:16]
   reg [31:0] EXU_i_from_ISU_bits_r_pc; // @[Reg.scala 19:16]
@@ -4764,7 +3792,7 @@ module top(
     .to_ISU_bits_rd(WBU_i_to_ISU_bits_rd),
     .to_IFU_valid(WBU_i_to_IFU_valid)
   );
-  IFU_cache IFU_i ( // @[core.scala 51:27]
+  IFU IFU_i ( // @[core.scala 41:27]
     .clock(IFU_i_clock),
     .reset(IFU_i_reset),
     .to_IDU_valid(IFU_i_to_IDU_valid),
@@ -4776,50 +3804,22 @@ module top(
     .from_EXU_bits_csr_addr(IFU_i_from_EXU_bits_csr_addr),
     .from_WBU_ready(IFU_i_from_WBU_ready),
     .from_WBU_valid(IFU_i_from_WBU_valid),
-    .to_cache_ready(IFU_i_to_cache_ready),
-    .to_cache_valid(IFU_i_to_cache_valid),
-    .to_cache_bits_addr(IFU_i_to_cache_bits_addr),
-    .from_cache_ready(IFU_i_from_cache_ready),
-    .from_cache_valid(IFU_i_from_cache_valid),
-    .from_cache_bits_data(IFU_i_from_cache_bits_data)
+    .axi_ar_ready(IFU_i_axi_ar_ready),
+    .axi_ar_valid(IFU_i_axi_ar_valid),
+    .axi_ar_bits_addr(IFU_i_axi_ar_bits_addr),
+    .axi_r_ready(IFU_i_axi_r_ready),
+    .axi_r_valid(IFU_i_axi_r_valid),
+    .axi_r_bits_data(IFU_i_axi_r_bits_data)
   );
-  iCacheV2 icache ( // @[core.scala 52:27]
-    .clock(icache_clock),
-    .reset(icache_reset),
-    .from_IFU_ready(icache_from_IFU_ready),
-    .from_IFU_valid(icache_from_IFU_valid),
-    .from_IFU_bits_addr(icache_from_IFU_bits_addr),
-    .to_IFU_valid(icache_to_IFU_valid),
-    .to_IFU_bits_data(icache_to_IFU_bits_data),
-    .to_sram_ar_ready(icache_to_sram_ar_ready),
-    .to_sram_ar_valid(icache_to_sram_ar_valid),
-    .to_sram_ar_bits_addr(icache_to_sram_ar_bits_addr),
-    .to_sram_ar_bits_len(icache_to_sram_ar_bits_len),
-    .to_sram_r_ready(icache_to_sram_r_ready),
-    .to_sram_r_valid(icache_to_sram_r_valid),
-    .to_sram_r_bits_data(icache_to_sram_r_bits_data),
-    .to_sram_r_bits_last(icache_to_sram_r_bits_last)
-  );
-  sram_axi_rw sram_i ( // @[core.scala 53:27]
+  SRAM sram_i ( // @[core.scala 42:27]
     .clock(sram_i_clock),
     .reset(sram_i_reset),
     .axi_ar_ready(sram_i_axi_ar_ready),
     .axi_ar_valid(sram_i_axi_ar_valid),
     .axi_ar_bits_addr(sram_i_axi_ar_bits_addr),
-    .axi_ar_bits_len(sram_i_axi_ar_bits_len),
     .axi_r_ready(sram_i_axi_r_ready),
     .axi_r_valid(sram_i_axi_r_valid),
-    .axi_r_bits_data(sram_i_axi_r_bits_data),
-    .axi_r_bits_last(sram_i_axi_r_bits_last),
-    .axi_aw_ready(sram_i_axi_aw_ready),
-    .axi_aw_valid(sram_i_axi_aw_valid),
-    .axi_aw_bits_addr(sram_i_axi_aw_bits_addr),
-    .axi_aw_bits_len(sram_i_axi_aw_bits_len),
-    .axi_aw_bits_burst(sram_i_axi_aw_bits_burst),
-    .axi_w_ready(sram_i_axi_w_ready),
-    .axi_w_valid(sram_i_axi_w_valid),
-    .axi_w_bits_data(sram_i_axi_w_bits_data),
-    .axi_w_bits_strb(sram_i_axi_w_bits_strb)
+    .axi_r_bits_data(sram_i_axi_r_bits_data)
   );
   D_Cache dcache ( // @[core.scala 63:27]
     .clock(dcache_clock),
@@ -4865,11 +3865,9 @@ module top(
     .axi_aw_valid(sram_i2_axi_aw_valid),
     .axi_aw_bits_addr(sram_i2_axi_aw_bits_addr),
     .axi_aw_bits_len(sram_i2_axi_aw_bits_len),
-    .axi_aw_bits_burst(sram_i2_axi_aw_bits_burst),
     .axi_w_ready(sram_i2_axi_w_ready),
     .axi_w_valid(sram_i2_axi_w_valid),
-    .axi_w_bits_data(sram_i2_axi_w_bits_data),
-    .axi_w_bits_strb(sram_i2_axi_w_bits_strb)
+    .axi_w_bits_data(sram_i2_axi_w_bits_data)
   );
   assign io_out_inst = IFU_i_to_IDU_bits_inst; // @[core.scala 84:20]
   assign io_out_pc = IFU_i_to_IDU_bits_pc; // @[core.scala 85:20]
@@ -4944,30 +3942,14 @@ module top(
   assign IFU_i_from_EXU_bits_csr_ctrl_br = EXU_i_to_IFU_bits_csr_ctrl_br; // @[Connect.scala 15:22]
   assign IFU_i_from_EXU_bits_csr_addr = EXU_i_to_IFU_bits_csr_addr; // @[Connect.scala 15:22]
   assign IFU_i_from_WBU_valid = WBU_i_to_IFU_valid; // @[Connect.scala 16:22]
-  assign IFU_i_to_cache_ready = icache_from_IFU_ready; // @[Connect.scala 17:22]
-  assign IFU_i_from_cache_valid = icache_to_IFU_valid; // @[Connect.scala 16:22]
-  assign IFU_i_from_cache_bits_data = icache_to_IFU_bits_data; // @[Connect.scala 15:22]
-  assign icache_clock = clock;
-  assign icache_reset = reset;
-  assign icache_from_IFU_valid = IFU_i_to_cache_valid; // @[Connect.scala 16:22]
-  assign icache_from_IFU_bits_addr = IFU_i_to_cache_bits_addr; // @[Connect.scala 15:22]
-  assign icache_to_sram_ar_ready = sram_i_axi_ar_ready; // @[Connect.scala 17:22]
-  assign icache_to_sram_r_valid = sram_i_axi_r_valid; // @[Connect.scala 16:22]
-  assign icache_to_sram_r_bits_data = sram_i_axi_r_bits_data; // @[Connect.scala 15:22]
-  assign icache_to_sram_r_bits_last = sram_i_axi_r_bits_last; // @[Connect.scala 15:22]
+  assign IFU_i_axi_ar_ready = sram_i_axi_ar_ready; // @[Connect.scala 17:22]
+  assign IFU_i_axi_r_valid = sram_i_axi_r_valid; // @[Connect.scala 16:22]
+  assign IFU_i_axi_r_bits_data = sram_i_axi_r_bits_data; // @[Connect.scala 15:22]
   assign sram_i_clock = clock;
   assign sram_i_reset = reset;
-  assign sram_i_axi_ar_valid = icache_to_sram_ar_valid; // @[Connect.scala 16:22]
-  assign sram_i_axi_ar_bits_addr = icache_to_sram_ar_bits_addr; // @[Connect.scala 15:22]
-  assign sram_i_axi_ar_bits_len = icache_to_sram_ar_bits_len; // @[Connect.scala 15:22]
-  assign sram_i_axi_r_ready = icache_to_sram_r_ready; // @[Connect.scala 17:22]
-  assign sram_i_axi_aw_valid = 1'h0; // @[Connect.scala 16:22]
-  assign sram_i_axi_aw_bits_addr = 32'h0; // @[Connect.scala 15:22]
-  assign sram_i_axi_aw_bits_len = 8'h0; // @[Connect.scala 15:22]
-  assign sram_i_axi_aw_bits_burst = 2'h0; // @[Connect.scala 15:22]
-  assign sram_i_axi_w_valid = 1'h0; // @[Connect.scala 16:22]
-  assign sram_i_axi_w_bits_data = 32'h0; // @[Connect.scala 15:22]
-  assign sram_i_axi_w_bits_strb = 4'h0; // @[Connect.scala 15:22]
+  assign sram_i_axi_ar_valid = IFU_i_axi_ar_valid; // @[Connect.scala 16:22]
+  assign sram_i_axi_ar_bits_addr = IFU_i_axi_ar_bits_addr; // @[Connect.scala 15:22]
+  assign sram_i_axi_r_ready = IFU_i_axi_r_ready; // @[Connect.scala 17:22]
   assign dcache_clock = clock;
   assign dcache_reset = reset;
   assign dcache_from_LSU_valid = EXU_i_lsu_to_cache_valid; // @[Connect.scala 16:22]
@@ -4990,10 +3972,8 @@ module top(
   assign sram_i2_axi_aw_valid = dcache_to_sram_aw_valid; // @[Connect.scala 16:22]
   assign sram_i2_axi_aw_bits_addr = dcache_to_sram_aw_bits_addr; // @[Connect.scala 15:22]
   assign sram_i2_axi_aw_bits_len = dcache_to_sram_aw_bits_len; // @[Connect.scala 15:22]
-  assign sram_i2_axi_aw_bits_burst = 2'h1; // @[Connect.scala 15:22]
   assign sram_i2_axi_w_valid = dcache_to_sram_w_valid; // @[Connect.scala 16:22]
   assign sram_i2_axi_w_bits_data = dcache_to_sram_w_bits_data; // @[Connect.scala 15:22]
-  assign sram_i2_axi_w_bits_strb = 4'hf; // @[Connect.scala 15:22]
   always @(posedge clock) begin
     if (_EXU_i_from_ISU_bits_T) begin // @[Reg.scala 20:18]
       EXU_i_from_ISU_bits_r_imm <= ISU_i_to_EXU_bits_imm; // @[Reg.scala 20:22]
