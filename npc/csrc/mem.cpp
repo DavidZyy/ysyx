@@ -156,9 +156,8 @@ extern "C" void vaddr_write(sword_t waddr, sword_t wdata, char wmask) {
 }
 
 void init_pmem() {
-  uint32_t *pmem;
   for(int i=0; i<CONFIG_MSIZE/sizeof(int); i++)
-    *pmem = 0xdeadbeef;
+    *(uint32_t *)pmem = 0xdeadbeef;
 }
 
 long load_img(const char *img_file) {
