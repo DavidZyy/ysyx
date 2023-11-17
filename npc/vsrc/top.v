@@ -5427,6 +5427,7 @@ module D_Cache(
   assign to_sram_w_valid = 4'h5 == state_dcache; // @[Mux.scala 81:61]
   assign to_sram_w_bits_data = _GEN_1115 & _GEN_1139 ? dataArray_15_3_toMemData_MPORT_data : _GEN_1020; // @[dcache.scala 140:{27,27}]
   assign to_sram_w_bits_last = _GEN_1854 == 3'h4; // @[dcache.scala 142:34]
+
   always @(posedge clock) begin
     if (dataArray_0_0_MPORT_en & dataArray_0_0_MPORT_mask) begin
       dataArray_0_0[dataArray_0_0_MPORT_addr] <= dataArray_0_0_MPORT_data; // @[dcache.scala 29:33]
