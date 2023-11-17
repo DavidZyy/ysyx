@@ -1660,6 +1660,7 @@ module iCacheV2(
   reg [31:0] _RAND_67;
   reg [31:0] _RAND_68;
   reg [31:0] _RAND_69;
+  reg [31:0] _RAND_70;
 `endif // RANDOMIZE_REG_INIT
   reg [31:0] dataArray [0:127]; // @[icache.scala 127:33]
   wire  dataArray_cachedata_en; // @[icache.scala 127:33]
@@ -1804,84 +1805,89 @@ module iCacheV2(
   wire  hitArray_1 = tag == _GEN_47 & _GEN_63; // @[icache.scala 132:44]
   wire  hit = hitArray_0 | hitArray_1; // @[icache.scala 134:33]
   wire  SetId = _GEN_47 == tag; // @[Mux.scala 81:61]
-  wire [4:0] cacheAddr_hi = {SetId,CacheLineId}; // @[Cat.scala 33:92]
+  wire [4:0] hitCacheAddr_hi = {SetId,CacheLineId}; // @[Cat.scala 33:92]
+  reg [1:0] off; // @[icache.scala 143:24]
   reg [2:0] state_cache; // @[icache.scala 146:30]
   wire  _T_1 = from_IFU_ready & from_IFU_valid; // @[Decoupled.scala 51:35]
   wire  _T_3 = 3'h2 == state_cache; // @[icache.scala 147:26]
   wire  _state_cache_T_1 = to_sram_ar_ready & to_sram_ar_valid; // @[Decoupled.scala 51:35]
   wire [2:0] _state_cache_T_2 = _state_cache_T_1 ? 3'h3 : 3'h2; // @[icache.scala 160:31]
   wire [2:0] _state_cache_T_3 = to_sram_r_bits_last ? 3'h4 : 3'h3; // @[icache.scala 166:31]
+  wire  _off_T = to_sram_r_ready & to_sram_r_valid; // @[Decoupled.scala 51:35]
+  wire [1:0] _off_T_2 = off + 2'h1; // @[icache.scala 167:51]
+  wire [1:0] _off_T_3 = _off_T ? _off_T_2 : off; // @[icache.scala 167:31]
   wire [2:0] _GEN_65 = 3'h4 == state_cache ? 3'h1 : state_cache; // @[icache.scala 147:26 172:25 146:30]
   wire [2:0] _GEN_66 = 3'h3 == state_cache ? _state_cache_T_3 : _GEN_65; // @[icache.scala 147:26 166:25]
-  wire  _T_6 = state_cache == 3'h3; // @[icache.scala 179:24]
-  wire  _T_7 = to_sram_r_ready & to_sram_r_valid; // @[Decoupled.scala 51:35]
-  wire  _GEN_67 = ~replace_set; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_69 = 4'h0 == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_77 = ~replace_set & 4'h0 == CacheLineId | validArray_0_0; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_274 = 4'h1 == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_78 = ~replace_set & 4'h1 == CacheLineId | validArray_0_1; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_277 = 4'h2 == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_79 = ~replace_set & 4'h2 == CacheLineId | validArray_0_2; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_280 = 4'h3 == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_80 = ~replace_set & 4'h3 == CacheLineId | validArray_0_3; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_283 = 4'h4 == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_81 = ~replace_set & 4'h4 == CacheLineId | validArray_0_4; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_286 = 4'h5 == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_82 = ~replace_set & 4'h5 == CacheLineId | validArray_0_5; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_289 = 4'h6 == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_83 = ~replace_set & 4'h6 == CacheLineId | validArray_0_6; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_292 = 4'h7 == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_84 = ~replace_set & 4'h7 == CacheLineId | validArray_0_7; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_295 = 4'h8 == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_85 = ~replace_set & 4'h8 == CacheLineId | validArray_0_8; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_298 = 4'h9 == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_86 = ~replace_set & 4'h9 == CacheLineId | validArray_0_9; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_301 = 4'ha == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_87 = ~replace_set & 4'ha == CacheLineId | validArray_0_10; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_304 = 4'hb == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_88 = ~replace_set & 4'hb == CacheLineId | validArray_0_11; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_307 = 4'hc == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_89 = ~replace_set & 4'hc == CacheLineId | validArray_0_12; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_310 = 4'hd == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_90 = ~replace_set & 4'hd == CacheLineId | validArray_0_13; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_313 = 4'he == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_91 = ~replace_set & 4'he == CacheLineId | validArray_0_14; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_316 = 4'hf == CacheLineId; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_92 = ~replace_set & 4'hf == CacheLineId | validArray_0_15; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_93 = replace_set & 4'h0 == CacheLineId | validArray_1_0; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_94 = replace_set & 4'h1 == CacheLineId | validArray_1_1; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_95 = replace_set & 4'h2 == CacheLineId | validArray_1_2; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_96 = replace_set & 4'h3 == CacheLineId | validArray_1_3; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_97 = replace_set & 4'h4 == CacheLineId | validArray_1_4; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_98 = replace_set & 4'h5 == CacheLineId | validArray_1_5; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_99 = replace_set & 4'h6 == CacheLineId | validArray_1_6; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_100 = replace_set & 4'h7 == CacheLineId | validArray_1_7; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_101 = replace_set & 4'h8 == CacheLineId | validArray_1_8; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_102 = replace_set & 4'h9 == CacheLineId | validArray_1_9; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_103 = replace_set & 4'ha == CacheLineId | validArray_1_10; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_104 = replace_set & 4'hb == CacheLineId | validArray_1_11; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_105 = replace_set & 4'hc == CacheLineId | validArray_1_12; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_106 = replace_set & 4'hd == CacheLineId | validArray_1_13; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_107 = replace_set & 4'he == CacheLineId | validArray_1_14; // @[icache.scala 129:29 182:{50,50}]
-  wire  _GEN_108 = replace_set & 4'hf == CacheLineId | validArray_1_15; // @[icache.scala 129:29 182:{50,50}]
-  wire [31:0] _to_sram_ar_bits_addr_T = {{4'd0}, from_IFU_bits_addr[31:4]}; // @[icache.scala 190:91]
-  wire [35:0] _GEN_399 = {_to_sram_ar_bits_addr_T, 4'h0}; // @[icache.scala 190:104]
-  wire [38:0] _to_sram_ar_bits_addr_T_1 = {{3'd0}, _GEN_399}; // @[icache.scala 190:104]
+  wire [1:0] _GEN_67 = 3'h3 == state_cache ? _off_T_3 : off; // @[icache.scala 143:24 147:26 167:25]
+  wire [4:0] replaceCacheAddr_hi = {replace_set,CacheLineId}; // @[Cat.scala 33:92]
+  wire  _T_6 = state_cache == 3'h3; // @[icache.scala 180:24]
+  wire  _GEN_274 = ~replace_set; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_275 = 4'h0 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_77 = ~replace_set & 4'h0 == CacheLineId | validArray_0_0; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_278 = 4'h1 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_78 = ~replace_set & 4'h1 == CacheLineId | validArray_0_1; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_281 = 4'h2 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_79 = ~replace_set & 4'h2 == CacheLineId | validArray_0_2; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_284 = 4'h3 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_80 = ~replace_set & 4'h3 == CacheLineId | validArray_0_3; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_287 = 4'h4 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_81 = ~replace_set & 4'h4 == CacheLineId | validArray_0_4; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_290 = 4'h5 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_82 = ~replace_set & 4'h5 == CacheLineId | validArray_0_5; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_293 = 4'h6 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_83 = ~replace_set & 4'h6 == CacheLineId | validArray_0_6; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_296 = 4'h7 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_84 = ~replace_set & 4'h7 == CacheLineId | validArray_0_7; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_299 = 4'h8 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_85 = ~replace_set & 4'h8 == CacheLineId | validArray_0_8; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_302 = 4'h9 == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_86 = ~replace_set & 4'h9 == CacheLineId | validArray_0_9; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_305 = 4'ha == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_87 = ~replace_set & 4'ha == CacheLineId | validArray_0_10; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_308 = 4'hb == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_88 = ~replace_set & 4'hb == CacheLineId | validArray_0_11; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_311 = 4'hc == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_89 = ~replace_set & 4'hc == CacheLineId | validArray_0_12; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_314 = 4'hd == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_90 = ~replace_set & 4'hd == CacheLineId | validArray_0_13; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_317 = 4'he == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_91 = ~replace_set & 4'he == CacheLineId | validArray_0_14; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_320 = 4'hf == CacheLineId; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_92 = ~replace_set & 4'hf == CacheLineId | validArray_0_15; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_93 = replace_set & 4'h0 == CacheLineId | validArray_1_0; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_94 = replace_set & 4'h1 == CacheLineId | validArray_1_1; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_95 = replace_set & 4'h2 == CacheLineId | validArray_1_2; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_96 = replace_set & 4'h3 == CacheLineId | validArray_1_3; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_97 = replace_set & 4'h4 == CacheLineId | validArray_1_4; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_98 = replace_set & 4'h5 == CacheLineId | validArray_1_5; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_99 = replace_set & 4'h6 == CacheLineId | validArray_1_6; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_100 = replace_set & 4'h7 == CacheLineId | validArray_1_7; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_101 = replace_set & 4'h8 == CacheLineId | validArray_1_8; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_102 = replace_set & 4'h9 == CacheLineId | validArray_1_9; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_103 = replace_set & 4'ha == CacheLineId | validArray_1_10; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_104 = replace_set & 4'hb == CacheLineId | validArray_1_11; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_105 = replace_set & 4'hc == CacheLineId | validArray_1_12; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_106 = replace_set & 4'hd == CacheLineId | validArray_1_13; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_107 = replace_set & 4'he == CacheLineId | validArray_1_14; // @[icache.scala 129:29 183:{50,50}]
+  wire  _GEN_108 = replace_set & 4'hf == CacheLineId | validArray_1_15; // @[icache.scala 129:29 183:{50,50}]
+  wire [31:0] _to_sram_ar_bits_addr_T = {{4'd0}, from_IFU_bits_addr[31:4]}; // @[icache.scala 191:91]
+  wire [35:0] _GEN_403 = {_to_sram_ar_bits_addr_T, 4'h0}; // @[icache.scala 191:104]
+  wire [38:0] _to_sram_ar_bits_addr_T_1 = {{3'd0}, _GEN_403}; // @[icache.scala 191:104]
   wire [38:0] _to_sram_ar_bits_addr_T_3 = _T_3 ? _to_sram_ar_bits_addr_T_1 : 39'h0; // @[Mux.scala 81:58]
   wire [1:0] _to_sram_ar_bits_len_T_1 = _T_3 ? 2'h3 : 2'h0; // @[Mux.scala 81:58]
   assign dataArray_cachedata_en = dataArray_cachedata_en_pipe_0;
   assign dataArray_cachedata_addr = dataArray_cachedata_addr_pipe_0;
   assign dataArray_cachedata_data = dataArray[dataArray_cachedata_addr]; // @[icache.scala 127:33]
   assign dataArray_MPORT_data = to_sram_r_bits_data;
-  assign dataArray_MPORT_addr = {cacheAddr_hi,EntId};
+  assign dataArray_MPORT_addr = {replaceCacheAddr_hi,off};
   assign dataArray_MPORT_mask = 1'h1;
-  assign dataArray_MPORT_en = _T_6 & _T_7;
+  assign dataArray_MPORT_en = _T_6 & _off_T;
   assign from_IFU_ready = 3'h0 == state_cache; // @[Mux.scala 81:61]
   assign to_IFU_valid = 3'h1 == state_cache; // @[Mux.scala 81:61]
-  assign to_IFU_bits_data = hit ? dataArray_cachedata_data : 32'h13; // @[icache.scala 207:28]
+  assign to_IFU_bits_data = hit ? dataArray_cachedata_data : 32'h13; // @[icache.scala 208:28]
   assign to_sram_ar_valid = 3'h2 == state_cache; // @[Mux.scala 81:61]
-  assign to_sram_ar_bits_addr = _to_sram_ar_bits_addr_T_3[31:0]; // @[icache.scala 190:27]
-  assign to_sram_ar_bits_len = {{6'd0}, _to_sram_ar_bits_len_T_1}; // @[icache.scala 192:27]
+  assign to_sram_ar_bits_addr = _to_sram_ar_bits_addr_T_3[31:0]; // @[icache.scala 191:27]
+  assign to_sram_ar_bits_len = {{6'd0}, _to_sram_ar_bits_len_T_1}; // @[icache.scala 193:27]
   assign to_sram_r_ready = 3'h3 == state_cache; // @[Mux.scala 81:61]
   always @(posedge clock) begin
     if (dataArray_MPORT_en & dataArray_MPORT_mask) begin
@@ -1889,7 +1895,7 @@ module iCacheV2(
     end
     dataArray_cachedata_en_pipe_0 <= 1'h1;
     if (1'h1) begin
-      dataArray_cachedata_addr_pipe_0 <= {cacheAddr_hi,EntId};
+      dataArray_cachedata_addr_pipe_0 <= {hitCacheAddr_hi,EntId};
     end
     if (reset) begin // @[icache.scala 117:30]
       replace_set <= 1'h0; // @[icache.scala 117:30]
@@ -1907,514 +1913,525 @@ module iCacheV2(
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_0 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_69) begin // @[icache.scala 183:50]
-          tagArray_0_0 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_275) begin // @[icache.scala 184:50]
+          tagArray_0_0 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_1 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_274) begin // @[icache.scala 183:50]
-          tagArray_0_1 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_278) begin // @[icache.scala 184:50]
+          tagArray_0_1 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_2 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_277) begin // @[icache.scala 183:50]
-          tagArray_0_2 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_281) begin // @[icache.scala 184:50]
+          tagArray_0_2 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_3 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_280) begin // @[icache.scala 183:50]
-          tagArray_0_3 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_284) begin // @[icache.scala 184:50]
+          tagArray_0_3 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_4 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_283) begin // @[icache.scala 183:50]
-          tagArray_0_4 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_287) begin // @[icache.scala 184:50]
+          tagArray_0_4 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_5 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_286) begin // @[icache.scala 183:50]
-          tagArray_0_5 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_290) begin // @[icache.scala 184:50]
+          tagArray_0_5 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_6 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_289) begin // @[icache.scala 183:50]
-          tagArray_0_6 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_293) begin // @[icache.scala 184:50]
+          tagArray_0_6 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_7 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_292) begin // @[icache.scala 183:50]
-          tagArray_0_7 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_296) begin // @[icache.scala 184:50]
+          tagArray_0_7 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_8 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_295) begin // @[icache.scala 183:50]
-          tagArray_0_8 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_299) begin // @[icache.scala 184:50]
+          tagArray_0_8 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_9 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_298) begin // @[icache.scala 183:50]
-          tagArray_0_9 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_302) begin // @[icache.scala 184:50]
+          tagArray_0_9 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_10 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_301) begin // @[icache.scala 183:50]
-          tagArray_0_10 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_305) begin // @[icache.scala 184:50]
+          tagArray_0_10 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_11 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_304) begin // @[icache.scala 183:50]
-          tagArray_0_11 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_308) begin // @[icache.scala 184:50]
+          tagArray_0_11 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_12 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_307) begin // @[icache.scala 183:50]
-          tagArray_0_12 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_311) begin // @[icache.scala 184:50]
+          tagArray_0_12 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_13 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_310) begin // @[icache.scala 183:50]
-          tagArray_0_13 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_314) begin // @[icache.scala 184:50]
+          tagArray_0_13 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_14 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_313) begin // @[icache.scala 183:50]
-          tagArray_0_14 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_317) begin // @[icache.scala 184:50]
+          tagArray_0_14 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_0_15 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (_GEN_67 & _GEN_316) begin // @[icache.scala 183:50]
-          tagArray_0_15 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (_GEN_274 & _GEN_320) begin // @[icache.scala 184:50]
+          tagArray_0_15 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_0 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_69) begin // @[icache.scala 183:50]
-          tagArray_1_0 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_275) begin // @[icache.scala 184:50]
+          tagArray_1_0 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_1 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_274) begin // @[icache.scala 183:50]
-          tagArray_1_1 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_278) begin // @[icache.scala 184:50]
+          tagArray_1_1 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_2 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_277) begin // @[icache.scala 183:50]
-          tagArray_1_2 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_281) begin // @[icache.scala 184:50]
+          tagArray_1_2 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_3 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_280) begin // @[icache.scala 183:50]
-          tagArray_1_3 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_284) begin // @[icache.scala 184:50]
+          tagArray_1_3 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_4 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_283) begin // @[icache.scala 183:50]
-          tagArray_1_4 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_287) begin // @[icache.scala 184:50]
+          tagArray_1_4 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_5 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_286) begin // @[icache.scala 183:50]
-          tagArray_1_5 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_290) begin // @[icache.scala 184:50]
+          tagArray_1_5 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_6 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_289) begin // @[icache.scala 183:50]
-          tagArray_1_6 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_293) begin // @[icache.scala 184:50]
+          tagArray_1_6 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_7 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_292) begin // @[icache.scala 183:50]
-          tagArray_1_7 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_296) begin // @[icache.scala 184:50]
+          tagArray_1_7 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_8 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_295) begin // @[icache.scala 183:50]
-          tagArray_1_8 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_299) begin // @[icache.scala 184:50]
+          tagArray_1_8 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_9 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_298) begin // @[icache.scala 183:50]
-          tagArray_1_9 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_302) begin // @[icache.scala 184:50]
+          tagArray_1_9 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_10 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_301) begin // @[icache.scala 183:50]
-          tagArray_1_10 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_305) begin // @[icache.scala 184:50]
+          tagArray_1_10 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_11 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_304) begin // @[icache.scala 183:50]
-          tagArray_1_11 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_308) begin // @[icache.scala 184:50]
+          tagArray_1_11 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_12 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_307) begin // @[icache.scala 183:50]
-          tagArray_1_12 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_311) begin // @[icache.scala 184:50]
+          tagArray_1_12 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_13 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_310) begin // @[icache.scala 183:50]
-          tagArray_1_13 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_314) begin // @[icache.scala 184:50]
+          tagArray_1_13 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_14 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_313) begin // @[icache.scala 183:50]
-          tagArray_1_14 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_317) begin // @[icache.scala 184:50]
+          tagArray_1_14 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 128:29]
       tagArray_1_15 <= 24'h0; // @[icache.scala 128:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
-        if (replace_set & _GEN_316) begin // @[icache.scala 183:50]
-          tagArray_1_15 <= tag; // @[icache.scala 183:50]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
+        if (replace_set & _GEN_320) begin // @[icache.scala 184:50]
+          tagArray_1_15 <= tag; // @[icache.scala 184:50]
         end
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_0 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_0 <= _GEN_77;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_1 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_1 <= _GEN_78;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_2 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_2 <= _GEN_79;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_3 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_3 <= _GEN_80;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_4 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_4 <= _GEN_81;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_5 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_5 <= _GEN_82;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_6 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_6 <= _GEN_83;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_7 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_7 <= _GEN_84;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_8 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_8 <= _GEN_85;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_9 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_9 <= _GEN_86;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_10 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_10 <= _GEN_87;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_11 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_11 <= _GEN_88;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_12 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_12 <= _GEN_89;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_13 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_13 <= _GEN_90;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_14 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_14 <= _GEN_91;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_0_15 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_0_15 <= _GEN_92;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_0 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_0 <= _GEN_93;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_1 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_1 <= _GEN_94;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_2 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_2 <= _GEN_95;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_3 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_3 <= _GEN_96;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_4 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_4 <= _GEN_97;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_5 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_5 <= _GEN_98;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_6 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_6 <= _GEN_99;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_7 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_7 <= _GEN_100;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_8 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_8 <= _GEN_101;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_9 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_9 <= _GEN_102;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_10 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_10 <= _GEN_103;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_11 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_11 <= _GEN_104;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_12 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_12 <= _GEN_105;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_13 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_13 <= _GEN_106;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_14 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_14 <= _GEN_107;
       end
     end
     if (reset) begin // @[icache.scala 129:29]
       validArray_1_15 <= 1'h0; // @[icache.scala 129:29]
-    end else if (state_cache == 3'h3 & _T_7) begin // @[icache.scala 179:58]
-      if (to_sram_r_bits_last) begin // @[icache.scala 181:35]
+    end else if (state_cache == 3'h3 & _off_T) begin // @[icache.scala 180:58]
+      if (to_sram_r_bits_last) begin // @[icache.scala 182:35]
         validArray_1_15 <= _GEN_108;
+      end
+    end
+    if (reset) begin // @[icache.scala 143:24]
+      off <= 2'h0; // @[icache.scala 143:24]
+    end else if (!(3'h0 == state_cache)) begin // @[icache.scala 147:26]
+      if (!(3'h1 == state_cache)) begin // @[icache.scala 147:26]
+        if (3'h2 == state_cache) begin // @[icache.scala 147:26]
+          off <= 2'h0; // @[icache.scala 161:25]
+        end else begin
+          off <= _GEN_67;
+        end
       end
     end
     if (reset) begin // @[icache.scala 146:30]
@@ -2615,7 +2632,9 @@ initial begin
   _RAND_68 = {1{`RANDOM}};
   validArray_1_15 = _RAND_68[0:0];
   _RAND_69 = {1{`RANDOM}};
-  state_cache = _RAND_69[2:0];
+  off = _RAND_69[1:0];
+  _RAND_70 = {1{`RANDOM}};
+  state_cache = _RAND_70[2:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
