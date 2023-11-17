@@ -155,7 +155,7 @@ extern "C" void vaddr_write(sword_t waddr, sword_t wdata, char wmask) {
   IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
 }
 
-voi init_pmem() {
+void init_pmem() {
   uint32_t *pmem;
   for(int i=0; i<CONFIG_MSIZE/sizeof(int); i++)
     *pmem = 0xdeadbeef;
