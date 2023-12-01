@@ -3989,7 +3989,7 @@ endmodule
 
 // ----- 8< ----- FILE "firrtl_black_box_resource_files.f" ----- 8< -----
 
-EbreakBB.v
-NotImplBB.v
-RamBB.v
-RegisterFileBB.v
+// EbreakBB.v
+// NotImplBB.v
+// RamBB.v
+// RegisterFileBB.v
