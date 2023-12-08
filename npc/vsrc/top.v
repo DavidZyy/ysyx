@@ -3482,41 +3482,41 @@ module top(	// <stdin>:3616:3
   output        io_out_wb	// src/main/scala/rv32e/core.scala:33:16
 );
 
-  wire        _sram_i2_axi_ar_ready;	// src/main/scala/rv32e/core.scala:70:27
-  wire        _sram_i2_axi_r_valid;	// src/main/scala/rv32e/core.scala:70:27
-  wire [31:0] _sram_i2_axi_r_bits_data;	// src/main/scala/rv32e/core.scala:70:27
-  wire        _sram_i2_axi_r_bits_last;	// src/main/scala/rv32e/core.scala:70:27
-  wire        _sram_i2_axi_aw_ready;	// src/main/scala/rv32e/core.scala:70:27
-  wire        _sram_i2_axi_w_ready;	// src/main/scala/rv32e/core.scala:70:27
-  wire        _dcache_from_lsu_req_ready;	// src/main/scala/rv32e/core.scala:69:27
-  wire        _dcache_from_lsu_resp_valid;	// src/main/scala/rv32e/core.scala:69:27
-  wire [31:0] _dcache_from_lsu_resp_bits_rdata;	// src/main/scala/rv32e/core.scala:69:27
-  wire        _dcache_from_lsu_resp_bits_wresp;	// src/main/scala/rv32e/core.scala:69:27
-  wire        _dcache_to_sram_ar_valid;	// src/main/scala/rv32e/core.scala:69:27
-  wire [31:0] _dcache_to_sram_ar_bits_addr;	// src/main/scala/rv32e/core.scala:69:27
-  wire [7:0]  _dcache_to_sram_ar_bits_len;	// src/main/scala/rv32e/core.scala:69:27
-  wire        _dcache_to_sram_r_ready;	// src/main/scala/rv32e/core.scala:69:27
-  wire        _dcache_to_sram_aw_valid;	// src/main/scala/rv32e/core.scala:69:27
-  wire [31:0] _dcache_to_sram_aw_bits_addr;	// src/main/scala/rv32e/core.scala:69:27
-  wire [7:0]  _dcache_to_sram_aw_bits_len;	// src/main/scala/rv32e/core.scala:69:27
-  wire        _dcache_to_sram_w_valid;	// src/main/scala/rv32e/core.scala:69:27
-  wire [31:0] _dcache_to_sram_w_bits_data;	// src/main/scala/rv32e/core.scala:69:27
-  wire        _sram_i_axi_ar_ready;	// src/main/scala/rv32e/core.scala:57:27
-  wire        _sram_i_axi_r_valid;	// src/main/scala/rv32e/core.scala:57:27
-  wire [31:0] _sram_i_axi_r_bits_data;	// src/main/scala/rv32e/core.scala:57:27
-  wire        _sram_i_axi_r_bits_last;	// src/main/scala/rv32e/core.scala:57:27
-  wire        _icache_from_ifu_req_ready;	// src/main/scala/rv32e/core.scala:56:27
-  wire        _icache_from_ifu_resp_valid;	// src/main/scala/rv32e/core.scala:56:27
-  wire [31:0] _icache_from_ifu_resp_bits_rdata;	// src/main/scala/rv32e/core.scala:56:27
-  wire        _icache_to_sram_ar_valid;	// src/main/scala/rv32e/core.scala:56:27
-  wire [31:0] _icache_to_sram_ar_bits_addr;	// src/main/scala/rv32e/core.scala:56:27
-  wire [7:0]  _icache_to_sram_ar_bits_len;	// src/main/scala/rv32e/core.scala:56:27
-  wire        _icache_to_sram_r_ready;	// src/main/scala/rv32e/core.scala:56:27
-  wire        _IFU_i_to_IDU_valid;	// src/main/scala/rv32e/core.scala:55:27
-  wire [31:0] _IFU_i_to_IDU_bits_inst;	// src/main/scala/rv32e/core.scala:55:27
-  wire [31:0] _IFU_i_to_IDU_bits_pc;	// src/main/scala/rv32e/core.scala:55:27
-  wire        _IFU_i_to_mem_req_valid;	// src/main/scala/rv32e/core.scala:55:27
-  wire [31:0] _IFU_i_to_mem_req_bits_addr;	// src/main/scala/rv32e/core.scala:55:27
+  wire        _sram_i2_axi_ar_ready;	// src/main/scala/rv32e/core.scala:52:27
+  wire        _sram_i2_axi_r_valid;	// src/main/scala/rv32e/core.scala:52:27
+  wire [31:0] _sram_i2_axi_r_bits_data;	// src/main/scala/rv32e/core.scala:52:27
+  wire        _sram_i2_axi_r_bits_last;	// src/main/scala/rv32e/core.scala:52:27
+  wire        _sram_i2_axi_aw_ready;	// src/main/scala/rv32e/core.scala:52:27
+  wire        _sram_i2_axi_w_ready;	// src/main/scala/rv32e/core.scala:52:27
+  wire        _dcache_from_lsu_req_ready;	// src/main/scala/rv32e/core.scala:51:27
+  wire        _dcache_from_lsu_resp_valid;	// src/main/scala/rv32e/core.scala:51:27
+  wire [31:0] _dcache_from_lsu_resp_bits_rdata;	// src/main/scala/rv32e/core.scala:51:27
+  wire        _dcache_from_lsu_resp_bits_wresp;	// src/main/scala/rv32e/core.scala:51:27
+  wire        _dcache_to_sram_ar_valid;	// src/main/scala/rv32e/core.scala:51:27
+  wire [31:0] _dcache_to_sram_ar_bits_addr;	// src/main/scala/rv32e/core.scala:51:27
+  wire [7:0]  _dcache_to_sram_ar_bits_len;	// src/main/scala/rv32e/core.scala:51:27
+  wire        _dcache_to_sram_r_ready;	// src/main/scala/rv32e/core.scala:51:27
+  wire        _dcache_to_sram_aw_valid;	// src/main/scala/rv32e/core.scala:51:27
+  wire [31:0] _dcache_to_sram_aw_bits_addr;	// src/main/scala/rv32e/core.scala:51:27
+  wire [7:0]  _dcache_to_sram_aw_bits_len;	// src/main/scala/rv32e/core.scala:51:27
+  wire        _dcache_to_sram_w_valid;	// src/main/scala/rv32e/core.scala:51:27
+  wire [31:0] _dcache_to_sram_w_bits_data;	// src/main/scala/rv32e/core.scala:51:27
+  wire        _sram_i_axi_ar_ready;	// src/main/scala/rv32e/core.scala:45:27
+  wire        _sram_i_axi_r_valid;	// src/main/scala/rv32e/core.scala:45:27
+  wire [31:0] _sram_i_axi_r_bits_data;	// src/main/scala/rv32e/core.scala:45:27
+  wire        _sram_i_axi_r_bits_last;	// src/main/scala/rv32e/core.scala:45:27
+  wire        _icache_from_ifu_req_ready;	// src/main/scala/rv32e/core.scala:44:27
+  wire        _icache_from_ifu_resp_valid;	// src/main/scala/rv32e/core.scala:44:27
+  wire [31:0] _icache_from_ifu_resp_bits_rdata;	// src/main/scala/rv32e/core.scala:44:27
+  wire        _icache_to_sram_ar_valid;	// src/main/scala/rv32e/core.scala:44:27
+  wire [31:0] _icache_to_sram_ar_bits_addr;	// src/main/scala/rv32e/core.scala:44:27
+  wire [7:0]  _icache_to_sram_ar_bits_len;	// src/main/scala/rv32e/core.scala:44:27
+  wire        _icache_to_sram_r_ready;	// src/main/scala/rv32e/core.scala:44:27
+  wire        _IFU_i_to_IDU_valid;	// src/main/scala/rv32e/core.scala:43:27
+  wire [31:0] _IFU_i_to_IDU_bits_inst;	// src/main/scala/rv32e/core.scala:43:27
+  wire [31:0] _IFU_i_to_IDU_bits_pc;	// src/main/scala/rv32e/core.scala:43:27
+  wire        _IFU_i_to_mem_req_valid;	// src/main/scala/rv32e/core.scala:43:27
+  wire [31:0] _IFU_i_to_mem_req_bits_addr;	// src/main/scala/rv32e/core.scala:43:27
   wire        _WBU_i_to_ISU_bits_reg_wen;	// src/main/scala/rv32e/core.scala:40:27
   wire [31:0] _WBU_i_to_ISU_bits_wdata;	// src/main/scala/rv32e/core.scala:40:27
   wire [4:0]  _WBU_i_to_ISU_bits_rd;	// src/main/scala/rv32e/core.scala:40:27
@@ -3651,9 +3651,9 @@ module top(	// <stdin>:3616:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
   IDU IDU_i (	// src/main/scala/rv32e/core.scala:37:27
-    .from_IFU_valid                 (_IFU_i_to_IDU_valid),	// src/main/scala/rv32e/core.scala:55:27
-    .from_IFU_bits_inst             (_IFU_i_to_IDU_bits_inst),	// src/main/scala/rv32e/core.scala:55:27
-    .from_IFU_bits_pc               (_IFU_i_to_IDU_bits_pc),	// src/main/scala/rv32e/core.scala:55:27
+    .from_IFU_valid                 (_IFU_i_to_IDU_valid),	// src/main/scala/rv32e/core.scala:43:27
+    .from_IFU_bits_inst             (_IFU_i_to_IDU_bits_inst),	// src/main/scala/rv32e/core.scala:43:27
+    .from_IFU_bits_pc               (_IFU_i_to_IDU_bits_pc),	// src/main/scala/rv32e/core.scala:43:27
     .to_ISU_valid                   (_IDU_i_to_ISU_valid),
     .to_ISU_bits_imm                (_IDU_i_to_ISU_bits_imm),
     .to_ISU_bits_pc                 (_IDU_i_to_ISU_bits_pc),
@@ -3737,10 +3737,10 @@ module top(	// <stdin>:3616:3
     .from_ISU_bits_ctrl_sig_bru_op    (EXU_i_from_ISU_bits_r_ctrl_sig_bru_op),	// src/main/scala/rv32e/utils/Connect.scala:25:35
     .from_ISU_bits_ctrl_sig_csr_op    (EXU_i_from_ISU_bits_r_ctrl_sig_csr_op),	// src/main/scala/rv32e/utils/Connect.scala:25:35
     .from_ISU_bits_ctrl_sig_mdu_op    (EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op),	// src/main/scala/rv32e/utils/Connect.scala:25:35
-    .lsu_to_mem_req_ready             (_dcache_from_lsu_req_ready),	// src/main/scala/rv32e/core.scala:69:27
-    .lsu_to_mem_resp_valid            (_dcache_from_lsu_resp_valid),	// src/main/scala/rv32e/core.scala:69:27
-    .lsu_to_mem_resp_bits_rdata       (_dcache_from_lsu_resp_bits_rdata),	// src/main/scala/rv32e/core.scala:69:27
-    .lsu_to_mem_resp_bits_wresp       (_dcache_from_lsu_resp_bits_wresp),	// src/main/scala/rv32e/core.scala:69:27
+    .lsu_to_mem_req_ready             (_dcache_from_lsu_req_ready),	// src/main/scala/rv32e/core.scala:51:27
+    .lsu_to_mem_resp_valid            (_dcache_from_lsu_resp_valid),	// src/main/scala/rv32e/core.scala:51:27
+    .lsu_to_mem_resp_bits_rdata       (_dcache_from_lsu_resp_bits_rdata),	// src/main/scala/rv32e/core.scala:51:27
+    .lsu_to_mem_resp_bits_wresp       (_dcache_from_lsu_resp_bits_wresp),	// src/main/scala/rv32e/core.scala:51:27
     .from_ISU_ready                   (_EXU_i_from_ISU_ready),
     .to_WBU_valid                     (_EXU_i_to_WBU_valid),
     .to_WBU_bits_alu_result           (_EXU_i_to_WBU_bits_alu_result),
@@ -3780,7 +3780,7 @@ module top(	// <stdin>:3616:3
     .to_ISU_bits_rd           (_WBU_i_to_ISU_bits_rd),
     .to_IFU_valid             (_WBU_i_to_IFU_valid)
   );
-  IFU_simpleBus IFU_i (	// src/main/scala/rv32e/core.scala:55:27
+  IFU_simpleBus IFU_i (	// src/main/scala/rv32e/core.scala:43:27
     .clock                     (clock),
     .reset                     (reset),
     .from_EXU_bits_bru_ctrl_br (_EXU_i_to_IFU_bits_bru_ctrl_br),	// src/main/scala/rv32e/core.scala:39:27
@@ -3788,24 +3788,24 @@ module top(	// <stdin>:3616:3
     .from_EXU_bits_csr_ctrl_br (_EXU_i_to_IFU_bits_csr_ctrl_br),	// src/main/scala/rv32e/core.scala:39:27
     .from_EXU_bits_csr_addr    (_EXU_i_to_IFU_bits_csr_addr),	// src/main/scala/rv32e/core.scala:39:27
     .from_WBU_valid            (_WBU_i_to_IFU_valid),	// src/main/scala/rv32e/core.scala:40:27
-    .to_mem_req_ready          (_icache_from_ifu_req_ready),	// src/main/scala/rv32e/core.scala:56:27
-    .to_mem_resp_valid         (_icache_from_ifu_resp_valid),	// src/main/scala/rv32e/core.scala:56:27
-    .to_mem_resp_bits_rdata    (_icache_from_ifu_resp_bits_rdata),	// src/main/scala/rv32e/core.scala:56:27
+    .to_mem_req_ready          (_icache_from_ifu_req_ready),	// src/main/scala/rv32e/core.scala:44:27
+    .to_mem_resp_valid         (_icache_from_ifu_resp_valid),	// src/main/scala/rv32e/core.scala:44:27
+    .to_mem_resp_bits_rdata    (_icache_from_ifu_resp_bits_rdata),	// src/main/scala/rv32e/core.scala:44:27
     .to_IDU_valid              (_IFU_i_to_IDU_valid),
     .to_IDU_bits_inst          (_IFU_i_to_IDU_bits_inst),
     .to_IDU_bits_pc            (_IFU_i_to_IDU_bits_pc),
     .to_mem_req_valid          (_IFU_i_to_mem_req_valid),
     .to_mem_req_bits_addr      (_IFU_i_to_mem_req_bits_addr)
   );
-  Icache_SimpleBus icache (	// src/main/scala/rv32e/core.scala:56:27
+  Icache_SimpleBus icache (	// src/main/scala/rv32e/core.scala:44:27
     .clock                    (clock),
     .reset                    (reset),
-    .from_ifu_req_valid       (_IFU_i_to_mem_req_valid),	// src/main/scala/rv32e/core.scala:55:27
-    .from_ifu_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),	// src/main/scala/rv32e/core.scala:55:27
-    .to_sram_ar_ready         (_sram_i_axi_ar_ready),	// src/main/scala/rv32e/core.scala:57:27
-    .to_sram_r_valid          (_sram_i_axi_r_valid),	// src/main/scala/rv32e/core.scala:57:27
-    .to_sram_r_bits_data      (_sram_i_axi_r_bits_data),	// src/main/scala/rv32e/core.scala:57:27
-    .to_sram_r_bits_last      (_sram_i_axi_r_bits_last),	// src/main/scala/rv32e/core.scala:57:27
+    .from_ifu_req_valid       (_IFU_i_to_mem_req_valid),	// src/main/scala/rv32e/core.scala:43:27
+    .from_ifu_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),	// src/main/scala/rv32e/core.scala:43:27
+    .to_sram_ar_ready         (_sram_i_axi_ar_ready),	// src/main/scala/rv32e/core.scala:45:27
+    .to_sram_r_valid          (_sram_i_axi_r_valid),	// src/main/scala/rv32e/core.scala:45:27
+    .to_sram_r_bits_data      (_sram_i_axi_r_bits_data),	// src/main/scala/rv32e/core.scala:45:27
+    .to_sram_r_bits_last      (_sram_i_axi_r_bits_last),	// src/main/scala/rv32e/core.scala:45:27
     .from_ifu_req_ready       (_icache_from_ifu_req_ready),
     .from_ifu_resp_valid      (_icache_from_ifu_resp_valid),
     .from_ifu_resp_bits_rdata (_icache_from_ifu_resp_bits_rdata),
@@ -3814,20 +3814,20 @@ module top(	// <stdin>:3616:3
     .to_sram_ar_bits_len      (_icache_to_sram_ar_bits_len),
     .to_sram_r_ready          (_icache_to_sram_r_ready)
   );
-  sram_axi_rw sram_i (	// src/main/scala/rv32e/core.scala:57:27
+  sram_axi_rw sram_i (	// src/main/scala/rv32e/core.scala:45:27
     .clock             (clock),
     .reset             (reset),
-    .axi_ar_valid      (_icache_to_sram_ar_valid),	// src/main/scala/rv32e/core.scala:56:27
-    .axi_ar_bits_addr  (_icache_to_sram_ar_bits_addr),	// src/main/scala/rv32e/core.scala:56:27
-    .axi_ar_bits_len   (_icache_to_sram_ar_bits_len),	// src/main/scala/rv32e/core.scala:56:27
-    .axi_r_ready       (_icache_to_sram_r_ready),	// src/main/scala/rv32e/core.scala:56:27
-    .axi_aw_valid      (1'h0),	// src/main/scala/rv32e/core.scala:55:27, :56:27, :57:27, :69:27, :70:27
-    .axi_aw_bits_addr  (32'h0),	// src/main/scala/rv32e/core.scala:55:27, :56:27, :57:27
-    .axi_aw_bits_len   (8'h0),	// src/main/scala/rv32e/core.scala:56:27, :57:27
-    .axi_aw_bits_burst (2'h0),	// src/main/scala/rv32e/core.scala:56:27, :57:27
-    .axi_w_valid       (1'h0),	// src/main/scala/rv32e/core.scala:55:27, :56:27, :57:27, :69:27, :70:27
-    .axi_w_bits_data   (32'h0),	// src/main/scala/rv32e/core.scala:55:27, :56:27, :57:27
-    .axi_w_bits_strb   (4'h0),	// src/main/scala/rv32e/core.scala:55:27, :56:27, :57:27
+    .axi_ar_valid      (_icache_to_sram_ar_valid),	// src/main/scala/rv32e/core.scala:44:27
+    .axi_ar_bits_addr  (_icache_to_sram_ar_bits_addr),	// src/main/scala/rv32e/core.scala:44:27
+    .axi_ar_bits_len   (_icache_to_sram_ar_bits_len),	// src/main/scala/rv32e/core.scala:44:27
+    .axi_r_ready       (_icache_to_sram_r_ready),	// src/main/scala/rv32e/core.scala:44:27
+    .axi_aw_valid      (1'h0),	// src/main/scala/rv32e/core.scala:43:27, :44:27, :45:27, :51:27, :52:27
+    .axi_aw_bits_addr  (32'h0),	// src/main/scala/rv32e/core.scala:43:27, :44:27, :45:27
+    .axi_aw_bits_len   (8'h0),	// src/main/scala/rv32e/core.scala:44:27, :45:27
+    .axi_aw_bits_burst (2'h0),	// src/main/scala/rv32e/core.scala:44:27, :45:27
+    .axi_w_valid       (1'h0),	// src/main/scala/rv32e/core.scala:43:27, :44:27, :45:27, :51:27, :52:27
+    .axi_w_bits_data   (32'h0),	// src/main/scala/rv32e/core.scala:43:27, :44:27, :45:27
+    .axi_w_bits_strb   (4'h0),	// src/main/scala/rv32e/core.scala:43:27, :44:27, :45:27
     .axi_ar_ready      (_sram_i_axi_ar_ready),
     .axi_r_valid       (_sram_i_axi_r_valid),
     .axi_r_bits_data   (_sram_i_axi_r_bits_data),
@@ -3835,7 +3835,7 @@ module top(	// <stdin>:3616:3
     .axi_aw_ready      (/* unused */),
     .axi_w_ready       (/* unused */)
   );
-  Dcache_SimpleBus dcache (	// src/main/scala/rv32e/core.scala:69:27
+  Dcache_SimpleBus dcache (	// src/main/scala/rv32e/core.scala:51:27
     .clock                    (clock),
     .reset                    (reset),
     .from_lsu_req_valid       (_EXU_i_lsu_to_mem_req_valid),	// src/main/scala/rv32e/core.scala:39:27
@@ -3843,12 +3843,12 @@ module top(	// <stdin>:3616:3
     .from_lsu_req_bits_wdata  (_EXU_i_lsu_to_mem_req_bits_wdata),	// src/main/scala/rv32e/core.scala:39:27
     .from_lsu_req_bits_cmd    (_EXU_i_lsu_to_mem_req_bits_cmd),	// src/main/scala/rv32e/core.scala:39:27
     .from_lsu_req_bits_wmask  (_EXU_i_lsu_to_mem_req_bits_wmask),	// src/main/scala/rv32e/core.scala:39:27
-    .to_sram_ar_ready         (_sram_i2_axi_ar_ready),	// src/main/scala/rv32e/core.scala:70:27
-    .to_sram_r_valid          (_sram_i2_axi_r_valid),	// src/main/scala/rv32e/core.scala:70:27
-    .to_sram_r_bits_data      (_sram_i2_axi_r_bits_data),	// src/main/scala/rv32e/core.scala:70:27
-    .to_sram_r_bits_last      (_sram_i2_axi_r_bits_last),	// src/main/scala/rv32e/core.scala:70:27
-    .to_sram_aw_ready         (_sram_i2_axi_aw_ready),	// src/main/scala/rv32e/core.scala:70:27
-    .to_sram_w_ready          (_sram_i2_axi_w_ready),	// src/main/scala/rv32e/core.scala:70:27
+    .to_sram_ar_ready         (_sram_i2_axi_ar_ready),	// src/main/scala/rv32e/core.scala:52:27
+    .to_sram_r_valid          (_sram_i2_axi_r_valid),	// src/main/scala/rv32e/core.scala:52:27
+    .to_sram_r_bits_data      (_sram_i2_axi_r_bits_data),	// src/main/scala/rv32e/core.scala:52:27
+    .to_sram_r_bits_last      (_sram_i2_axi_r_bits_last),	// src/main/scala/rv32e/core.scala:52:27
+    .to_sram_aw_ready         (_sram_i2_axi_aw_ready),	// src/main/scala/rv32e/core.scala:52:27
+    .to_sram_w_ready          (_sram_i2_axi_w_ready),	// src/main/scala/rv32e/core.scala:52:27
     .from_lsu_req_ready       (_dcache_from_lsu_req_ready),
     .from_lsu_resp_valid      (_dcache_from_lsu_resp_valid),
     .from_lsu_resp_bits_rdata (_dcache_from_lsu_resp_bits_rdata),
@@ -3863,20 +3863,20 @@ module top(	// <stdin>:3616:3
     .to_sram_w_valid          (_dcache_to_sram_w_valid),
     .to_sram_w_bits_data      (_dcache_to_sram_w_bits_data)
   );
-  sram_axi_rw sram_i2 (	// src/main/scala/rv32e/core.scala:70:27
+  sram_axi_rw sram_i2 (	// src/main/scala/rv32e/core.scala:52:27
     .clock             (clock),
     .reset             (reset),
-    .axi_ar_valid      (_dcache_to_sram_ar_valid),	// src/main/scala/rv32e/core.scala:69:27
-    .axi_ar_bits_addr  (_dcache_to_sram_ar_bits_addr),	// src/main/scala/rv32e/core.scala:69:27
-    .axi_ar_bits_len   (_dcache_to_sram_ar_bits_len),	// src/main/scala/rv32e/core.scala:69:27
-    .axi_r_ready       (_dcache_to_sram_r_ready),	// src/main/scala/rv32e/core.scala:69:27
-    .axi_aw_valid      (_dcache_to_sram_aw_valid),	// src/main/scala/rv32e/core.scala:69:27
-    .axi_aw_bits_addr  (_dcache_to_sram_aw_bits_addr),	// src/main/scala/rv32e/core.scala:69:27
-    .axi_aw_bits_len   (_dcache_to_sram_aw_bits_len),	// src/main/scala/rv32e/core.scala:69:27
-    .axi_aw_bits_burst (2'h1),	// src/main/scala/rv32e/core.scala:56:27, :57:27, :69:27, :70:27
-    .axi_w_valid       (_dcache_to_sram_w_valid),	// src/main/scala/rv32e/core.scala:69:27
-    .axi_w_bits_data   (_dcache_to_sram_w_bits_data),	// src/main/scala/rv32e/core.scala:69:27
-    .axi_w_bits_strb   (4'hF),	// src/main/scala/rv32e/core.scala:69:27, :70:27
+    .axi_ar_valid      (_dcache_to_sram_ar_valid),	// src/main/scala/rv32e/core.scala:51:27
+    .axi_ar_bits_addr  (_dcache_to_sram_ar_bits_addr),	// src/main/scala/rv32e/core.scala:51:27
+    .axi_ar_bits_len   (_dcache_to_sram_ar_bits_len),	// src/main/scala/rv32e/core.scala:51:27
+    .axi_r_ready       (_dcache_to_sram_r_ready),	// src/main/scala/rv32e/core.scala:51:27
+    .axi_aw_valid      (_dcache_to_sram_aw_valid),	// src/main/scala/rv32e/core.scala:51:27
+    .axi_aw_bits_addr  (_dcache_to_sram_aw_bits_addr),	// src/main/scala/rv32e/core.scala:51:27
+    .axi_aw_bits_len   (_dcache_to_sram_aw_bits_len),	// src/main/scala/rv32e/core.scala:51:27
+    .axi_aw_bits_burst (2'h1),	// src/main/scala/rv32e/core.scala:44:27, :45:27, :51:27, :52:27
+    .axi_w_valid       (_dcache_to_sram_w_valid),	// src/main/scala/rv32e/core.scala:51:27
+    .axi_w_bits_data   (_dcache_to_sram_w_bits_data),	// src/main/scala/rv32e/core.scala:51:27
+    .axi_w_bits_strb   (4'hF),	// src/main/scala/rv32e/core.scala:51:27, :52:27
     .axi_ar_ready      (_sram_i2_axi_ar_ready),
     .axi_r_valid       (_sram_i2_axi_r_valid),
     .axi_r_bits_data   (_sram_i2_axi_r_bits_data),
@@ -3884,8 +3884,8 @@ module top(	// <stdin>:3616:3
     .axi_aw_ready      (_sram_i2_axi_aw_ready),
     .axi_w_ready       (_sram_i2_axi_w_ready)
   );
-  assign io_out_inst = _IFU_i_to_IDU_bits_inst;	// <stdin>:3616:3, src/main/scala/rv32e/core.scala:55:27
-  assign io_out_pc = _IFU_i_to_IDU_bits_pc;	// <stdin>:3616:3, src/main/scala/rv32e/core.scala:55:27
+  assign io_out_inst = _IFU_i_to_IDU_bits_inst;	// <stdin>:3616:3, src/main/scala/rv32e/core.scala:43:27
+  assign io_out_pc = _IFU_i_to_IDU_bits_pc;	// <stdin>:3616:3, src/main/scala/rv32e/core.scala:43:27
   assign io_out_wb = _WBU_i_to_IFU_valid;	// <stdin>:3616:3, src/main/scala/rv32e/core.scala:40:27
 endmodule
 
