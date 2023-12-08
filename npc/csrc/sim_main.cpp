@@ -65,7 +65,7 @@ void single_cycle() {
 int terminal = 0;
 extern "C" void exit_code(){
   terminal = 1;
-  printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
+  printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED),
         (void *)top->io_out_pc);
 }
 
