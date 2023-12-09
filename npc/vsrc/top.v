@@ -1290,7 +1290,6 @@ module Alu(	// <stdin>:2056:3
   output [31:0] io_out_result	// src/main/scala/rv32e/fu/alu.scala:22:16
 );
 
-  wire [31:0]       _io_out_result_T_2 = io_in_src1 - io_in_src2;	// src/main/scala/rv32e/fu/alu.scala:36:42
   wire [62:0]       _io_out_result_T_11 = {31'h0, io_in_src1} << io_in_src2[4:0];	// src/main/scala/rv32e/fu/alu.scala:31:25, :43:42
   wire [31:0]       _GEN = {27'h0, io_in_src2[4:0]};	// src/main/scala/rv32e/fu/alu.scala:31:25, :44:42
   wire [15:0][31:0] _GEN_0 =
@@ -1307,9 +1306,9 @@ module Alu(	// <stdin>:2056:3
      {io_in_src1 ^ io_in_src2},
      {io_in_src1 | io_in_src2},
      {io_in_src1 & io_in_src2},
-     {_io_out_result_T_2},
-     {_io_out_result_T_2},
-     {32'h0}};	// src/main/scala/rv32e/fu/alu.scala:34:27, :36:42, :38:42, :39:42, :40:42, :41:49, :42:42, :43:42, :44:42, :45:49
+     {io_in_src1 - io_in_src2},
+     {io_in_src1 + io_in_src2},
+     {32'h0}};	// src/main/scala/rv32e/fu/alu.scala:34:27, :36:42, :37:42, :38:42, :39:42, :40:42, :41:49, :42:42, :43:42, :44:42, :45:49
   assign io_out_result = _GEN_0[io_in_op];	// <stdin>:2056:3, src/main/scala/rv32e/fu/alu.scala:34:27
 endmodule
 
