@@ -137,6 +137,8 @@ extern word_t text_max;
 extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
   if(raddr >= text_max)
     IFDEF(CONFIG_MTRACE, log_write("r, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+  else
+    IFDEF(CONFIG_ITRACE, log_write("cur pc:" FMT_WORD, top->io_out_pc));
   // printf("%x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
   pmem_read(raddr, rdata);
   // store also call read
@@ -145,7 +147,7 @@ extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
     IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, *rdata));
   } else {
     // inst trace here
-    IFDEF(CONFIG_ITRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+    IFDEF(CONFIG_ITRACE, log_write("read pc:" FMT_WORD",  read inst:" FMT_WORD"\n", raddr, *rdata));
   }
 }
 
