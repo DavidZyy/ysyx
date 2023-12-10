@@ -745,7 +745,7 @@ module IDU(	// <stdin>:3:3
        from_IFU_bits_inst[31:25],
        from_IFU_bits_inst[11:7]}},
      {{{20{from_IFU_bits_inst[31]}}, from_IFU_bits_inst[31:20]}},
-     {32'h0}};	// src/main/scala/rv32e/IDU.scala:30:{24,29,52,77}, :31:{24,29,77,105}, :32:{24,29,77,100,128}, :33:{24,43,57}, :34:{24,101,129,153}, :112:49
+     {32'h0}};	// src/main/scala/rv32e/IDU.scala:17:{24,29,52,77}, :18:{24,29,77,105}, :19:{24,29,77,100,128}, :20:{24,43,57}, :21:{24,101,129,153}, :99:49
   assign to_ISU_valid = from_IFU_valid;	// <stdin>:3:3
   assign to_ISU_bits_imm =
     _GEN[{{&_decode_info_T,
@@ -800,11 +800,11 @@ module IDU(	// <stdin>:3:3
             &_decode_info_T_76,
             &_decode_info_T_88,
             &_decode_info_T_108,
-            &_decode_info_T_112}}];	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:111:36, :112:49
+            &_decode_info_T_112}}];	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:98:36, :99:49
   assign to_ISU_bits_pc = from_IFU_bits_pc;	// <stdin>:3:3
-  assign to_ISU_bits_rs1 = from_IFU_bits_inst[19:15];	// <stdin>:3:3, src/main/scala/rv32e/IDU.scala:119:42
-  assign to_ISU_bits_rs2 = from_IFU_bits_inst[24:20];	// <stdin>:3:3, src/main/scala/rv32e/IDU.scala:120:42
-  assign to_ISU_bits_rd = from_IFU_bits_inst[11:7];	// <stdin>:3:3, src/main/scala/rv32e/IDU.scala:31:105
+  assign to_ISU_bits_rs1 = from_IFU_bits_inst[19:15];	// <stdin>:3:3, src/main/scala/rv32e/IDU.scala:112:42
+  assign to_ISU_bits_rs2 = from_IFU_bits_inst[24:20];	// <stdin>:3:3, src/main/scala/rv32e/IDU.scala:113:42
+  assign to_ISU_bits_rd = from_IFU_bits_inst[11:7];	// <stdin>:3:3, src/main/scala/rv32e/IDU.scala:18:105
   assign to_ISU_bits_ctrl_sig_reg_wen =
     |{&_decode_info_T_6,
       &_decode_info_T_10,
@@ -876,7 +876,7 @@ module IDU(	// <stdin>:3:3
        &_decode_info_T_108,
        &_decode_info_T_110,
        &_decode_info_T_112,
-       &_decode_info_T_114}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:136:50
+       &_decode_info_T_114}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:127:50
   assign to_ISU_bits_ctrl_sig_mem_wen = |{&_decode_info_T_24, &_decode_info_T_56};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}
   assign to_ISU_bits_ctrl_sig_is_ebreak = &_decode_info_T_90;	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}
   assign to_ISU_bits_ctrl_sig_not_impl =
@@ -959,7 +959,7 @@ module IDU(	// <stdin>:3:3
        &_decode_info_T_32,
        &_decode_info_T_44,
        &_decode_info_T_76,
-       &_decode_info_T_88}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:132:50
+       &_decode_info_T_88}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:123:50
   assign to_ISU_bits_ctrl_sig_src2_op =
     {|{&_decode_info_T_6,
        &_decode_info_T_10,
@@ -1007,7 +1007,7 @@ module IDU(	// <stdin>:3:3
        &_decode_info_T_66,
        &_decode_info_T_76,
        &_decode_info_T_88,
-       &_decode_info_T_112}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:131:50
+       &_decode_info_T_112}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:122:50
   assign to_ISU_bits_ctrl_sig_alu_op =
     {|{&_decode_info_T_38, &_decode_info_T_40, &_decode_info_T_112, &_decode_info_T_114},
      |{&_decode_info_T_52, &_decode_info_T_54, &_decode_info_T_66, &_decode_info_T_72},
@@ -1061,7 +1061,7 @@ module IDU(	// <stdin>:3:3
          decode_info_invInputs[27],
          decode_info_invInputs[28],
          decode_info_invInputs[29]},
-       &_decode_info_T_88}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:133:50
+       &_decode_info_T_88}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:124:50
   assign to_ISU_bits_ctrl_sig_lsu_op =
     {&_decode_info_T_56,
      |{&_decode_info_T_24, &_decode_info_T_64},
@@ -1097,7 +1097,7 @@ module IDU(	// <stdin>:3:3
          decode_info_invInputs[4],
          from_IFU_bits_inst[12],
          decode_info_invInputs[11],
-         from_IFU_bits_inst[14]}}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:135:50
+         from_IFU_bits_inst[14]}}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:126:50
   assign to_ISU_bits_ctrl_sig_bru_op =
     {&_decode_info_T_88,
      |{&_decode_info_T_44, &_decode_info_T_76},
@@ -1123,11 +1123,11 @@ module IDU(	// <stdin>:3:3
          decode_info_invInputs[10],
          from_IFU_bits_inst[13],
          from_IFU_bits_inst[14]}},
-     |{&_decode_info_T_28, &_decode_info_T_32, &_decode_info_T_76}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:134:50
+     |{&_decode_info_T_28, &_decode_info_T_32, &_decode_info_T_76}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:125:50
   assign to_ISU_bits_ctrl_sig_csr_op =
     {&_decode_info_T_58,
      |{&_decode_info_T_46, &_decode_info_T_108},
-     |{&_decode_info_T_34, &_decode_info_T_46}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:126:50
+     |{&_decode_info_T_34, &_decode_info_T_46}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:117:50
   assign to_ISU_bits_ctrl_sig_mdu_op =
     {&_decode_info_T_104,
      |{&_decode_info_T_98,
@@ -1180,7 +1180,7 @@ module IDU(	// <stdin>:3:3
          decode_info_invInputs[27],
          decode_info_invInputs[28],
          decode_info_invInputs[29]}},
-     &_decode_info_T_92};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:125:50
+     &_decode_info_T_92};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:116:50
 endmodule
 
 // external module RegisterFileBB
