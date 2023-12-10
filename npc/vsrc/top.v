@@ -65,7 +65,9 @@ module IDU(	// <stdin>:3:3
   input         from_IFU_valid,	// src/main/scala/rv32e/IDU.scala:14:23
   input  [31:0] from_IFU_bits_inst,	// src/main/scala/rv32e/IDU.scala:14:23
                 from_IFU_bits_pc,	// src/main/scala/rv32e/IDU.scala:14:23
-  output        to_ISU_valid,	// src/main/scala/rv32e/IDU.scala:15:23
+  input         to_ISU_ready,	// src/main/scala/rv32e/IDU.scala:15:23
+  output        from_IFU_ready,	// src/main/scala/rv32e/IDU.scala:14:23
+                to_ISU_valid,	// src/main/scala/rv32e/IDU.scala:15:23
   output [31:0] to_ISU_bits_imm,	// src/main/scala/rv32e/IDU.scala:15:23
                 to_ISU_bits_pc,	// src/main/scala/rv32e/IDU.scala:15:23
   output [4:0]  to_ISU_bits_rs1,	// src/main/scala/rv32e/IDU.scala:15:23
@@ -746,6 +748,7 @@ module IDU(	// <stdin>:3:3
        from_IFU_bits_inst[11:7]}},
      {{{20{from_IFU_bits_inst[31]}}, from_IFU_bits_inst[31:20]}},
      {32'h0}};	// src/main/scala/rv32e/IDU.scala:17:{24,29,52,77}, :18:{24,29,77,105}, :19:{24,29,77,100,128}, :20:{24,43,57}, :21:{24,101,129,153}, :99:49
+  assign from_IFU_ready = to_ISU_ready;	// <stdin>:3:3
   assign to_ISU_valid = from_IFU_valid;	// <stdin>:3:3
   assign to_ISU_bits_imm =
     _GEN[{{&_decode_info_T,
@@ -1234,7 +1237,9 @@ module ISU(	// <stdin>:2031:3
   input         from_WBU_bits_reg_wen,	// src/main/scala/rv32e/ISU.scala:13:22
   input  [31:0] from_WBU_bits_wdata,	// src/main/scala/rv32e/ISU.scala:13:22
   input  [4:0]  from_WBU_bits_rd,	// src/main/scala/rv32e/ISU.scala:13:22
-  output        to_EXU_valid,	// src/main/scala/rv32e/ISU.scala:14:22
+  input         to_EXU_ready,	// src/main/scala/rv32e/ISU.scala:14:22
+  output        from_IDU_ready,	// src/main/scala/rv32e/ISU.scala:12:22
+                to_EXU_valid,	// src/main/scala/rv32e/ISU.scala:14:22
   output [31:0] to_EXU_bits_imm,	// src/main/scala/rv32e/ISU.scala:14:22
                 to_EXU_bits_pc,	// src/main/scala/rv32e/ISU.scala:14:22
                 to_EXU_bits_rdata1,	// src/main/scala/rv32e/ISU.scala:14:22
@@ -1254,7 +1259,7 @@ module ISU(	// <stdin>:2031:3
   output [3:0]  to_EXU_bits_ctrl_sig_mdu_op	// src/main/scala/rv32e/ISU.scala:14:22
 );
 
-  RegFile RegFile_i (	// src/main/scala/rv32e/ISU.scala:20:37
+  RegFile RegFile_i (	// src/main/scala/rv32e/ISU.scala:16:37
     .clock         (clock),
     .reset         (reset),
     .io_in_rs1     (from_IDU_bits_rs1),
@@ -1265,6 +1270,7 @@ module ISU(	// <stdin>:2031:3
     .io_out_rdata1 (to_EXU_bits_rdata1),
     .io_out_rdata2 (to_EXU_bits_rdata2)
   );
+  assign from_IDU_ready = to_EXU_ready;	// <stdin>:2031:3
   assign to_EXU_valid = from_IDU_valid;	// <stdin>:2031:3
   assign to_EXU_bits_imm = from_IDU_bits_imm;	// <stdin>:2031:3
   assign to_EXU_bits_pc = from_IDU_bits_pc;	// <stdin>:2031:3
@@ -1817,6 +1823,7 @@ endmodule
 module IFU_simpleBus(	// <stdin>:2669:3
   input         clock,	// <stdin>:2670:11
                 reset,	// <stdin>:2671:11
+                to_IDU_ready,	// src/main/scala/rv32e/IFU.scala:189:24
                 from_EXU_bits_bru_ctrl_br,	// src/main/scala/rv32e/IFU.scala:190:24
   input  [31:0] from_EXU_bits_bru_addr,	// src/main/scala/rv32e/IFU.scala:190:24
   input         from_EXU_bits_csr_ctrl_br,	// src/main/scala/rv32e/IFU.scala:190:24
@@ -1887,7 +1894,8 @@ module IFU_simpleBus(	// <stdin>:2669:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
   assign to_IDU_valid = _to_IDU_valid_output;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:211:44
-  assign to_IDU_bits_inst = _to_IDU_valid_output ? to_mem_resp_bits_rdata : 32'h13;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:211:44, :227:28
+  assign to_IDU_bits_inst =
+    to_IDU_ready & _to_IDU_valid_output ? to_mem_resp_bits_rdata : 32'h13;	// <stdin>:2669:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/IFU.scala:211:44, :227:28
   assign to_IDU_bits_pc = reg_PC;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:194:26
   assign to_mem_req_valid = _to_mem_req_valid_output;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:211:44
   assign to_mem_req_bits_addr = reg_PC;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:194:26
@@ -3689,6 +3697,7 @@ module top(	// <stdin>:3746:3
   wire [3:0]  _EXU_i_lsu_to_mem_req_bits_cmd;	// src/main/scala/rv32e/core.scala:43:27
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_wmask;	// src/main/scala/rv32e/core.scala:43:27
   wire        _EXU_i_lsu_to_mem_resp_ready;	// src/main/scala/rv32e/core.scala:43:27
+  wire        _ISU_i_from_IDU_ready;	// src/main/scala/rv32e/core.scala:42:27
   wire        _ISU_i_to_EXU_valid;	// src/main/scala/rv32e/core.scala:42:27
   wire [31:0] _ISU_i_to_EXU_bits_imm;	// src/main/scala/rv32e/core.scala:42:27
   wire [31:0] _ISU_i_to_EXU_bits_pc;	// src/main/scala/rv32e/core.scala:42:27
@@ -3707,6 +3716,7 @@ module top(	// <stdin>:3746:3
   wire [3:0]  _ISU_i_to_EXU_bits_ctrl_sig_bru_op;	// src/main/scala/rv32e/core.scala:42:27
   wire [2:0]  _ISU_i_to_EXU_bits_ctrl_sig_csr_op;	// src/main/scala/rv32e/core.scala:42:27
   wire [3:0]  _ISU_i_to_EXU_bits_ctrl_sig_mdu_op;	// src/main/scala/rv32e/core.scala:42:27
+  wire        _IDU_i_from_IFU_ready;	// src/main/scala/rv32e/core.scala:41:27
   wire        _IDU_i_to_ISU_valid;	// src/main/scala/rv32e/core.scala:41:27
   wire [31:0] _IDU_i_to_ISU_bits_imm;	// src/main/scala/rv32e/core.scala:41:27
   wire [31:0] _IDU_i_to_ISU_bits_pc;	// src/main/scala/rv32e/core.scala:41:27
@@ -3811,6 +3821,8 @@ module top(	// <stdin>:3746:3
     .from_IFU_valid                 (_IFU_i_to_IDU_valid),	// src/main/scala/rv32e/core.scala:47:27
     .from_IFU_bits_inst             (_IFU_i_to_IDU_bits_inst),	// src/main/scala/rv32e/core.scala:47:27
     .from_IFU_bits_pc               (_IFU_i_to_IDU_bits_pc),	// src/main/scala/rv32e/core.scala:47:27
+    .to_ISU_ready                   (_ISU_i_from_IDU_ready),	// src/main/scala/rv32e/core.scala:42:27
+    .from_IFU_ready                 (_IDU_i_from_IFU_ready),
     .to_ISU_valid                   (_IDU_i_to_ISU_valid),
     .to_ISU_bits_imm                (_IDU_i_to_ISU_bits_imm),
     .to_ISU_bits_pc                 (_IDU_i_to_ISU_bits_pc),
@@ -3854,6 +3866,8 @@ module top(	// <stdin>:3746:3
     .from_WBU_bits_reg_wen            (_WBU_i_to_ISU_bits_reg_wen),	// src/main/scala/rv32e/core.scala:44:27
     .from_WBU_bits_wdata              (_WBU_i_to_ISU_bits_wdata),	// src/main/scala/rv32e/core.scala:44:27
     .from_WBU_bits_rd                 (_WBU_i_to_ISU_bits_rd),	// src/main/scala/rv32e/core.scala:44:27
+    .to_EXU_ready                     (_EXU_i_from_ISU_ready),	// src/main/scala/rv32e/core.scala:43:27
+    .from_IDU_ready                   (_ISU_i_from_IDU_ready),
     .to_EXU_valid                     (_ISU_i_to_EXU_valid),
     .to_EXU_bits_imm                  (_ISU_i_to_EXU_bits_imm),
     .to_EXU_bits_pc                   (_ISU_i_to_EXU_bits_pc),
@@ -3941,6 +3955,7 @@ module top(	// <stdin>:3746:3
   IFU_simpleBus IFU_i (	// src/main/scala/rv32e/core.scala:47:27
     .clock                     (clock),
     .reset                     (reset),
+    .to_IDU_ready              (_IDU_i_from_IFU_ready),	// src/main/scala/rv32e/core.scala:41:27
     .from_EXU_bits_bru_ctrl_br (_EXU_i_to_IFU_bits_bru_ctrl_br),	// src/main/scala/rv32e/core.scala:43:27
     .from_EXU_bits_bru_addr    (_EXU_i_to_IFU_bits_bru_addr),	// src/main/scala/rv32e/core.scala:43:27
     .from_EXU_bits_csr_ctrl_br (_EXU_i_to_IFU_bits_csr_ctrl_br),	// src/main/scala/rv32e/core.scala:43:27
