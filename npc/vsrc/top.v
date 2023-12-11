@@ -1821,9 +1821,9 @@ module WBU(	// <stdin>:2644:3
      {from_EXU_bits_pc + 32'h4},
      {from_EXU_bits_mdu_result},
      {from_EXU_bits_alu_result},
-     {32'h0}};	// src/main/scala/rv32e/WBU.scala:22:63, :25:47
-  assign to_ISU_bits_reg_wen = from_EXU_valid & from_EXU_bits_reg_wen;	// <stdin>:2644:3, src/main/scala/rv32e/WBU.scala:19:31
-  assign to_ISU_bits_wdata = _GEN[from_EXU_bits_fu_op];	// <stdin>:2644:3, src/main/scala/rv32e/WBU.scala:22:63
+     {32'h0}};	// src/main/scala/rv32e/WBU.scala:25:63, :28:47
+  assign to_ISU_bits_reg_wen = from_EXU_valid & from_EXU_bits_reg_wen;	// <stdin>:2644:3, src/main/scala/rv32e/WBU.scala:23:31
+  assign to_ISU_bits_wdata = _GEN[from_EXU_bits_fu_op];	// <stdin>:2644:3, src/main/scala/rv32e/WBU.scala:25:63
   assign to_ISU_bits_rd = from_EXU_bits_rd;	// <stdin>:2644:3
   assign to_IFU_valid = from_EXU_valid;	// <stdin>:2644:3
 endmodule
