@@ -1895,7 +1895,7 @@ module IFU_simpleBus(	// <stdin>:2669:3
   `endif // ENABLE_INITIAL_REG_
   assign to_IDU_valid = _to_IDU_valid_output;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:211:44
   assign to_IDU_bits_inst =
-    to_IDU_ready & _to_IDU_valid_output ? to_mem_resp_bits_rdata : 32'h13;	// <stdin>:2669:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/IFU.scala:211:44, :227:28
+    to_IDU_ready & _to_IDU_valid_output ? to_mem_resp_bits_rdata : 32'h0;	// <stdin>:2669:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/IFU.scala:211:44, :221:27, :228:28
   assign to_IDU_bits_pc = reg_PC;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:194:26
   assign to_mem_req_valid = _to_mem_req_valid_output;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:211:44
   assign to_mem_req_bits_addr = reg_PC;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:194:26
