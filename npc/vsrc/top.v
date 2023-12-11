@@ -879,7 +879,7 @@ module IDU(	// <stdin>:3:3
        &_decode_info_T_108,
        &_decode_info_T_110,
        &_decode_info_T_112,
-       &_decode_info_T_114}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:127:50
+       &_decode_info_T_114}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:128:50
   assign to_ISU_bits_ctrl_sig_mem_wen = |{&_decode_info_T_24, &_decode_info_T_56};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}
   assign to_ISU_bits_ctrl_sig_is_ebreak = &_decode_info_T_90;	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}
   assign to_ISU_bits_ctrl_sig_not_impl =
@@ -962,7 +962,7 @@ module IDU(	// <stdin>:3:3
        &_decode_info_T_32,
        &_decode_info_T_44,
        &_decode_info_T_76,
-       &_decode_info_T_88}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:123:50
+       &_decode_info_T_88}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:124:50
   assign to_ISU_bits_ctrl_sig_src2_op =
     {|{&_decode_info_T_6,
        &_decode_info_T_10,
@@ -1010,7 +1010,7 @@ module IDU(	// <stdin>:3:3
        &_decode_info_T_66,
        &_decode_info_T_76,
        &_decode_info_T_88,
-       &_decode_info_T_112}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:122:50
+       &_decode_info_T_112}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:123:50
   assign to_ISU_bits_ctrl_sig_alu_op =
     {|{&_decode_info_T_38, &_decode_info_T_40, &_decode_info_T_112, &_decode_info_T_114},
      |{&_decode_info_T_52, &_decode_info_T_54, &_decode_info_T_66, &_decode_info_T_72},
@@ -1064,7 +1064,7 @@ module IDU(	// <stdin>:3:3
          decode_info_invInputs[27],
          decode_info_invInputs[28],
          decode_info_invInputs[29]},
-       &_decode_info_T_88}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:124:50
+       &_decode_info_T_88}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:125:50
   assign to_ISU_bits_ctrl_sig_lsu_op =
     {&_decode_info_T_56,
      |{&_decode_info_T_24, &_decode_info_T_64},
@@ -1100,7 +1100,7 @@ module IDU(	// <stdin>:3:3
          decode_info_invInputs[4],
          from_IFU_bits_inst[12],
          decode_info_invInputs[11],
-         from_IFU_bits_inst[14]}}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:126:50
+         from_IFU_bits_inst[14]}}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:127:50
   assign to_ISU_bits_ctrl_sig_bru_op =
     {&_decode_info_T_88,
      |{&_decode_info_T_44, &_decode_info_T_76},
@@ -1126,11 +1126,11 @@ module IDU(	// <stdin>:3:3
          decode_info_invInputs[10],
          from_IFU_bits_inst[13],
          from_IFU_bits_inst[14]}},
-     |{&_decode_info_T_28, &_decode_info_T_32, &_decode_info_T_76}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:125:50
+     |{&_decode_info_T_28, &_decode_info_T_32, &_decode_info_T_76}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:126:50
   assign to_ISU_bits_ctrl_sig_csr_op =
     {&_decode_info_T_58,
      |{&_decode_info_T_46, &_decode_info_T_108},
-     |{&_decode_info_T_34, &_decode_info_T_46}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:117:50
+     |{&_decode_info_T_34, &_decode_info_T_46}};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:118:50
   assign to_ISU_bits_ctrl_sig_mdu_op =
     {&_decode_info_T_104,
      |{&_decode_info_T_98,
@@ -1183,14 +1183,14 @@ module IDU(	// <stdin>:3:3
          decode_info_invInputs[27],
          decode_info_invInputs[28],
          decode_info_invInputs[29]}},
-     &_decode_info_T_92};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:116:50
+     &_decode_info_T_92};	// <stdin>:3:3, src/main/scala/chisel3/util/pla.scala:78:21, :90:45, :91:29, :98:{53,70}, :114:{19,36}, src/main/scala/rv32e/IDU.scala:117:50
 endmodule
 
 // external module RegisterFileBB
 
-module RegFile(	// <stdin>:2015:3
-  input         clock,	// <stdin>:2016:11
-                reset,	// <stdin>:2017:11
+module RegFile(	// <stdin>:2016:3
+  input         clock,	// <stdin>:2017:11
+                reset,	// <stdin>:2018:11
   input  [4:0]  io_in_rs1,	// src/main/scala/rv32e/utils/regfile.scala:43:16
                 io_in_rs2,	// src/main/scala/rv32e/utils/regfile.scala:43:16
                 io_in_rd,	// src/main/scala/rv32e/utils/regfile.scala:43:16
@@ -1213,9 +1213,9 @@ module RegFile(	// <stdin>:2015:3
   );
 endmodule
 
-module ISU(	// <stdin>:2031:3
-  input         clock,	// <stdin>:2032:11
-                reset,	// <stdin>:2033:11
+module ISU(	// <stdin>:2032:3
+  input         clock,	// <stdin>:2033:11
+                reset,	// <stdin>:2034:11
                 from_IDU_valid,	// src/main/scala/rv32e/ISU.scala:12:22
   input  [31:0] from_IDU_bits_imm,	// src/main/scala/rv32e/ISU.scala:12:22
                 from_IDU_bits_pc,	// src/main/scala/rv32e/ISU.scala:12:22
@@ -1270,26 +1270,26 @@ module ISU(	// <stdin>:2031:3
     .io_out_rdata1 (to_EXU_bits_rdata1),
     .io_out_rdata2 (to_EXU_bits_rdata2)
   );
-  assign from_IDU_ready = to_EXU_ready;	// <stdin>:2031:3
-  assign to_EXU_valid = from_IDU_valid;	// <stdin>:2031:3
-  assign to_EXU_bits_imm = from_IDU_bits_imm;	// <stdin>:2031:3
-  assign to_EXU_bits_pc = from_IDU_bits_pc;	// <stdin>:2031:3
-  assign to_EXU_bits_rd = from_IDU_bits_rd;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_reg_wen = from_IDU_bits_ctrl_sig_reg_wen;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_fu_op = from_IDU_bits_ctrl_sig_fu_op;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_mem_wen = from_IDU_bits_ctrl_sig_mem_wen;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_is_ebreak = from_IDU_bits_ctrl_sig_is_ebreak;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_not_impl = from_IDU_bits_ctrl_sig_not_impl;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_src1_op = from_IDU_bits_ctrl_sig_src1_op;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_src2_op = from_IDU_bits_ctrl_sig_src2_op;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_alu_op = from_IDU_bits_ctrl_sig_alu_op;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_lsu_op = from_IDU_bits_ctrl_sig_lsu_op;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_bru_op = from_IDU_bits_ctrl_sig_bru_op;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_csr_op = from_IDU_bits_ctrl_sig_csr_op;	// <stdin>:2031:3
-  assign to_EXU_bits_ctrl_sig_mdu_op = from_IDU_bits_ctrl_sig_mdu_op;	// <stdin>:2031:3
+  assign from_IDU_ready = to_EXU_ready;	// <stdin>:2032:3
+  assign to_EXU_valid = from_IDU_valid;	// <stdin>:2032:3
+  assign to_EXU_bits_imm = from_IDU_bits_imm;	// <stdin>:2032:3
+  assign to_EXU_bits_pc = from_IDU_bits_pc;	// <stdin>:2032:3
+  assign to_EXU_bits_rd = from_IDU_bits_rd;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_reg_wen = from_IDU_bits_ctrl_sig_reg_wen;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_fu_op = from_IDU_bits_ctrl_sig_fu_op;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_mem_wen = from_IDU_bits_ctrl_sig_mem_wen;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_is_ebreak = from_IDU_bits_ctrl_sig_is_ebreak;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_not_impl = from_IDU_bits_ctrl_sig_not_impl;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_src1_op = from_IDU_bits_ctrl_sig_src1_op;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_src2_op = from_IDU_bits_ctrl_sig_src2_op;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_alu_op = from_IDU_bits_ctrl_sig_alu_op;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_lsu_op = from_IDU_bits_ctrl_sig_lsu_op;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_bru_op = from_IDU_bits_ctrl_sig_bru_op;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_csr_op = from_IDU_bits_ctrl_sig_csr_op;	// <stdin>:2032:3
+  assign to_EXU_bits_ctrl_sig_mdu_op = from_IDU_bits_ctrl_sig_mdu_op;	// <stdin>:2032:3
 endmodule
 
-module Alu(	// <stdin>:2056:3
+module Alu(	// <stdin>:2058:3
   input  [31:0] io_in_src1,	// src/main/scala/rv32e/fu/alu.scala:22:16
                 io_in_src2,	// src/main/scala/rv32e/fu/alu.scala:22:16
   input  [3:0]  io_in_op,	// src/main/scala/rv32e/fu/alu.scala:22:16
@@ -1315,10 +1315,10 @@ module Alu(	// <stdin>:2056:3
      {io_in_src1 - io_in_src2},
      {io_in_src1 + io_in_src2},
      {32'h0}};	// src/main/scala/rv32e/fu/alu.scala:34:27, :36:42, :37:42, :38:42, :39:42, :40:42, :41:49, :42:42, :43:42, :44:42, :45:49
-  assign io_out_result = _GEN_0[io_in_op];	// <stdin>:2056:3, src/main/scala/rv32e/fu/alu.scala:34:27
+  assign io_out_result = _GEN_0[io_in_op];	// <stdin>:2058:3, src/main/scala/rv32e/fu/alu.scala:34:27
 endmodule
 
-module Mdu(	// <stdin>:2102:3
+module Mdu(	// <stdin>:2104:3
   input  [31:0] io_in_src1,	// src/main/scala/rv32e/fu/mdu.scala:22:16
                 io_in_src2,	// src/main/scala/rv32e/fu/mdu.scala:22:16
   input  [3:0]  io_in_op,	// src/main/scala/rv32e/fu/mdu.scala:22:16
@@ -1347,10 +1347,10 @@ module Mdu(	// <stdin>:2102:3
                           ? _io_out_result_T_8[63:32]
                           : io_in_op == 4'h2
                               ? _io_out_result_T_3[63:32]
-                              : io_in_op == 4'h1 ? _io_out_result_T_13[31:0] : 32'h0;	// <stdin>:2102:3, src/main/scala/rv32e/fu/mdu.scala:34:27, :36:44, :37:{52,71}, :38:{52,64}, :39:57, :40:51, :41:44, :42:51, :43:44
+                              : io_in_op == 4'h1 ? _io_out_result_T_13[31:0] : 32'h0;	// <stdin>:2104:3, src/main/scala/rv32e/fu/mdu.scala:34:27, :36:44, :37:{52,71}, :38:{52,64}, :39:57, :40:51, :41:44, :42:51, :43:44
 endmodule
 
-module Bru(	// <stdin>:2153:3
+module Bru(	// <stdin>:2155:3
   input  [31:0] io_in_src1,	// src/main/scala/rv32e/fu/bru.scala:23:16
                 io_in_src2,	// src/main/scala/rv32e/fu/bru.scala:23:16
   input  [3:0]  io_in_op,	// src/main/scala/rv32e/fu/bru.scala:23:16
@@ -1370,12 +1370,12 @@ module Bru(	// <stdin>:2153:3
                       ? io_in_src1 != io_in_src2
                       : io_in_op == 4'h3
                           ? io_in_src1 == io_in_src2
-                          : io_in_op == 4'h2 | io_in_op == 4'h1;	// <stdin>:2153:3, src/main/scala/rv32e/fu/bru.scala:32:44, :35:44, :36:44, :37:51, :38:51, :39:51, :40:51
+                          : io_in_op == 4'h2 | io_in_op == 4'h1;	// <stdin>:2155:3, src/main/scala/rv32e/fu/bru.scala:32:44, :35:44, :36:44, :37:51, :38:51, :39:51, :40:51
 endmodule
 
-module Lsu_simpleBus(	// <stdin>:2186:3
-  input         clock,	// <stdin>:2187:11
-                reset,	// <stdin>:2188:11
+module Lsu_simpleBus(	// <stdin>:2188:3
+  input         clock,	// <stdin>:2189:11
+                reset,	// <stdin>:2190:11
                 io_in_valid,	// src/main/scala/rv32e/fu/lsu.scala:429:16
                 io_in_mem_wen,	// src/main/scala/rv32e/fu/lsu.scala:429:16
   input  [31:0] io_in_addr,	// src/main/scala/rv32e/fu/lsu.scala:429:16
@@ -1414,10 +1414,10 @@ module Lsu_simpleBus(	// <stdin>:2186:3
   wire             _to_mem_req_bits_cmd_T_5 = state_lsu == 3'h3;	// src/main/scala/rv32e/fu/lsu.scala:437:28, :442:31, :550:62
   wire             _to_mem_req_valid_output =
     _to_mem_req_bits_cmd_T_5 | state_lsu == 3'h1;	// src/main/scala/rv32e/fu/lsu.scala:437:28, :444:31, :550:62
-  always @(posedge clock) begin	// <stdin>:2187:11
-    if (reset)	// <stdin>:2187:11
+  always @(posedge clock) begin	// <stdin>:2189:11
+    if (reset)	// <stdin>:2189:11
       state_lsu <= 3'h0;	// src/main/scala/rv32e/fu/lsu.scala:437:28
-    else begin	// <stdin>:2187:11
+    else begin	// <stdin>:2189:11
       automatic logic [7:0][2:0] _GEN_1;	// src/main/scala/rv32e/fu/lsu.scala:437:28, :438:24, :440:32, :451:23, :454:23, :459:23, :462:23, :465:23
       _GEN_1 =
         {{state_lsu},
@@ -1427,26 +1427,26 @@ module Lsu_simpleBus(	// <stdin>:2186:3
          {to_mem_req_ready & _to_mem_req_valid_output ? 3'h4 : 3'h3},
          {_to_mem_resp_ready_output & to_mem_resp_valid ? 3'h5 : 3'h2},
          {to_mem_req_ready & _to_mem_req_valid_output ? 3'h2 : 3'h1},
-         {io_in_valid ? {1'h0, io_in_mem_wen, 1'h1} : 3'h0}};	// <stdin>:2186:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/fu/lsu.scala:437:28, :438:24, :440:32, :441:38, :442:31, :444:31, :447:27, :451:{23,29}, :454:{23,29}, :459:{23,29}, :462:{23,29,47}, :465:23, :485:43, :547:61, :550:62
+         {io_in_valid ? {1'h0, io_in_mem_wen, 1'h1} : 3'h0}};	// <stdin>:2188:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/fu/lsu.scala:437:28, :438:24, :440:32, :441:38, :442:31, :444:31, :447:27, :451:{23,29}, :454:{23,29}, :459:{23,29}, :462:{23,29,47}, :465:23, :485:43, :547:61, :550:62
       state_lsu <= _GEN_1[state_lsu];	// src/main/scala/rv32e/fu/lsu.scala:437:28, :438:24, :440:32, :451:23, :454:23, :459:23, :462:23, :465:23
     end
   end // always @(posedge)
-  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2186:3
-    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2186:3
-      `FIRRTL_BEFORE_INITIAL	// <stdin>:2186:3
+  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2188:3
+    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2188:3
+      `FIRRTL_BEFORE_INITIAL	// <stdin>:2188:3
     `endif // FIRRTL_BEFORE_INITIAL
-    initial begin	// <stdin>:2186:3
-      automatic logic [31:0] _RANDOM[0:0];	// <stdin>:2186:3
-      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2186:3
-        `INIT_RANDOM_PROLOG_	// <stdin>:2186:3
+    initial begin	// <stdin>:2188:3
+      automatic logic [31:0] _RANDOM[0:0];	// <stdin>:2188:3
+      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2188:3
+        `INIT_RANDOM_PROLOG_	// <stdin>:2188:3
       `endif // INIT_RANDOM_PROLOG_
-      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2186:3
-        _RANDOM[/*Zero width*/ 1'b0] = `RANDOM;	// <stdin>:2186:3
-        state_lsu = _RANDOM[/*Zero width*/ 1'b0][2:0];	// <stdin>:2186:3, src/main/scala/rv32e/fu/lsu.scala:437:28
+      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2188:3
+        _RANDOM[/*Zero width*/ 1'b0] = `RANDOM;	// <stdin>:2188:3
+        state_lsu = _RANDOM[/*Zero width*/ 1'b0][2:0];	// <stdin>:2188:3, src/main/scala/rv32e/fu/lsu.scala:437:28
       `endif // RANDOMIZE_REG_INIT
     end // initial
-    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2186:3
-      `FIRRTL_AFTER_INITIAL	// <stdin>:2186:3
+    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2188:3
+      `FIRRTL_AFTER_INITIAL	// <stdin>:2188:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
   assign io_out_rdata =
@@ -1464,13 +1464,13 @@ module Lsu_simpleBus(	// <stdin>:2186:3
                        : 32'h0)
               : io_in_op == 4'h4
                   ? {24'h0, _GEN_0[io_in_addr[1:0]]}
-                  : io_in_op == 4'h1 ? _GEN[io_in_addr[1:0]] : 32'h0;	// <stdin>:2186:3, src/main/scala/rv32e/fu/lsu.scala:472:31, :485:43, :486:24, :487:42, :489:42, :492:44, :493:19, :494:19, :495:19, :496:19, :499:43, :500:{19,24,62}, :501:{19,24,62}, :504:44, :505:19, :506:19, :538:47
-  assign io_out_end = state_lsu == 3'h5;	// <stdin>:2186:3, src/main/scala/rv32e/fu/lsu.scala:437:28, :454:29, :537:50
-  assign to_mem_req_valid = _to_mem_req_valid_output;	// <stdin>:2186:3, src/main/scala/rv32e/fu/lsu.scala:550:62
-  assign to_mem_req_bits_addr = io_in_addr;	// <stdin>:2186:3
-  assign to_mem_req_bits_wdata = io_in_wdata;	// <stdin>:2186:3
+                  : io_in_op == 4'h1 ? _GEN[io_in_addr[1:0]] : 32'h0;	// <stdin>:2188:3, src/main/scala/rv32e/fu/lsu.scala:472:31, :485:43, :486:24, :487:42, :489:42, :492:44, :493:19, :494:19, :495:19, :496:19, :499:43, :500:{19,24,62}, :501:{19,24,62}, :504:44, :505:19, :506:19, :538:47
+  assign io_out_end = state_lsu == 3'h5;	// <stdin>:2188:3, src/main/scala/rv32e/fu/lsu.scala:437:28, :454:29, :537:50
+  assign to_mem_req_valid = _to_mem_req_valid_output;	// <stdin>:2188:3, src/main/scala/rv32e/fu/lsu.scala:550:62
+  assign to_mem_req_bits_addr = io_in_addr;	// <stdin>:2188:3
+  assign to_mem_req_bits_wdata = io_in_wdata;	// <stdin>:2188:3
   assign to_mem_req_bits_cmd =
-    {3'h0, _to_mem_req_bits_cmd_T_6 | _to_mem_req_bits_cmd_T_5};	// <stdin>:2186:3, src/main/scala/rv32e/fu/lsu.scala:437:28, :547:61, :550:62, :554:{30,58}
+    {3'h0, _to_mem_req_bits_cmd_T_6 | _to_mem_req_bits_cmd_T_5};	// <stdin>:2188:3, src/main/scala/rv32e/fu/lsu.scala:437:28, :547:61, :550:62, :554:{30,58}
   assign to_mem_req_bits_wmask =
     io_in_op == 4'h8
       ? 32'hFFFFFFFF
@@ -1483,13 +1483,13 @@ module Lsu_simpleBus(	// <stdin>:2186:3
                       _sh_wmask_T_2
                         ? 24'hFF0000
                         : {8'h0, io_in_addr[1:0] == 2'h1 ? 16'hFF00 : 16'hFF}})
-              : 32'h0;	// <stdin>:2186:3, src/main/scala/rv32e/fu/lsu.scala:472:31, :485:43, :499:43, :500:24, :516:47, :523:47, :528:17, :530:42
-  assign to_mem_resp_ready = _to_mem_resp_ready_output;	// <stdin>:2186:3, src/main/scala/rv32e/fu/lsu.scala:547:61
+              : 32'h0;	// <stdin>:2188:3, src/main/scala/rv32e/fu/lsu.scala:472:31, :485:43, :499:43, :500:24, :516:47, :523:47, :528:17, :530:42
+  assign to_mem_resp_ready = _to_mem_resp_ready_output;	// <stdin>:2188:3, src/main/scala/rv32e/fu/lsu.scala:547:61
 endmodule
 
-module Csr(	// <stdin>:2377:3
-  input         clock,	// <stdin>:2378:11
-                reset,	// <stdin>:2379:11
+module Csr(	// <stdin>:2379:3
+  input         clock,	// <stdin>:2380:11
+                reset,	// <stdin>:2381:11
   input  [2:0]  io_in_op,	// src/main/scala/rv32e/fu/csr.scala:27:14
   input  [31:0] io_in_cur_pc,	// src/main/scala/rv32e/fu/csr.scala:27:14
                 io_in_csr_id,	// src/main/scala/rv32e/fu/csr.scala:27:14
@@ -1508,19 +1508,19 @@ module Csr(	// <stdin>:2377:3
   reg  [31:0] reg_mstatus;	// src/main/scala/rv32e/fu/csr.scala:34:28
   reg  [31:0] reg_mtvec;	// src/main/scala/rv32e/fu/csr.scala:35:28
   wire        _io_out_r_csr_T_4 = io_in_csr_id == 32'h342;	// src/main/scala/rv32e/fu/csr.scala:47:58
-  wire        _io_out_csr_addr_T = io_in_op == 3'h1;	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:53:48
+  wire        _io_out_csr_addr_T = io_in_op == 3'h1;	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:53:48
   wire        _io_out_r_csr_T_2 = io_in_csr_id == 32'h341;	// src/main/scala/rv32e/fu/csr.scala:59:54
   wire        _io_out_r_csr_T_6 = io_in_csr_id == 32'h300;	// src/main/scala/rv32e/fu/csr.scala:71:60
   wire        _io_out_csr_addr_T_2 = io_in_op == 3'h2;	// src/main/scala/rv32e/fu/csr.scala:77:50
   wire        _io_out_r_csr_T = io_in_csr_id == 32'h305;	// src/main/scala/rv32e/fu/csr.scala:96:56
-  always @(posedge clock) begin	// <stdin>:2378:11
-    if (reset) begin	// <stdin>:2378:11
+  always @(posedge clock) begin	// <stdin>:2380:11
+    if (reset) begin	// <stdin>:2380:11
       reg_mepc <= 32'h0;	// src/main/scala/rv32e/fu/csr.scala:32:28
       reg_mcause <= 32'h0;	// src/main/scala/rv32e/fu/csr.scala:32:28, :33:28
       reg_mstatus <= 32'h0;	// src/main/scala/rv32e/fu/csr.scala:32:28, :34:28
       reg_mtvec <= 32'h0;	// src/main/scala/rv32e/fu/csr.scala:32:28, :35:28
     end
-    else if (io_in_op == 3'h4) begin	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:53:48
+    else if (io_in_op == 3'h4) begin	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:53:48
       reg_mepc <= {32{_io_out_r_csr_T_2}} & io_in_wdata | reg_mepc;	// src/main/scala/rv32e/fu/csr.scala:32:28, :59:54, :62:54
       reg_mcause <= {32{_io_out_r_csr_T_4}} & io_in_wdata | reg_mcause;	// src/main/scala/rv32e/fu/csr.scala:33:28, :47:58, :50:58
       reg_mstatus <= {32{_io_out_r_csr_T_6}} & io_in_wdata | reg_mstatus;	// src/main/scala/rv32e/fu/csr.scala:34:28, :71:60, :74:60
@@ -1559,53 +1559,53 @@ module Csr(	// <stdin>:2377:3
              reg_mstatus[3],
              reg_mstatus[6:4],
              1'h0,
-             reg_mstatus[2:0]};	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:34:28, :78:{35,48}, :80:48, :81:48, :82:48, :84:48
+             reg_mstatus[2:0]};	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:34:28, :78:{35,48}, :80:48, :81:48, :82:48, :84:48
       end
       if (_reg_mtvec_T & _io_out_r_csr_T)	// src/main/scala/rv32e/fu/csr.scala:53:48, :96:56, :102:46
         reg_mtvec <= io_in_wdata;	// src/main/scala/rv32e/fu/csr.scala:35:28
     end
   end // always @(posedge)
-  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2377:3
-    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2377:3
-      `FIRRTL_BEFORE_INITIAL	// <stdin>:2377:3
+  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2379:3
+    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2379:3
+      `FIRRTL_BEFORE_INITIAL	// <stdin>:2379:3
     `endif // FIRRTL_BEFORE_INITIAL
-    initial begin	// <stdin>:2377:3
-      automatic logic [31:0] _RANDOM[0:3];	// <stdin>:2377:3
-      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2377:3
-        `INIT_RANDOM_PROLOG_	// <stdin>:2377:3
+    initial begin	// <stdin>:2379:3
+      automatic logic [31:0] _RANDOM[0:3];	// <stdin>:2379:3
+      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2379:3
+        `INIT_RANDOM_PROLOG_	// <stdin>:2379:3
       `endif // INIT_RANDOM_PROLOG_
-      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2377:3
+      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2379:3
         for (logic [2:0] i = 3'h0; i < 3'h4; i += 3'h1) begin
-          _RANDOM[i[1:0]] = `RANDOM;	// <stdin>:2377:3
-        end	// <stdin>:2377:3
-        reg_mepc = _RANDOM[2'h0];	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:32:28
-        reg_mcause = _RANDOM[2'h1];	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:33:28
-        reg_mstatus = _RANDOM[2'h2];	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:34:28
-        reg_mtvec = _RANDOM[2'h3];	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:35:28
+          _RANDOM[i[1:0]] = `RANDOM;	// <stdin>:2379:3
+        end	// <stdin>:2379:3
+        reg_mepc = _RANDOM[2'h0];	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:32:28
+        reg_mcause = _RANDOM[2'h1];	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:33:28
+        reg_mstatus = _RANDOM[2'h2];	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:34:28
+        reg_mtvec = _RANDOM[2'h3];	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:35:28
       `endif // RANDOMIZE_REG_INIT
     end // initial
-    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2377:3
-      `FIRRTL_AFTER_INITIAL	// <stdin>:2377:3
+    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2379:3
+      `FIRRTL_AFTER_INITIAL	// <stdin>:2379:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
-  assign io_out_csr_br = _io_out_csr_addr_T_2 | _io_out_csr_addr_T;	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:53:48, :77:50, :107:48
+  assign io_out_csr_br = _io_out_csr_addr_T_2 | _io_out_csr_addr_T;	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:53:48, :77:50, :107:48
   assign io_out_csr_addr =
-    _io_out_csr_addr_T_2 ? reg_mepc : _io_out_csr_addr_T ? reg_mtvec : 32'h0;	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:32:28, :35:28, :53:48, :77:50, :112:47
+    _io_out_csr_addr_T_2 ? reg_mepc : _io_out_csr_addr_T ? reg_mtvec : 32'h0;	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:32:28, :35:28, :53:48, :77:50, :112:47
   assign io_out_r_csr =
     _io_out_r_csr_T_6
       ? reg_mstatus
       : _io_out_r_csr_T_4
           ? reg_mcause
-          : _io_out_r_csr_T_2 ? reg_mepc : _io_out_r_csr_T ? reg_mtvec : 32'h0;	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:32:28, :33:28, :34:28, :35:28, :47:58, :59:54, :71:60, :96:56, :118:50
-  assign io_out_difftest_mcause = reg_mcause;	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:33:28
-  assign io_out_difftest_mepc = reg_mepc;	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:32:28
-  assign io_out_difftest_mstatus = reg_mstatus;	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:34:28
-  assign io_out_difftest_mtvec = reg_mtvec;	// <stdin>:2377:3, src/main/scala/rv32e/fu/csr.scala:35:28
+          : _io_out_r_csr_T_2 ? reg_mepc : _io_out_r_csr_T ? reg_mtvec : 32'h0;	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:32:28, :33:28, :34:28, :35:28, :47:58, :59:54, :71:60, :96:56, :118:50
+  assign io_out_difftest_mcause = reg_mcause;	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:33:28
+  assign io_out_difftest_mepc = reg_mepc;	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:32:28
+  assign io_out_difftest_mstatus = reg_mstatus;	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:34:28
+  assign io_out_difftest_mtvec = reg_mtvec;	// <stdin>:2379:3, src/main/scala/rv32e/fu/csr.scala:35:28
 endmodule
 
 // external module EbreakBB
 
-module ebreak_moudle(	// <stdin>:2512:3
+module ebreak_moudle(	// <stdin>:2514:3
   input is_ebreak	// src/main/scala/rv32e/fu/ebreak.scala:19:23
 );
 
@@ -1616,7 +1616,7 @@ endmodule
 
 // external module NotImplBB
 
-module not_impl_moudle(	// <stdin>:2524:3
+module not_impl_moudle(	// <stdin>:2526:3
   input not_impl	// src/main/scala/rv32e/fu/not_impl.scala:19:22
 );
 
@@ -1625,9 +1625,9 @@ module not_impl_moudle(	// <stdin>:2524:3
   );
 endmodule
 
-module EXU(	// <stdin>:2532:3
-  input         clock,	// <stdin>:2533:11
-                reset,	// <stdin>:2534:11
+module EXU(	// <stdin>:2534:3
+  input         clock,	// <stdin>:2535:11
+                reset,	// <stdin>:2536:11
                 from_ISU_valid,	// src/main/scala/rv32e/EXU.scala:16:22
   input  [31:0] from_ISU_bits_imm,	// src/main/scala/rv32e/EXU.scala:16:22
                 from_ISU_bits_pc,	// src/main/scala/rv32e/EXU.scala:16:22
@@ -1680,10 +1680,10 @@ module EXU(	// <stdin>:2532:3
   wire [31:0] _Alu_i_io_out_result;	// src/main/scala/rv32e/EXU.scala:22:35
   reg  [1:0]  state;	// src/main/scala/rv32e/EXU.scala:32:24
   wire        _from_ISU_ready_output = state == 2'h0;	// src/main/scala/rv32e/EXU.scala:32:24, :33:20
-  always @(posedge clock) begin	// <stdin>:2533:11
-    if (reset)	// <stdin>:2533:11
+  always @(posedge clock) begin	// <stdin>:2535:11
+    if (reset)	// <stdin>:2535:11
       state <= 2'h0;	// src/main/scala/rv32e/EXU.scala:32:24
-    else begin	// <stdin>:2533:11
+    else begin	// <stdin>:2535:11
       automatic logic [3:0][1:0] _GEN;	// src/main/scala/rv32e/EXU.scala:32:24, :33:20, :35:34, :46:19, :50:19
       _GEN =
         {{state},
@@ -1695,22 +1695,22 @@ module EXU(	// <stdin>:2532:3
       state <= _GEN[state];	// src/main/scala/rv32e/EXU.scala:32:24, :33:20, :35:34, :46:19, :50:19
     end
   end // always @(posedge)
-  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2532:3
-    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2532:3
-      `FIRRTL_BEFORE_INITIAL	// <stdin>:2532:3
+  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2534:3
+    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2534:3
+      `FIRRTL_BEFORE_INITIAL	// <stdin>:2534:3
     `endif // FIRRTL_BEFORE_INITIAL
-    initial begin	// <stdin>:2532:3
-      automatic logic [31:0] _RANDOM[0:0];	// <stdin>:2532:3
-      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2532:3
-        `INIT_RANDOM_PROLOG_	// <stdin>:2532:3
+    initial begin	// <stdin>:2534:3
+      automatic logic [31:0] _RANDOM[0:0];	// <stdin>:2534:3
+      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2534:3
+        `INIT_RANDOM_PROLOG_	// <stdin>:2534:3
       `endif // INIT_RANDOM_PROLOG_
-      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2532:3
-        _RANDOM[/*Zero width*/ 1'b0] = `RANDOM;	// <stdin>:2532:3
-        state = _RANDOM[/*Zero width*/ 1'b0][1:0];	// <stdin>:2532:3, src/main/scala/rv32e/EXU.scala:32:24
+      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2534:3
+        _RANDOM[/*Zero width*/ 1'b0] = `RANDOM;	// <stdin>:2534:3
+        state = _RANDOM[/*Zero width*/ 1'b0][1:0];	// <stdin>:2534:3, src/main/scala/rv32e/EXU.scala:32:24
       `endif // RANDOMIZE_REG_INIT
     end // initial
-    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2532:3
-      `FIRRTL_AFTER_INITIAL	// <stdin>:2532:3
+    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2534:3
+      `FIRRTL_AFTER_INITIAL	// <stdin>:2534:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
   Alu Alu_i (	// src/main/scala/rv32e/EXU.scala:22:35
@@ -1779,17 +1779,17 @@ module EXU(	// <stdin>:2532:3
   not_impl_moudle not_impl_moudle_i (	// src/main/scala/rv32e/EXU.scala:28:35
     .not_impl (from_ISU_bits_ctrl_sig_not_impl)
   );
-  assign from_ISU_ready = _from_ISU_ready_output;	// <stdin>:2532:3, src/main/scala/rv32e/EXU.scala:33:20
-  assign to_WBU_valid = state == 2'h2;	// <stdin>:2532:3, src/main/scala/rv32e/EXU.scala:32:24, :39:27, :54:48
-  assign to_WBU_bits_alu_result = _Alu_i_io_out_result;	// <stdin>:2532:3, src/main/scala/rv32e/EXU.scala:22:35
-  assign to_WBU_bits_pc = from_ISU_bits_pc;	// <stdin>:2532:3
-  assign to_WBU_bits_reg_wen = from_ISU_bits_ctrl_sig_reg_wen;	// <stdin>:2532:3
-  assign to_WBU_bits_rd = from_ISU_bits_rd;	// <stdin>:2532:3
-  assign to_WBU_bits_fu_op = from_ISU_bits_ctrl_sig_fu_op;	// <stdin>:2532:3
-  assign to_IFU_bits_bru_addr = _Alu_i_io_out_result;	// <stdin>:2532:3, src/main/scala/rv32e/EXU.scala:22:35
+  assign from_ISU_ready = _from_ISU_ready_output;	// <stdin>:2534:3, src/main/scala/rv32e/EXU.scala:33:20
+  assign to_WBU_valid = state == 2'h2;	// <stdin>:2534:3, src/main/scala/rv32e/EXU.scala:32:24, :39:27, :54:48
+  assign to_WBU_bits_alu_result = _Alu_i_io_out_result;	// <stdin>:2534:3, src/main/scala/rv32e/EXU.scala:22:35
+  assign to_WBU_bits_pc = from_ISU_bits_pc;	// <stdin>:2534:3
+  assign to_WBU_bits_reg_wen = from_ISU_bits_ctrl_sig_reg_wen;	// <stdin>:2534:3
+  assign to_WBU_bits_rd = from_ISU_bits_rd;	// <stdin>:2534:3
+  assign to_WBU_bits_fu_op = from_ISU_bits_ctrl_sig_fu_op;	// <stdin>:2534:3
+  assign to_IFU_bits_bru_addr = _Alu_i_io_out_result;	// <stdin>:2534:3, src/main/scala/rv32e/EXU.scala:22:35
 endmodule
 
-module WBU(	// <stdin>:2641:3
+module WBU(	// <stdin>:2644:3
   input         from_EXU_valid,	// src/main/scala/rv32e/WBU.scala:11:22
   input  [31:0] from_EXU_bits_alu_result,	// src/main/scala/rv32e/WBU.scala:11:22
                 from_EXU_bits_mdu_result,	// src/main/scala/rv32e/WBU.scala:11:22
@@ -1814,15 +1814,15 @@ module WBU(	// <stdin>:2641:3
      {from_EXU_bits_mdu_result},
      {from_EXU_bits_alu_result},
      {32'h0}};	// src/main/scala/rv32e/WBU.scala:22:63, :25:47
-  assign to_ISU_bits_reg_wen = from_EXU_valid & from_EXU_bits_reg_wen;	// <stdin>:2641:3, src/main/scala/rv32e/WBU.scala:19:31
-  assign to_ISU_bits_wdata = _GEN[from_EXU_bits_fu_op];	// <stdin>:2641:3, src/main/scala/rv32e/WBU.scala:22:63
-  assign to_ISU_bits_rd = from_EXU_bits_rd;	// <stdin>:2641:3
-  assign to_IFU_valid = from_EXU_valid;	// <stdin>:2641:3
+  assign to_ISU_bits_reg_wen = from_EXU_valid & from_EXU_bits_reg_wen;	// <stdin>:2644:3, src/main/scala/rv32e/WBU.scala:19:31
+  assign to_ISU_bits_wdata = _GEN[from_EXU_bits_fu_op];	// <stdin>:2644:3, src/main/scala/rv32e/WBU.scala:22:63
+  assign to_ISU_bits_rd = from_EXU_bits_rd;	// <stdin>:2644:3
+  assign to_IFU_valid = from_EXU_valid;	// <stdin>:2644:3
 endmodule
 
-module IFU_simpleBus(	// <stdin>:2669:3
-  input         clock,	// <stdin>:2670:11
-                reset,	// <stdin>:2671:11
+module IFU_simpleBus(	// <stdin>:2672:3
+  input         clock,	// <stdin>:2673:11
+                reset,	// <stdin>:2674:11
                 to_IDU_ready,	// src/main/scala/rv32e/IFU.scala:189:24
                 from_EXU_bits_bru_ctrl_br,	// src/main/scala/rv32e/IFU.scala:190:24
   input  [31:0] from_EXU_bits_bru_addr,	// src/main/scala/rv32e/IFU.scala:190:24
@@ -1841,15 +1841,15 @@ module IFU_simpleBus(	// <stdin>:2669:3
 
   reg  [31:0] reg_PC;	// src/main/scala/rv32e/IFU.scala:194:26
   reg  [1:0]  state_ifu;	// src/main/scala/rv32e/IFU.scala:210:28
-  wire        _to_mem_req_valid_output = state_ifu == 2'h0;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:210:28, :211:44
-  wire        _to_mem_resp_ready_T_1 = state_ifu == 2'h1;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:210:28, :211:44
-  wire        _to_IDU_valid_output = state_ifu == 2'h2;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:210:28, :211:44
-  always @(posedge clock) begin	// <stdin>:2670:11
-    if (reset) begin	// <stdin>:2670:11
+  wire        _to_mem_req_valid_output = state_ifu == 2'h0;	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:210:28, :211:44
+  wire        _to_mem_resp_ready_T_1 = state_ifu == 2'h1;	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:210:28, :211:44
+  wire        _to_IDU_valid_output = state_ifu == 2'h2;	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:210:28, :211:44
+  always @(posedge clock) begin	// <stdin>:2673:11
+    if (reset) begin	// <stdin>:2673:11
       reg_PC <= 32'h80000000;	// src/main/scala/rv32e/IFU.scala:194:26
-      state_ifu <= 2'h0;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:210:28
+      state_ifu <= 2'h0;	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:210:28
     end
-    else begin	// <stdin>:2670:11
+    else begin	// <stdin>:2673:11
       automatic logic _state_ifu_T_4;	// src/main/scala/chisel3/util/Decoupled.scala:52:35
       _state_ifu_T_4 = _to_IDU_valid_output & from_WBU_valid;	// src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/IFU.scala:211:44
       if (_state_ifu_T_4) begin	// src/main/scala/chisel3/util/Decoupled.scala:52:35
@@ -1861,44 +1861,44 @@ module IFU_simpleBus(	// <stdin>:2669:3
           reg_PC <= reg_PC + 32'h4;	// src/main/scala/rv32e/IFU.scala:194:26, :202:27
       end
       if (_to_IDU_valid_output)	// src/main/scala/rv32e/IFU.scala:211:44
-        state_ifu <= {~_state_ifu_T_4, 1'h0};	// <stdin>:2669:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/IFU.scala:210:28, :214:28
+        state_ifu <= {~_state_ifu_T_4, 1'h0};	// <stdin>:2672:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/IFU.scala:210:28, :214:28
       else if (_to_mem_resp_ready_T_1) begin	// src/main/scala/rv32e/IFU.scala:211:44
         if (_to_mem_resp_ready_T_1 & to_mem_resp_valid)	// src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/IFU.scala:211:44
-          state_ifu <= 2'h2;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:210:28
+          state_ifu <= 2'h2;	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:210:28
         else	// src/main/scala/chisel3/util/Decoupled.scala:52:35
-          state_ifu <= 2'h1;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:210:28
+          state_ifu <= 2'h1;	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:210:28
       end
       else	// src/main/scala/rv32e/IFU.scala:211:44
-        state_ifu <= {1'h0, _to_mem_req_valid_output & to_mem_req_ready};	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:210:28, :211:44, :212:28
+        state_ifu <= {1'h0, _to_mem_req_valid_output & to_mem_req_ready};	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:210:28, :211:44, :212:28
     end
   end // always @(posedge)
-  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2669:3
-    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2669:3
-      `FIRRTL_BEFORE_INITIAL	// <stdin>:2669:3
+  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2672:3
+    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2672:3
+      `FIRRTL_BEFORE_INITIAL	// <stdin>:2672:3
     `endif // FIRRTL_BEFORE_INITIAL
-    initial begin	// <stdin>:2669:3
-      automatic logic [31:0] _RANDOM[0:1];	// <stdin>:2669:3
-      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2669:3
-        `INIT_RANDOM_PROLOG_	// <stdin>:2669:3
+    initial begin	// <stdin>:2672:3
+      automatic logic [31:0] _RANDOM[0:1];	// <stdin>:2672:3
+      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2672:3
+        `INIT_RANDOM_PROLOG_	// <stdin>:2672:3
       `endif // INIT_RANDOM_PROLOG_
-      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2669:3
+      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2672:3
         for (logic [1:0] i = 2'h0; i < 2'h2; i += 2'h1) begin
-          _RANDOM[i[0]] = `RANDOM;	// <stdin>:2669:3
-        end	// <stdin>:2669:3
-        reg_PC = _RANDOM[1'h0];	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:194:26
-        state_ifu = _RANDOM[1'h1][1:0];	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:210:28
+          _RANDOM[i[0]] = `RANDOM;	// <stdin>:2672:3
+        end	// <stdin>:2672:3
+        reg_PC = _RANDOM[1'h0];	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:194:26
+        state_ifu = _RANDOM[1'h1][1:0];	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:210:28
       `endif // RANDOMIZE_REG_INIT
     end // initial
-    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2669:3
-      `FIRRTL_AFTER_INITIAL	// <stdin>:2669:3
+    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2672:3
+      `FIRRTL_AFTER_INITIAL	// <stdin>:2672:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
-  assign to_IDU_valid = _to_IDU_valid_output;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:211:44
+  assign to_IDU_valid = _to_IDU_valid_output;	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:211:44
   assign to_IDU_bits_inst =
-    to_IDU_ready & _to_IDU_valid_output ? to_mem_resp_bits_rdata : 32'h0;	// <stdin>:2669:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/IFU.scala:211:44, :221:27, :228:28
-  assign to_IDU_bits_pc = reg_PC;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:194:26
-  assign to_mem_req_valid = _to_mem_req_valid_output;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:211:44
-  assign to_mem_req_bits_addr = reg_PC;	// <stdin>:2669:3, src/main/scala/rv32e/IFU.scala:194:26
+    to_IDU_ready & _to_IDU_valid_output ? to_mem_resp_bits_rdata : 32'h0;	// <stdin>:2672:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/IFU.scala:211:44, :221:27, :228:28
+  assign to_IDU_bits_pc = reg_PC;	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:194:26
+  assign to_mem_req_valid = _to_mem_req_valid_output;	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:211:44
+  assign to_mem_req_bits_addr = reg_PC;	// <stdin>:2672:3, src/main/scala/rv32e/IFU.scala:194:26
 endmodule
 
 // VCS coverage exclude_file
@@ -1947,9 +1947,9 @@ module dataArray_128x32(	// src/main/scala/rv32e/cache/icache.scala:226:33
   assign R0_data = _R0_en_d0 ? Memory[_R0_addr_d0] : 32'bx;	// src/main/scala/rv32e/cache/icache.scala:226:33
 endmodule
 
-module Icache_SimpleBus(	// <stdin>:2731:3
-  input         clock,	// <stdin>:2732:11
-                reset,	// <stdin>:2733:11
+module Icache_SimpleBus(	// <stdin>:2734:3
+  input         clock,	// <stdin>:2735:11
+                reset,	// <stdin>:2736:11
                 from_ifu_req_valid,	// src/main/scala/rv32e/cache/icache.scala:213:22
   input  [31:0] from_ifu_req_bits_addr,	// src/main/scala/rv32e/cache/icache.scala:213:22
   input         to_sram_ar_ready,	// src/main/scala/rv32e/cache/icache.scala:214:22
@@ -2113,10 +2113,10 @@ module Icache_SimpleBus(	// <stdin>:2731:3
     state_cache == 3'h3 & _to_sram_r_ready_output & to_sram_r_valid;	// src/main/scala/rv32e/cache/icache.scala:242:24, :245:30, :246:26, :259:31, :266:{25,31}, :297:61
   wire              _to_sram_ar_valid_output = state_cache == 3'h2;	// src/main/scala/rv32e/cache/icache.scala:245:30, :249:35, :292:61
   assign _to_sram_r_ready_output = state_cache == 3'h3;	// src/main/scala/rv32e/cache/icache.scala:245:30, :259:31, :297:61
-  always @(posedge clock) begin	// <stdin>:2732:11
-    if (reset) begin	// <stdin>:2732:11
-      replace_set <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:216:30
-      random_num <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:222:29
+  always @(posedge clock) begin	// <stdin>:2735:11
+    if (reset) begin	// <stdin>:2735:11
+      replace_set <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:216:30
+      random_num <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:222:29
       tagArray_0_0 <= 24'h0;	// src/main/scala/rv32e/cache/icache.scala:227:{29,63}
       tagArray_0_1 <= 24'h0;	// src/main/scala/rv32e/cache/icache.scala:227:{29,63}
       tagArray_0_2 <= 24'h0;	// src/main/scala/rv32e/cache/icache.scala:227:{29,63}
@@ -2149,42 +2149,42 @@ module Icache_SimpleBus(	// <stdin>:2731:3
       tagArray_1_13 <= 24'h0;	// src/main/scala/rv32e/cache/icache.scala:227:{29,63}
       tagArray_1_14 <= 24'h0;	// src/main/scala/rv32e/cache/icache.scala:227:{29,63}
       tagArray_1_15 <= 24'h0;	// src/main/scala/rv32e/cache/icache.scala:227:{29,63}
-      validArray_0_0 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_1 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_2 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_3 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_4 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_5 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_6 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_7 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_8 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_9 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_10 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_11 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_12 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_13 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_14 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_0_15 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_0 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_1 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_2 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_3 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_4 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_5 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_6 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_7 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_8 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_9 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_10 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_11 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_12 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_13 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_14 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-      validArray_1_15 <= 1'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_0 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_1 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_2 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_3 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_4 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_5 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_6 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_7 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_8 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_9 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_10 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_11 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_12 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_13 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_14 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_0_15 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_0 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_1 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_2 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_3 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_4 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_5 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_6 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_7 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_8 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_9 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_10 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_11 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_12 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_13 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_14 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+      validArray_1_15 <= 1'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
       off <= 2'h0;	// src/main/scala/rv32e/cache/icache.scala:242:24
       state_cache <= 3'h0;	// src/main/scala/rv32e/cache/icache.scala:245:30
     end
-    else begin	// <stdin>:2732:11
+    else begin	// <stdin>:2735:11
       automatic logic            _GEN_5;	// src/main/scala/rv32e/cache/icache.scala:246:26
       automatic logic            _GEN_6;	// src/main/scala/rv32e/cache/icache.scala:216:30, :246:26
       automatic logic            _GEN_7 = from_ifu_req_bits_addr[7:4] == 4'h0;	// src/main/scala/rv32e/cache/icache.scala:218:45, :282:50
@@ -2390,96 +2390,96 @@ module Icache_SimpleBus(	// <stdin>:2731:3
       state_cache <= _GEN_54[state_cache];	// src/main/scala/rv32e/cache/icache.scala:245:30, :246:26, :248:38, :255:25, :259:25, :265:25, :271:25
     end
   end // always @(posedge)
-  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2731:3
-    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2731:3
-      `FIRRTL_BEFORE_INITIAL	// <stdin>:2731:3
+  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2734:3
+    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2734:3
+      `FIRRTL_BEFORE_INITIAL	// <stdin>:2734:3
     `endif // FIRRTL_BEFORE_INITIAL
-    initial begin	// <stdin>:2731:3
-      automatic logic [31:0] _RANDOM[0:25];	// <stdin>:2731:3
-      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2731:3
-        `INIT_RANDOM_PROLOG_	// <stdin>:2731:3
+    initial begin	// <stdin>:2734:3
+      automatic logic [31:0] _RANDOM[0:25];	// <stdin>:2734:3
+      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2734:3
+        `INIT_RANDOM_PROLOG_	// <stdin>:2734:3
       `endif // INIT_RANDOM_PROLOG_
-      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2731:3
+      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2734:3
         for (logic [4:0] i = 5'h0; i < 5'h1A; i += 5'h1) begin
-          _RANDOM[i] = `RANDOM;	// <stdin>:2731:3
-        end	// <stdin>:2731:3
-        replace_set = _RANDOM[5'h0][0];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:216:30
-        random_num = _RANDOM[5'h0][1];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:216:30, :222:29
-        tagArray_0_0 = _RANDOM[5'h0][25:2];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:216:30, :227:29
-        tagArray_0_1 = {_RANDOM[5'h0][31:26], _RANDOM[5'h1][17:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:216:30, :227:29
-        tagArray_0_2 = {_RANDOM[5'h1][31:18], _RANDOM[5'h2][9:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_3 = {_RANDOM[5'h2][31:10], _RANDOM[5'h3][1:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_4 = _RANDOM[5'h3][25:2];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_5 = {_RANDOM[5'h3][31:26], _RANDOM[5'h4][17:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_6 = {_RANDOM[5'h4][31:18], _RANDOM[5'h5][9:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_7 = {_RANDOM[5'h5][31:10], _RANDOM[5'h6][1:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_8 = _RANDOM[5'h6][25:2];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_9 = {_RANDOM[5'h6][31:26], _RANDOM[5'h7][17:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_10 = {_RANDOM[5'h7][31:18], _RANDOM[5'h8][9:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_11 = {_RANDOM[5'h8][31:10], _RANDOM[5'h9][1:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_12 = _RANDOM[5'h9][25:2];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_13 = {_RANDOM[5'h9][31:26], _RANDOM[5'hA][17:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_14 = {_RANDOM[5'hA][31:18], _RANDOM[5'hB][9:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_0_15 = {_RANDOM[5'hB][31:10], _RANDOM[5'hC][1:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_0 = _RANDOM[5'hC][25:2];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_1 = {_RANDOM[5'hC][31:26], _RANDOM[5'hD][17:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_2 = {_RANDOM[5'hD][31:18], _RANDOM[5'hE][9:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_3 = {_RANDOM[5'hE][31:10], _RANDOM[5'hF][1:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_4 = _RANDOM[5'hF][25:2];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_5 = {_RANDOM[5'hF][31:26], _RANDOM[5'h10][17:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_6 = {_RANDOM[5'h10][31:18], _RANDOM[5'h11][9:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_7 = {_RANDOM[5'h11][31:10], _RANDOM[5'h12][1:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_8 = _RANDOM[5'h12][25:2];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_9 = {_RANDOM[5'h12][31:26], _RANDOM[5'h13][17:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_10 = {_RANDOM[5'h13][31:18], _RANDOM[5'h14][9:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_11 = {_RANDOM[5'h14][31:10], _RANDOM[5'h15][1:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_12 = _RANDOM[5'h15][25:2];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_13 = {_RANDOM[5'h15][31:26], _RANDOM[5'h16][17:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_14 = {_RANDOM[5'h16][31:18], _RANDOM[5'h17][9:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        tagArray_1_15 = {_RANDOM[5'h17][31:10], _RANDOM[5'h18][1:0]};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29
-        validArray_0_0 = _RANDOM[5'h18][2];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_1 = _RANDOM[5'h18][3];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_2 = _RANDOM[5'h18][4];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_3 = _RANDOM[5'h18][5];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_4 = _RANDOM[5'h18][6];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_5 = _RANDOM[5'h18][7];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_6 = _RANDOM[5'h18][8];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_7 = _RANDOM[5'h18][9];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_8 = _RANDOM[5'h18][10];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_9 = _RANDOM[5'h18][11];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_10 = _RANDOM[5'h18][12];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_11 = _RANDOM[5'h18][13];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_12 = _RANDOM[5'h18][14];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_13 = _RANDOM[5'h18][15];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_14 = _RANDOM[5'h18][16];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_0_15 = _RANDOM[5'h18][17];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_0 = _RANDOM[5'h18][18];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_1 = _RANDOM[5'h18][19];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_2 = _RANDOM[5'h18][20];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_3 = _RANDOM[5'h18][21];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_4 = _RANDOM[5'h18][22];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_5 = _RANDOM[5'h18][23];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_6 = _RANDOM[5'h18][24];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_7 = _RANDOM[5'h18][25];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_8 = _RANDOM[5'h18][26];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_9 = _RANDOM[5'h18][27];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_10 = _RANDOM[5'h18][28];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_11 = _RANDOM[5'h18][29];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_12 = _RANDOM[5'h18][30];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_13 = _RANDOM[5'h18][31];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
-        validArray_1_14 = _RANDOM[5'h19][0];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-        validArray_1_15 = _RANDOM[5'h19][1];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29
-        off = _RANDOM[5'h19][3:2];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29, :242:24
-        state_cache = _RANDOM[5'h19][6:4];	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:228:29, :245:30
+          _RANDOM[i] = `RANDOM;	// <stdin>:2734:3
+        end	// <stdin>:2734:3
+        replace_set = _RANDOM[5'h0][0];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:216:30
+        random_num = _RANDOM[5'h0][1];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:216:30, :222:29
+        tagArray_0_0 = _RANDOM[5'h0][25:2];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:216:30, :227:29
+        tagArray_0_1 = {_RANDOM[5'h0][31:26], _RANDOM[5'h1][17:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:216:30, :227:29
+        tagArray_0_2 = {_RANDOM[5'h1][31:18], _RANDOM[5'h2][9:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_3 = {_RANDOM[5'h2][31:10], _RANDOM[5'h3][1:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_4 = _RANDOM[5'h3][25:2];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_5 = {_RANDOM[5'h3][31:26], _RANDOM[5'h4][17:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_6 = {_RANDOM[5'h4][31:18], _RANDOM[5'h5][9:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_7 = {_RANDOM[5'h5][31:10], _RANDOM[5'h6][1:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_8 = _RANDOM[5'h6][25:2];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_9 = {_RANDOM[5'h6][31:26], _RANDOM[5'h7][17:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_10 = {_RANDOM[5'h7][31:18], _RANDOM[5'h8][9:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_11 = {_RANDOM[5'h8][31:10], _RANDOM[5'h9][1:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_12 = _RANDOM[5'h9][25:2];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_13 = {_RANDOM[5'h9][31:26], _RANDOM[5'hA][17:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_14 = {_RANDOM[5'hA][31:18], _RANDOM[5'hB][9:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_0_15 = {_RANDOM[5'hB][31:10], _RANDOM[5'hC][1:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_0 = _RANDOM[5'hC][25:2];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_1 = {_RANDOM[5'hC][31:26], _RANDOM[5'hD][17:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_2 = {_RANDOM[5'hD][31:18], _RANDOM[5'hE][9:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_3 = {_RANDOM[5'hE][31:10], _RANDOM[5'hF][1:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_4 = _RANDOM[5'hF][25:2];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_5 = {_RANDOM[5'hF][31:26], _RANDOM[5'h10][17:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_6 = {_RANDOM[5'h10][31:18], _RANDOM[5'h11][9:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_7 = {_RANDOM[5'h11][31:10], _RANDOM[5'h12][1:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_8 = _RANDOM[5'h12][25:2];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_9 = {_RANDOM[5'h12][31:26], _RANDOM[5'h13][17:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_10 = {_RANDOM[5'h13][31:18], _RANDOM[5'h14][9:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_11 = {_RANDOM[5'h14][31:10], _RANDOM[5'h15][1:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_12 = _RANDOM[5'h15][25:2];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_13 = {_RANDOM[5'h15][31:26], _RANDOM[5'h16][17:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_14 = {_RANDOM[5'h16][31:18], _RANDOM[5'h17][9:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        tagArray_1_15 = {_RANDOM[5'h17][31:10], _RANDOM[5'h18][1:0]};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29
+        validArray_0_0 = _RANDOM[5'h18][2];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_1 = _RANDOM[5'h18][3];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_2 = _RANDOM[5'h18][4];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_3 = _RANDOM[5'h18][5];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_4 = _RANDOM[5'h18][6];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_5 = _RANDOM[5'h18][7];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_6 = _RANDOM[5'h18][8];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_7 = _RANDOM[5'h18][9];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_8 = _RANDOM[5'h18][10];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_9 = _RANDOM[5'h18][11];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_10 = _RANDOM[5'h18][12];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_11 = _RANDOM[5'h18][13];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_12 = _RANDOM[5'h18][14];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_13 = _RANDOM[5'h18][15];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_14 = _RANDOM[5'h18][16];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_0_15 = _RANDOM[5'h18][17];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_0 = _RANDOM[5'h18][18];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_1 = _RANDOM[5'h18][19];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_2 = _RANDOM[5'h18][20];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_3 = _RANDOM[5'h18][21];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_4 = _RANDOM[5'h18][22];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_5 = _RANDOM[5'h18][23];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_6 = _RANDOM[5'h18][24];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_7 = _RANDOM[5'h18][25];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_8 = _RANDOM[5'h18][26];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_9 = _RANDOM[5'h18][27];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_10 = _RANDOM[5'h18][28];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_11 = _RANDOM[5'h18][29];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_12 = _RANDOM[5'h18][30];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_13 = _RANDOM[5'h18][31];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:227:29, :228:29
+        validArray_1_14 = _RANDOM[5'h19][0];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+        validArray_1_15 = _RANDOM[5'h19][1];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29
+        off = _RANDOM[5'h19][3:2];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29, :242:24
+        state_cache = _RANDOM[5'h19][6:4];	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:228:29, :245:30
       `endif // RANDOMIZE_REG_INIT
     end // initial
-    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2731:3
-      `FIRRTL_AFTER_INITIAL	// <stdin>:2731:3
+    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2734:3
+      `FIRRTL_AFTER_INITIAL	// <stdin>:2734:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
   dataArray_128x32 dataArray_ext (	// src/main/scala/rv32e/cache/icache.scala:226:33
     .R0_addr ({_GEN_2 == from_ifu_req_bits_addr[31:8], from_ifu_req_bits_addr[7:2]}),	// src/main/scala/rv32e/cache/icache.scala:219:45, :231:14, :238:36, :240:27
-    .R0_en   (1'h1),	// <stdin>:2731:3
+    .R0_en   (1'h1),	// <stdin>:2734:3
     .R0_clk  (clock),
     .W0_addr ({replace_set, from_ifu_req_bits_addr[7:4], off}),	// src/main/scala/rv32e/cache/icache.scala:216:30, :218:45, :242:24, :278:31
     .W0_en   (_GEN_4),	// src/main/scala/rv32e/cache/icache.scala:242:24, :246:26, :266:{25,31}
@@ -2487,21 +2487,21 @@ module Icache_SimpleBus(	// <stdin>:2731:3
     .W0_data (to_sram_r_bits_data),
     .R0_data (_dataArray_ext_R0_data)
   );
-  assign from_ifu_req_ready = _from_ifu_req_ready_output;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:246:26
-  assign from_ifu_resp_valid = state_cache == 3'h1;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:245:30, :249:35, :288:64
-  assign from_ifu_resp_bits_rdata = hit ? _dataArray_ext_R0_data : 32'h13;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:226:33, :233:33, :289:36
-  assign to_sram_ar_valid = _to_sram_ar_valid_output;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:292:61
+  assign from_ifu_req_ready = _from_ifu_req_ready_output;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:246:26
+  assign from_ifu_resp_valid = state_cache == 3'h1;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:245:30, :249:35, :288:64
+  assign from_ifu_resp_bits_rdata = hit ? _dataArray_ext_R0_data : 32'h13;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:226:33, :233:33, :289:36
+  assign to_sram_ar_valid = _to_sram_ar_valid_output;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:292:61
   assign to_sram_ar_bits_addr =
-    _to_sram_ar_valid_output ? {from_ifu_req_bits_addr[31:4], 4'h0} : 32'h0;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:265:31, :282:50, :292:61, :293:{57,95,108}
-  assign to_sram_ar_bits_len = {6'h0, {2{_to_sram_ar_valid_output}}};	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:292:61, :295:{27,57}
-  assign to_sram_r_ready = _to_sram_r_ready_output;	// <stdin>:2731:3, src/main/scala/rv32e/cache/icache.scala:297:61
+    _to_sram_ar_valid_output ? {from_ifu_req_bits_addr[31:4], 4'h0} : 32'h0;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:265:31, :282:50, :292:61, :293:{57,95,108}
+  assign to_sram_ar_bits_len = {6'h0, {2{_to_sram_ar_valid_output}}};	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:292:61, :295:{27,57}
+  assign to_sram_r_ready = _to_sram_r_ready_output;	// <stdin>:2734:3, src/main/scala/rv32e/cache/icache.scala:297:61
 endmodule
 
 // external module RamBB
 
-module sram_axi_rw(	// <stdin>:2956:3, :3559:3
-  input         clock,	// <stdin>:2957:11, :3560:11
-                reset,	// <stdin>:2958:11, :3561:11
+module sram_axi_rw(	// <stdin>:2959:3, :3562:3
+  input         clock,	// <stdin>:2960:11, :3563:11
+                reset,	// <stdin>:2961:11, :3564:11
                 axi_ar_valid,	// src/main/scala/rv32e/device/sram_Axi.scala:86:17
   input  [31:0] axi_ar_bits_addr,	// src/main/scala/rv32e/device/sram_Axi.scala:86:17
   input  [7:0]  axi_ar_bits_len,	// src/main/scala/rv32e/device/sram_Axi.scala:86:17
@@ -2532,15 +2532,15 @@ module sram_axi_rw(	// <stdin>:2956:3, :3559:3
   wire        _axi_r_valid_T_2 = state_sram == 3'h3;	// src/main/scala/rv32e/device/sram_Axi.scala:99:29, :120:34, :168:58
   wire        _axi_r_valid_output = _axi_r_valid_T_2 | _axi_r_valid_T_1;	// src/main/scala/rv32e/device/sram_Axi.scala:168:58, :179:54
   wire        _axi_w_ready_output = (&state_sram) | _axi_w_ready_T_2 | state_sram == 3'h5;	// src/main/scala/rv32e/device/sram_Axi.scala:99:29, :139:28, :164:58, :185:54
-  always @(posedge clock) begin	// <stdin>:2957:11, :3560:11
-    if (reset) begin	// <stdin>:2957:11, :3560:11
-      delay <= 1'h0;	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:89:24
+  always @(posedge clock) begin	// <stdin>:2960:11, :3563:11
+    if (reset) begin	// <stdin>:2960:11, :3563:11
+      delay <= 1'h0;	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:89:24
       reg_AxLen <= 8'h0;	// src/main/scala/rv32e/device/sram_Axi.scala:92:28, :120:45
       reg_addr <= 32'h0;	// src/main/scala/rv32e/device/sram_Axi.scala:93:28
       reg_burst <= 2'h3;	// src/main/scala/rv32e/device/sram_Axi.scala:94:28
       state_sram <= 3'h0;	// src/main/scala/rv32e/device/sram_Axi.scala:99:29
     end
-    else begin	// <stdin>:2957:11, :3560:11
+    else begin	// <stdin>:2960:11, :3563:11
       automatic logic             _GEN;	// src/main/scala/chisel3/util/Decoupled.scala:52:35
       automatic logic             _GEN_0;	// src/main/scala/chisel3/util/Decoupled.scala:52:35
       automatic logic             _reg_addr_T = axi_r_ready & _axi_r_valid_output;	// src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/device/sram_Axi.scala:179:54
@@ -2564,7 +2564,7 @@ module sram_axi_rw(	// <stdin>:2956:3, :3559:3
       _GEN_6 =
         _GEN_4 | ~(_GEN_3 & reg_burst == 2'h1 & _reg_addr_T_6)
           ? reg_addr
-          : reg_addr + 32'h4;	// <stdin>:2956:3, :3559:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/device/sram_Axi.scala:92:28, :93:28, :94:28, :100:25, :130:53, :152:{25,58}, :153:{30,53}
+          : reg_addr + 32'h4;	// <stdin>:2959:3, :3562:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/device/sram_Axi.scala:92:28, :93:28, :94:28, :100:25, :130:53, :152:{25,58}, :153:{30,53}
       delay <=
         ~_axi_aw_ready_output
         & (state_sram == 3'h1
@@ -2588,11 +2588,11 @@ module sram_axi_rw(	// <stdin>:2956:3, :3559:3
          {reg_addr},
          {reg_burst == 2'h1 & _reg_addr_T ? reg_addr + 32'h4 : reg_addr},
          {reg_addr},
-         {_GEN ? axi_ar_bits_addr : _GEN_0 ? axi_aw_bits_addr : reg_addr}};	// <stdin>:2956:3, :3559:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/device/sram_Axi.scala:93:28, :94:28, :100:25, :104:32, :107:28, :109:39, :112:28, :129:{25,58}, :130:{30,53}
+         {_GEN ? axi_ar_bits_addr : _GEN_0 ? axi_aw_bits_addr : reg_addr}};	// <stdin>:2959:3, :3562:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/device/sram_Axi.scala:93:28, :94:28, :100:25, :104:32, :107:28, :109:39, :112:28, :129:{25,58}, :130:{30,53}
       reg_addr <= _GEN_8[state_sram];	// src/main/scala/rv32e/device/sram_Axi.scala:93:28, :99:29, :100:25, :104:32, :129:25
       if (_axi_aw_ready_output) begin	// src/main/scala/rv32e/device/sram_Axi.scala:100:25
         if (_GEN)	// src/main/scala/chisel3/util/Decoupled.scala:52:35
-          reg_burst <= 2'h1;	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:94:28
+          reg_burst <= 2'h1;	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:94:28
         else if (_GEN_0)	// src/main/scala/chisel3/util/Decoupled.scala:52:35
           reg_burst <= axi_aw_bits_burst;	// src/main/scala/rv32e/device/sram_Axi.scala:94:28
       end
@@ -2604,32 +2604,32 @@ module sram_axi_rw(	// <stdin>:2956:3, :3559:3
          {3'h0},
          {{2'h1, reg_AxLen == 8'h1}},
          {delay ? 3'h1 : {2'h1, ~(|reg_AxLen)}},
-         {_GEN ? 3'h1 : {_GEN_0, 2'h0}}};	// <stdin>:2956:3, :3559:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/device/sram_Axi.scala:89:24, :92:28, :94:28, :99:29, :100:25, :104:32, :105:28, :109:39, :110:28, :115:28, :119:{25,34}, :120:{28,34,45}, :122:28, :127:{25,31,42}, :134:24, :137:34, :139:28, :141:28, :146:{25,31,42}, :149:{25,31,42}, :157:24
+         {_GEN ? 3'h1 : {_GEN_0, 2'h0}}};	// <stdin>:2959:3, :3562:3, src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/device/sram_Axi.scala:89:24, :92:28, :94:28, :99:29, :100:25, :104:32, :105:28, :109:39, :110:28, :115:28, :119:{25,34}, :120:{28,34,45}, :122:28, :127:{25,31,42}, :134:24, :137:34, :139:28, :141:28, :146:{25,31,42}, :149:{25,31,42}, :157:24
       state_sram <= _GEN_9[state_sram];	// src/main/scala/rv32e/device/sram_Axi.scala:99:29, :100:25, :104:32, :119:34, :127:25, :134:24, :137:34, :146:25, :149:25, :157:24
     end
   end // always @(posedge)
-  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2956:3, :3559:3
-    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2956:3, :3559:3
-      `FIRRTL_BEFORE_INITIAL	// <stdin>:2956:3, :3559:3
+  `ifdef ENABLE_INITIAL_REG_	// <stdin>:2959:3, :3562:3
+    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:2959:3, :3562:3
+      `FIRRTL_BEFORE_INITIAL	// <stdin>:2959:3, :3562:3
     `endif // FIRRTL_BEFORE_INITIAL
-    initial begin	// <stdin>:2956:3, :3559:3
-      automatic logic [31:0] _RANDOM[0:1];	// <stdin>:2956:3, :3559:3
-      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2956:3, :3559:3
-        `INIT_RANDOM_PROLOG_	// <stdin>:2956:3, :3559:3
+    initial begin	// <stdin>:2959:3, :3562:3
+      automatic logic [31:0] _RANDOM[0:1];	// <stdin>:2959:3, :3562:3
+      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:2959:3, :3562:3
+        `INIT_RANDOM_PROLOG_	// <stdin>:2959:3, :3562:3
       `endif // INIT_RANDOM_PROLOG_
-      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2956:3, :3559:3
+      `ifdef RANDOMIZE_REG_INIT	// <stdin>:2959:3, :3562:3
         for (logic [1:0] i = 2'h0; i < 2'h2; i += 2'h1) begin
-          _RANDOM[i[0]] = `RANDOM;	// <stdin>:2956:3, :3559:3
-        end	// <stdin>:2956:3, :3559:3
-        delay = _RANDOM[1'h0][0];	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:89:24
-        reg_AxLen = _RANDOM[1'h0][8:1];	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:89:24, :92:28
-        reg_addr = {_RANDOM[1'h0][31:9], _RANDOM[1'h1][8:0]};	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:89:24, :93:28
-        reg_burst = _RANDOM[1'h1][10:9];	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:93:28, :94:28
-        state_sram = _RANDOM[1'h1][13:11];	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:93:28, :99:29
+          _RANDOM[i[0]] = `RANDOM;	// <stdin>:2959:3, :3562:3
+        end	// <stdin>:2959:3, :3562:3
+        delay = _RANDOM[1'h0][0];	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:89:24
+        reg_AxLen = _RANDOM[1'h0][8:1];	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:89:24, :92:28
+        reg_addr = {_RANDOM[1'h0][31:9], _RANDOM[1'h1][8:0]};	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:89:24, :93:28
+        reg_burst = _RANDOM[1'h1][10:9];	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:93:28, :94:28
+        state_sram = _RANDOM[1'h1][13:11];	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:93:28, :99:29
       `endif // RANDOMIZE_REG_INIT
     end // initial
-    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2956:3, :3559:3
-      `FIRRTL_AFTER_INITIAL	// <stdin>:2956:3, :3559:3
+    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:2959:3, :3562:3
+      `FIRRTL_AFTER_INITIAL	// <stdin>:2959:3, :3562:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
   RamBB RamBB_i1 (	// src/main/scala/rv32e/device/sram_Axi.scala:161:26
@@ -2641,16 +2641,16 @@ module sram_axi_rw(	// <stdin>:2956:3, :3559:3
     .wmask   (axi_w_bits_strb),
     .rdata   (axi_r_bits_data)
   );
-  assign axi_ar_ready = _axi_aw_ready_output;	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:100:25
-  assign axi_r_valid = _axi_r_valid_output;	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:179:54
-  assign axi_r_bits_last = state_sram == 3'h3;	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:99:29, :120:34, :182:39
-  assign axi_aw_ready = _axi_aw_ready_output;	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:100:25
-  assign axi_w_ready = _axi_w_ready_output;	// <stdin>:2956:3, :3559:3, src/main/scala/rv32e/device/sram_Axi.scala:185:54
+  assign axi_ar_ready = _axi_aw_ready_output;	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:100:25
+  assign axi_r_valid = _axi_r_valid_output;	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:179:54
+  assign axi_r_bits_last = state_sram == 3'h3;	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:99:29, :120:34, :182:39
+  assign axi_aw_ready = _axi_aw_ready_output;	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:100:25
+  assign axi_w_ready = _axi_w_ready_output;	// <stdin>:2959:3, :3562:3, src/main/scala/rv32e/device/sram_Axi.scala:185:54
 endmodule
 
-module SimpleBusCrossBar1toN(	// <stdin>:3114:3
-  input         clock,	// <stdin>:3115:11
-                reset,	// <stdin>:3116:11
+module SimpleBusCrossBar1toN(	// <stdin>:3117:3
+  input         clock,	// <stdin>:3118:11
+                reset,	// <stdin>:3119:11
                 io_in_req_valid,	// src/main/scala/rv32e/bus/Crossbar.scala:13:16
   input  [31:0] io_in_req_bits_addr,	// src/main/scala/rv32e/bus/Crossbar.scala:13:16
                 io_in_req_bits_wdata,	// src/main/scala/rv32e/bus/Crossbar.scala:13:16
@@ -2683,7 +2683,7 @@ module SimpleBusCrossBar1toN(	// <stdin>:3114:3
   wire [1:0] outSelVec_enc =
     io_in_req_bits_addr[31] & io_in_req_bits_addr < 32'h88000000
       ? 2'h1
-      : {io_in_req_bits_addr > 32'h9FFFFFFF & io_in_req_bits_addr < 32'hA1200000, 1'h0};	// <stdin>:3114:3, src/main/scala/chisel3/util/Mux.scala:50:70, src/main/scala/rv32e/bus/Crossbar.scala:24:{22,36,44}
+      : {io_in_req_bits_addr > 32'h9FFFFFFF & io_in_req_bits_addr < 32'hA1200000, 1'h0};	// <stdin>:3117:3, src/main/scala/chisel3/util/Mux.scala:50:70, src/main/scala/rv32e/bus/Crossbar.scala:24:{22,36,44}
   reg        outSelRespVec_0;	// src/main/scala/rv32e/bus/Crossbar.scala:26:34
   reg        outSelRespVec_1;	// src/main/scala/rv32e/bus/Crossbar.scala:26:34
   wire       reqInvalidAddr = io_in_req_valid & outSelVec_enc == 2'h0;	// src/main/scala/chisel3/util/Mux.scala:50:70, src/main/scala/rv32e/bus/Crossbar.scala:19:24, :30:{42,63}
@@ -2691,13 +2691,13 @@ module SimpleBusCrossBar1toN(	// <stdin>:3114:3
     outSelVec_enc[0] & io_out_0_req_ready | outSelVec_enc[1] | reqInvalidAddr;	// src/main/scala/chisel3/util/Mux.scala:30:73, :50:70, src/main/scala/chisel3/util/OneHot.scala:83:30, src/main/scala/rv32e/bus/Crossbar.scala:30:42, :42:67
   wire       _io_in_resp_valid_output =
     outSelRespVec_0 & io_out_0_resp_valid | outSelRespVec_1 | state == 2'h2;	// src/main/scala/chisel3/util/Mux.scala:30:73, :50:70, src/main/scala/rv32e/bus/Crossbar.scala:19:24, :26:34, :45:{72,81}
-  always @(posedge clock) begin	// <stdin>:3115:11
-    if (reset) begin	// <stdin>:3115:11
+  always @(posedge clock) begin	// <stdin>:3118:11
+    if (reset) begin	// <stdin>:3118:11
       state <= 2'h0;	// src/main/scala/rv32e/bus/Crossbar.scala:19:24
-      outSelRespVec_0 <= 1'h0;	// <stdin>:3114:3, src/main/scala/rv32e/bus/Crossbar.scala:26:34
-      outSelRespVec_1 <= 1'h0;	// <stdin>:3114:3, src/main/scala/rv32e/bus/Crossbar.scala:26:34
+      outSelRespVec_0 <= 1'h0;	// <stdin>:3117:3, src/main/scala/rv32e/bus/Crossbar.scala:26:34
+      outSelRespVec_1 <= 1'h0;	// <stdin>:3117:3, src/main/scala/rv32e/bus/Crossbar.scala:26:34
     end
-    else begin	// <stdin>:3115:11
+    else begin	// <stdin>:3118:11
       automatic logic _outSelRespVec_T;	// src/main/scala/chisel3/util/Decoupled.scala:52:35
       _outSelRespVec_T = _io_in_req_ready_output & io_in_req_valid;	// src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/bus/Crossbar.scala:42:67
       if (|state) begin	// src/main/scala/rv32e/bus/Crossbar.scala:19:24, :28:59
@@ -2714,44 +2714,44 @@ module SimpleBusCrossBar1toN(	// <stdin>:3114:3
       end
     end
   end // always @(posedge)
-  `ifdef ENABLE_INITIAL_REG_	// <stdin>:3114:3
-    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:3114:3
-      `FIRRTL_BEFORE_INITIAL	// <stdin>:3114:3
+  `ifdef ENABLE_INITIAL_REG_	// <stdin>:3117:3
+    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:3117:3
+      `FIRRTL_BEFORE_INITIAL	// <stdin>:3117:3
     `endif // FIRRTL_BEFORE_INITIAL
-    initial begin	// <stdin>:3114:3
-      automatic logic [31:0] _RANDOM[0:0];	// <stdin>:3114:3
-      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:3114:3
-        `INIT_RANDOM_PROLOG_	// <stdin>:3114:3
+    initial begin	// <stdin>:3117:3
+      automatic logic [31:0] _RANDOM[0:0];	// <stdin>:3117:3
+      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:3117:3
+        `INIT_RANDOM_PROLOG_	// <stdin>:3117:3
       `endif // INIT_RANDOM_PROLOG_
-      `ifdef RANDOMIZE_REG_INIT	// <stdin>:3114:3
-        _RANDOM[/*Zero width*/ 1'b0] = `RANDOM;	// <stdin>:3114:3
-        state = _RANDOM[/*Zero width*/ 1'b0][1:0];	// <stdin>:3114:3, src/main/scala/rv32e/bus/Crossbar.scala:19:24
-        outSelRespVec_0 = _RANDOM[/*Zero width*/ 1'b0][2];	// <stdin>:3114:3, src/main/scala/rv32e/bus/Crossbar.scala:19:24, :26:34
-        outSelRespVec_1 = _RANDOM[/*Zero width*/ 1'b0][3];	// <stdin>:3114:3, src/main/scala/rv32e/bus/Crossbar.scala:19:24, :26:34
+      `ifdef RANDOMIZE_REG_INIT	// <stdin>:3117:3
+        _RANDOM[/*Zero width*/ 1'b0] = `RANDOM;	// <stdin>:3117:3
+        state = _RANDOM[/*Zero width*/ 1'b0][1:0];	// <stdin>:3117:3, src/main/scala/rv32e/bus/Crossbar.scala:19:24
+        outSelRespVec_0 = _RANDOM[/*Zero width*/ 1'b0][2];	// <stdin>:3117:3, src/main/scala/rv32e/bus/Crossbar.scala:19:24, :26:34
+        outSelRespVec_1 = _RANDOM[/*Zero width*/ 1'b0][3];	// <stdin>:3117:3, src/main/scala/rv32e/bus/Crossbar.scala:19:24, :26:34
       `endif // RANDOMIZE_REG_INIT
     end // initial
-    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:3114:3
-      `FIRRTL_AFTER_INITIAL	// <stdin>:3114:3
+    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:3117:3
+      `FIRRTL_AFTER_INITIAL	// <stdin>:3117:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
-  assign io_in_req_ready = _io_in_req_ready_output;	// <stdin>:3114:3, src/main/scala/rv32e/bus/Crossbar.scala:42:67
-  assign io_in_resp_valid = _io_in_resp_valid_output;	// <stdin>:3114:3, src/main/scala/rv32e/bus/Crossbar.scala:45:72
+  assign io_in_req_ready = _io_in_req_ready_output;	// <stdin>:3117:3, src/main/scala/rv32e/bus/Crossbar.scala:42:67
+  assign io_in_resp_valid = _io_in_resp_valid_output;	// <stdin>:3117:3, src/main/scala/rv32e/bus/Crossbar.scala:45:72
   assign io_in_resp_bits_rdata =
     (outSelRespVec_0 ? io_out_0_resp_bits_rdata : 32'h0)
-    | (outSelRespVec_1 ? io_out_1_resp_bits_rdata : 32'h0);	// <stdin>:3114:3, src/main/scala/chisel3/util/Mux.scala:30:73, src/main/scala/rv32e/bus/Crossbar.scala:26:34
+    | (outSelRespVec_1 ? io_out_1_resp_bits_rdata : 32'h0);	// <stdin>:3117:3, src/main/scala/chisel3/util/Mux.scala:30:73, src/main/scala/rv32e/bus/Crossbar.scala:26:34
   assign io_in_resp_bits_wresp =
     outSelRespVec_0 & io_out_0_resp_bits_wresp | outSelRespVec_1
-    & io_out_1_resp_bits_wresp;	// <stdin>:3114:3, src/main/scala/chisel3/util/Mux.scala:30:73, src/main/scala/rv32e/bus/Crossbar.scala:26:34
-  assign io_out_0_req_valid = outSelVec_enc[0] & io_in_req_valid & ~(|state);	// <stdin>:3114:3, src/main/scala/chisel3/util/Mux.scala:50:70, src/main/scala/chisel3/util/OneHot.scala:83:30, src/main/scala/rv32e/bus/Crossbar.scala:19:24, :28:59, :50:62
-  assign io_out_0_req_bits_addr = io_in_req_bits_addr;	// <stdin>:3114:3
-  assign io_out_0_req_bits_wdata = io_in_req_bits_wdata;	// <stdin>:3114:3
-  assign io_out_0_req_bits_cmd = io_in_req_bits_cmd;	// <stdin>:3114:3
-  assign io_out_0_req_bits_wmask = io_in_req_bits_wmask;	// <stdin>:3114:3
-  assign io_out_1_req_valid = outSelVec_enc[1] & io_in_req_valid & ~(|state);	// <stdin>:3114:3, src/main/scala/chisel3/util/Mux.scala:50:70, src/main/scala/chisel3/util/OneHot.scala:83:30, src/main/scala/rv32e/bus/Crossbar.scala:19:24, :28:59, :50:62
-  assign io_out_1_req_bits_addr = io_in_req_bits_addr;	// <stdin>:3114:3
-  assign io_out_1_req_bits_wdata = io_in_req_bits_wdata;	// <stdin>:3114:3
-  assign io_out_1_req_bits_cmd = io_in_req_bits_cmd;	// <stdin>:3114:3
-  assign io_out_1_req_bits_wmask = io_in_req_bits_wmask;	// <stdin>:3114:3
+    & io_out_1_resp_bits_wresp;	// <stdin>:3117:3, src/main/scala/chisel3/util/Mux.scala:30:73, src/main/scala/rv32e/bus/Crossbar.scala:26:34
+  assign io_out_0_req_valid = outSelVec_enc[0] & io_in_req_valid & ~(|state);	// <stdin>:3117:3, src/main/scala/chisel3/util/Mux.scala:50:70, src/main/scala/chisel3/util/OneHot.scala:83:30, src/main/scala/rv32e/bus/Crossbar.scala:19:24, :28:59, :50:62
+  assign io_out_0_req_bits_addr = io_in_req_bits_addr;	// <stdin>:3117:3
+  assign io_out_0_req_bits_wdata = io_in_req_bits_wdata;	// <stdin>:3117:3
+  assign io_out_0_req_bits_cmd = io_in_req_bits_cmd;	// <stdin>:3117:3
+  assign io_out_0_req_bits_wmask = io_in_req_bits_wmask;	// <stdin>:3117:3
+  assign io_out_1_req_valid = outSelVec_enc[1] & io_in_req_valid & ~(|state);	// <stdin>:3117:3, src/main/scala/chisel3/util/Mux.scala:50:70, src/main/scala/chisel3/util/OneHot.scala:83:30, src/main/scala/rv32e/bus/Crossbar.scala:19:24, :28:59, :50:62
+  assign io_out_1_req_bits_addr = io_in_req_bits_addr;	// <stdin>:3117:3
+  assign io_out_1_req_bits_wdata = io_in_req_bits_wdata;	// <stdin>:3117:3
+  assign io_out_1_req_bits_cmd = io_in_req_bits_cmd;	// <stdin>:3117:3
+  assign io_out_1_req_bits_wmask = io_in_req_bits_wmask;	// <stdin>:3117:3
 endmodule
 
 // VCS coverage exclude_file
@@ -2819,9 +2819,9 @@ module dataArray_128x32_0(	// src/main/scala/rv32e/cache/dcache.scala:175:33
   assign R1_data = _R1_en_d0 ? Memory[_R1_addr_d0] : 32'bx;	// src/main/scala/rv32e/cache/dcache.scala:175:33
 endmodule
 
-module Dcache_SimpleBus(	// <stdin>:3218:3
-  input         clock,	// <stdin>:3219:11
-                reset,	// <stdin>:3220:11
+module Dcache_SimpleBus(	// <stdin>:3221:3
+  input         clock,	// <stdin>:3222:11
+                reset,	// <stdin>:3223:11
                 from_lsu_req_valid,	// src/main/scala/rv32e/cache/dcache.scala:161:23
   input  [31:0] from_lsu_req_bits_addr,	// src/main/scala/rv32e/cache/dcache.scala:161:23
                 from_lsu_req_bits_wdata,	// src/main/scala/rv32e/cache/dcache.scala:161:23
@@ -3038,10 +3038,10 @@ module Dcache_SimpleBus(	// <stdin>:3218:3
   wire              _to_sram_aw_valid_output = state_dcache == 4'h4;	// src/main/scala/rv32e/cache/dcache.scala:200:31, :221:32, :292:62
   wire [15:0][23:0] _GEN_6 = replace_set ? _GEN_1 : _GEN;	// src/main/scala/rv32e/cache/dcache.scala:164:30, :181:14, :293:33
   wire              _to_sram_w_valid_output = state_dcache == 4'h5;	// src/main/scala/rv32e/cache/dcache.scala:200:31, :224:32, :297:62
-  always @(posedge clock) begin	// <stdin>:3219:11
-    if (reset) begin	// <stdin>:3219:11
-      replace_set <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:164:30
-      random_num <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:171:29
+  always @(posedge clock) begin	// <stdin>:3222:11
+    if (reset) begin	// <stdin>:3222:11
+      replace_set <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:164:30
+      random_num <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:171:29
       tagArray_0_0 <= 24'h0;	// src/main/scala/rv32e/cache/dcache.scala:176:{29,63}
       tagArray_0_1 <= 24'h0;	// src/main/scala/rv32e/cache/dcache.scala:176:{29,63}
       tagArray_0_2 <= 24'h0;	// src/main/scala/rv32e/cache/dcache.scala:176:{29,63}
@@ -3074,74 +3074,74 @@ module Dcache_SimpleBus(	// <stdin>:3218:3
       tagArray_1_13 <= 24'h0;	// src/main/scala/rv32e/cache/dcache.scala:176:{29,63}
       tagArray_1_14 <= 24'h0;	// src/main/scala/rv32e/cache/dcache.scala:176:{29,63}
       tagArray_1_15 <= 24'h0;	// src/main/scala/rv32e/cache/dcache.scala:176:{29,63}
-      validArray_0_0 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_1 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_2 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_3 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_4 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_5 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_6 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_7 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_8 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_9 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_10 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_11 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_12 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_13 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_14 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_0_15 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_0 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_1 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_2 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_3 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_4 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_5 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_6 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_7 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_8 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_9 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_10 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_11 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_12 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_13 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_14 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      validArray_1_15 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-      dirtyArray_0_0 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_1 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_2 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_3 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_4 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_5 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_6 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_7 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_8 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_9 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_10 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_11 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_12 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_13 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_14 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_0_15 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_0 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_1 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_2 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_3 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_4 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_5 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_6 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_7 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_8 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_9 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_10 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_11 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_12 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_13 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_14 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-      dirtyArray_1_15 <= 1'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      validArray_0_0 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_1 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_2 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_3 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_4 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_5 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_6 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_7 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_8 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_9 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_10 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_11 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_12 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_13 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_14 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_0_15 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_0 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_1 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_2 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_3 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_4 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_5 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_6 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_7 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_8 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_9 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_10 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_11 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_12 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_13 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_14 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      validArray_1_15 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+      dirtyArray_0_0 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_1 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_2 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_3 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_4 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_5 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_6 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_7 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_8 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_9 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_10 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_11 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_12 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_13 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_14 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_0_15 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_0 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_1 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_2 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_3 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_4 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_5 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_6 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_7 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_8 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_9 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_10 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_11 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_12 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_13 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_14 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+      dirtyArray_1_15 <= 1'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
       off <= 2'h0;	// src/main/scala/rv32e/cache/dcache.scala:194:24
       state_dcache <= 4'h0;	// src/main/scala/rv32e/cache/dcache.scala:200:31
     end
-    else begin	// <stdin>:3219:11
+    else begin	// <stdin>:3222:11
       automatic logic             _GEN_7 =
         _from_lsu_req_ready_output & from_lsu_req_valid;	// src/main/scala/chisel3/util/Decoupled.scala:52:35, src/main/scala/rv32e/cache/dcache.scala:201:27
       automatic logic             _GEN_8 = from_lsu_req_bits_addr[7:4] == 4'h0;	// src/main/scala/rv32e/cache/dcache.scala:167:45, :200:31, :261:50
@@ -3431,131 +3431,131 @@ module Dcache_SimpleBus(	// <stdin>:3218:3
       state_dcache <= _GEN_56[state_dcache];	// src/main/scala/rv32e/cache/dcache.scala:200:31, :201:27, :203:38, :215:26, :218:26, :221:26, :224:26, :228:26, :233:26, :237:26, :242:26, :248:26
     end
   end // always @(posedge)
-  `ifdef ENABLE_INITIAL_REG_	// <stdin>:3218:3
-    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:3218:3
-      `FIRRTL_BEFORE_INITIAL	// <stdin>:3218:3
+  `ifdef ENABLE_INITIAL_REG_	// <stdin>:3221:3
+    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:3221:3
+      `FIRRTL_BEFORE_INITIAL	// <stdin>:3221:3
     `endif // FIRRTL_BEFORE_INITIAL
-    initial begin	// <stdin>:3218:3
-      automatic logic [31:0] _RANDOM[0:26];	// <stdin>:3218:3
-      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:3218:3
-        `INIT_RANDOM_PROLOG_	// <stdin>:3218:3
+    initial begin	// <stdin>:3221:3
+      automatic logic [31:0] _RANDOM[0:26];	// <stdin>:3221:3
+      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:3221:3
+        `INIT_RANDOM_PROLOG_	// <stdin>:3221:3
       `endif // INIT_RANDOM_PROLOG_
-      `ifdef RANDOMIZE_REG_INIT	// <stdin>:3218:3
+      `ifdef RANDOMIZE_REG_INIT	// <stdin>:3221:3
         for (logic [4:0] i = 5'h0; i < 5'h1B; i += 5'h1) begin
-          _RANDOM[i] = `RANDOM;	// <stdin>:3218:3
-        end	// <stdin>:3218:3
-        replace_set = _RANDOM[5'h0][0];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:164:30
-        random_num = _RANDOM[5'h0][1];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:164:30, :171:29
-        tagArray_0_0 = _RANDOM[5'h0][25:2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:164:30, :176:29
-        tagArray_0_1 = {_RANDOM[5'h0][31:26], _RANDOM[5'h1][17:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:164:30, :176:29
-        tagArray_0_2 = {_RANDOM[5'h1][31:18], _RANDOM[5'h2][9:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_3 = {_RANDOM[5'h2][31:10], _RANDOM[5'h3][1:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_4 = _RANDOM[5'h3][25:2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_5 = {_RANDOM[5'h3][31:26], _RANDOM[5'h4][17:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_6 = {_RANDOM[5'h4][31:18], _RANDOM[5'h5][9:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_7 = {_RANDOM[5'h5][31:10], _RANDOM[5'h6][1:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_8 = _RANDOM[5'h6][25:2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_9 = {_RANDOM[5'h6][31:26], _RANDOM[5'h7][17:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_10 = {_RANDOM[5'h7][31:18], _RANDOM[5'h8][9:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_11 = {_RANDOM[5'h8][31:10], _RANDOM[5'h9][1:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_12 = _RANDOM[5'h9][25:2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_13 = {_RANDOM[5'h9][31:26], _RANDOM[5'hA][17:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_14 = {_RANDOM[5'hA][31:18], _RANDOM[5'hB][9:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_0_15 = {_RANDOM[5'hB][31:10], _RANDOM[5'hC][1:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_0 = _RANDOM[5'hC][25:2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_1 = {_RANDOM[5'hC][31:26], _RANDOM[5'hD][17:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_2 = {_RANDOM[5'hD][31:18], _RANDOM[5'hE][9:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_3 = {_RANDOM[5'hE][31:10], _RANDOM[5'hF][1:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_4 = _RANDOM[5'hF][25:2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_5 = {_RANDOM[5'hF][31:26], _RANDOM[5'h10][17:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_6 = {_RANDOM[5'h10][31:18], _RANDOM[5'h11][9:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_7 = {_RANDOM[5'h11][31:10], _RANDOM[5'h12][1:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_8 = _RANDOM[5'h12][25:2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_9 = {_RANDOM[5'h12][31:26], _RANDOM[5'h13][17:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_10 = {_RANDOM[5'h13][31:18], _RANDOM[5'h14][9:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_11 = {_RANDOM[5'h14][31:10], _RANDOM[5'h15][1:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_12 = _RANDOM[5'h15][25:2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_13 = {_RANDOM[5'h15][31:26], _RANDOM[5'h16][17:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_14 = {_RANDOM[5'h16][31:18], _RANDOM[5'h17][9:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        tagArray_1_15 = {_RANDOM[5'h17][31:10], _RANDOM[5'h18][1:0]};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29
-        validArray_0_0 = _RANDOM[5'h18][2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_1 = _RANDOM[5'h18][3];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_2 = _RANDOM[5'h18][4];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_3 = _RANDOM[5'h18][5];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_4 = _RANDOM[5'h18][6];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_5 = _RANDOM[5'h18][7];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_6 = _RANDOM[5'h18][8];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_7 = _RANDOM[5'h18][9];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_8 = _RANDOM[5'h18][10];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_9 = _RANDOM[5'h18][11];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_10 = _RANDOM[5'h18][12];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_11 = _RANDOM[5'h18][13];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_12 = _RANDOM[5'h18][14];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_13 = _RANDOM[5'h18][15];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_14 = _RANDOM[5'h18][16];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_0_15 = _RANDOM[5'h18][17];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_0 = _RANDOM[5'h18][18];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_1 = _RANDOM[5'h18][19];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_2 = _RANDOM[5'h18][20];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_3 = _RANDOM[5'h18][21];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_4 = _RANDOM[5'h18][22];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_5 = _RANDOM[5'h18][23];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_6 = _RANDOM[5'h18][24];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_7 = _RANDOM[5'h18][25];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_8 = _RANDOM[5'h18][26];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_9 = _RANDOM[5'h18][27];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_10 = _RANDOM[5'h18][28];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_11 = _RANDOM[5'h18][29];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_12 = _RANDOM[5'h18][30];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_13 = _RANDOM[5'h18][31];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
-        validArray_1_14 = _RANDOM[5'h19][0];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-        validArray_1_15 = _RANDOM[5'h19][1];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29
-        dirtyArray_0_0 = _RANDOM[5'h19][2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_1 = _RANDOM[5'h19][3];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_2 = _RANDOM[5'h19][4];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_3 = _RANDOM[5'h19][5];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_4 = _RANDOM[5'h19][6];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_5 = _RANDOM[5'h19][7];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_6 = _RANDOM[5'h19][8];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_7 = _RANDOM[5'h19][9];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_8 = _RANDOM[5'h19][10];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_9 = _RANDOM[5'h19][11];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_10 = _RANDOM[5'h19][12];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_11 = _RANDOM[5'h19][13];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_12 = _RANDOM[5'h19][14];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_13 = _RANDOM[5'h19][15];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_14 = _RANDOM[5'h19][16];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_0_15 = _RANDOM[5'h19][17];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_0 = _RANDOM[5'h19][18];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_1 = _RANDOM[5'h19][19];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_2 = _RANDOM[5'h19][20];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_3 = _RANDOM[5'h19][21];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_4 = _RANDOM[5'h19][22];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_5 = _RANDOM[5'h19][23];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_6 = _RANDOM[5'h19][24];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_7 = _RANDOM[5'h19][25];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_8 = _RANDOM[5'h19][26];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_9 = _RANDOM[5'h19][27];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_10 = _RANDOM[5'h19][28];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_11 = _RANDOM[5'h19][29];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_12 = _RANDOM[5'h19][30];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_13 = _RANDOM[5'h19][31];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
-        dirtyArray_1_14 = _RANDOM[5'h1A][0];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-        dirtyArray_1_15 = _RANDOM[5'h1A][1];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29
-        off = _RANDOM[5'h1A][3:2];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29, :194:24
-        state_dcache = _RANDOM[5'h1A][7:4];	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:178:29, :200:31
+          _RANDOM[i] = `RANDOM;	// <stdin>:3221:3
+        end	// <stdin>:3221:3
+        replace_set = _RANDOM[5'h0][0];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:164:30
+        random_num = _RANDOM[5'h0][1];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:164:30, :171:29
+        tagArray_0_0 = _RANDOM[5'h0][25:2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:164:30, :176:29
+        tagArray_0_1 = {_RANDOM[5'h0][31:26], _RANDOM[5'h1][17:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:164:30, :176:29
+        tagArray_0_2 = {_RANDOM[5'h1][31:18], _RANDOM[5'h2][9:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_3 = {_RANDOM[5'h2][31:10], _RANDOM[5'h3][1:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_4 = _RANDOM[5'h3][25:2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_5 = {_RANDOM[5'h3][31:26], _RANDOM[5'h4][17:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_6 = {_RANDOM[5'h4][31:18], _RANDOM[5'h5][9:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_7 = {_RANDOM[5'h5][31:10], _RANDOM[5'h6][1:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_8 = _RANDOM[5'h6][25:2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_9 = {_RANDOM[5'h6][31:26], _RANDOM[5'h7][17:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_10 = {_RANDOM[5'h7][31:18], _RANDOM[5'h8][9:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_11 = {_RANDOM[5'h8][31:10], _RANDOM[5'h9][1:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_12 = _RANDOM[5'h9][25:2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_13 = {_RANDOM[5'h9][31:26], _RANDOM[5'hA][17:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_14 = {_RANDOM[5'hA][31:18], _RANDOM[5'hB][9:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_0_15 = {_RANDOM[5'hB][31:10], _RANDOM[5'hC][1:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_0 = _RANDOM[5'hC][25:2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_1 = {_RANDOM[5'hC][31:26], _RANDOM[5'hD][17:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_2 = {_RANDOM[5'hD][31:18], _RANDOM[5'hE][9:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_3 = {_RANDOM[5'hE][31:10], _RANDOM[5'hF][1:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_4 = _RANDOM[5'hF][25:2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_5 = {_RANDOM[5'hF][31:26], _RANDOM[5'h10][17:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_6 = {_RANDOM[5'h10][31:18], _RANDOM[5'h11][9:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_7 = {_RANDOM[5'h11][31:10], _RANDOM[5'h12][1:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_8 = _RANDOM[5'h12][25:2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_9 = {_RANDOM[5'h12][31:26], _RANDOM[5'h13][17:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_10 = {_RANDOM[5'h13][31:18], _RANDOM[5'h14][9:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_11 = {_RANDOM[5'h14][31:10], _RANDOM[5'h15][1:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_12 = _RANDOM[5'h15][25:2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_13 = {_RANDOM[5'h15][31:26], _RANDOM[5'h16][17:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_14 = {_RANDOM[5'h16][31:18], _RANDOM[5'h17][9:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        tagArray_1_15 = {_RANDOM[5'h17][31:10], _RANDOM[5'h18][1:0]};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29
+        validArray_0_0 = _RANDOM[5'h18][2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_1 = _RANDOM[5'h18][3];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_2 = _RANDOM[5'h18][4];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_3 = _RANDOM[5'h18][5];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_4 = _RANDOM[5'h18][6];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_5 = _RANDOM[5'h18][7];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_6 = _RANDOM[5'h18][8];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_7 = _RANDOM[5'h18][9];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_8 = _RANDOM[5'h18][10];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_9 = _RANDOM[5'h18][11];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_10 = _RANDOM[5'h18][12];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_11 = _RANDOM[5'h18][13];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_12 = _RANDOM[5'h18][14];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_13 = _RANDOM[5'h18][15];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_14 = _RANDOM[5'h18][16];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_0_15 = _RANDOM[5'h18][17];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_0 = _RANDOM[5'h18][18];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_1 = _RANDOM[5'h18][19];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_2 = _RANDOM[5'h18][20];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_3 = _RANDOM[5'h18][21];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_4 = _RANDOM[5'h18][22];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_5 = _RANDOM[5'h18][23];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_6 = _RANDOM[5'h18][24];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_7 = _RANDOM[5'h18][25];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_8 = _RANDOM[5'h18][26];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_9 = _RANDOM[5'h18][27];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_10 = _RANDOM[5'h18][28];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_11 = _RANDOM[5'h18][29];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_12 = _RANDOM[5'h18][30];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_13 = _RANDOM[5'h18][31];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:176:29, :177:29
+        validArray_1_14 = _RANDOM[5'h19][0];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+        validArray_1_15 = _RANDOM[5'h19][1];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29
+        dirtyArray_0_0 = _RANDOM[5'h19][2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_1 = _RANDOM[5'h19][3];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_2 = _RANDOM[5'h19][4];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_3 = _RANDOM[5'h19][5];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_4 = _RANDOM[5'h19][6];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_5 = _RANDOM[5'h19][7];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_6 = _RANDOM[5'h19][8];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_7 = _RANDOM[5'h19][9];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_8 = _RANDOM[5'h19][10];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_9 = _RANDOM[5'h19][11];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_10 = _RANDOM[5'h19][12];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_11 = _RANDOM[5'h19][13];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_12 = _RANDOM[5'h19][14];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_13 = _RANDOM[5'h19][15];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_14 = _RANDOM[5'h19][16];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_0_15 = _RANDOM[5'h19][17];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_0 = _RANDOM[5'h19][18];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_1 = _RANDOM[5'h19][19];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_2 = _RANDOM[5'h19][20];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_3 = _RANDOM[5'h19][21];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_4 = _RANDOM[5'h19][22];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_5 = _RANDOM[5'h19][23];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_6 = _RANDOM[5'h19][24];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_7 = _RANDOM[5'h19][25];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_8 = _RANDOM[5'h19][26];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_9 = _RANDOM[5'h19][27];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_10 = _RANDOM[5'h19][28];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_11 = _RANDOM[5'h19][29];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_12 = _RANDOM[5'h19][30];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_13 = _RANDOM[5'h19][31];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:177:29, :178:29
+        dirtyArray_1_14 = _RANDOM[5'h1A][0];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+        dirtyArray_1_15 = _RANDOM[5'h1A][1];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29
+        off = _RANDOM[5'h1A][3:2];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29, :194:24
+        state_dcache = _RANDOM[5'h1A][7:4];	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:178:29, :200:31
       `endif // RANDOMIZE_REG_INIT
     end // initial
-    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:3218:3
-      `FIRRTL_AFTER_INITIAL	// <stdin>:3218:3
+    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:3221:3
+      `FIRRTL_AFTER_INITIAL	// <stdin>:3221:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
   dataArray_128x32_0 dataArray_ext (	// src/main/scala/rv32e/cache/dcache.scala:175:33
     .R0_addr (replaceCacheAddr),	// src/main/scala/rv32e/cache/dcache.scala:252:31
-    .R0_en   (1'h1),	// <stdin>:3218:3
+    .R0_en   (1'h1),	// <stdin>:3221:3
     .R0_clk  (clock),
     .R1_addr (hitCacheAddr),	// src/main/scala/rv32e/cache/dcache.scala:190:27
-    .R1_en   (1'h1),	// <stdin>:3218:3
+    .R1_en   (1'h1),	// <stdin>:3221:3
     .R1_clk  (clock),
     .W0_addr (hitCacheAddr),	// src/main/scala/rv32e/cache/dcache.scala:190:27
     .W0_en   (_GEN_4),	// src/main/scala/rv32e/cache/dcache.scala:201:27
@@ -3570,24 +3570,24 @@ module Dcache_SimpleBus(	// <stdin>:3218:3
     .R0_data (to_sram_w_bits_data),
     .R1_data (_dataArray_ext_R1_data)
   );
-  assign from_lsu_req_ready = _from_lsu_req_ready_output;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:201:27
-  assign from_lsu_resp_valid = _from_lsu_resp_bits_wresp_T_1 | state_dcache == 4'h1;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:200:31, :205:40, :282:66
-  assign from_lsu_resp_bits_rdata = hit ? _dataArray_ext_R1_data : 32'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:175:33, :183:33, :283:37
-  assign from_lsu_resp_bits_wresp = _from_lsu_resp_bits_wresp_T_1;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:282:66
-  assign to_sram_ar_valid = _to_sram_ar_valid_output;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:286:62
+  assign from_lsu_req_ready = _from_lsu_req_ready_output;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:201:27
+  assign from_lsu_resp_valid = _from_lsu_resp_bits_wresp_T_1 | state_dcache == 4'h1;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:200:31, :205:40, :282:66
+  assign from_lsu_resp_bits_rdata = hit ? _dataArray_ext_R1_data : 32'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:175:33, :183:33, :283:37
+  assign from_lsu_resp_bits_wresp = _from_lsu_resp_bits_wresp_T_1;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:282:66
+  assign to_sram_ar_valid = _to_sram_ar_valid_output;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:286:62
   assign to_sram_ar_bits_addr =
-    _to_sram_ar_valid_output ? {from_lsu_req_bits_addr[31:4], 4'h0} : 32'h0;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:200:31, :283:37, :286:62, :287:{58,97,110}
-  assign to_sram_ar_bits_len = {6'h0, {2{_to_sram_ar_valid_output}}};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:286:62, :289:{27,58}
-  assign to_sram_r_ready = _to_sram_r_ready_output;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:291:62
-  assign to_sram_aw_valid = _to_sram_aw_valid_output;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:292:62
+    _to_sram_ar_valid_output ? {from_lsu_req_bits_addr[31:4], 4'h0} : 32'h0;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:200:31, :283:37, :286:62, :287:{58,97,110}
+  assign to_sram_ar_bits_len = {6'h0, {2{_to_sram_ar_valid_output}}};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:286:62, :289:{27,58}
+  assign to_sram_r_ready = _to_sram_r_ready_output;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:291:62
+  assign to_sram_aw_valid = _to_sram_aw_valid_output;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:292:62
   assign to_sram_aw_bits_addr =
-    {_GEN_6[from_lsu_req_bits_addr[7:4]], from_lsu_req_bits_addr[7:4], 4'h0};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:167:45, :200:31, :293:33
-  assign to_sram_aw_bits_len = {6'h0, {2{_to_sram_aw_valid_output}}};	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:289:27, :292:62, :295:{27,58}
-  assign to_sram_w_valid = _to_sram_w_valid_output;	// <stdin>:3218:3, src/main/scala/rv32e/cache/dcache.scala:297:62
+    {_GEN_6[from_lsu_req_bits_addr[7:4]], from_lsu_req_bits_addr[7:4], 4'h0};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:167:45, :200:31, :293:33
+  assign to_sram_aw_bits_len = {6'h0, {2{_to_sram_aw_valid_output}}};	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:289:27, :292:62, :295:{27,58}
+  assign to_sram_w_valid = _to_sram_w_valid_output;	// <stdin>:3221:3, src/main/scala/rv32e/cache/dcache.scala:297:62
 endmodule
 
-module MMIO(	// <stdin>:3727:3
-  input         clock,	// <stdin>:3728:11
+module MMIO(	// <stdin>:3730:3
+  input         clock,	// <stdin>:3731:11
                 from_lsu_req_valid,	// src/main/scala/rv32e/device/mmio.scala:8:22
   input  [31:0] from_lsu_req_bits_addr,	// src/main/scala/rv32e/device/mmio.scala:8:22
                 from_lsu_req_bits_wdata,	// src/main/scala/rv32e/device/mmio.scala:8:22
@@ -3607,12 +3607,12 @@ module MMIO(	// <stdin>:3727:3
     .wmask   (from_lsu_req_bits_wmask[3:0]),	// src/main/scala/rv32e/device/mmio.scala:16:25
     .rdata   (from_lsu_resp_bits_rdata)
   );
-  assign from_lsu_resp_bits_wresp = _from_lsu_resp_bits_wresp_T;	// <stdin>:3727:3, src/main/scala/rv32e/bus/SimpleBus.scala:22:26
+  assign from_lsu_resp_bits_wresp = _from_lsu_resp_bits_wresp_T;	// <stdin>:3730:3, src/main/scala/rv32e/bus/SimpleBus.scala:22:26
 endmodule
 
-module top(	// <stdin>:3746:3
-  input         clock,	// <stdin>:3747:11
-                reset,	// <stdin>:3748:11
+module top(	// <stdin>:3749:3
+  input         clock,	// <stdin>:3750:11
+                reset,	// <stdin>:3751:11
   output [31:0] io_out_inst,	// src/main/scala/rv32e/core.scala:37:16
                 io_out_pc,	// src/main/scala/rv32e/core.scala:37:16
                 io_out_difftest_mcause,	// src/main/scala/rv32e/core.scala:37:16
@@ -3753,12 +3753,12 @@ module top(	// <stdin>:3746:3
   reg  [3:0]  EXU_i_from_ISU_bits_r_ctrl_sig_bru_op;	// src/main/scala/rv32e/utils/Pipeline.scala:17:28
   reg  [2:0]  EXU_i_from_ISU_bits_r_ctrl_sig_csr_op;	// src/main/scala/rv32e/utils/Pipeline.scala:17:28
   reg  [3:0]  EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op;	// src/main/scala/rv32e/utils/Pipeline.scala:17:28
-  always @(posedge clock) begin	// <stdin>:3747:11
+  always @(posedge clock) begin	// <stdin>:3750:11
     automatic logic _EXU_i_from_ISU_bits_T;	// src/main/scala/rv32e/utils/Pipeline.scala:10:22
     _EXU_i_from_ISU_bits_T = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;	// src/main/scala/rv32e/core.scala:42:27, :44:27, src/main/scala/rv32e/utils/Pipeline.scala:10:22
-    if (reset)	// <stdin>:3747:11
+    if (reset)	// <stdin>:3750:11
       valid <= 1'h0;	// src/main/scala/rv32e/core.scala:48:27, :49:27, :50:27, :62:27, :63:27, src/main/scala/rv32e/utils/Pipeline.scala:8:24
-    else	// <stdin>:3747:11
+    else	// <stdin>:3750:11
       valid <= _EXU_i_from_ISU_bits_T;	// src/main/scala/rv32e/utils/Pipeline.scala:8:24, :10:22
     if (_EXU_i_from_ISU_bits_T) begin	// src/main/scala/rv32e/utils/Pipeline.scala:10:22
       EXU_i_from_ISU_bits_r_imm <= _ISU_i_to_EXU_bits_imm;	// src/main/scala/rv32e/core.scala:42:27, src/main/scala/rv32e/utils/Pipeline.scala:17:28
@@ -3780,41 +3780,41 @@ module top(	// <stdin>:3746:3
       EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op <= _ISU_i_to_EXU_bits_ctrl_sig_mdu_op;	// src/main/scala/rv32e/core.scala:42:27, src/main/scala/rv32e/utils/Pipeline.scala:17:28
     end
   end // always @(posedge)
-  `ifdef ENABLE_INITIAL_REG_	// <stdin>:3746:3
-    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:3746:3
-      `FIRRTL_BEFORE_INITIAL	// <stdin>:3746:3
+  `ifdef ENABLE_INITIAL_REG_	// <stdin>:3749:3
+    `ifdef FIRRTL_BEFORE_INITIAL	// <stdin>:3749:3
+      `FIRRTL_BEFORE_INITIAL	// <stdin>:3749:3
     `endif // FIRRTL_BEFORE_INITIAL
-    initial begin	// <stdin>:3746:3
-      automatic logic [31:0] _RANDOM[0:5];	// <stdin>:3746:3
-      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:3746:3
-        `INIT_RANDOM_PROLOG_	// <stdin>:3746:3
+    initial begin	// <stdin>:3749:3
+      automatic logic [31:0] _RANDOM[0:5];	// <stdin>:3749:3
+      `ifdef INIT_RANDOM_PROLOG_	// <stdin>:3749:3
+        `INIT_RANDOM_PROLOG_	// <stdin>:3749:3
       `endif // INIT_RANDOM_PROLOG_
-      `ifdef RANDOMIZE_REG_INIT	// <stdin>:3746:3
+      `ifdef RANDOMIZE_REG_INIT	// <stdin>:3749:3
         for (logic [2:0] i = 3'h0; i < 3'h6; i += 3'h1) begin
-          _RANDOM[i] = `RANDOM;	// <stdin>:3746:3
-        end	// <stdin>:3746:3
-        valid = _RANDOM[3'h0][0];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:8:24
-        EXU_i_from_ISU_bits_r_imm = {_RANDOM[3'h0][31:1], _RANDOM[3'h1][0]};	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:8:24, :17:28
-        EXU_i_from_ISU_bits_r_pc = {_RANDOM[3'h1][31:1], _RANDOM[3'h2][0]};	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_rdata1 = {_RANDOM[3'h2][31:1], _RANDOM[3'h3][0]};	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_rdata2 = {_RANDOM[3'h3][31:1], _RANDOM[3'h4][0]};	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_rd = _RANDOM[3'h4][5:1];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_reg_wen = _RANDOM[3'h4][6];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_fu_op = _RANDOM[3'h4][9:7];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_mem_wen = _RANDOM[3'h4][10];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_is_ebreak = _RANDOM[3'h4][11];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_not_impl = _RANDOM[3'h4][12];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_src1_op = _RANDOM[3'h4][14:13];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_src2_op = _RANDOM[3'h4][16:15];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_alu_op = _RANDOM[3'h4][20:17];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_lsu_op = _RANDOM[3'h4][24:21];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_bru_op = _RANDOM[3'h4][28:25];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_csr_op = _RANDOM[3'h4][31:29];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
-        EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op = _RANDOM[3'h5][3:0];	// <stdin>:3746:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+          _RANDOM[i] = `RANDOM;	// <stdin>:3749:3
+        end	// <stdin>:3749:3
+        valid = _RANDOM[3'h0][0];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:8:24
+        EXU_i_from_ISU_bits_r_imm = {_RANDOM[3'h0][31:1], _RANDOM[3'h1][0]};	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:8:24, :17:28
+        EXU_i_from_ISU_bits_r_pc = {_RANDOM[3'h1][31:1], _RANDOM[3'h2][0]};	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_rdata1 = {_RANDOM[3'h2][31:1], _RANDOM[3'h3][0]};	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_rdata2 = {_RANDOM[3'h3][31:1], _RANDOM[3'h4][0]};	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_rd = _RANDOM[3'h4][5:1];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_reg_wen = _RANDOM[3'h4][6];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_fu_op = _RANDOM[3'h4][9:7];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_mem_wen = _RANDOM[3'h4][10];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_is_ebreak = _RANDOM[3'h4][11];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_not_impl = _RANDOM[3'h4][12];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_src1_op = _RANDOM[3'h4][14:13];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_src2_op = _RANDOM[3'h4][16:15];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_alu_op = _RANDOM[3'h4][20:17];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_lsu_op = _RANDOM[3'h4][24:21];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_bru_op = _RANDOM[3'h4][28:25];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_csr_op = _RANDOM[3'h4][31:29];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op = _RANDOM[3'h5][3:0];	// <stdin>:3749:3, src/main/scala/rv32e/utils/Pipeline.scala:17:28
       `endif // RANDOMIZE_REG_INIT
     end // initial
-    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:3746:3
-      `FIRRTL_AFTER_INITIAL	// <stdin>:3746:3
+    `ifdef FIRRTL_AFTER_INITIAL	// <stdin>:3749:3
+      `FIRRTL_AFTER_INITIAL	// <stdin>:3749:3
     `endif // FIRRTL_AFTER_INITIAL
   `endif // ENABLE_INITIAL_REG_
   IDU IDU_i (	// src/main/scala/rv32e/core.scala:41:27
@@ -4097,9 +4097,9 @@ module top(	// <stdin>:3746:3
     .from_lsu_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata),
     .from_lsu_resp_bits_wresp (_mmio_from_lsu_resp_bits_wresp)
   );
-  assign io_out_inst = _IFU_i_to_IDU_bits_inst;	// <stdin>:3746:3, src/main/scala/rv32e/core.scala:48:27
-  assign io_out_pc = _IFU_i_to_IDU_bits_pc;	// <stdin>:3746:3, src/main/scala/rv32e/core.scala:48:27
-  assign io_out_wb = _WBU_i_to_IFU_valid;	// <stdin>:3746:3, src/main/scala/rv32e/core.scala:45:27
+  assign io_out_inst = _IFU_i_to_IDU_bits_inst;	// <stdin>:3749:3, src/main/scala/rv32e/core.scala:48:27
+  assign io_out_pc = _IFU_i_to_IDU_bits_pc;	// <stdin>:3749:3, src/main/scala/rv32e/core.scala:48:27
+  assign io_out_wb = _WBU_i_to_IFU_valid;	// <stdin>:3749:3, src/main/scala/rv32e/core.scala:45:27
 endmodule
 
 
