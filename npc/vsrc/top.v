@@ -3727,13 +3727,13 @@ module top(	// <stdin>:3718:3
       valid <= 1'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, :65:27, :66:27, src/main/scala/rv32e/utils/Pipeline.scala:8:24
     else	// <stdin>:3719:11
       valid <=
-        ~(EXU_i_from_ISU_bits_r_ctrl_sig_fu_op == 3'h3 & valid & _EXU_i_from_ISU_ready
-          & _ISU_i_to_EXU_valid)
+        ~((_EXU_i_to_IFU_bits_bru_ctrl_br | _EXU_i_to_IFU_bits_csr_ctrl_br) & valid
+          & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid)
         & (_EXU_i_from_ISU_bits_T
            | ~(EXU_i_from_ISU_bits_r_ctrl_sig_fu_op == 3'h5
                | EXU_i_from_ISU_bits_r_ctrl_sig_fu_op == 3'h3
                  ? _IFU_i_from_EXU_ready
-                 : _EXU_i_to_WBU_valid) & valid);	// <stdin>:3718:3, src/main/scala/rv32e/bus/InCoreBus.scala:52:35, src/main/scala/rv32e/core.scala:44:27, :45:27, :51:27, :78:82, :82:109, src/main/scala/rv32e/utils/Pipeline.scala:8:24, :9:{25,33}, :10:{22,38,46}, :11:{20,28}, :15:28
+                 : _EXU_i_to_WBU_valid) & valid);	// <stdin>:3718:3, src/main/scala/rv32e/core.scala:44:27, :45:27, :51:27, :78:82, :83:{90,148}, src/main/scala/rv32e/utils/Pipeline.scala:8:24, :9:{25,33}, :10:{22,38,46}, :11:{20,28}, :15:28
     if (_EXU_i_from_ISU_bits_T) begin	// src/main/scala/rv32e/utils/Pipeline.scala:10:22
       EXU_i_from_ISU_bits_r_imm <= _ISU_i_to_EXU_bits_imm;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:15:28
       EXU_i_from_ISU_bits_r_pc <= _ISU_i_to_EXU_bits_pc;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:15:28
