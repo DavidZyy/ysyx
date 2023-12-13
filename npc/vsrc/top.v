@@ -1728,21 +1728,25 @@ module IFU_pipeline(
 );
 
   reg  [31:0] reg_PC;
+  reg  [31:0] inst_PC;
   wire        _from_EXU_ready_output = to_IDU_ready & to_mem_resp_valid;
   always @(posedge clock) begin
-    if (reset)
+    if (reset) begin
       reg_PC <= 32'h80000000;
+      inst_PC <= 32'h80000000;
+    end
     else if (to_mem_req_ready & to_IDU_ready) begin
       if (_from_EXU_ready_output & from_EXU_valid & from_EXU_bits_redirect)
         reg_PC <= from_EXU_bits_target;
       else
         reg_PC <= reg_PC + 32'h4;
+      inst_PC <= reg_PC;
     end
   end // always @(posedge)
   assign to_IDU_valid = _from_EXU_ready_output;
   assign to_IDU_bits_inst =
     to_IDU_ready & _from_EXU_ready_output ? to_mem_resp_bits_rdata : 32'h0;
-  assign to_IDU_bits_pc = reg_PC;
+  assign to_IDU_bits_pc = inst_PC;
   assign from_EXU_ready = _from_EXU_ready_output;
   assign to_mem_req_bits_addr = reg_PC;
 endmodule
