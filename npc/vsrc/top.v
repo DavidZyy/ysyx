@@ -1363,21 +1363,20 @@ module Lsu_simpleBus(
   wire             _to_mem_req_bits_cmd_T_5 = state_lsu == 3'h3;
   wire             _to_mem_req_valid_output =
     _to_mem_req_bits_cmd_T_5 | state_lsu == 3'h1;
+  wire [7:0][2:0]  _GEN_1 =
+    {{state_lsu},
+     {state_lsu},
+     {3'h0},
+     {{2'h2, _to_mem_resp_ready_output & to_mem_resp_valid & to_mem_resp_bits_wresp}},
+     {to_mem_req_ready & _to_mem_req_valid_output ? 3'h4 : 3'h3},
+     {_to_mem_resp_ready_output & to_mem_resp_valid ? 3'h5 : 3'h2},
+     {to_mem_req_ready & _to_mem_req_valid_output ? 3'h2 : 3'h1},
+     {io_in_valid ? {1'h0, io_in_mem_wen, 1'h1} : 3'h0}};
   always @(posedge clock) begin
     if (reset)
       state_lsu <= 3'h0;
-    else begin
-      automatic logic [7:0][2:0] _GEN_1 =
-        {{state_lsu},
-         {state_lsu},
-         {3'h0},
-         {{2'h2, _to_mem_resp_ready_output & to_mem_resp_valid & to_mem_resp_bits_wresp}},
-         {to_mem_req_ready & _to_mem_req_valid_output ? 3'h4 : 3'h3},
-         {_to_mem_resp_ready_output & to_mem_resp_valid ? 3'h5 : 3'h2},
-         {to_mem_req_ready & _to_mem_req_valid_output ? 3'h2 : 3'h1},
-         {io_in_valid ? {1'h0, io_in_mem_wen, 1'h1} : 3'h0}};
+    else
       state_lsu <= _GEN_1[state_lsu];
-    end
   end // always @(posedge)
   assign io_out_rdata =
     io_in_op == 4'h3
@@ -1443,6 +1442,7 @@ module Csr(
   wire        _io_out_r_csr_T_6 = io_in_csr_id == 32'h300;
   wire        _io_out_csr_addr_T_2 = io_in_op == 3'h2;
   wire        _io_out_r_csr_T = io_in_csr_id == 32'h305;
+  wire        _reg_mtvec_T = io_in_op == 3'h3;
   always @(posedge clock) begin
     if (reset) begin
       reg_mepc <= 32'h0;
@@ -1457,7 +1457,6 @@ module Csr(
       reg_mtvec <= {32{_io_out_r_csr_T}} & io_in_wdata | reg_mtvec;
     end
     else begin
-      automatic logic _reg_mtvec_T = io_in_op == 3'h3;
       if (_reg_mtvec_T) begin
         if (_io_out_r_csr_T_2)
           reg_mepc <= io_in_wdata;
@@ -1940,6 +1939,67 @@ module Icache_SimpleBus(
     state_cache == 3'h3 & _to_sram_r_ready_output & to_sram_r_valid;
   wire              _to_sram_ar_valid_output = state_cache == 3'h2;
   assign _to_sram_r_ready_output = state_cache == 3'h3;
+  wire              _from_ifu_req_ready_T_1 = state_cache == 3'h0;
+  wire              _GEN_5 = state_cache == 3'h2;
+  wire              _GEN_6 = _from_ifu_req_ready_T_1 | state_cache == 3'h1;
+  wire              _GEN_7 = from_ifu_req_bits_addr[7:4] == 4'h0;
+  wire              _GEN_8 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_7;
+  wire              _GEN_9 = from_ifu_req_bits_addr[7:4] == 4'h1;
+  wire              _GEN_10 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_9;
+  wire              _GEN_11 = from_ifu_req_bits_addr[7:4] == 4'h2;
+  wire              _GEN_12 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_11;
+  wire              _GEN_13 = from_ifu_req_bits_addr[7:4] == 4'h3;
+  wire              _GEN_14 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_13;
+  wire              _GEN_15 = from_ifu_req_bits_addr[7:4] == 4'h4;
+  wire              _GEN_16 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_15;
+  wire              _GEN_17 = from_ifu_req_bits_addr[7:4] == 4'h5;
+  wire              _GEN_18 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_17;
+  wire              _GEN_19 = from_ifu_req_bits_addr[7:4] == 4'h6;
+  wire              _GEN_20 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_19;
+  wire              _GEN_21 = from_ifu_req_bits_addr[7:4] == 4'h7;
+  wire              _GEN_22 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_21;
+  wire              _GEN_23 = from_ifu_req_bits_addr[7:4] == 4'h8;
+  wire              _GEN_24 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_23;
+  wire              _GEN_25 = from_ifu_req_bits_addr[7:4] == 4'h9;
+  wire              _GEN_26 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_25;
+  wire              _GEN_27 = from_ifu_req_bits_addr[7:4] == 4'hA;
+  wire              _GEN_28 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_27;
+  wire              _GEN_29 = from_ifu_req_bits_addr[7:4] == 4'hB;
+  wire              _GEN_30 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_29;
+  wire              _GEN_31 = from_ifu_req_bits_addr[7:4] == 4'hC;
+  wire              _GEN_32 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_31;
+  wire              _GEN_33 = from_ifu_req_bits_addr[7:4] == 4'hD;
+  wire              _GEN_34 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_33;
+  wire              _GEN_35 = from_ifu_req_bits_addr[7:4] == 4'hE;
+  wire              _GEN_36 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_35;
+  wire              _GEN_37 =
+    _GEN_4 & to_sram_r_bits_last & ~replace_set & (&(from_ifu_req_bits_addr[7:4]));
+  wire              _GEN_38 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_7;
+  wire              _GEN_39 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_9;
+  wire              _GEN_40 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_11;
+  wire              _GEN_41 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_13;
+  wire              _GEN_42 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_15;
+  wire              _GEN_43 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_17;
+  wire              _GEN_44 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_19;
+  wire              _GEN_45 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_21;
+  wire              _GEN_46 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_23;
+  wire              _GEN_47 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_25;
+  wire              _GEN_48 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_27;
+  wire              _GEN_49 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_29;
+  wire              _GEN_50 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_31;
+  wire              _GEN_51 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_33;
+  wire              _GEN_52 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_35;
+  wire              _GEN_53 =
+    _GEN_4 & to_sram_r_bits_last & replace_set & (&(from_ifu_req_bits_addr[7:4]));
+  wire [7:0][2:0]   _GEN_54 =
+    {{state_cache},
+     {state_cache},
+     {state_cache},
+     {3'h1},
+     {to_sram_r_bits_last ? 3'h4 : 3'h3},
+     {{2'h1, to_sram_ar_ready & _to_sram_ar_valid_output}},
+     {3'h0},
+     {_from_ifu_req_ready_T_1 & from_ifu_req_valid ? (hit ? 3'h1 : 3'h2) : 3'h0}};
   always @(posedge clock) begin
     if (reset) begin
       replace_set <= 1'h0;
@@ -2012,98 +2072,6 @@ module Icache_SimpleBus(
       state_cache <= 3'h0;
     end
     else begin
-      automatic logic            _from_ifu_req_ready_T_1 = state_cache == 3'h0;
-      automatic logic            _GEN_5;
-      automatic logic            _GEN_6 = _from_ifu_req_ready_T_1 | state_cache == 3'h1;
-      automatic logic            _GEN_7 = from_ifu_req_bits_addr[7:4] == 4'h0;
-      automatic logic            _GEN_8 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_7;
-      automatic logic            _GEN_9 = from_ifu_req_bits_addr[7:4] == 4'h1;
-      automatic logic            _GEN_10 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_9;
-      automatic logic            _GEN_11 = from_ifu_req_bits_addr[7:4] == 4'h2;
-      automatic logic            _GEN_12 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_11;
-      automatic logic            _GEN_13 = from_ifu_req_bits_addr[7:4] == 4'h3;
-      automatic logic            _GEN_14 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_13;
-      automatic logic            _GEN_15 = from_ifu_req_bits_addr[7:4] == 4'h4;
-      automatic logic            _GEN_16 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_15;
-      automatic logic            _GEN_17 = from_ifu_req_bits_addr[7:4] == 4'h5;
-      automatic logic            _GEN_18 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_17;
-      automatic logic            _GEN_19 = from_ifu_req_bits_addr[7:4] == 4'h6;
-      automatic logic            _GEN_20 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_19;
-      automatic logic            _GEN_21 = from_ifu_req_bits_addr[7:4] == 4'h7;
-      automatic logic            _GEN_22 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_21;
-      automatic logic            _GEN_23 = from_ifu_req_bits_addr[7:4] == 4'h8;
-      automatic logic            _GEN_24 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_23;
-      automatic logic            _GEN_25 = from_ifu_req_bits_addr[7:4] == 4'h9;
-      automatic logic            _GEN_26 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_25;
-      automatic logic            _GEN_27 = from_ifu_req_bits_addr[7:4] == 4'hA;
-      automatic logic            _GEN_28 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_27;
-      automatic logic            _GEN_29 = from_ifu_req_bits_addr[7:4] == 4'hB;
-      automatic logic            _GEN_30 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_29;
-      automatic logic            _GEN_31 = from_ifu_req_bits_addr[7:4] == 4'hC;
-      automatic logic            _GEN_32 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_31;
-      automatic logic            _GEN_33 = from_ifu_req_bits_addr[7:4] == 4'hD;
-      automatic logic            _GEN_34 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_33;
-      automatic logic            _GEN_35 = from_ifu_req_bits_addr[7:4] == 4'hE;
-      automatic logic            _GEN_36 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_35;
-      automatic logic            _GEN_37 =
-        _GEN_4 & to_sram_r_bits_last & ~replace_set & (&(from_ifu_req_bits_addr[7:4]));
-      automatic logic            _GEN_38 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_7;
-      automatic logic            _GEN_39 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_9;
-      automatic logic            _GEN_40 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_11;
-      automatic logic            _GEN_41 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_13;
-      automatic logic            _GEN_42 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_15;
-      automatic logic            _GEN_43 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_17;
-      automatic logic            _GEN_44 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_19;
-      automatic logic            _GEN_45 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_21;
-      automatic logic            _GEN_46 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_23;
-      automatic logic            _GEN_47 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_25;
-      automatic logic            _GEN_48 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_27;
-      automatic logic            _GEN_49 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_29;
-      automatic logic            _GEN_50 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_31;
-      automatic logic            _GEN_51 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_33;
-      automatic logic            _GEN_52 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_35;
-      automatic logic            _GEN_53 =
-        _GEN_4 & to_sram_r_bits_last & replace_set & (&(from_ifu_req_bits_addr[7:4]));
-      automatic logic [7:0][2:0] _GEN_54 =
-        {{state_cache},
-         {state_cache},
-         {state_cache},
-         {3'h1},
-         {to_sram_r_bits_last ? 3'h4 : 3'h3},
-         {{2'h1, to_sram_ar_ready & _to_sram_ar_valid_output}},
-         {3'h0},
-         {_from_ifu_req_ready_T_1 & from_ifu_req_valid ? (hit ? 3'h1 : 3'h2) : 3'h0}};
-      _GEN_5 = state_cache == 3'h2;
       if (_GEN_6 | ~_GEN_5) begin
       end
       else
@@ -2257,17 +2225,57 @@ module sram_axi_rw(
                 axi_w_ready
 );
 
-  reg         delay;
-  reg  [7:0]  reg_AxLen;
-  reg  [31:0] reg_addr;
-  reg  [1:0]  reg_burst;
-  reg  [2:0]  state_sram;
-  wire        _axi_aw_ready_output = state_sram == 3'h0;
-  wire        _axi_w_ready_T_2 = state_sram == 3'h6;
-  wire        _axi_r_valid_T_1 = state_sram == 3'h2;
-  wire        _axi_r_valid_T_2 = state_sram == 3'h3;
-  wire        _axi_r_valid_output = _axi_r_valid_T_2 | _axi_r_valid_T_1;
-  wire        _axi_w_ready_output = (&state_sram) | _axi_w_ready_T_2 | state_sram == 3'h5;
+  reg              delay;
+  reg  [7:0]       reg_AxLen;
+  reg  [31:0]      reg_addr;
+  reg  [1:0]       reg_burst;
+  reg  [2:0]       state_sram;
+  wire             _axi_aw_ready_output = state_sram == 3'h0;
+  wire             _axi_w_ready_T_2 = state_sram == 3'h6;
+  wire             _axi_r_valid_T_1 = state_sram == 3'h2;
+  wire             _axi_r_valid_T_2 = state_sram == 3'h3;
+  wire             _axi_r_valid_output = _axi_r_valid_T_2 | _axi_r_valid_T_1;
+  wire             _axi_w_ready_output =
+    (&state_sram) | _axi_w_ready_T_2 | state_sram == 3'h5;
+  wire             _GEN = _axi_aw_ready_output & axi_ar_valid;
+  wire             _GEN_0 = _axi_aw_ready_output & axi_aw_valid;
+  wire             _reg_addr_T = axi_r_ready & _axi_r_valid_output;
+  wire             _GEN_1 = state_sram == 3'h3;
+  wire             _GEN_2 = state_sram == 3'h4;
+  wire             _GEN_3 = state_sram == 3'h6;
+  wire             _reg_addr_T_6 = _axi_w_ready_output & axi_w_valid;
+  wire             _GEN_4 = _GEN_1 | _GEN_2 | state_sram == 3'h5;
+  wire [7:0]       _GEN_5 =
+    _GEN_4 | ~(_GEN_3 & _reg_addr_T_6) ? reg_AxLen : reg_AxLen - 8'h1;
+  wire [31:0]      _GEN_6 =
+    _GEN_4 | ~(_GEN_3 & reg_burst == 2'h1 & _reg_addr_T_6) ? reg_addr : reg_addr + 32'h4;
+  wire [7:0][7:0]  _GEN_7 =
+    {{_GEN_5},
+     {_GEN_5},
+     {reg_AxLen},
+     {reg_AxLen},
+     {reg_AxLen},
+     {_reg_addr_T ? reg_AxLen - 8'h1 : reg_AxLen},
+     {reg_AxLen},
+     {_GEN ? axi_ar_bits_len : _GEN_0 ? axi_aw_bits_len : reg_AxLen}};
+  wire [7:0][31:0] _GEN_8 =
+    {{_GEN_6},
+     {_GEN_6},
+     {reg_addr},
+     {reg_addr},
+     {reg_addr},
+     {reg_burst == 2'h1 & _reg_addr_T ? reg_addr + 32'h4 : reg_addr},
+     {reg_addr},
+     {_GEN ? axi_ar_bits_addr : _GEN_0 ? axi_aw_bits_addr : reg_addr}};
+  wire [7:0][2:0]  _GEN_9 =
+    {{3'h0},
+     {{2'h3, reg_AxLen == 8'h1}},
+     {{2'h3, ~(|reg_AxLen)}},
+     {{2'h2, ~delay}},
+     {3'h0},
+     {{2'h1, reg_AxLen == 8'h1}},
+     {delay ? 3'h1 : {2'h1, ~(|reg_AxLen)}},
+     {_GEN ? 3'h1 : {_GEN_0, 2'h0}}};
   always @(posedge clock) begin
     if (reset) begin
       delay <= 1'h0;
@@ -2277,49 +2285,12 @@ module sram_axi_rw(
       state_sram <= 3'h0;
     end
     else begin
-      automatic logic             _GEN;
-      automatic logic             _GEN_0;
-      automatic logic             _reg_addr_T = axi_r_ready & _axi_r_valid_output;
-      automatic logic             _GEN_1 = state_sram == 3'h3;
-      automatic logic             _GEN_2 = state_sram == 3'h4;
-      automatic logic             _GEN_3 = state_sram == 3'h6;
-      automatic logic             _reg_addr_T_6 = _axi_w_ready_output & axi_w_valid;
-      automatic logic             _GEN_4 = _GEN_1 | _GEN_2 | state_sram == 3'h5;
-      automatic logic [7:0]       _GEN_5 =
-        _GEN_4 | ~(_GEN_3 & _reg_addr_T_6) ? reg_AxLen : reg_AxLen - 8'h1;
-      automatic logic [31:0]      _GEN_6 =
-        _GEN_4 | ~(_GEN_3 & reg_burst == 2'h1 & _reg_addr_T_6)
-          ? reg_addr
-          : reg_addr + 32'h4;
-      automatic logic [7:0][7:0]  _GEN_7;
-      automatic logic [7:0][31:0] _GEN_8;
-      automatic logic [7:0][2:0]  _GEN_9;
-      _GEN = _axi_aw_ready_output & axi_ar_valid;
-      _GEN_0 = _axi_aw_ready_output & axi_aw_valid;
       delay <=
         ~_axi_aw_ready_output
         & (state_sram == 3'h1
              ? delay - 1'h1
              : state_sram == 3'h2 | _GEN_1 | ~_GEN_2 ? delay : delay - 1'h1);
-      _GEN_7 =
-        {{_GEN_5},
-         {_GEN_5},
-         {reg_AxLen},
-         {reg_AxLen},
-         {reg_AxLen},
-         {_reg_addr_T ? reg_AxLen - 8'h1 : reg_AxLen},
-         {reg_AxLen},
-         {_GEN ? axi_ar_bits_len : _GEN_0 ? axi_aw_bits_len : reg_AxLen}};
       reg_AxLen <= _GEN_7[state_sram];
-      _GEN_8 =
-        {{_GEN_6},
-         {_GEN_6},
-         {reg_addr},
-         {reg_addr},
-         {reg_addr},
-         {reg_burst == 2'h1 & _reg_addr_T ? reg_addr + 32'h4 : reg_addr},
-         {reg_addr},
-         {_GEN ? axi_ar_bits_addr : _GEN_0 ? axi_aw_bits_addr : reg_addr}};
       reg_addr <= _GEN_8[state_sram];
       if (_axi_aw_ready_output) begin
         if (_GEN)
@@ -2327,15 +2298,6 @@ module sram_axi_rw(
         else if (_GEN_0)
           reg_burst <= axi_aw_bits_burst;
       end
-      _GEN_9 =
-        {{3'h0},
-         {{2'h3, reg_AxLen == 8'h1}},
-         {{2'h3, ~(|reg_AxLen)}},
-         {{2'h2, ~delay}},
-         {3'h0},
-         {{2'h1, reg_AxLen == 8'h1}},
-         {delay ? 3'h1 : {2'h1, ~(|reg_AxLen)}},
-         {_GEN ? 3'h1 : {_GEN_0, 2'h0}}};
       state_sram <= _GEN_9[state_sram];
     end
   end // always @(posedge)
@@ -2398,6 +2360,7 @@ module SimpleBusCrossBar1toN(
     outSelVec_enc[0] & io_out_0_req_ready | outSelVec_enc[1] | reqInvalidAddr;
   wire       _io_in_resp_valid_output =
     outSelRespVec_0 & io_out_0_resp_valid | outSelRespVec_1 | state == 2'h2;
+  wire       _outSelRespVec_T = _io_in_req_ready_output & io_in_req_valid;
   always @(posedge clock) begin
     if (reset) begin
       state <= 2'h0;
@@ -2405,8 +2368,6 @@ module SimpleBusCrossBar1toN(
       outSelRespVec_1 <= 1'h0;
     end
     else begin
-      automatic logic _outSelRespVec_T;
-      _outSelRespVec_T = _io_in_req_ready_output & io_in_req_valid;
       if (|state) begin
         if ((state == 2'h1 | state == 2'h2) & io_in_resp_ready & _io_in_resp_valid_output)
           state <= 2'h0;
@@ -2703,6 +2664,107 @@ module Dcache_SimpleBus(
   wire              _to_sram_aw_valid_output = state_dcache == 4'h4;
   wire [15:0][23:0] _GEN_6 = replace_set ? _GEN_1 : _GEN;
   wire              _to_sram_w_valid_output = state_dcache == 4'h5;
+  wire              _GEN_7 = _from_lsu_req_ready_output & from_lsu_req_valid;
+  wire              _GEN_8 = from_lsu_req_bits_addr[7:4] == 4'h0;
+  wire              _GEN_9 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_8;
+  wire              _GEN_10 = from_lsu_req_bits_addr[7:4] == 4'h1;
+  wire              _GEN_11 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_10;
+  wire              _GEN_12 = from_lsu_req_bits_addr[7:4] == 4'h2;
+  wire              _GEN_13 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_12;
+  wire              _GEN_14 = from_lsu_req_bits_addr[7:4] == 4'h3;
+  wire              _GEN_15 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_14;
+  wire              _GEN_16 = from_lsu_req_bits_addr[7:4] == 4'h4;
+  wire              _GEN_17 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_16;
+  wire              _GEN_18 = from_lsu_req_bits_addr[7:4] == 4'h5;
+  wire              _GEN_19 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_18;
+  wire              _GEN_20 = from_lsu_req_bits_addr[7:4] == 4'h6;
+  wire              _GEN_21 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_20;
+  wire              _GEN_22 = from_lsu_req_bits_addr[7:4] == 4'h7;
+  wire              _GEN_23 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_22;
+  wire              _GEN_24 = from_lsu_req_bits_addr[7:4] == 4'h8;
+  wire              _GEN_25 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_24;
+  wire              _GEN_26 = from_lsu_req_bits_addr[7:4] == 4'h9;
+  wire              _GEN_27 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_26;
+  wire              _GEN_28 = from_lsu_req_bits_addr[7:4] == 4'hA;
+  wire              _GEN_29 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_28;
+  wire              _GEN_30 = from_lsu_req_bits_addr[7:4] == 4'hB;
+  wire              _GEN_31 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_30;
+  wire              _GEN_32 = from_lsu_req_bits_addr[7:4] == 4'hC;
+  wire              _GEN_33 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_32;
+  wire              _GEN_34 = from_lsu_req_bits_addr[7:4] == 4'hD;
+  wire              _GEN_35 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_34;
+  wire              _GEN_36 = from_lsu_req_bits_addr[7:4] == 4'hE;
+  wire              _GEN_37 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_36;
+  wire              _GEN_38 =
+    _GEN_5 & to_sram_r_bits_last & ~replace_set & (&(from_lsu_req_bits_addr[7:4]));
+  wire              _GEN_39 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_8;
+  wire              _GEN_40 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_10;
+  wire              _GEN_41 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_12;
+  wire              _GEN_42 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_14;
+  wire              _GEN_43 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_16;
+  wire              _GEN_44 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_18;
+  wire              _GEN_45 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_20;
+  wire              _GEN_46 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_22;
+  wire              _GEN_47 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_24;
+  wire              _GEN_48 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_26;
+  wire              _GEN_49 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_28;
+  wire              _GEN_50 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_30;
+  wire              _GEN_51 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_32;
+  wire              _GEN_52 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_34;
+  wire              _GEN_53 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_36;
+  wire              _GEN_54 =
+    _GEN_5 & to_sram_r_bits_last & replace_set & (&(from_lsu_req_bits_addr[7:4]));
+  wire [15:0]       _GEN_55 =
+    replace_set
+      ? {{dirtyArray_1_15},
+         {dirtyArray_1_14},
+         {dirtyArray_1_13},
+         {dirtyArray_1_12},
+         {dirtyArray_1_11},
+         {dirtyArray_1_10},
+         {dirtyArray_1_9},
+         {dirtyArray_1_8},
+         {dirtyArray_1_7},
+         {dirtyArray_1_6},
+         {dirtyArray_1_5},
+         {dirtyArray_1_4},
+         {dirtyArray_1_3},
+         {dirtyArray_1_2},
+         {dirtyArray_1_1},
+         {dirtyArray_1_0}}
+      : {{dirtyArray_0_15},
+         {dirtyArray_0_14},
+         {dirtyArray_0_13},
+         {dirtyArray_0_12},
+         {dirtyArray_0_11},
+         {dirtyArray_0_10},
+         {dirtyArray_0_9},
+         {dirtyArray_0_8},
+         {dirtyArray_0_7},
+         {dirtyArray_0_6},
+         {dirtyArray_0_5},
+         {dirtyArray_0_4},
+         {dirtyArray_0_3},
+         {dirtyArray_0_2},
+         {dirtyArray_0_1},
+         {dirtyArray_0_0}};
+  wire [15:0][3:0]  _GEN_56 =
+    {{state_dcache},
+     {state_dcache},
+     {state_dcache},
+     {state_dcache},
+     {state_dcache},
+     {state_dcache},
+     {from_lsu_req_bits_cmd == 4'h1 ? 4'h2 : 4'h1},
+     {{3'h4, to_sram_r_bits_last}},
+     {to_sram_ar_ready & _to_sram_ar_valid_output ? 4'h8 : 4'h7},
+     {4'h7},
+     {(&off) ? 4'h6 : 4'h5},
+     {{3'h2, to_sram_aw_ready & _to_sram_aw_valid_output}},
+     {_GEN_55[from_lsu_req_bits_addr[7:4]] ? 4'h4 : 4'h7},
+     {4'h0},
+     {4'h0},
+     {_GEN_7 ? (hit ? (from_lsu_req_bits_cmd == 4'h1 ? 4'h2 : 4'h1) : 4'h3) : 4'h0}};
   always @(posedge clock) begin
     if (reset) begin
       replace_set <= 1'h0;
@@ -2807,138 +2869,6 @@ module Dcache_SimpleBus(
       state_dcache <= 4'h0;
     end
     else begin
-      automatic logic             _GEN_7 =
-        _from_lsu_req_ready_output & from_lsu_req_valid;
-      automatic logic             _GEN_8 = from_lsu_req_bits_addr[7:4] == 4'h0;
-      automatic logic             _GEN_9 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_8;
-      automatic logic             _GEN_10 = from_lsu_req_bits_addr[7:4] == 4'h1;
-      automatic logic             _GEN_11 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_10;
-      automatic logic             _GEN_12 = from_lsu_req_bits_addr[7:4] == 4'h2;
-      automatic logic             _GEN_13 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_12;
-      automatic logic             _GEN_14 = from_lsu_req_bits_addr[7:4] == 4'h3;
-      automatic logic             _GEN_15 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_14;
-      automatic logic             _GEN_16 = from_lsu_req_bits_addr[7:4] == 4'h4;
-      automatic logic             _GEN_17 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_16;
-      automatic logic             _GEN_18 = from_lsu_req_bits_addr[7:4] == 4'h5;
-      automatic logic             _GEN_19 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_18;
-      automatic logic             _GEN_20 = from_lsu_req_bits_addr[7:4] == 4'h6;
-      automatic logic             _GEN_21 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_20;
-      automatic logic             _GEN_22 = from_lsu_req_bits_addr[7:4] == 4'h7;
-      automatic logic             _GEN_23 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_22;
-      automatic logic             _GEN_24 = from_lsu_req_bits_addr[7:4] == 4'h8;
-      automatic logic             _GEN_25 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_24;
-      automatic logic             _GEN_26 = from_lsu_req_bits_addr[7:4] == 4'h9;
-      automatic logic             _GEN_27 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_26;
-      automatic logic             _GEN_28 = from_lsu_req_bits_addr[7:4] == 4'hA;
-      automatic logic             _GEN_29 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_28;
-      automatic logic             _GEN_30 = from_lsu_req_bits_addr[7:4] == 4'hB;
-      automatic logic             _GEN_31 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_30;
-      automatic logic             _GEN_32 = from_lsu_req_bits_addr[7:4] == 4'hC;
-      automatic logic             _GEN_33 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_32;
-      automatic logic             _GEN_34 = from_lsu_req_bits_addr[7:4] == 4'hD;
-      automatic logic             _GEN_35 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_34;
-      automatic logic             _GEN_36 = from_lsu_req_bits_addr[7:4] == 4'hE;
-      automatic logic             _GEN_37 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_36;
-      automatic logic             _GEN_38 =
-        _GEN_5 & to_sram_r_bits_last & ~replace_set & (&(from_lsu_req_bits_addr[7:4]));
-      automatic logic             _GEN_39 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_8;
-      automatic logic             _GEN_40 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_10;
-      automatic logic             _GEN_41 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_12;
-      automatic logic             _GEN_42 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_14;
-      automatic logic             _GEN_43 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_16;
-      automatic logic             _GEN_44 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_18;
-      automatic logic             _GEN_45 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_20;
-      automatic logic             _GEN_46 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_22;
-      automatic logic             _GEN_47 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_24;
-      automatic logic             _GEN_48 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_26;
-      automatic logic             _GEN_49 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_28;
-      automatic logic             _GEN_50 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_30;
-      automatic logic             _GEN_51 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_32;
-      automatic logic             _GEN_52 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_34;
-      automatic logic             _GEN_53 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_36;
-      automatic logic             _GEN_54 =
-        _GEN_5 & to_sram_r_bits_last & replace_set & (&(from_lsu_req_bits_addr[7:4]));
-      automatic logic [15:0]      _GEN_55 =
-        replace_set
-          ? {{dirtyArray_1_15},
-             {dirtyArray_1_14},
-             {dirtyArray_1_13},
-             {dirtyArray_1_12},
-             {dirtyArray_1_11},
-             {dirtyArray_1_10},
-             {dirtyArray_1_9},
-             {dirtyArray_1_8},
-             {dirtyArray_1_7},
-             {dirtyArray_1_6},
-             {dirtyArray_1_5},
-             {dirtyArray_1_4},
-             {dirtyArray_1_3},
-             {dirtyArray_1_2},
-             {dirtyArray_1_1},
-             {dirtyArray_1_0}}
-          : {{dirtyArray_0_15},
-             {dirtyArray_0_14},
-             {dirtyArray_0_13},
-             {dirtyArray_0_12},
-             {dirtyArray_0_11},
-             {dirtyArray_0_10},
-             {dirtyArray_0_9},
-             {dirtyArray_0_8},
-             {dirtyArray_0_7},
-             {dirtyArray_0_6},
-             {dirtyArray_0_5},
-             {dirtyArray_0_4},
-             {dirtyArray_0_3},
-             {dirtyArray_0_2},
-             {dirtyArray_0_1},
-             {dirtyArray_0_0}};
-      automatic logic [15:0][3:0] _GEN_56 =
-        {{state_dcache},
-         {state_dcache},
-         {state_dcache},
-         {state_dcache},
-         {state_dcache},
-         {state_dcache},
-         {from_lsu_req_bits_cmd == 4'h1 ? 4'h2 : 4'h1},
-         {{3'h4, to_sram_r_bits_last}},
-         {to_sram_ar_ready & _to_sram_ar_valid_output ? 4'h8 : 4'h7},
-         {4'h7},
-         {(&off) ? 4'h6 : 4'h5},
-         {{3'h2, to_sram_aw_ready & _to_sram_aw_valid_output}},
-         {_GEN_55[from_lsu_req_bits_addr[7:4]] ? 4'h4 : 4'h7},
-         {4'h0},
-         {4'h0},
-         {_GEN_7 ? (hit ? (from_lsu_req_bits_cmd == 4'h1 ? 4'h2 : 4'h1) : 4'h3) : 4'h0}};
       if (~(_from_lsu_req_ready_output & _GEN_7) | hit) begin
       end
       else
@@ -3298,13 +3228,11 @@ module top(
   reg  [2:0]  EXU_i_from_ISU_bits_r_ctrl_sig_csr_op;
   reg  [3:0]  EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op;
   reg  [31:0] EXU_i_from_ISU_bits_r_inst;
+  wire        _GEN =
+    (_EXU_i_to_IFU_bits_bru_ctrl_br | _EXU_i_to_IFU_bits_csr_ctrl_br) & valid
+    & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;
+  wire        _EXU_i_from_ISU_bits_T_1 = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;
   always @(posedge clock) begin
-    automatic logic _GEN;
-    automatic logic _EXU_i_from_ISU_bits_T_1;
-    _GEN =
-      (_EXU_i_to_IFU_bits_bru_ctrl_br | _EXU_i_to_IFU_bits_csr_ctrl_br) & valid
-      & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;
-    _EXU_i_from_ISU_bits_T_1 = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;
     if (reset)
       valid <= 1'h0;
     else
