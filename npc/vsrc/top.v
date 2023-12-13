@@ -3721,38 +3721,63 @@ module top(	// <stdin>:3720:3
   reg  [3:0]  EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op;	// src/main/scala/rv32e/utils/Pipeline.scala:19:28
   reg  [31:0] EXU_i_from_ISU_bits_r_inst;	// src/main/scala/rv32e/utils/Pipeline.scala:19:28
   always @(posedge clock) begin	// <stdin>:3721:11
-    automatic logic _EXU_i_from_ISU_bits_T;	// src/main/scala/rv32e/utils/Pipeline.scala:14:22
-    _EXU_i_from_ISU_bits_T = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;	// src/main/scala/rv32e/core.scala:44:27, :45:27, src/main/scala/rv32e/utils/Pipeline.scala:14:22
+    automatic logic _GEN;	// src/main/scala/rv32e/core.scala:83:148
+    automatic logic _EXU_i_from_ISU_bits_T_1;	// src/main/scala/rv32e/utils/Pipeline.scala:14:22
+    _GEN =
+      (_EXU_i_to_IFU_bits_bru_ctrl_br | _EXU_i_to_IFU_bits_csr_ctrl_br) & valid
+      & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;	// src/main/scala/rv32e/core.scala:44:27, :45:27, :83:{90,148}, src/main/scala/rv32e/utils/Pipeline.scala:12:24
+    _EXU_i_from_ISU_bits_T_1 = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;	// src/main/scala/rv32e/core.scala:44:27, :45:27, src/main/scala/rv32e/utils/Pipeline.scala:14:22
     if (reset)	// <stdin>:3721:11
       valid <= 1'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, :65:27, :66:27, src/main/scala/rv32e/utils/Pipeline.scala:12:24
     else	// <stdin>:3721:11
       valid <=
-        ~((_EXU_i_to_IFU_bits_bru_ctrl_br | _EXU_i_to_IFU_bits_csr_ctrl_br) & valid
-          & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid)
-        & (_EXU_i_from_ISU_bits_T
+        ~_GEN
+        & (_EXU_i_from_ISU_bits_T_1
            | ~(EXU_i_from_ISU_bits_r_ctrl_sig_fu_op == 3'h5
                | EXU_i_from_ISU_bits_r_ctrl_sig_fu_op == 3'h3
                  ? _IFU_i_from_EXU_ready
-                 : _EXU_i_to_WBU_valid) & valid);	// <stdin>:3720:3, src/main/scala/rv32e/core.scala:44:27, :45:27, :51:27, :78:82, :83:{90,148}, src/main/scala/rv32e/utils/Pipeline.scala:12:24, :13:{25,33}, :14:{22,38,46}, :15:{20,28}, :19:28
-    if (_EXU_i_from_ISU_bits_T) begin	// src/main/scala/rv32e/utils/Pipeline.scala:14:22
-      EXU_i_from_ISU_bits_r_imm <= _ISU_i_to_EXU_bits_imm;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_pc <= _ISU_i_to_EXU_bits_pc;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_rdata1 <= _ISU_i_to_EXU_bits_rdata1;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_rdata2 <= _ISU_i_to_EXU_bits_rdata2;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_rd <= _ISU_i_to_EXU_bits_rd;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_reg_wen <= _ISU_i_to_EXU_bits_ctrl_sig_reg_wen;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_fu_op <= _ISU_i_to_EXU_bits_ctrl_sig_fu_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_mem_wen <= _ISU_i_to_EXU_bits_ctrl_sig_mem_wen;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_is_ebreak <= _ISU_i_to_EXU_bits_ctrl_sig_is_ebreak;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_not_impl <= _ISU_i_to_EXU_bits_ctrl_sig_not_impl;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_src1_op <= _ISU_i_to_EXU_bits_ctrl_sig_src1_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_src2_op <= _ISU_i_to_EXU_bits_ctrl_sig_src2_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_alu_op <= _ISU_i_to_EXU_bits_ctrl_sig_alu_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_lsu_op <= _ISU_i_to_EXU_bits_ctrl_sig_lsu_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_bru_op <= _ISU_i_to_EXU_bits_ctrl_sig_bru_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_csr_op <= _ISU_i_to_EXU_bits_ctrl_sig_csr_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op <= _ISU_i_to_EXU_bits_ctrl_sig_mdu_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
-      EXU_i_from_ISU_bits_r_inst <= _ISU_i_to_EXU_bits_inst;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+                 : _EXU_i_to_WBU_valid) & valid);	// <stdin>:3720:3, src/main/scala/rv32e/core.scala:45:27, :51:27, :78:82, :83:148, src/main/scala/rv32e/utils/Pipeline.scala:12:24, :13:{25,33}, :14:{22,38,46}, :15:{20,28}, :19:28
+    if (_EXU_i_from_ISU_bits_T_1) begin	// src/main/scala/rv32e/utils/Pipeline.scala:14:22
+      if (_GEN) begin	// src/main/scala/rv32e/core.scala:83:148
+        EXU_i_from_ISU_bits_r_imm <= 32'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_pc <= 32'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_rdata1 <= 32'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_rdata2 <= 32'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_rd <= 5'h0;	// src/main/scala/rv32e/utils/Pipeline.scala:17:26, :19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_fu_op <= 3'h0;	// <stdin>:3720:3, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_src1_op <= 2'h0;	// src/main/scala/rv32e/core.scala:52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_src2_op <= 2'h0;	// src/main/scala/rv32e/core.scala:52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_alu_op <= 4'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_lsu_op <= 4'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_bru_op <= 4'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_csr_op <= 3'h0;	// <stdin>:3720:3, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op <= 4'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_inst <= 32'h0;	// src/main/scala/rv32e/core.scala:51:27, :52:27, :53:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+      end
+      else begin	// src/main/scala/rv32e/core.scala:83:148
+        EXU_i_from_ISU_bits_r_imm <= _ISU_i_to_EXU_bits_imm;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_pc <= _ISU_i_to_EXU_bits_pc;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_rdata1 <= _ISU_i_to_EXU_bits_rdata1;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_rdata2 <= _ISU_i_to_EXU_bits_rdata2;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_rd <= _ISU_i_to_EXU_bits_rd;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_fu_op <= _ISU_i_to_EXU_bits_ctrl_sig_fu_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_src1_op <= _ISU_i_to_EXU_bits_ctrl_sig_src1_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_src2_op <= _ISU_i_to_EXU_bits_ctrl_sig_src2_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_alu_op <= _ISU_i_to_EXU_bits_ctrl_sig_alu_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_lsu_op <= _ISU_i_to_EXU_bits_ctrl_sig_lsu_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_bru_op <= _ISU_i_to_EXU_bits_ctrl_sig_bru_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_csr_op <= _ISU_i_to_EXU_bits_ctrl_sig_csr_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op <= _ISU_i_to_EXU_bits_ctrl_sig_mdu_op;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+        EXU_i_from_ISU_bits_r_inst <= _ISU_i_to_EXU_bits_inst;	// src/main/scala/rv32e/core.scala:44:27, src/main/scala/rv32e/utils/Pipeline.scala:19:28
+      end
+      EXU_i_from_ISU_bits_r_ctrl_sig_reg_wen <=
+        ~_GEN & _ISU_i_to_EXU_bits_ctrl_sig_reg_wen;	// src/main/scala/rv32e/core.scala:44:27, :83:148, src/main/scala/rv32e/utils/Pipeline.scala:14:38, :15:{20,28}, :19:{28,32}
+      EXU_i_from_ISU_bits_r_ctrl_sig_mem_wen <=
+        ~_GEN & _ISU_i_to_EXU_bits_ctrl_sig_mem_wen;	// src/main/scala/rv32e/core.scala:44:27, :83:148, src/main/scala/rv32e/utils/Pipeline.scala:14:38, :15:{20,28}, :19:{28,32}
+      EXU_i_from_ISU_bits_r_ctrl_sig_is_ebreak <=
+        ~_GEN & _ISU_i_to_EXU_bits_ctrl_sig_is_ebreak;	// src/main/scala/rv32e/core.scala:44:27, :83:148, src/main/scala/rv32e/utils/Pipeline.scala:14:38, :15:{20,28}, :19:{28,32}
+      EXU_i_from_ISU_bits_r_ctrl_sig_not_impl <=
+        ~_GEN & _ISU_i_to_EXU_bits_ctrl_sig_not_impl;	// src/main/scala/rv32e/core.scala:44:27, :83:148, src/main/scala/rv32e/utils/Pipeline.scala:14:38, :15:{20,28}, :19:{28,32}
     end
   end // always @(posedge)
   `ifdef ENABLE_INITIAL_REG_	// <stdin>:3720:3
