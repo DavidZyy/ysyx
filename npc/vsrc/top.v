@@ -1717,6 +1717,7 @@ module IFU_pipeline(
                 from_EXU_valid,
   input  [31:0] from_EXU_bits_target,
   input         from_EXU_bits_redirect,
+                to_mem_req_ready,
                 to_mem_resp_valid,
   input  [31:0] to_mem_resp_bits_rdata,
   output        to_IDU_valid,
@@ -1727,13 +1728,14 @@ module IFU_pipeline(
   output [31:0] to_mem_req_bits_addr
 );
 
+  wire        _from_EXU_ready_output;
   reg  [31:0] reg_PC;
-  wire        _from_EXU_ready_output = to_IDU_ready & to_mem_resp_valid;
   wire        _to_IDU_bits_inst_T = to_IDU_ready & _from_EXU_ready_output;
+  assign _from_EXU_ready_output = to_IDU_ready & to_mem_resp_valid;
   always @(posedge clock) begin
     if (reset)
       reg_PC <= 32'h80000000;
-    else if (_from_EXU_ready_output & _to_IDU_bits_inst_T) begin
+    else if (to_mem_req_ready & to_IDU_ready & _to_IDU_bits_inst_T) begin
       if (_from_EXU_ready_output & from_EXU_valid & from_EXU_bits_redirect)
         reg_PC <= from_EXU_bits_target;
       else
@@ -1783,7 +1785,8 @@ module Icache_SimpleBus(
                 to_sram_r_valid,
   input  [31:0] to_sram_r_bits_data,
   input         to_sram_r_bits_last,
-  output        from_ifu_resp_valid,
+  output        from_ifu_req_ready,
+                from_ifu_resp_valid,
   output [31:0] from_ifu_resp_bits_rdata,
   output        to_sram_ar_valid,
   output [31:0] to_sram_ar_bits_addr,
@@ -1934,13 +1937,13 @@ module Icache_SimpleBus(
     & _GEN_3[from_ifu_req_bits_addr[7:4]];
   reg  [1:0]        off;
   reg  [2:0]        state_cache;
+  wire              _from_ifu_req_ready_output = state_cache == 3'h0;
   wire              _GEN_4 =
     state_cache == 3'h3 & _to_sram_r_ready_output & to_sram_r_valid;
   wire              _to_sram_ar_valid_output = state_cache == 3'h2;
   assign _to_sram_r_ready_output = state_cache == 3'h3;
-  wire              _from_ifu_req_ready_T_1 = state_cache == 3'h0;
   wire              _GEN_5 = state_cache == 3'h2;
-  wire              _GEN_6 = _from_ifu_req_ready_T_1 | state_cache == 3'h1;
+  wire              _GEN_6 = _from_ifu_req_ready_output | state_cache == 3'h1;
   wire              _GEN_7 = from_ifu_req_bits_addr[7:4] == 4'h0;
   wire              _GEN_8 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_7;
   wire              _GEN_9 = from_ifu_req_bits_addr[7:4] == 4'h1;
@@ -1998,7 +2001,7 @@ module Icache_SimpleBus(
      {to_sram_r_bits_last ? 3'h4 : 3'h3},
      {{2'h1, to_sram_ar_ready & _to_sram_ar_valid_output}},
      {3'h0},
-     {_from_ifu_req_ready_T_1 & from_ifu_req_valid ? (hit ? 3'h1 : 3'h2) : 3'h0}};
+     {_from_ifu_req_ready_output & from_ifu_req_valid ? (hit ? 3'h1 : 3'h2) : 3'h0}};
   always @(posedge clock) begin
     if (reset) begin
       replace_set <= 1'h0;
@@ -2191,6 +2194,7 @@ module Icache_SimpleBus(
     .W0_data (to_sram_r_bits_data),
     .R0_data (_dataArray_ext_R0_data)
   );
+  assign from_ifu_req_ready = _from_ifu_req_ready_output;
   assign from_ifu_resp_valid = state_cache == 3'h1;
   assign from_ifu_resp_bits_rdata = hit ? _dataArray_ext_R0_data : 32'h13;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
@@ -3133,6 +3137,7 @@ module top(
   wire        _sram_i_axi_r_valid;
   wire [31:0] _sram_i_axi_r_bits_data;
   wire        _sram_i_axi_r_bits_last;
+  wire        _icache_from_ifu_req_ready;
   wire        _icache_from_ifu_resp_valid;
   wire [31:0] _icache_from_ifu_resp_bits_rdata;
   wire        _icache_to_sram_ar_valid;
@@ -3423,6 +3428,7 @@ module top(
     .from_EXU_valid         (_EXU_i_to_IFU_valid),
     .from_EXU_bits_target   (_EXU_i_to_IFU_bits_target),
     .from_EXU_bits_redirect (_EXU_i_to_IFU_bits_redirect),
+    .to_mem_req_ready       (_icache_from_ifu_req_ready),
     .to_mem_resp_valid      (_icache_from_ifu_resp_valid),
     .to_mem_resp_bits_rdata (_icache_from_ifu_resp_bits_rdata),
     .to_IDU_valid           (_IFU_i_to_IDU_valid),
@@ -3441,6 +3447,7 @@ module top(
     .to_sram_r_valid          (_sram_i_axi_r_valid),
     .to_sram_r_bits_data      (_sram_i_axi_r_bits_data),
     .to_sram_r_bits_last      (_sram_i_axi_r_bits_last),
+    .from_ifu_req_ready       (_icache_from_ifu_req_ready),
     .from_ifu_resp_valid      (_icache_from_ifu_resp_valid),
     .from_ifu_resp_bits_rdata (_icache_from_ifu_resp_bits_rdata),
     .to_sram_ar_valid         (_icache_to_sram_ar_valid),
