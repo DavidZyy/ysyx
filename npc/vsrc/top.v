@@ -1727,14 +1727,12 @@ module IFU_pipeline(
   output [31:0] to_mem_req_bits_addr
 );
 
-  wire        _from_EXU_ready_output;
   reg  [31:0] reg_PC;
-  wire        _to_IDU_bits_inst_T = to_IDU_ready & _from_EXU_ready_output;
-  assign _from_EXU_ready_output = to_IDU_ready & to_mem_resp_valid;
+  wire        _from_EXU_ready_output = to_IDU_ready & to_mem_resp_valid;
   always @(posedge clock) begin
     if (reset)
       reg_PC <= 32'h80000000;
-    else if (to_mem_req_ready & to_IDU_ready & _to_IDU_bits_inst_T) begin
+    else if (to_mem_req_ready & to_IDU_ready) begin
       if (_from_EXU_ready_output & from_EXU_valid & from_EXU_bits_redirect)
         reg_PC <= from_EXU_bits_target;
       else
@@ -1742,7 +1740,8 @@ module IFU_pipeline(
     end
   end // always @(posedge)
   assign to_IDU_valid = _from_EXU_ready_output;
-  assign to_IDU_bits_inst = _to_IDU_bits_inst_T ? to_mem_resp_bits_rdata : 32'h0;
+  assign to_IDU_bits_inst =
+    to_IDU_ready & _from_EXU_ready_output ? to_mem_resp_bits_rdata : 32'h0;
   assign to_IDU_bits_pc = reg_PC;
   assign from_EXU_ready = _from_EXU_ready_output;
   assign to_mem_req_bits_addr = reg_PC;
@@ -2190,7 +2189,7 @@ module Icache_pipeline(
   );
   assign from_ifu_req_ready = hit;
   assign from_ifu_resp_valid = dataHit & ~(|state_cache);
-  assign from_ifu_resp_bits_rdata = hit ? _dataArray_ext_R0_data : 32'h0;
+  assign from_ifu_resp_bits_rdata = dataHit ? _dataArray_ext_R0_data : 32'h0;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
   assign to_sram_ar_bits_addr =
     _to_sram_ar_valid_output ? {from_ifu_req_bits_addr[31:4], 4'h0} : 32'h0;
