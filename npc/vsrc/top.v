@@ -3233,13 +3233,7 @@ module top(
     if (reset)
       valid <= 1'h0;
     else
-      valid <=
-        ~_GEN
-        & (_EXU_i_from_ISU_bits_T_1
-           | ~(EXU_i_from_ISU_bits_r_ctrl_sig_fu_op == 3'h5
-               | EXU_i_from_ISU_bits_r_ctrl_sig_fu_op == 3'h3
-                 ? _IFU_i_from_EXU_ready & _EXU_i_to_IFU_valid
-                 : _EXU_i_to_WBU_valid) & valid);
+      valid <= ~_GEN & (_EXU_i_from_ISU_bits_T_1 | ~_EXU_i_to_WBU_valid & valid);
     if (_EXU_i_from_ISU_bits_T_1) begin
       if (_GEN) begin
         EXU_i_from_ISU_bits_r_imm <= 32'h0;
