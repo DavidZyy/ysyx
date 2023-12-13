@@ -1569,10 +1569,8 @@ module EXU_pipeline(
   output [4:0]  to_WBU_bits_rd,
   output [2:0]  to_WBU_bits_fu_op,
   output [31:0] to_WBU_bits_inst,
-  output        to_IFU_bits_bru_ctrl_br,
-  output [31:0] to_IFU_bits_bru_addr,
-  output        to_IFU_bits_csr_ctrl_br,
-  output [31:0] to_IFU_bits_csr_addr,
+  output        to_IFU_valid,
+  output [31:0] to_IFU_bits_target,
                 difftest_mcause,
                 difftest_mepc,
                 difftest_mstatus,
@@ -1585,13 +1583,17 @@ module EXU_pipeline(
   output        lsu_to_mem_resp_ready
 );
 
+  wire        _to_IFU_valid_output;
   wire        _Csr_i_io_out_csr_br;
+  wire [31:0] _Csr_i_io_out_csr_addr;
   wire        _Lsu_i_io_out_end;
   wire        _Bru_i_io_out_ctrl_br;
   wire [31:0] _Alu_i_io_out_result;
-  wire        _GEN = from_ISU_bits_ctrl_sig_fu_op != 3'h4;
-  wire        _from_ISU_ready_output = _GEN | ~from_ISU_valid | _Lsu_i_io_out_end;
-  wire        _to_IFU_bits_csr_ctrl_br_T_2 = _from_ISU_ready_output & from_ISU_valid;
+  wire        _to_IFU_bits_target_T_2 = from_ISU_bits_ctrl_sig_fu_op == 3'h4;
+  wire        _from_ISU_ready_output =
+    ~_to_IFU_bits_target_T_2 | ~from_ISU_valid | _Lsu_i_io_out_end;
+  wire        _to_IFU_bits_target_T = from_ISU_bits_ctrl_sig_fu_op == 3'h3;
+  assign _to_IFU_valid_output = _Bru_i_io_out_ctrl_br | _Csr_i_io_out_csr_br;
   Alu Alu_i (
     .io_in_src1
       (from_ISU_bits_ctrl_sig_src1_op == 2'h1
@@ -1645,7 +1647,7 @@ module EXU_pipeline(
     .io_in_csr_id            (from_ISU_bits_imm),
     .io_in_wdata             (from_ISU_bits_rdata1),
     .io_out_csr_br           (_Csr_i_io_out_csr_br),
-    .io_out_csr_addr         (to_IFU_bits_csr_addr),
+    .io_out_csr_addr         (_Csr_i_io_out_csr_addr),
     .io_out_r_csr            (to_WBU_bits_csr_rdata),
     .io_out_difftest_mcause  (difftest_mcause),
     .io_out_difftest_mepc    (difftest_mepc),
@@ -1660,23 +1662,21 @@ module EXU_pipeline(
   );
   assign from_ISU_ready = _from_ISU_ready_output;
   assign to_WBU_valid =
-    _to_IFU_bits_csr_ctrl_br_T_2
-    & (from_ISU_bits_ctrl_sig_fu_op == 3'h3 | from_ISU_bits_ctrl_sig_fu_op == 3'h5
-         ? to_IFU_ready
-         : _GEN | _Lsu_i_io_out_end);
+    _from_ISU_ready_output & from_ISU_valid
+    & (_to_IFU_bits_target_T | from_ISU_bits_ctrl_sig_fu_op == 3'h5
+         ? to_IFU_ready & _to_IFU_valid_output
+         : ~_to_IFU_bits_target_T_2 | _Lsu_i_io_out_end);
   assign to_WBU_bits_alu_result = _Alu_i_io_out_result;
   assign to_WBU_bits_pc = from_ISU_bits_pc;
   assign to_WBU_bits_reg_wen = from_ISU_bits_ctrl_sig_reg_wen;
   assign to_WBU_bits_rd = from_ISU_bits_rd;
   assign to_WBU_bits_fu_op = from_ISU_bits_ctrl_sig_fu_op;
   assign to_WBU_bits_inst = from_ISU_bits_inst;
-  assign to_IFU_bits_bru_ctrl_br =
-    _Bru_i_io_out_ctrl_br & from_ISU_bits_ctrl_sig_fu_op == 3'h3
-    & _to_IFU_bits_csr_ctrl_br_T_2;
-  assign to_IFU_bits_bru_addr = _Alu_i_io_out_result;
-  assign to_IFU_bits_csr_ctrl_br =
-    _Csr_i_io_out_csr_br & from_ISU_bits_ctrl_sig_fu_op == 3'h5
-    & _to_IFU_bits_csr_ctrl_br_T_2;
+  assign to_IFU_valid = _to_IFU_valid_output;
+  assign to_IFU_bits_target =
+    _to_IFU_bits_target_T_2
+      ? _Csr_i_io_out_csr_addr
+      : _to_IFU_bits_target_T ? _Alu_i_io_out_result : 32'h0;
 endmodule
 
 module WBU(
@@ -1712,10 +1712,8 @@ module IFU_pipeline(
   input         clock,
                 reset,
                 to_IDU_ready,
-                from_EXU_bits_bru_ctrl_br,
-  input  [31:0] from_EXU_bits_bru_addr,
-  input         from_EXU_bits_csr_ctrl_br,
-  input  [31:0] from_EXU_bits_csr_addr,
+                from_EXU_valid,
+  input  [31:0] from_EXU_bits_target,
   input         to_mem_resp_valid,
   input  [31:0] to_mem_resp_bits_rdata,
   output        to_IDU_valid,
@@ -1727,24 +1725,22 @@ module IFU_pipeline(
 );
 
   reg  [31:0] reg_PC;
-  wire        _to_IDU_valid_output = to_IDU_ready & to_mem_resp_valid;
-  wire        _to_IDU_bits_inst_T = to_IDU_ready & _to_IDU_valid_output;
+  wire        _from_EXU_ready_output = to_IDU_ready & to_mem_resp_valid;
+  wire        _to_IDU_bits_inst_T = to_IDU_ready & _from_EXU_ready_output;
   always @(posedge clock) begin
     if (reset)
       reg_PC <= 32'h80000000;
-    else if (_to_IDU_valid_output & _to_IDU_bits_inst_T) begin
-      if (from_EXU_bits_bru_ctrl_br)
-        reg_PC <= from_EXU_bits_bru_addr;
-      else if (from_EXU_bits_csr_ctrl_br)
-        reg_PC <= from_EXU_bits_csr_addr;
+    else if (_from_EXU_ready_output & _to_IDU_bits_inst_T) begin
+      if (_from_EXU_ready_output & from_EXU_valid)
+        reg_PC <= from_EXU_bits_target;
       else
         reg_PC <= reg_PC + 32'h4;
     end
   end // always @(posedge)
-  assign to_IDU_valid = _to_IDU_valid_output;
+  assign to_IDU_valid = _from_EXU_ready_output;
   assign to_IDU_bits_inst = _to_IDU_bits_inst_T ? to_mem_resp_bits_rdata : 32'h0;
   assign to_IDU_bits_pc = reg_PC;
-  assign from_EXU_ready = _to_IDU_valid_output;
+  assign from_EXU_ready = _from_EXU_ready_output;
   assign to_mem_req_valid = to_IDU_ready;
   assign to_mem_req_bits_addr = reg_PC;
 endmodule
@@ -3159,10 +3155,8 @@ module top(
   wire        _EXU_i_to_WBU_bits_reg_wen;
   wire [4:0]  _EXU_i_to_WBU_bits_rd;
   wire [2:0]  _EXU_i_to_WBU_bits_fu_op;
-  wire        _EXU_i_to_IFU_bits_bru_ctrl_br;
-  wire [31:0] _EXU_i_to_IFU_bits_bru_addr;
-  wire        _EXU_i_to_IFU_bits_csr_ctrl_br;
-  wire [31:0] _EXU_i_to_IFU_bits_csr_addr;
+  wire        _EXU_i_to_IFU_valid;
+  wire [31:0] _EXU_i_to_IFU_bits_target;
   wire        _EXU_i_lsu_to_mem_req_valid;
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_addr;
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_wdata;
@@ -3228,9 +3222,7 @@ module top(
   reg  [2:0]  EXU_i_from_ISU_bits_r_ctrl_sig_csr_op;
   reg  [3:0]  EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op;
   reg  [31:0] EXU_i_from_ISU_bits_r_inst;
-  wire        _GEN =
-    (_EXU_i_to_IFU_bits_bru_ctrl_br | _EXU_i_to_IFU_bits_csr_ctrl_br) & valid
-    & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;
+  wire        _GEN = _EXU_i_to_IFU_valid & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;
   wire        _EXU_i_from_ISU_bits_T_1 = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;
   always @(posedge clock) begin
     if (reset)
@@ -3241,7 +3233,7 @@ module top(
         & (_EXU_i_from_ISU_bits_T_1
            | ~(EXU_i_from_ISU_bits_r_ctrl_sig_fu_op == 3'h5
                | EXU_i_from_ISU_bits_r_ctrl_sig_fu_op == 3'h3
-                 ? _IFU_i_from_EXU_ready
+                 ? _IFU_i_from_EXU_ready & _EXU_i_to_IFU_valid
                  : _EXU_i_to_WBU_valid) & valid);
     if (_EXU_i_from_ISU_bits_T_1) begin
       if (_GEN) begin
@@ -3397,10 +3389,8 @@ module top(
     .to_WBU_bits_rd                   (_EXU_i_to_WBU_bits_rd),
     .to_WBU_bits_fu_op                (_EXU_i_to_WBU_bits_fu_op),
     .to_WBU_bits_inst                 (io_out_wb_inst),
-    .to_IFU_bits_bru_ctrl_br          (_EXU_i_to_IFU_bits_bru_ctrl_br),
-    .to_IFU_bits_bru_addr             (_EXU_i_to_IFU_bits_bru_addr),
-    .to_IFU_bits_csr_ctrl_br          (_EXU_i_to_IFU_bits_csr_ctrl_br),
-    .to_IFU_bits_csr_addr             (_EXU_i_to_IFU_bits_csr_addr),
+    .to_IFU_valid                     (_EXU_i_to_IFU_valid),
+    .to_IFU_bits_target               (_EXU_i_to_IFU_bits_target),
     .difftest_mcause                  (io_out_difftest_mcause),
     .difftest_mepc                    (io_out_difftest_mepc),
     .difftest_mstatus                 (io_out_difftest_mstatus),
@@ -3427,21 +3417,19 @@ module top(
     .to_ISU_bits_rd           (_WBU_i_to_ISU_bits_rd)
   );
   IFU_pipeline IFU_i (
-    .clock                     (clock),
-    .reset                     (reset),
-    .to_IDU_ready              (_IDU_i_from_IFU_ready),
-    .from_EXU_bits_bru_ctrl_br (_EXU_i_to_IFU_bits_bru_ctrl_br),
-    .from_EXU_bits_bru_addr    (_EXU_i_to_IFU_bits_bru_addr),
-    .from_EXU_bits_csr_ctrl_br (_EXU_i_to_IFU_bits_csr_ctrl_br),
-    .from_EXU_bits_csr_addr    (_EXU_i_to_IFU_bits_csr_addr),
-    .to_mem_resp_valid         (_icache_from_ifu_resp_valid),
-    .to_mem_resp_bits_rdata    (_icache_from_ifu_resp_bits_rdata),
-    .to_IDU_valid              (_IFU_i_to_IDU_valid),
-    .to_IDU_bits_inst          (_IFU_i_to_IDU_bits_inst),
-    .to_IDU_bits_pc            (_IFU_i_to_IDU_bits_pc),
-    .from_EXU_ready            (_IFU_i_from_EXU_ready),
-    .to_mem_req_valid          (_IFU_i_to_mem_req_valid),
-    .to_mem_req_bits_addr      (_IFU_i_to_mem_req_bits_addr)
+    .clock                  (clock),
+    .reset                  (reset),
+    .to_IDU_ready           (_IDU_i_from_IFU_ready),
+    .from_EXU_valid         (_EXU_i_to_IFU_valid),
+    .from_EXU_bits_target   (_EXU_i_to_IFU_bits_target),
+    .to_mem_resp_valid      (_icache_from_ifu_resp_valid),
+    .to_mem_resp_bits_rdata (_icache_from_ifu_resp_bits_rdata),
+    .to_IDU_valid           (_IFU_i_to_IDU_valid),
+    .to_IDU_bits_inst       (_IFU_i_to_IDU_bits_inst),
+    .to_IDU_bits_pc         (_IFU_i_to_IDU_bits_pc),
+    .from_EXU_ready         (_IFU_i_from_EXU_ready),
+    .to_mem_req_valid       (_IFU_i_to_mem_req_valid),
+    .to_mem_req_bits_addr   (_IFU_i_to_mem_req_bits_addr)
   );
   Icache_SimpleBus icache (
     .clock                    (clock),
