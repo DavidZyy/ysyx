@@ -1571,7 +1571,8 @@ module EXU_pipeline(
   output [31:0] to_WBU_bits_inst,
   output        to_IFU_valid,
   output [31:0] to_IFU_bits_target,
-                difftest_mcause,
+  output        to_IFU_bits_redirect,
+  output [31:0] difftest_mcause,
                 difftest_mepc,
                 difftest_mstatus,
                 difftest_mtvec,
@@ -1589,11 +1590,11 @@ module EXU_pipeline(
   wire        _Lsu_i_io_out_end;
   wire        _Bru_i_io_out_ctrl_br;
   wire [31:0] _Alu_i_io_out_result;
-  wire        _to_IFU_bits_target_T_2 = from_ISU_bits_ctrl_sig_fu_op == 3'h4;
-  wire        _from_ISU_ready_output =
-    ~_to_IFU_bits_target_T_2 | ~from_ISU_valid | _Lsu_i_io_out_end;
+  wire        _GEN = from_ISU_bits_ctrl_sig_fu_op != 3'h4;
+  wire        _from_ISU_ready_output = _GEN | ~from_ISU_valid | _Lsu_i_io_out_end;
+  wire        _to_IFU_bits_target_T_2 = from_ISU_bits_ctrl_sig_fu_op == 3'h5;
   wire        _to_IFU_bits_target_T = from_ISU_bits_ctrl_sig_fu_op == 3'h3;
-  assign _to_IFU_valid_output = _Bru_i_io_out_ctrl_br | _Csr_i_io_out_csr_br;
+  assign _to_IFU_valid_output = _to_IFU_bits_target_T_2 | _to_IFU_bits_target_T;
   Alu Alu_i (
     .io_in_src1
       (from_ISU_bits_ctrl_sig_src1_op == 2'h1
@@ -1663,9 +1664,9 @@ module EXU_pipeline(
   assign from_ISU_ready = _from_ISU_ready_output;
   assign to_WBU_valid =
     _from_ISU_ready_output & from_ISU_valid
-    & (_to_IFU_bits_target_T | from_ISU_bits_ctrl_sig_fu_op == 3'h5
+    & (_to_IFU_bits_target_T | _to_IFU_bits_target_T_2
          ? to_IFU_ready & _to_IFU_valid_output
-         : ~_to_IFU_bits_target_T_2 | _Lsu_i_io_out_end);
+         : _GEN | _Lsu_i_io_out_end);
   assign to_WBU_bits_alu_result = _Alu_i_io_out_result;
   assign to_WBU_bits_pc = from_ISU_bits_pc;
   assign to_WBU_bits_reg_wen = from_ISU_bits_ctrl_sig_reg_wen;
@@ -1677,6 +1678,7 @@ module EXU_pipeline(
     _to_IFU_bits_target_T_2
       ? _Csr_i_io_out_csr_addr
       : _to_IFU_bits_target_T ? _Alu_i_io_out_result : 32'h0;
+  assign to_IFU_bits_redirect = _Bru_i_io_out_ctrl_br | _Csr_i_io_out_csr_br;
 endmodule
 
 module WBU(
@@ -1714,7 +1716,8 @@ module IFU_pipeline(
                 to_IDU_ready,
                 from_EXU_valid,
   input  [31:0] from_EXU_bits_target,
-  input         to_mem_resp_valid,
+  input         from_EXU_bits_redirect,
+                to_mem_resp_valid,
   input  [31:0] to_mem_resp_bits_rdata,
   output        to_IDU_valid,
   output [31:0] to_IDU_bits_inst,
@@ -1731,7 +1734,7 @@ module IFU_pipeline(
     if (reset)
       reg_PC <= 32'h80000000;
     else if (_from_EXU_ready_output & _to_IDU_bits_inst_T) begin
-      if (_from_EXU_ready_output & from_EXU_valid)
+      if (_from_EXU_ready_output & from_EXU_valid & from_EXU_bits_redirect)
         reg_PC <= from_EXU_bits_target;
       else
         reg_PC <= reg_PC + 32'h4;
@@ -3157,6 +3160,7 @@ module top(
   wire [2:0]  _EXU_i_to_WBU_bits_fu_op;
   wire        _EXU_i_to_IFU_valid;
   wire [31:0] _EXU_i_to_IFU_bits_target;
+  wire        _EXU_i_to_IFU_bits_redirect;
   wire        _EXU_i_lsu_to_mem_req_valid;
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_addr;
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_wdata;
@@ -3222,7 +3226,8 @@ module top(
   reg  [2:0]  EXU_i_from_ISU_bits_r_ctrl_sig_csr_op;
   reg  [3:0]  EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op;
   reg  [31:0] EXU_i_from_ISU_bits_r_inst;
-  wire        _GEN = _EXU_i_to_IFU_valid & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;
+  wire        _GEN =
+    _EXU_i_to_IFU_bits_redirect & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;
   wire        _EXU_i_from_ISU_bits_T_1 = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;
   always @(posedge clock) begin
     if (reset)
@@ -3391,6 +3396,7 @@ module top(
     .to_WBU_bits_inst                 (io_out_wb_inst),
     .to_IFU_valid                     (_EXU_i_to_IFU_valid),
     .to_IFU_bits_target               (_EXU_i_to_IFU_bits_target),
+    .to_IFU_bits_redirect             (_EXU_i_to_IFU_bits_redirect),
     .difftest_mcause                  (io_out_difftest_mcause),
     .difftest_mepc                    (io_out_difftest_mepc),
     .difftest_mstatus                 (io_out_difftest_mstatus),
@@ -3422,6 +3428,7 @@ module top(
     .to_IDU_ready           (_IDU_i_from_IFU_ready),
     .from_EXU_valid         (_EXU_i_to_IFU_valid),
     .from_EXU_bits_target   (_EXU_i_to_IFU_bits_target),
+    .from_EXU_bits_redirect (_EXU_i_to_IFU_bits_redirect),
     .to_mem_resp_valid      (_icache_from_ifu_resp_valid),
     .to_mem_resp_bits_rdata (_icache_from_ifu_resp_bits_rdata),
     .to_IDU_valid           (_IFU_i_to_IDU_valid),
