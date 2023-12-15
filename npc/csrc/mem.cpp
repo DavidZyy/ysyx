@@ -53,7 +53,7 @@ extern uint32_t vmem[SCREEN_W * SCREEN_H];
 extern uint32_t vgactl_port_base[2];
 #include<sys/time.h>
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  // Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_ifu_fetchPc, top->io_out_inst);
+  // Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_ifu_fetchPc, top->io_out_ifu_inst);
 
   raddr = raddr & ~align_mask;
   if (raddr == 0 && top->io_out_ifu_fetchPc == 0) {
@@ -86,7 +86,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 }
 
 extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
-  // Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_ifu_fetchPc, top->io_out_inst);
+  // Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_ifu_fetchPc, top->io_out_ifu_inst);
 
   if (waddr == SERIAL_PORT) {
     printf("%c", (char)wdata);
@@ -136,7 +136,7 @@ extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
 extern word_t text_max;
 extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
   if(raddr >= text_max)
-    IFDEF(CONFIG_MTRACE, log_write("r, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_ifu_fetchPc, top->io_out_inst));
+    IFDEF(CONFIG_MTRACE, log_write("r, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_ifu_fetchPc, top->io_out_ifu_inst));
   else
     IFDEF(CONFIG_ITRACE, log_write("cur pc:" FMT_WORD" ", top->io_out_ifu_fetchPc));
   // printf("%x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
@@ -152,7 +152,7 @@ extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
 }
 
 extern "C" void vaddr_write(sword_t waddr, sword_t wdata, char wmask) {
-  IFDEF(CONFIG_MTRACE, log_write("w, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_ifu_fetchPc, top->io_out_inst));
+  IFDEF(CONFIG_MTRACE, log_write("w, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_ifu_fetchPc, top->io_out_ifu_inst));
   IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
   pmem_write(waddr, wdata, wmask);
 }

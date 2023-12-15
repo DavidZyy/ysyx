@@ -87,7 +87,7 @@ extern "C" void not_impl_exception(){
   if(top->io_out_ifu_fetchPc){
   terminal = 1;
   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
-  printf("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_ifu_fetchPc, top->io_out_inst);
+  printf("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_ifu_fetchPc, top->io_out_ifu_inst);
   // printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
     // (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
     // (void *)top->pc, top->inst);
@@ -231,7 +231,7 @@ int main(int argc, char *argv[]) {
     // printf("\n\n");
     // vga_update_screen();
     nemu_exec_once();
-    // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_ifu_fetchPc, top->io_out_inst);
+    // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_ifu_fetchPc, top->io_out_ifu_inst);
     
     if(terminal)
       break;
