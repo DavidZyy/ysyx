@@ -1185,6 +1185,8 @@ module ISU(
   input  [31:0] from_WBU_bits_wdata,
   input  [4:0]  from_WBU_bits_rd,
   input         to_EXU_ready,
+  input  [4:0]  from_EXU_rd,
+  input         from_EXU_have_wb,
   output        from_IDU_ready,
                 to_EXU_valid,
   output [31:0] to_EXU_bits_imm,
@@ -1207,6 +1209,9 @@ module ISU(
   output [31:0] to_EXU_bits_inst
 );
 
+  wire has_hazard =
+    (from_EXU_rd == from_IDU_bits_rs1 | from_EXU_rd == from_IDU_bits_rs2)
+    & ~from_EXU_have_wb;
   RegFile RegFile_i (
     .clock         (clock),
     .reset         (reset),
@@ -1218,8 +1223,8 @@ module ISU(
     .io_out_rdata1 (to_EXU_bits_rdata1),
     .io_out_rdata2 (to_EXU_bits_rdata2)
   );
-  assign from_IDU_ready = to_EXU_ready;
-  assign to_EXU_valid = from_IDU_valid;
+  assign from_IDU_ready = ~has_hazard & to_EXU_ready;
+  assign to_EXU_valid = ~has_hazard & from_IDU_valid;
   assign to_EXU_bits_imm = from_IDU_bits_imm;
   assign to_EXU_bits_pc = from_IDU_bits_pc;
   assign to_EXU_bits_rd = from_IDU_bits_rd;
@@ -1581,7 +1586,9 @@ module EXU_pipeline(
                 lsu_to_mem_req_bits_wdata,
   output [3:0]  lsu_to_mem_req_bits_cmd,
   output [31:0] lsu_to_mem_req_bits_wmask,
-  output        lsu_to_mem_resp_ready
+  output        lsu_to_mem_resp_ready,
+  output [4:0]  to_ISU_rd,
+  output        to_ISU_have_wb
 );
 
   wire        _to_IFU_valid_output;
@@ -1679,6 +1686,8 @@ module EXU_pipeline(
       ? _Csr_i_io_out_csr_addr
       : _to_IFU_bits_target_T ? _Alu_i_io_out_result : 32'h0;
   assign to_IFU_bits_redirect = _Bru_i_io_out_ctrl_br | _Csr_i_io_out_csr_br;
+  assign to_ISU_rd = from_ISU_bits_rd;
+  assign to_ISU_have_wb = ~from_ISU_valid;
 endmodule
 
 module WBU(
@@ -1724,7 +1733,6 @@ module IFU_pipeline(
   output [31:0] to_IDU_bits_inst,
                 to_IDU_bits_pc,
   output        from_EXU_ready,
-                to_mem_req_valid,
   output [31:0] to_mem_req_bits_addr,
                 fetch_PC
 );
@@ -1749,7 +1757,6 @@ module IFU_pipeline(
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
   assign to_IDU_bits_pc = inst_PC;
   assign from_EXU_ready = _from_EXU_ready_output;
-  assign to_mem_req_valid = to_IDU_ready;
   assign to_mem_req_bits_addr = reg_PC;
   assign fetch_PC = reg_PC;
 endmodule
@@ -1780,10 +1787,9 @@ module dataArray_128x32(
   assign R0_data = _R0_en_d0 ? Memory[_R0_addr_d0] : 32'bx;
 endmodule
 
-module Icache_SimpleBus(
+module Icache_pipeline(
   input         clock,
                 reset,
-                from_ifu_req_valid,
   input  [31:0] from_ifu_req_bits_addr,
   input         to_sram_ar_ready,
                 to_sram_r_valid,
@@ -1940,14 +1946,18 @@ module Icache_SimpleBus(
     & _GEN_0[from_ifu_req_bits_addr[7:4]] | from_ifu_req_bits_addr[31:8] == _GEN_2
     & _GEN_3[from_ifu_req_bits_addr[7:4]];
   reg  [1:0]        off;
-  reg  [2:0]        state_cache;
-  wire              _from_ifu_req_ready_output = state_cache == 3'h0;
+  reg  [1:0]        state_cache;
   wire              _GEN_4 =
-    state_cache == 3'h3 & _to_sram_r_ready_output & to_sram_r_valid;
-  wire              _to_sram_ar_valid_output = state_cache == 3'h2;
-  assign _to_sram_r_ready_output = state_cache == 3'h3;
-  wire              _GEN_5 = state_cache == 3'h2;
-  wire              _GEN_6 = _from_ifu_req_ready_output | state_cache == 3'h1;
+    state_cache == 2'h2 & _to_sram_r_ready_output & to_sram_r_valid;
+  reg               dataHit;
+  wire              _to_sram_ar_valid_output = state_cache == 2'h1;
+  assign _to_sram_r_ready_output = state_cache == 2'h2;
+  wire [3:0][1:0]   _GEN_5 =
+    {{2'h0},
+     {{1'h1, to_sram_r_bits_last}},
+     {to_sram_ar_ready & _to_sram_ar_valid_output ? 2'h2 : 2'h1},
+     {state_cache}};
+  wire              _GEN_6 = state_cache == 2'h1;
   wire              _GEN_7 = from_ifu_req_bits_addr[7:4] == 4'h0;
   wire              _GEN_8 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_7;
   wire              _GEN_9 = from_ifu_req_bits_addr[7:4] == 4'h1;
@@ -1997,15 +2007,6 @@ module Icache_SimpleBus(
   wire              _GEN_52 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_35;
   wire              _GEN_53 =
     _GEN_4 & to_sram_r_bits_last & replace_set & (&(from_ifu_req_bits_addr[7:4]));
-  wire [7:0][2:0]   _GEN_54 =
-    {{state_cache},
-     {state_cache},
-     {state_cache},
-     {3'h1},
-     {to_sram_r_bits_last ? 3'h4 : 3'h3},
-     {{2'h1, to_sram_ar_ready & _to_sram_ar_valid_output}},
-     {3'h0},
-     {_from_ifu_req_ready_output & from_ifu_req_valid ? (hit ? 3'h1 : 3'h2) : 3'h0}};
   always @(posedge clock) begin
     if (reset) begin
       replace_set <= 1'h0;
@@ -2075,12 +2076,11 @@ module Icache_SimpleBus(
       validArray_1_14 <= 1'h0;
       validArray_1_15 <= 1'h0;
       off <= 2'h0;
-      state_cache <= 3'h0;
+      state_cache <= 2'h0;
+      dataHit <= 1'h0;
     end
     else begin
-      if (_GEN_6 | ~_GEN_5) begin
-      end
-      else
+      if ((|state_cache) & _GEN_6)
         replace_set <= random_num;
       random_num <= random_num - 1'h1;
       if (_GEN_8)
@@ -2179,13 +2179,16 @@ module Icache_SimpleBus(
       validArray_1_13 <= _GEN_51 | validArray_1_13;
       validArray_1_14 <= _GEN_52 | validArray_1_14;
       validArray_1_15 <= _GEN_53 | validArray_1_15;
-      if (~_GEN_6) begin
-        if (_GEN_5)
+      if (|state_cache) begin
+        if (_GEN_6)
           off <= 2'h0;
         else if (_GEN_4)
           off <= off + 2'h1;
+        state_cache <= _GEN_5[state_cache];
       end
-      state_cache <= _GEN_54[state_cache];
+      else
+        state_cache <= {1'h0, ~hit};
+      dataHit <= hit;
     end
   end // always @(posedge)
   dataArray_128x32 dataArray_ext (
@@ -2198,9 +2201,9 @@ module Icache_SimpleBus(
     .W0_data (to_sram_r_bits_data),
     .R0_data (_dataArray_ext_R0_data)
   );
-  assign from_ifu_req_ready = _from_ifu_req_ready_output;
-  assign from_ifu_resp_valid = state_cache == 3'h1;
-  assign from_ifu_resp_bits_rdata = hit ? _dataArray_ext_R0_data : 32'h13;
+  assign from_ifu_req_ready = hit;
+  assign from_ifu_resp_valid = dataHit & ~(|state_cache);
+  assign from_ifu_resp_bits_rdata = dataHit ? _dataArray_ext_R0_data : 32'h0;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
   assign to_sram_ar_bits_addr =
     _to_sram_ar_valid_output ? {from_ifu_req_bits_addr[31:4], 4'h0} : 32'h0;
@@ -3152,7 +3155,6 @@ module top(
   wire [31:0] _IFU_i_to_IDU_bits_inst;
   wire [31:0] _IFU_i_to_IDU_bits_pc;
   wire        _IFU_i_from_EXU_ready;
-  wire        _IFU_i_to_mem_req_valid;
   wire [31:0] _IFU_i_to_mem_req_bits_addr;
   wire        _WBU_i_to_ISU_bits_reg_wen;
   wire [31:0] _WBU_i_to_ISU_bits_wdata;
@@ -3176,6 +3178,8 @@ module top(
   wire [3:0]  _EXU_i_lsu_to_mem_req_bits_cmd;
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_wmask;
   wire        _EXU_i_lsu_to_mem_resp_ready;
+  wire [4:0]  _EXU_i_to_ISU_rd;
+  wire        _EXU_i_to_ISU_have_wb;
   wire        _ISU_i_from_IDU_ready;
   wire        _ISU_i_to_EXU_valid;
   wire [31:0] _ISU_i_to_EXU_bits_imm;
@@ -3338,6 +3342,8 @@ module top(
     .from_WBU_bits_wdata              (_WBU_i_to_ISU_bits_wdata),
     .from_WBU_bits_rd                 (_WBU_i_to_ISU_bits_rd),
     .to_EXU_ready                     (_EXU_i_from_ISU_ready),
+    .from_EXU_rd                      (_EXU_i_to_ISU_rd),
+    .from_EXU_have_wb                 (_EXU_i_to_ISU_have_wb),
     .from_IDU_ready                   (_ISU_i_from_IDU_ready),
     .to_EXU_valid                     (_ISU_i_to_EXU_valid),
     .to_EXU_bits_imm                  (_ISU_i_to_EXU_bits_imm),
@@ -3409,7 +3415,9 @@ module top(
     .lsu_to_mem_req_bits_wdata        (_EXU_i_lsu_to_mem_req_bits_wdata),
     .lsu_to_mem_req_bits_cmd          (_EXU_i_lsu_to_mem_req_bits_cmd),
     .lsu_to_mem_req_bits_wmask        (_EXU_i_lsu_to_mem_req_bits_wmask),
-    .lsu_to_mem_resp_ready            (_EXU_i_lsu_to_mem_resp_ready)
+    .lsu_to_mem_resp_ready            (_EXU_i_lsu_to_mem_resp_ready),
+    .to_ISU_rd                        (_EXU_i_to_ISU_rd),
+    .to_ISU_have_wb                   (_EXU_i_to_ISU_have_wb)
   );
   WBU WBU_i (
     .from_EXU_valid           (_EXU_i_to_WBU_valid),
@@ -3439,14 +3447,12 @@ module top(
     .to_IDU_bits_inst       (_IFU_i_to_IDU_bits_inst),
     .to_IDU_bits_pc         (_IFU_i_to_IDU_bits_pc),
     .from_EXU_ready         (_IFU_i_from_EXU_ready),
-    .to_mem_req_valid       (_IFU_i_to_mem_req_valid),
     .to_mem_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
     .fetch_PC               (io_out_pc)
   );
-  Icache_SimpleBus icache (
+  Icache_pipeline icache (
     .clock                    (clock),
     .reset                    (reset),
-    .from_ifu_req_valid       (_IFU_i_to_mem_req_valid),
     .from_ifu_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
     .to_sram_ar_ready         (_sram_i_axi_ar_ready),
     .to_sram_r_valid          (_sram_i_axi_r_valid),
