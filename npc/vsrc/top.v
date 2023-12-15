@@ -1733,7 +1733,8 @@ module IFU_pipeline(
   output [31:0] to_IDU_bits_inst,
                 to_IDU_bits_pc,
   output        from_EXU_ready,
-  output [31:0] to_mem_req_bits_addr
+  output [31:0] to_mem_req_bits_addr,
+                fetch_PC
 );
 
   reg  [31:0] reg_PC;
@@ -1757,6 +1758,7 @@ module IFU_pipeline(
   assign to_IDU_bits_pc = inst_PC;
   assign from_EXU_ready = _from_EXU_ready_output;
   assign to_mem_req_bits_addr = reg_PC;
+  assign fetch_PC = reg_PC;
 endmodule
 
 // VCS coverage exclude_file
@@ -3445,7 +3447,8 @@ module top(
     .to_IDU_bits_inst       (_IFU_i_to_IDU_bits_inst),
     .to_IDU_bits_pc         (_IFU_i_to_IDU_bits_pc),
     .from_EXU_ready         (_IFU_i_from_EXU_ready),
-    .to_mem_req_bits_addr   (_IFU_i_to_mem_req_bits_addr)
+    .to_mem_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
+    .fetch_PC               (io_out_pc)
   );
   Icache_pipeline icache (
     .clock                    (clock),
@@ -3574,7 +3577,6 @@ module top(
     .from_lsu_resp_bits_wresp (_mmio_from_lsu_resp_bits_wresp)
   );
   assign io_out_inst = _IFU_i_to_IDU_bits_inst;
-  assign io_out_pc = _IFU_i_to_IDU_bits_pc;
   assign io_out_wb = _EXU_i_to_WBU_valid;
 endmodule
 
