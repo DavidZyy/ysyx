@@ -1955,6 +1955,7 @@ module Icache_pipeline(
     state_cache == 2'h2 & _to_sram_r_ready_output & to_sram_r_valid;
   reg               dataHit;
   reg  [31:0]       instReg;
+  wire              _from_ifu_resp_bits_rdata_T = instReg == 32'hDEADBEEF;
   wire              _to_sram_ar_valid_output = state_cache == 2'h1;
   assign _to_sram_r_ready_output = state_cache == 2'h2;
   wire [3:0][1:0]   _GEN_5 =
@@ -2216,9 +2217,9 @@ module Icache_pipeline(
     .R0_data (_dataArray_ext_R0_data)
   );
   assign from_ifu_req_ready = hit;
-  assign from_ifu_resp_valid = dataHit & ~(|state_cache);
+  assign from_ifu_resp_valid = dataHit & ~(|state_cache) & ~_from_ifu_resp_bits_rdata_T;
   assign from_ifu_resp_bits_rdata =
-    instReg == 32'hDEADBEEF ? _dataArray_ext_R0_data : instReg;
+    _from_ifu_resp_bits_rdata_T ? _dataArray_ext_R0_data : instReg;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
   assign to_sram_ar_bits_addr =
     _to_sram_ar_valid_output ? {from_ifu_req_bits_addr[31:5], 5'h0} : 32'h0;
