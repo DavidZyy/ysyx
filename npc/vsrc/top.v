@@ -1798,6 +1798,7 @@ module Icache_pipeline(
                 to_sram_r_valid,
   input  [31:0] to_sram_r_bits_data,
   input         to_sram_r_bits_last,
+                redirect,
   output        from_ifu_req_ready,
                 from_ifu_resp_valid,
   output [31:0] from_ifu_resp_bits_rdata,
@@ -2194,8 +2195,12 @@ module Icache_pipeline(
       else
         state_cache <= {1'h0, ~hit & from_ifu_resp_ready};
       dataHit <= hit;
-      if (from_ifu_resp_ready)
-        instReg <= 32'h0;
+      if (from_ifu_resp_ready) begin
+        if (redirect)
+          instReg <= 32'h0;
+        else
+          instReg <= 32'hDEADBEEF;
+      end
       else
         instReg <= _dataArray_ext_R0_data;
     end
@@ -2212,7 +2217,8 @@ module Icache_pipeline(
   );
   assign from_ifu_req_ready = hit;
   assign from_ifu_resp_valid = dataHit & ~(|state_cache);
-  assign from_ifu_resp_bits_rdata = instReg == 32'h0 ? _dataArray_ext_R0_data : instReg;
+  assign from_ifu_resp_bits_rdata =
+    instReg == 32'hDEADBEEF ? _dataArray_ext_R0_data : instReg;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
   assign to_sram_ar_bits_addr =
     _to_sram_ar_valid_output ? {from_ifu_req_bits_addr[31:5], 5'h0} : 32'h0;
@@ -3497,6 +3503,7 @@ module top(
     .to_sram_r_valid          (_sram_i_axi_r_valid),
     .to_sram_r_bits_data      (_sram_i_axi_r_bits_data),
     .to_sram_r_bits_last      (_sram_i_axi_r_bits_last),
+    .redirect                 (_EXU_i_to_IFU_bits_redirect),
     .from_ifu_req_ready       (_icache_from_ifu_req_ready),
     .from_ifu_resp_valid      (_icache_from_ifu_resp_valid),
     .from_ifu_resp_bits_rdata (_icache_from_ifu_resp_bits_rdata),
