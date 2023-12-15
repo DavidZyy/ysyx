@@ -1808,6 +1808,7 @@ module Icache_pipeline(
 );
 
   wire              _to_sram_r_ready_output;
+  wire [31:0]       _dataArray_ext_R0_data;
   reg               replace_set;
   reg               random_num;
   reg  [22:0]       tagArray_0_0;
@@ -1952,6 +1953,7 @@ module Icache_pipeline(
   wire              _GEN_4 =
     state_cache == 2'h2 & _to_sram_r_ready_output & to_sram_r_valid;
   reg               dataHit;
+  reg  [31:0]       instReg;
   wire              _to_sram_ar_valid_output = state_cache == 2'h1;
   assign _to_sram_r_ready_output = state_cache == 2'h2;
   wire [3:0][1:0]   _GEN_5 =
@@ -2080,6 +2082,7 @@ module Icache_pipeline(
       off <= 3'h0;
       state_cache <= 2'h0;
       dataHit <= 1'h0;
+      instReg <= 32'h0;
     end
     else begin
       if ((|state_cache) & _GEN_6)
@@ -2191,6 +2194,10 @@ module Icache_pipeline(
       else
         state_cache <= {1'h0, ~hit & from_ifu_resp_ready};
       dataHit <= hit;
+      if (from_ifu_resp_ready)
+        instReg <= 32'h0;
+      else
+        instReg <= _dataArray_ext_R0_data;
     end
   end // always @(posedge)
   dataArray_256x32 dataArray_ext (
@@ -2201,10 +2208,11 @@ module Icache_pipeline(
     .W0_en   (_GEN_4),
     .W0_clk  (clock),
     .W0_data (to_sram_r_bits_data),
-    .R0_data (from_ifu_resp_bits_rdata)
+    .R0_data (_dataArray_ext_R0_data)
   );
   assign from_ifu_req_ready = hit;
   assign from_ifu_resp_valid = dataHit & ~(|state_cache);
+  assign from_ifu_resp_bits_rdata = instReg == 32'h0 ? _dataArray_ext_R0_data : instReg;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
   assign to_sram_ar_bits_addr =
     _to_sram_ar_valid_output ? {from_ifu_req_bits_addr[31:5], 5'h0} : 32'h0;
