@@ -1734,7 +1734,8 @@ module IFU_pipeline(
                 to_IDU_bits_pc,
   output        from_EXU_ready,
   output [31:0] to_mem_req_bits_addr,
-                fetch_PC
+  output        to_mem_resp_ready,
+  output [31:0] fetch_PC
 );
 
   reg  [31:0] reg_PC;
@@ -1758,6 +1759,7 @@ module IFU_pipeline(
   assign to_IDU_bits_pc = inst_PC;
   assign from_EXU_ready = _from_EXU_ready_output;
   assign to_mem_req_bits_addr = reg_PC;
+  assign to_mem_resp_ready = to_IDU_ready;
   assign fetch_PC = reg_PC;
 endmodule
 
@@ -1791,7 +1793,8 @@ module Icache_pipeline(
   input         clock,
                 reset,
   input  [31:0] from_ifu_req_bits_addr,
-  input         to_sram_ar_ready,
+  input         from_ifu_resp_ready,
+                to_sram_ar_ready,
                 to_sram_r_valid,
   input  [31:0] to_sram_r_bits_data,
   input         to_sram_r_bits_last,
@@ -2187,7 +2190,7 @@ module Icache_pipeline(
         state_cache <= _GEN_5[state_cache];
       end
       else
-        state_cache <= {1'h0, ~hit};
+        state_cache <= {1'h0, ~hit & from_ifu_resp_ready};
       dataHit <= hit;
     end
   end // always @(posedge)
@@ -2203,7 +2206,8 @@ module Icache_pipeline(
   );
   assign from_ifu_req_ready = hit;
   assign from_ifu_resp_valid = dataHit & ~(|state_cache);
-  assign from_ifu_resp_bits_rdata = dataHit ? _dataArray_ext_R0_data : 32'h0;
+  assign from_ifu_resp_bits_rdata =
+    dataHit & from_ifu_resp_ready ? _dataArray_ext_R0_data : 32'h0;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
   assign to_sram_ar_bits_addr =
     _to_sram_ar_valid_output ? {from_ifu_req_bits_addr[31:5], 5'h0} : 32'h0;
@@ -3160,6 +3164,7 @@ module top(
   wire [31:0] _IFU_i_to_IDU_bits_pc;
   wire        _IFU_i_from_EXU_ready;
   wire [31:0] _IFU_i_to_mem_req_bits_addr;
+  wire        _IFU_i_to_mem_resp_ready;
   wire        _WBU_i_to_ISU_bits_reg_wen;
   wire [31:0] _WBU_i_to_ISU_bits_wdata;
   wire [4:0]  _WBU_i_to_ISU_bits_rd;
@@ -3475,12 +3480,14 @@ module top(
     .to_IDU_bits_pc         (_IFU_i_to_IDU_bits_pc),
     .from_EXU_ready         (_IFU_i_from_EXU_ready),
     .to_mem_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
+    .to_mem_resp_ready      (_IFU_i_to_mem_resp_ready),
     .fetch_PC               (io_out_ifu_fetchPc)
   );
   Icache_pipeline icache (
     .clock                    (clock),
     .reset                    (reset),
     .from_ifu_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
+    .from_ifu_resp_ready      (_IFU_i_to_mem_resp_ready),
     .to_sram_ar_ready         (_sram_i_axi_ar_ready),
     .to_sram_r_valid          (_sram_i_axi_r_valid),
     .to_sram_r_bits_data      (_sram_i_axi_r_bits_data),
