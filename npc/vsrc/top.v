@@ -1211,7 +1211,7 @@ module ISU(
 
   wire has_hazard =
     (from_EXU_rd == from_IDU_bits_rs1 | from_EXU_rd == from_IDU_bits_rs2)
-    & ~from_EXU_have_wb;
+    & ~from_EXU_have_wb & from_IDU_valid;
   RegFile RegFile_i (
     .clock         (clock),
     .reset         (reset),
