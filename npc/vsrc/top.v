@@ -2084,7 +2084,7 @@ module Icache_pipeline(
       off <= 3'h0;
       state_cache <= 2'h0;
       dataHit <= 1'h0;
-      instReg <= 32'h0;
+      instReg <= 32'hDEADBEEF;
     end
     else begin
       if ((|state_cache) & _GEN_6)
