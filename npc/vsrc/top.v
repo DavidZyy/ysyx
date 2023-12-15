@@ -1952,6 +1952,7 @@ module Icache_pipeline(
   reg  [1:0]        state_cache;
   wire              _GEN_4 =
     state_cache == 2'h2 & _to_sram_r_ready_output & to_sram_r_valid;
+  reg  [31:0]       cachedata;
   reg               dataHit;
   wire              _to_sram_ar_valid_output = state_cache == 2'h1;
   assign _to_sram_r_ready_output = state_cache == 2'h2;
@@ -2080,6 +2081,7 @@ module Icache_pipeline(
       validArray_1_15 <= 1'h0;
       off <= 3'h0;
       state_cache <= 2'h0;
+      cachedata <= 32'h0;
       dataHit <= 1'h0;
     end
     else begin
@@ -2191,6 +2193,8 @@ module Icache_pipeline(
       end
       else
         state_cache <= {1'h0, ~hit & from_ifu_resp_ready};
+      if (from_ifu_resp_ready)
+        cachedata <= _dataArray_ext_R0_data;
       dataHit <= hit;
     end
   end // always @(posedge)
@@ -2206,8 +2210,7 @@ module Icache_pipeline(
   );
   assign from_ifu_req_ready = hit;
   assign from_ifu_resp_valid = dataHit & ~(|state_cache);
-  assign from_ifu_resp_bits_rdata =
-    dataHit & from_ifu_resp_ready ? _dataArray_ext_R0_data : 32'h0;
+  assign from_ifu_resp_bits_rdata = cachedata;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
   assign to_sram_ar_bits_addr =
     _to_sram_ar_valid_output ? {from_ifu_req_bits_addr[31:5], 5'h0} : 32'h0;
