@@ -3098,6 +3098,8 @@ module top(
   output [31:0] io_out_ifu_fetchPc,
                 io_out_ifu_inst,
                 io_out_ifu_pc,
+                io_out_idu_inst,
+                io_out_idu_pc,
                 io_out_exu_inst,
                 io_out_exu_pc,
                 io_out_difftest_mcause,
@@ -3223,6 +3225,9 @@ module top(
   wire [3:0]  _IDU_i_to_ISU_bits_ctrl_sig_mdu_op;
   wire [31:0] _IDU_i_to_ISU_bits_inst;
   reg         valid;
+  reg  [31:0] IDU_i_from_IFU_bits_r_inst;
+  reg  [31:0] IDU_i_from_IFU_bits_r_pc;
+  reg         valid_1;
   reg  [31:0] EXU_i_from_ISU_bits_r_imm;
   reg  [31:0] EXU_i_from_ISU_bits_r_pc;
   reg  [31:0] EXU_i_from_ISU_bits_r_rdata1;
@@ -3242,15 +3247,35 @@ module top(
   reg  [3:0]  EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op;
   reg  [31:0] EXU_i_from_ISU_bits_r_inst;
   wire        _GEN =
+    _EXU_i_to_IFU_bits_redirect & _IDU_i_from_IFU_ready & _IFU_i_to_IDU_valid;
+  wire        _IDU_i_from_IFU_bits_T_1 = _IFU_i_to_IDU_valid & _IDU_i_from_IFU_ready;
+  wire        _GEN_0 =
     _EXU_i_to_IFU_bits_redirect & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;
   wire        _EXU_i_from_ISU_bits_T_1 = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;
   always @(posedge clock) begin
-    if (reset)
+    if (reset) begin
       valid <= 1'h0;
-    else
-      valid <= ~_GEN & (_EXU_i_from_ISU_bits_T_1 | ~_EXU_i_to_WBU_valid & valid);
-    if (_EXU_i_from_ISU_bits_T_1) begin
+      valid_1 <= 1'h0;
+    end
+    else begin
+      valid <=
+        ~_GEN
+        & (_IDU_i_from_IFU_bits_T_1 | ~(_ISU_i_from_IDU_ready & _IDU_i_to_ISU_valid)
+           & valid);
+      valid_1 <= ~_GEN_0 & (_EXU_i_from_ISU_bits_T_1 | ~_EXU_i_to_WBU_valid & valid_1);
+    end
+    if (_IDU_i_from_IFU_bits_T_1) begin
       if (_GEN) begin
+        IDU_i_from_IFU_bits_r_inst <= 32'h0;
+        IDU_i_from_IFU_bits_r_pc <= 32'h0;
+      end
+      else begin
+        IDU_i_from_IFU_bits_r_inst <= _IFU_i_to_IDU_bits_inst;
+        IDU_i_from_IFU_bits_r_pc <= _IFU_i_to_IDU_bits_pc;
+      end
+    end
+    if (_EXU_i_from_ISU_bits_T_1) begin
+      if (_GEN_0) begin
         EXU_i_from_ISU_bits_r_imm <= 32'h0;
         EXU_i_from_ISU_bits_r_pc <= 32'h0;
         EXU_i_from_ISU_bits_r_rdata1 <= 32'h0;
@@ -3283,19 +3308,19 @@ module top(
         EXU_i_from_ISU_bits_r_inst <= _ISU_i_to_EXU_bits_inst;
       end
       EXU_i_from_ISU_bits_r_ctrl_sig_reg_wen <=
-        ~_GEN & _ISU_i_to_EXU_bits_ctrl_sig_reg_wen;
+        ~_GEN_0 & _ISU_i_to_EXU_bits_ctrl_sig_reg_wen;
       EXU_i_from_ISU_bits_r_ctrl_sig_mem_wen <=
-        ~_GEN & _ISU_i_to_EXU_bits_ctrl_sig_mem_wen;
+        ~_GEN_0 & _ISU_i_to_EXU_bits_ctrl_sig_mem_wen;
       EXU_i_from_ISU_bits_r_ctrl_sig_is_ebreak <=
-        ~_GEN & _ISU_i_to_EXU_bits_ctrl_sig_is_ebreak;
+        ~_GEN_0 & _ISU_i_to_EXU_bits_ctrl_sig_is_ebreak;
       EXU_i_from_ISU_bits_r_ctrl_sig_not_impl <=
-        ~_GEN & _ISU_i_to_EXU_bits_ctrl_sig_not_impl;
+        ~_GEN_0 & _ISU_i_to_EXU_bits_ctrl_sig_not_impl;
     end
   end // always @(posedge)
   IDU IDU_i (
-    .from_IFU_valid                 (_IFU_i_to_IDU_valid),
-    .from_IFU_bits_inst             (_IFU_i_to_IDU_bits_inst),
-    .from_IFU_bits_pc               (_IFU_i_to_IDU_bits_pc),
+    .from_IFU_valid                 (valid),
+    .from_IFU_bits_inst             (IDU_i_from_IFU_bits_r_inst),
+    .from_IFU_bits_pc               (IDU_i_from_IFU_bits_r_pc),
     .to_ISU_ready                   (_ISU_i_from_IDU_ready),
     .from_IFU_ready                 (_IDU_i_from_IFU_ready),
     .to_ISU_valid                   (_IDU_i_to_ISU_valid),
@@ -3370,7 +3395,7 @@ module top(
   EXU_pipeline EXU_i (
     .clock                            (clock),
     .reset                            (reset),
-    .from_ISU_valid                   (valid),
+    .from_ISU_valid                   (valid_1),
     .from_ISU_bits_imm                (EXU_i_from_ISU_bits_r_imm),
     .from_ISU_bits_pc                 (EXU_i_from_ISU_bits_r_pc),
     .from_ISU_bits_rdata1             (EXU_i_from_ISU_bits_r_rdata1),
@@ -3580,6 +3605,8 @@ module top(
   );
   assign io_out_ifu_inst = _IFU_i_to_IDU_bits_inst;
   assign io_out_ifu_pc = _IFU_i_to_IDU_bits_pc;
+  assign io_out_idu_inst = _IDU_i_to_ISU_bits_inst;
+  assign io_out_idu_pc = _IDU_i_to_ISU_bits_pc;
   assign io_out_exu_pc = _EXU_i_to_WBU_bits_pc;
   assign io_out_wb = _EXU_i_to_WBU_valid;
 endmodule
