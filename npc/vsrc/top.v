@@ -3095,14 +3095,16 @@ endmodule
 module top(
   input         clock,
                 reset,
-  output [31:0] io_out_inst,
-                io_out_pc,
+  output [31:0] io_out_ifu_fetchPc,
+                io_out_ifu_inst,
+                io_out_ifu_pc,
+                io_out_exu_inst,
+                io_out_exu_pc,
                 io_out_difftest_mcause,
                 io_out_difftest_mepc,
                 io_out_difftest_mstatus,
                 io_out_difftest_mtvec,
-  output        io_out_wb,
-  output [31:0] io_out_wb_inst
+  output        io_out_wb
 );
 
   wire [31:0] _mmio_from_lsu_resp_bits_rdata;
@@ -3402,7 +3404,7 @@ module top(
     .to_WBU_bits_reg_wen              (_EXU_i_to_WBU_bits_reg_wen),
     .to_WBU_bits_rd                   (_EXU_i_to_WBU_bits_rd),
     .to_WBU_bits_fu_op                (_EXU_i_to_WBU_bits_fu_op),
-    .to_WBU_bits_inst                 (io_out_wb_inst),
+    .to_WBU_bits_inst                 (io_out_exu_inst),
     .to_IFU_valid                     (_EXU_i_to_IFU_valid),
     .to_IFU_bits_target               (_EXU_i_to_IFU_bits_target),
     .to_IFU_bits_redirect             (_EXU_i_to_IFU_bits_redirect),
@@ -3448,7 +3450,7 @@ module top(
     .to_IDU_bits_pc         (_IFU_i_to_IDU_bits_pc),
     .from_EXU_ready         (_IFU_i_from_EXU_ready),
     .to_mem_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
-    .fetch_PC               (io_out_pc)
+    .fetch_PC               (io_out_ifu_fetchPc)
   );
   Icache_pipeline icache (
     .clock                    (clock),
@@ -3576,7 +3578,9 @@ module top(
     .from_lsu_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata),
     .from_lsu_resp_bits_wresp (_mmio_from_lsu_resp_bits_wresp)
   );
-  assign io_out_inst = _IFU_i_to_IDU_bits_inst;
+  assign io_out_ifu_inst = _IFU_i_to_IDU_bits_inst;
+  assign io_out_ifu_pc = _IFU_i_to_IDU_bits_pc;
+  assign io_out_exu_pc = _EXU_i_to_WBU_bits_pc;
   assign io_out_wb = _EXU_i_to_WBU_valid;
 endmodule
 
