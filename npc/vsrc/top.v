@@ -1686,7 +1686,8 @@ module EXU_pipeline(
     _to_IFU_bits_target_T_2
       ? _Csr_i_io_out_csr_addr
       : _to_IFU_bits_target_T ? _Alu_i_io_out_result : 32'h0;
-  assign to_IFU_bits_redirect = _Bru_i_io_out_ctrl_br | _Csr_i_io_out_csr_br;
+  assign to_IFU_bits_redirect =
+    (_Bru_i_io_out_ctrl_br | _Csr_i_io_out_csr_br) & from_ISU_valid;
   assign to_ISU_rd = from_ISU_bits_rd;
   assign to_ISU_have_wb = ~from_ISU_valid;
   assign to_ISU_isBRU = from_ISU_bits_ctrl_sig_fu_op == 3'h3;
