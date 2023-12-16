@@ -1602,6 +1602,7 @@ module EXU_pipeline(
   wire        _GEN = from_ISU_bits_ctrl_sig_fu_op != 3'h4;
   wire        _to_IFU_bits_target_T = from_ISU_bits_ctrl_sig_fu_op == 3'h3;
   wire        _to_IFU_bits_target_T_2 = from_ISU_bits_ctrl_sig_fu_op == 3'h5;
+  wire        _GEN_0 = _to_IFU_bits_target_T_2 | _to_IFU_bits_target_T;
   assign _to_IFU_valid_output = _to_IFU_bits_target_T_2 | _to_IFU_bits_target_T;
   Alu Alu_i (
     .io_in_src1
@@ -1669,12 +1670,11 @@ module EXU_pipeline(
   not_impl_moudle not_impl_moudle_i (
     .not_impl (from_ISU_bits_ctrl_sig_not_impl & from_ISU_valid)
   );
-  assign from_ISU_ready = _GEN | ~from_ISU_valid | _Lsu_i_io_out_end;
+  assign from_ISU_ready =
+    _GEN_0 ? to_IFU_ready : _GEN | ~from_ISU_valid | _Lsu_i_io_out_end;
   assign to_WBU_valid =
     from_ISU_valid
-    & (_to_IFU_bits_target_T_2 | _to_IFU_bits_target_T
-         ? to_IFU_ready & _to_IFU_valid_output
-         : _GEN | _Lsu_i_io_out_end);
+    & (_GEN_0 ? to_IFU_ready & _to_IFU_valid_output : _GEN | _Lsu_i_io_out_end);
   assign to_WBU_bits_alu_result = _Alu_i_io_out_result;
   assign to_WBU_bits_pc = from_ISU_bits_pc;
   assign to_WBU_bits_reg_wen = from_ISU_bits_ctrl_sig_reg_wen;
