@@ -1559,7 +1559,8 @@ module EXU_pipeline(
   input  [2:0]  from_ISU_bits_ctrl_sig_csr_op,
   input  [3:0]  from_ISU_bits_ctrl_sig_mdu_op,
   input  [31:0] from_ISU_bits_inst,
-  input         lsu_to_mem_req_ready,
+  input         to_IFU_ready,
+                lsu_to_mem_req_ready,
                 lsu_to_mem_resp_valid,
   input  [31:0] lsu_to_mem_resp_bits_rdata,
   input         lsu_to_mem_resp_bits_wresp,
@@ -1673,7 +1674,7 @@ module EXU_pipeline(
   assign to_WBU_valid =
     _from_ISU_ready_output & from_ISU_valid
     & (_to_IFU_bits_target_T_2 | _to_IFU_bits_target_T
-         ? _to_IFU_valid_output
+         ? to_IFU_ready & _to_IFU_valid_output
          : _GEN | _Lsu_i_io_out_end);
   assign to_WBU_bits_alu_result = _Alu_i_io_out_result;
   assign to_WBU_bits_pc = from_ISU_bits_pc;
@@ -1734,33 +1735,32 @@ module IFU_pipeline(
   output        to_IDU_valid,
   output [31:0] to_IDU_bits_inst,
                 to_IDU_bits_pc,
-                to_mem_req_bits_addr,
+  output        from_EXU_ready,
+  output [31:0] to_mem_req_bits_addr,
   output        to_mem_resp_ready,
   output [31:0] fetch_PC
 );
 
   reg  [31:0] reg_PC;
   reg  [31:0] inst_PC;
-  wire        _reg_PC_T = to_mem_req_ready & to_IDU_ready;
+  wire        _from_EXU_ready_output = to_IDU_ready & to_mem_resp_valid;
   always @(posedge clock) begin
     if (reset) begin
       reg_PC <= 32'h80000000;
       inst_PC <= 32'h0;
     end
-    else begin
-      if (_reg_PC_T | from_EXU_valid) begin
-        if (from_EXU_valid & from_EXU_bits_redirect)
-          reg_PC <= from_EXU_bits_target;
-        else
-          reg_PC <= reg_PC + 32'h4;
-      end
-      if (_reg_PC_T)
-        inst_PC <= reg_PC;
+    else if (to_mem_req_ready & to_IDU_ready) begin
+      if (_from_EXU_ready_output & from_EXU_valid & from_EXU_bits_redirect)
+        reg_PC <= from_EXU_bits_target;
+      else
+        reg_PC <= reg_PC + 32'h4;
+      inst_PC <= reg_PC;
     end
   end // always @(posedge)
   assign to_IDU_valid = to_mem_resp_valid;
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
   assign to_IDU_bits_pc = inst_PC;
+  assign from_EXU_ready = _from_EXU_ready_output;
   assign to_mem_req_bits_addr = reg_PC;
   assign to_mem_resp_ready = to_IDU_ready;
   assign fetch_PC = reg_PC;
@@ -3180,6 +3180,7 @@ module top(
   wire        _IFU_i_to_IDU_valid;
   wire [31:0] _IFU_i_to_IDU_bits_inst;
   wire [31:0] _IFU_i_to_IDU_bits_pc;
+  wire        _IFU_i_from_EXU_ready;
   wire [31:0] _IFU_i_to_mem_req_bits_addr;
   wire        _IFU_i_to_mem_resp_ready;
   wire        _WBU_i_to_ISU_bits_reg_wen;
@@ -3438,6 +3439,7 @@ module top(
     .from_ISU_bits_ctrl_sig_csr_op    (EXU_i_from_ISU_bits_r_ctrl_sig_csr_op),
     .from_ISU_bits_ctrl_sig_mdu_op    (EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op),
     .from_ISU_bits_inst               (EXU_i_from_ISU_bits_r_inst),
+    .to_IFU_ready                     (_IFU_i_from_EXU_ready),
     .lsu_to_mem_req_ready             (_memXbar_io_in_req_ready),
     .lsu_to_mem_resp_valid            (_memXbar_io_in_resp_valid),
     .lsu_to_mem_resp_bits_rdata       (_memXbar_io_in_resp_bits_rdata),
@@ -3497,6 +3499,7 @@ module top(
     .to_IDU_valid           (_IFU_i_to_IDU_valid),
     .to_IDU_bits_inst       (_IFU_i_to_IDU_bits_inst),
     .to_IDU_bits_pc         (_IFU_i_to_IDU_bits_pc),
+    .from_EXU_ready         (_IFU_i_from_EXU_ready),
     .to_mem_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
     .to_mem_resp_ready      (_IFU_i_to_mem_resp_ready),
     .fetch_PC               (io_out_ifu_fetchPc)
