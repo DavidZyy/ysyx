@@ -1739,19 +1739,23 @@ module IFU_pipeline(
   output [31:0] fetch_PC
 );
 
-  reg [31:0] reg_PC;
-  reg [31:0] inst_PC;
+  reg  [31:0] reg_PC;
+  reg  [31:0] inst_PC;
+  wire        _reg_PC_T = to_mem_req_ready & to_IDU_ready;
   always @(posedge clock) begin
     if (reset) begin
       reg_PC <= 32'h80000000;
       inst_PC <= 32'h0;
     end
-    else if (to_mem_req_ready & to_IDU_ready) begin
-      if (from_EXU_valid & from_EXU_bits_redirect)
-        reg_PC <= from_EXU_bits_target;
-      else
-        reg_PC <= reg_PC + 32'h4;
-      inst_PC <= reg_PC;
+    else begin
+      if (_reg_PC_T | from_EXU_valid) begin
+        if (from_EXU_valid & from_EXU_bits_redirect)
+          reg_PC <= from_EXU_bits_target;
+        else
+          reg_PC <= reg_PC + 32'h4;
+      end
+      if (_reg_PC_T)
+        inst_PC <= reg_PC;
     end
   end // always @(posedge)
   assign to_IDU_valid = to_mem_resp_valid;
