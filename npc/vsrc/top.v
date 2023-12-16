@@ -2209,8 +2209,8 @@ module Icache_pipeline(
       else if (redirect)
         instReg <= 32'h0;
       instRegValid <=
-        ~(_from_ifu_req_ready_output & from_ifu_req_valid)
-        & (_GEN_54 | redirect | instRegValid);
+        _GEN_54 | redirect | ~(_from_ifu_req_ready_output & from_ifu_req_valid)
+        & instRegValid;
     end
   end // always @(posedge)
   dataArray_256x32 dataArray_ext (
