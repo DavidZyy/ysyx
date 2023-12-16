@@ -1736,7 +1736,6 @@ module IFU_pipeline(
   output [31:0] to_IDU_bits_inst,
                 to_IDU_bits_pc,
   output        from_EXU_ready,
-                to_mem_req_valid,
   output [31:0] to_mem_req_bits_addr,
   output        to_mem_resp_ready,
   output [31:0] fetch_PC
@@ -1762,7 +1761,6 @@ module IFU_pipeline(
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
   assign to_IDU_bits_pc = inst_PC;
   assign from_EXU_ready = _from_EXU_ready_output;
-  assign to_mem_req_valid = to_IDU_ready;
   assign to_mem_req_bits_addr = reg_PC;
   assign to_mem_resp_ready = to_IDU_ready;
   assign fetch_PC = reg_PC;
@@ -1797,7 +1795,6 @@ endmodule
 module Icache_pipeline(
   input         clock,
                 reset,
-                from_ifu_req_valid,
   input  [31:0] from_ifu_req_bits_addr,
   input         from_ifu_resp_ready,
                 to_sram_ar_ready,
@@ -1951,7 +1948,7 @@ module Icache_pipeline(
      {validArray_1_2},
      {validArray_1_1},
      {validArray_1_0}};
-  wire              _from_ifu_req_ready_output =
+  wire              hit =
     from_ifu_req_bits_addr[31:9] == _GEN[from_ifu_req_bits_addr[8:5]]
     & _GEN_0[from_ifu_req_bits_addr[8:5]] | from_ifu_req_bits_addr[31:9] == _GEN_2
     & _GEN_3[from_ifu_req_bits_addr[8:5]];
@@ -1962,6 +1959,9 @@ module Icache_pipeline(
   reg               dataHit;
   reg  [31:0]       instReg;
   reg               instRegValid;
+  wire              _from_ifu_resp_valid_output =
+    dataHit & ~(|state_cache) & ~(instReg == 32'h0 & instRegValid) | (|instReg)
+    & instRegValid;
   wire              _to_sram_ar_valid_output = state_cache == 2'h1;
   assign _to_sram_r_ready_output = state_cache == 2'h2;
   wire [3:0][1:0]   _GEN_5 =
@@ -2202,14 +2202,14 @@ module Icache_pipeline(
         state_cache <= _GEN_5[state_cache];
       end
       else
-        state_cache <= {1'h0, ~_from_ifu_req_ready_output & from_ifu_resp_ready};
-      dataHit <= _from_ifu_req_ready_output;
+        state_cache <= {1'h0, ~hit & from_ifu_resp_ready};
+      dataHit <= hit;
       if (_GEN_54)
         instReg <= _dataArray_ext_R0_data;
       else if (redirect)
         instReg <= 32'h0;
       instRegValid <=
-        _GEN_54 | redirect | ~(_from_ifu_req_ready_output & from_ifu_req_valid)
+        _GEN_54 | redirect | ~(from_ifu_resp_ready & _from_ifu_resp_valid_output)
         & instRegValid;
     end
   end // always @(posedge)
@@ -2223,10 +2223,8 @@ module Icache_pipeline(
     .W0_data (to_sram_r_bits_data),
     .R0_data (_dataArray_ext_R0_data)
   );
-  assign from_ifu_req_ready = _from_ifu_req_ready_output;
-  assign from_ifu_resp_valid =
-    dataHit & ~(|state_cache) & ~(instReg == 32'h0 & instRegValid) | (|instReg)
-    & instRegValid;
+  assign from_ifu_req_ready = hit;
+  assign from_ifu_resp_valid = _from_ifu_resp_valid_output;
   assign from_ifu_resp_bits_rdata = instRegValid ? instReg : _dataArray_ext_R0_data;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
   assign to_sram_ar_bits_addr =
@@ -3183,7 +3181,6 @@ module top(
   wire [31:0] _IFU_i_to_IDU_bits_inst;
   wire [31:0] _IFU_i_to_IDU_bits_pc;
   wire        _IFU_i_from_EXU_ready;
-  wire        _IFU_i_to_mem_req_valid;
   wire [31:0] _IFU_i_to_mem_req_bits_addr;
   wire        _IFU_i_to_mem_resp_ready;
   wire        _WBU_i_to_ISU_bits_reg_wen;
@@ -3503,7 +3500,6 @@ module top(
     .to_IDU_bits_inst       (_IFU_i_to_IDU_bits_inst),
     .to_IDU_bits_pc         (_IFU_i_to_IDU_bits_pc),
     .from_EXU_ready         (_IFU_i_from_EXU_ready),
-    .to_mem_req_valid       (_IFU_i_to_mem_req_valid),
     .to_mem_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
     .to_mem_resp_ready      (_IFU_i_to_mem_resp_ready),
     .fetch_PC               (io_out_ifu_fetchPc)
@@ -3511,7 +3507,6 @@ module top(
   Icache_pipeline icache (
     .clock                    (clock),
     .reset                    (reset),
-    .from_ifu_req_valid       (_IFU_i_to_mem_req_valid),
     .from_ifu_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
     .from_ifu_resp_ready      (_IFU_i_to_mem_resp_ready),
     .to_sram_ar_ready         (_sram_i_axi_ar_ready),
