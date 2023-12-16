@@ -2225,7 +2225,8 @@ module Icache_pipeline(
     .R0_data (_dataArray_ext_R0_data)
   );
   assign from_ifu_req_ready = _from_ifu_req_ready_output;
-  assign from_ifu_resp_valid = dataHit & ~(|state_cache) & (|instReg);
+  assign from_ifu_resp_valid =
+    dataHit & ~(|state_cache) & ~(instReg == 32'h0 & instRegValid);
   assign from_ifu_resp_bits_rdata = instRegValid ? instReg : _dataArray_ext_R0_data;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
   assign to_sram_ar_bits_addr =
