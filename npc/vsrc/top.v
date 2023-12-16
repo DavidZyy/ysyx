@@ -1959,10 +1959,15 @@ module Icache_pipeline(
   reg               dataValid;
   reg  [31:0]       instReg;
   reg               instRegValid;
-  wire              _from_ifu_resp_valid_output = dataValid | (|instReg) & instRegValid;
+  wire              _from_ifu_resp_valid_output =
+    dataValid & ~(|state_cache) | (|instReg) & instRegValid;
   wire              _to_sram_ar_valid_output = state_cache == 2'h1;
   assign _to_sram_r_ready_output = state_cache == 2'h2;
-  wire              _GEN_5 = state_cache == 2'h0;
+  wire [3:0][1:0]   _GEN_5 =
+    {{2'h0},
+     {{1'h1, to_sram_r_bits_last}},
+     {to_sram_ar_ready & _to_sram_ar_valid_output ? 2'h2 : 2'h1},
+     {state_cache}};
   wire              _GEN_6 = state_cache == 2'h1;
   wire              _GEN_7 = from_ifu_req_bits_addr[8:5] == 4'h0;
   wire              _GEN_8 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_7;
@@ -2014,11 +2019,6 @@ module Icache_pipeline(
   wire              _GEN_53 =
     _GEN_4 & to_sram_r_bits_last & replace_set & (&(from_ifu_req_bits_addr[8:5]));
   wire              _GEN_54 = ~from_ifu_resp_ready & ~instRegValid & dataValid;
-  wire [3:0][1:0]   _GEN_55 =
-    {{2'h0},
-     {{1'h1, to_sram_r_bits_last}},
-     {to_sram_ar_ready & _to_sram_ar_valid_output ? 2'h2 : 2'h1},
-     {{1'h0, ~hit & from_ifu_resp_ready}}};
   always @(posedge clock) begin
     if (reset) begin
       replace_set <= 1'h0;
@@ -2094,9 +2094,7 @@ module Icache_pipeline(
       instRegValid <= 1'h0;
     end
     else begin
-      if (_GEN_5 | ~_GEN_6) begin
-      end
-      else
+      if ((|state_cache) & _GEN_6)
         replace_set <= random_num;
       random_num <= random_num - 1'h1;
       if (_GEN_8)
@@ -2195,13 +2193,15 @@ module Icache_pipeline(
       validArray_1_13 <= _GEN_51 | validArray_1_13;
       validArray_1_14 <= _GEN_52 | validArray_1_14;
       validArray_1_15 <= _GEN_53 | validArray_1_15;
-      if (~_GEN_5) begin
+      if (|state_cache) begin
         if (_GEN_6)
           off <= 3'h0;
         else if (_GEN_4)
           off <= off + 3'h1;
+        state_cache <= _GEN_5[state_cache];
       end
-      state_cache <= _GEN_55[state_cache];
+      else
+        state_cache <= {1'h0, ~hit & from_ifu_resp_ready};
       dataValid <= (_GEN_54 | ~redirect) & hit;
       if (_GEN_54)
         instReg <= _dataArray_ext_R0_data;
