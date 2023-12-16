@@ -1951,7 +1951,7 @@ module Icache_pipeline(
      {validArray_1_2},
      {validArray_1_1},
      {validArray_1_0}};
-  wire              hit =
+  wire              _from_ifu_req_ready_output =
     from_ifu_req_bits_addr[31:9] == _GEN[from_ifu_req_bits_addr[8:5]]
     & _GEN_0[from_ifu_req_bits_addr[8:5]] | from_ifu_req_bits_addr[31:9] == _GEN_2
     & _GEN_3[from_ifu_req_bits_addr[8:5]];
@@ -1962,7 +1962,6 @@ module Icache_pipeline(
   reg               dataHit;
   reg  [31:0]       instReg;
   reg               instRegValid;
-  wire              _from_ifu_req_ready_output = hit & ~(|state_cache);
   wire              _to_sram_ar_valid_output = state_cache == 2'h1;
   assign _to_sram_r_ready_output = state_cache == 2'h2;
   wire [3:0][1:0]   _GEN_5 =
@@ -2203,8 +2202,8 @@ module Icache_pipeline(
         state_cache <= _GEN_5[state_cache];
       end
       else
-        state_cache <= {1'h0, ~hit & from_ifu_resp_ready};
-      dataHit <= hit;
+        state_cache <= {1'h0, ~_from_ifu_req_ready_output & from_ifu_resp_ready};
+      dataHit <= _from_ifu_req_ready_output;
       if (_GEN_54)
         instReg <= _dataArray_ext_R0_data;
       else if (redirect)
