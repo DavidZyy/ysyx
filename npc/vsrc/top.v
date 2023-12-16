@@ -2018,7 +2018,7 @@ module Icache_pipeline(
   wire              _GEN_52 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_35;
   wire              _GEN_53 =
     _GEN_4 & to_sram_r_bits_last & replace_set & (&(from_ifu_req_bits_addr[8:5]));
-  wire              _GEN_54 = ~from_ifu_resp_ready & ~instRegValid;
+  wire              _GEN_54 = ~from_ifu_resp_ready & ~instRegValid & dataValid;
   always @(posedge clock) begin
     if (reset) begin
       replace_set <= 1'h0;
