@@ -1956,12 +1956,11 @@ module Icache_pipeline(
   reg  [1:0]        state_cache;
   wire              _GEN_4 =
     state_cache == 2'h2 & _to_sram_r_ready_output & to_sram_r_valid;
-  reg               dataHit;
+  reg               dataValid;
   reg  [31:0]       instReg;
   reg               instRegValid;
   wire              _from_ifu_resp_valid_output =
-    dataHit & ~(|state_cache) & ~(instReg == 32'h0 & instRegValid) | (|instReg)
-    & instRegValid;
+    dataValid & ~(|state_cache) | (|instReg) & instRegValid;
   wire              _to_sram_ar_valid_output = state_cache == 2'h1;
   assign _to_sram_r_ready_output = state_cache == 2'h2;
   wire [3:0][1:0]   _GEN_5 =
@@ -2090,7 +2089,7 @@ module Icache_pipeline(
       validArray_1_15 <= 1'h0;
       off <= 3'h0;
       state_cache <= 2'h0;
-      dataHit <= 1'h0;
+      dataValid <= 1'h0;
       instReg <= 32'h0;
       instRegValid <= 1'h0;
     end
@@ -2203,14 +2202,14 @@ module Icache_pipeline(
       end
       else
         state_cache <= {1'h0, ~hit & from_ifu_resp_ready};
-      dataHit <= hit;
+      dataValid <= (_GEN_54 | ~redirect) & hit;
       if (_GEN_54)
         instReg <= _dataArray_ext_R0_data;
       else if (redirect)
         instReg <= 32'h0;
       instRegValid <=
-        _GEN_54 | redirect
-        | ~(instRegValid & from_ifu_resp_ready & _from_ifu_resp_valid_output)
+        _GEN_54
+        | (redirect | ~(instRegValid & from_ifu_resp_ready & _from_ifu_resp_valid_output))
         & instRegValid;
     end
   end // always @(posedge)
