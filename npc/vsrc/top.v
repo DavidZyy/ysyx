@@ -1736,7 +1736,6 @@ module IFU_pipeline(
   output [31:0] to_IDU_bits_inst,
                 to_IDU_bits_pc,
   output        from_EXU_ready,
-                to_mem_req_valid,
   output [31:0] to_mem_req_bits_addr,
   output        to_mem_resp_ready,
   output [31:0] fetch_PC
@@ -1758,11 +1757,10 @@ module IFU_pipeline(
       inst_PC <= reg_PC;
     end
   end // always @(posedge)
-  assign to_IDU_valid = _from_EXU_ready_output;
+  assign to_IDU_valid = to_mem_resp_valid;
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
   assign to_IDU_bits_pc = inst_PC;
   assign from_EXU_ready = _from_EXU_ready_output;
-  assign to_mem_req_valid = to_IDU_ready;
   assign to_mem_req_bits_addr = reg_PC;
   assign to_mem_resp_ready = to_IDU_ready;
   assign fetch_PC = reg_PC;
@@ -1797,7 +1795,6 @@ endmodule
 module Icache_pipeline(
   input         clock,
                 reset,
-                from_ifu_req_valid,
   input  [31:0] from_ifu_req_bits_addr,
   input         from_ifu_resp_ready,
                 to_sram_ar_ready,
@@ -2213,8 +2210,8 @@ module Icache_pipeline(
         instReg <= 32'h0;
       instRegValid <=
         _GEN_54 | redirect
-        | ~(instRegValid & from_ifu_req_valid & from_ifu_resp_ready
-            & _from_ifu_resp_valid_output) & instRegValid;
+        | ~(instRegValid & from_ifu_resp_ready & _from_ifu_resp_valid_output)
+        & instRegValid;
     end
   end // always @(posedge)
   dataArray_256x32 dataArray_ext (
@@ -3185,7 +3182,6 @@ module top(
   wire [31:0] _IFU_i_to_IDU_bits_inst;
   wire [31:0] _IFU_i_to_IDU_bits_pc;
   wire        _IFU_i_from_EXU_ready;
-  wire        _IFU_i_to_mem_req_valid;
   wire [31:0] _IFU_i_to_mem_req_bits_addr;
   wire        _IFU_i_to_mem_resp_ready;
   wire        _WBU_i_to_ISU_bits_reg_wen;
@@ -3505,7 +3501,6 @@ module top(
     .to_IDU_bits_inst       (_IFU_i_to_IDU_bits_inst),
     .to_IDU_bits_pc         (_IFU_i_to_IDU_bits_pc),
     .from_EXU_ready         (_IFU_i_from_EXU_ready),
-    .to_mem_req_valid       (_IFU_i_to_mem_req_valid),
     .to_mem_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
     .to_mem_resp_ready      (_IFU_i_to_mem_resp_ready),
     .fetch_PC               (io_out_ifu_fetchPc)
@@ -3513,7 +3508,6 @@ module top(
   Icache_pipeline icache (
     .clock                    (clock),
     .reset                    (reset),
-    .from_ifu_req_valid       (_IFU_i_to_mem_req_valid),
     .from_ifu_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
     .from_ifu_resp_ready      (_IFU_i_to_mem_resp_ready),
     .to_sram_ar_ready         (_sram_i_axi_ar_ready),
