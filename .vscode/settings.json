@@ -85,5 +85,7 @@
     "system_error": "c",
     "limits": "cpp",
     "streambuf": "c"
-  }
+  },
+  "digital-ide.dont-show-again.propose.issue": true,
+  "digital-ide.welcome.show": false
 }
