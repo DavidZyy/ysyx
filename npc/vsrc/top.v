@@ -1967,57 +1967,57 @@ module Icache_pipeline(
      {{1'h1, to_sram_r_bits_last}},
      {to_sram_ar_ready & _to_sram_ar_valid_output ? 2'h2 : 2'h1},
      {state_cache}};
-  wire              _GEN_6 = state_cache == 2'h1;
-  wire              _GEN_7 = from_ifu_req_bits_addr[8:5] == 4'h0;
-  wire              _GEN_8 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_7;
-  wire              _GEN_9 = from_ifu_req_bits_addr[8:5] == 4'h1;
-  wire              _GEN_10 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_9;
-  wire              _GEN_11 = from_ifu_req_bits_addr[8:5] == 4'h2;
-  wire              _GEN_12 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_11;
-  wire              _GEN_13 = from_ifu_req_bits_addr[8:5] == 4'h3;
-  wire              _GEN_14 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_13;
-  wire              _GEN_15 = from_ifu_req_bits_addr[8:5] == 4'h4;
-  wire              _GEN_16 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_15;
-  wire              _GEN_17 = from_ifu_req_bits_addr[8:5] == 4'h5;
-  wire              _GEN_18 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_17;
-  wire              _GEN_19 = from_ifu_req_bits_addr[8:5] == 4'h6;
-  wire              _GEN_20 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_19;
-  wire              _GEN_21 = from_ifu_req_bits_addr[8:5] == 4'h7;
-  wire              _GEN_22 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_21;
-  wire              _GEN_23 = from_ifu_req_bits_addr[8:5] == 4'h8;
-  wire              _GEN_24 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_23;
-  wire              _GEN_25 = from_ifu_req_bits_addr[8:5] == 4'h9;
-  wire              _GEN_26 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_25;
-  wire              _GEN_27 = from_ifu_req_bits_addr[8:5] == 4'hA;
-  wire              _GEN_28 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_27;
-  wire              _GEN_29 = from_ifu_req_bits_addr[8:5] == 4'hB;
-  wire              _GEN_30 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_29;
-  wire              _GEN_31 = from_ifu_req_bits_addr[8:5] == 4'hC;
-  wire              _GEN_32 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_31;
-  wire              _GEN_33 = from_ifu_req_bits_addr[8:5] == 4'hD;
-  wire              _GEN_34 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_33;
-  wire              _GEN_35 = from_ifu_req_bits_addr[8:5] == 4'hE;
-  wire              _GEN_36 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_35;
-  wire              _GEN_37 =
+  wire              _GEN_6 = ~from_ifu_resp_ready & ~instRegValid & dataValid;
+  wire              _GEN_7 = state_cache == 2'h1;
+  wire              _GEN_8 = from_ifu_req_bits_addr[8:5] == 4'h0;
+  wire              _GEN_9 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_8;
+  wire              _GEN_10 = from_ifu_req_bits_addr[8:5] == 4'h1;
+  wire              _GEN_11 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_10;
+  wire              _GEN_12 = from_ifu_req_bits_addr[8:5] == 4'h2;
+  wire              _GEN_13 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_12;
+  wire              _GEN_14 = from_ifu_req_bits_addr[8:5] == 4'h3;
+  wire              _GEN_15 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_14;
+  wire              _GEN_16 = from_ifu_req_bits_addr[8:5] == 4'h4;
+  wire              _GEN_17 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_16;
+  wire              _GEN_18 = from_ifu_req_bits_addr[8:5] == 4'h5;
+  wire              _GEN_19 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_18;
+  wire              _GEN_20 = from_ifu_req_bits_addr[8:5] == 4'h6;
+  wire              _GEN_21 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_20;
+  wire              _GEN_22 = from_ifu_req_bits_addr[8:5] == 4'h7;
+  wire              _GEN_23 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_22;
+  wire              _GEN_24 = from_ifu_req_bits_addr[8:5] == 4'h8;
+  wire              _GEN_25 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_24;
+  wire              _GEN_26 = from_ifu_req_bits_addr[8:5] == 4'h9;
+  wire              _GEN_27 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_26;
+  wire              _GEN_28 = from_ifu_req_bits_addr[8:5] == 4'hA;
+  wire              _GEN_29 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_28;
+  wire              _GEN_30 = from_ifu_req_bits_addr[8:5] == 4'hB;
+  wire              _GEN_31 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_30;
+  wire              _GEN_32 = from_ifu_req_bits_addr[8:5] == 4'hC;
+  wire              _GEN_33 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_32;
+  wire              _GEN_34 = from_ifu_req_bits_addr[8:5] == 4'hD;
+  wire              _GEN_35 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_34;
+  wire              _GEN_36 = from_ifu_req_bits_addr[8:5] == 4'hE;
+  wire              _GEN_37 = _GEN_4 & to_sram_r_bits_last & ~replace_set & _GEN_36;
+  wire              _GEN_38 =
     _GEN_4 & to_sram_r_bits_last & ~replace_set & (&(from_ifu_req_bits_addr[8:5]));
-  wire              _GEN_38 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_7;
-  wire              _GEN_39 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_9;
-  wire              _GEN_40 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_11;
-  wire              _GEN_41 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_13;
-  wire              _GEN_42 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_15;
-  wire              _GEN_43 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_17;
-  wire              _GEN_44 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_19;
-  wire              _GEN_45 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_21;
-  wire              _GEN_46 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_23;
-  wire              _GEN_47 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_25;
-  wire              _GEN_48 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_27;
-  wire              _GEN_49 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_29;
-  wire              _GEN_50 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_31;
-  wire              _GEN_51 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_33;
-  wire              _GEN_52 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_35;
-  wire              _GEN_53 =
+  wire              _GEN_39 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_8;
+  wire              _GEN_40 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_10;
+  wire              _GEN_41 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_12;
+  wire              _GEN_42 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_14;
+  wire              _GEN_43 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_16;
+  wire              _GEN_44 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_18;
+  wire              _GEN_45 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_20;
+  wire              _GEN_46 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_22;
+  wire              _GEN_47 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_24;
+  wire              _GEN_48 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_26;
+  wire              _GEN_49 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_28;
+  wire              _GEN_50 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_30;
+  wire              _GEN_51 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_32;
+  wire              _GEN_52 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_34;
+  wire              _GEN_53 = _GEN_4 & to_sram_r_bits_last & replace_set & _GEN_36;
+  wire              _GEN_54 =
     _GEN_4 & to_sram_r_bits_last & replace_set & (&(from_ifu_req_bits_addr[8:5]));
-  wire              _GEN_54 = ~from_ifu_resp_ready & ~instRegValid & dataValid;
   always @(posedge clock) begin
     if (reset) begin
       replace_set <= 1'h0;
@@ -2093,107 +2093,107 @@ module Icache_pipeline(
       instRegValid <= 1'h0;
     end
     else begin
-      if ((|state_cache) & _GEN_6)
+      if ((|state_cache) & _GEN_7)
         replace_set <= random_num;
       random_num <= random_num - 1'h1;
-      if (_GEN_8)
+      if (_GEN_9)
         tagArray_0_0 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_10)
+      if (_GEN_11)
         tagArray_0_1 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_12)
+      if (_GEN_13)
         tagArray_0_2 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_14)
+      if (_GEN_15)
         tagArray_0_3 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_16)
+      if (_GEN_17)
         tagArray_0_4 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_18)
+      if (_GEN_19)
         tagArray_0_5 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_20)
+      if (_GEN_21)
         tagArray_0_6 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_22)
+      if (_GEN_23)
         tagArray_0_7 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_24)
+      if (_GEN_25)
         tagArray_0_8 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_26)
+      if (_GEN_27)
         tagArray_0_9 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_28)
+      if (_GEN_29)
         tagArray_0_10 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_30)
+      if (_GEN_31)
         tagArray_0_11 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_32)
+      if (_GEN_33)
         tagArray_0_12 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_34)
+      if (_GEN_35)
         tagArray_0_13 <= from_ifu_req_bits_addr[31:9];
-      if (_GEN_36)
-        tagArray_0_14 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_37)
-        tagArray_0_15 <= from_ifu_req_bits_addr[31:9];
+        tagArray_0_14 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_38)
-        tagArray_1_0 <= from_ifu_req_bits_addr[31:9];
+        tagArray_0_15 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_39)
-        tagArray_1_1 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_0 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_40)
-        tagArray_1_2 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_1 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_41)
-        tagArray_1_3 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_2 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_42)
-        tagArray_1_4 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_3 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_43)
-        tagArray_1_5 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_4 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_44)
-        tagArray_1_6 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_5 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_45)
-        tagArray_1_7 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_6 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_46)
-        tagArray_1_8 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_7 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_47)
-        tagArray_1_9 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_8 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_48)
-        tagArray_1_10 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_9 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_49)
-        tagArray_1_11 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_10 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_50)
-        tagArray_1_12 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_11 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_51)
-        tagArray_1_13 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_12 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_52)
-        tagArray_1_14 <= from_ifu_req_bits_addr[31:9];
+        tagArray_1_13 <= from_ifu_req_bits_addr[31:9];
       if (_GEN_53)
+        tagArray_1_14 <= from_ifu_req_bits_addr[31:9];
+      if (_GEN_54)
         tagArray_1_15 <= from_ifu_req_bits_addr[31:9];
-      validArray_0_0 <= _GEN_8 | validArray_0_0;
-      validArray_0_1 <= _GEN_10 | validArray_0_1;
-      validArray_0_2 <= _GEN_12 | validArray_0_2;
-      validArray_0_3 <= _GEN_14 | validArray_0_3;
-      validArray_0_4 <= _GEN_16 | validArray_0_4;
-      validArray_0_5 <= _GEN_18 | validArray_0_5;
-      validArray_0_6 <= _GEN_20 | validArray_0_6;
-      validArray_0_7 <= _GEN_22 | validArray_0_7;
-      validArray_0_8 <= _GEN_24 | validArray_0_8;
-      validArray_0_9 <= _GEN_26 | validArray_0_9;
-      validArray_0_10 <= _GEN_28 | validArray_0_10;
-      validArray_0_11 <= _GEN_30 | validArray_0_11;
-      validArray_0_12 <= _GEN_32 | validArray_0_12;
-      validArray_0_13 <= _GEN_34 | validArray_0_13;
-      validArray_0_14 <= _GEN_36 | validArray_0_14;
-      validArray_0_15 <= _GEN_37 | validArray_0_15;
-      validArray_1_0 <= _GEN_38 | validArray_1_0;
-      validArray_1_1 <= _GEN_39 | validArray_1_1;
-      validArray_1_2 <= _GEN_40 | validArray_1_2;
-      validArray_1_3 <= _GEN_41 | validArray_1_3;
-      validArray_1_4 <= _GEN_42 | validArray_1_4;
-      validArray_1_5 <= _GEN_43 | validArray_1_5;
-      validArray_1_6 <= _GEN_44 | validArray_1_6;
-      validArray_1_7 <= _GEN_45 | validArray_1_7;
-      validArray_1_8 <= _GEN_46 | validArray_1_8;
-      validArray_1_9 <= _GEN_47 | validArray_1_9;
-      validArray_1_10 <= _GEN_48 | validArray_1_10;
-      validArray_1_11 <= _GEN_49 | validArray_1_11;
-      validArray_1_12 <= _GEN_50 | validArray_1_12;
-      validArray_1_13 <= _GEN_51 | validArray_1_13;
-      validArray_1_14 <= _GEN_52 | validArray_1_14;
-      validArray_1_15 <= _GEN_53 | validArray_1_15;
+      validArray_0_0 <= _GEN_9 | validArray_0_0;
+      validArray_0_1 <= _GEN_11 | validArray_0_1;
+      validArray_0_2 <= _GEN_13 | validArray_0_2;
+      validArray_0_3 <= _GEN_15 | validArray_0_3;
+      validArray_0_4 <= _GEN_17 | validArray_0_4;
+      validArray_0_5 <= _GEN_19 | validArray_0_5;
+      validArray_0_6 <= _GEN_21 | validArray_0_6;
+      validArray_0_7 <= _GEN_23 | validArray_0_7;
+      validArray_0_8 <= _GEN_25 | validArray_0_8;
+      validArray_0_9 <= _GEN_27 | validArray_0_9;
+      validArray_0_10 <= _GEN_29 | validArray_0_10;
+      validArray_0_11 <= _GEN_31 | validArray_0_11;
+      validArray_0_12 <= _GEN_33 | validArray_0_12;
+      validArray_0_13 <= _GEN_35 | validArray_0_13;
+      validArray_0_14 <= _GEN_37 | validArray_0_14;
+      validArray_0_15 <= _GEN_38 | validArray_0_15;
+      validArray_1_0 <= _GEN_39 | validArray_1_0;
+      validArray_1_1 <= _GEN_40 | validArray_1_1;
+      validArray_1_2 <= _GEN_41 | validArray_1_2;
+      validArray_1_3 <= _GEN_42 | validArray_1_3;
+      validArray_1_4 <= _GEN_43 | validArray_1_4;
+      validArray_1_5 <= _GEN_44 | validArray_1_5;
+      validArray_1_6 <= _GEN_45 | validArray_1_6;
+      validArray_1_7 <= _GEN_46 | validArray_1_7;
+      validArray_1_8 <= _GEN_47 | validArray_1_8;
+      validArray_1_9 <= _GEN_48 | validArray_1_9;
+      validArray_1_10 <= _GEN_49 | validArray_1_10;
+      validArray_1_11 <= _GEN_50 | validArray_1_11;
+      validArray_1_12 <= _GEN_51 | validArray_1_12;
+      validArray_1_13 <= _GEN_52 | validArray_1_13;
+      validArray_1_14 <= _GEN_53 | validArray_1_14;
+      validArray_1_15 <= _GEN_54 | validArray_1_15;
       if (|state_cache) begin
-        if (_GEN_6)
+        if (_GEN_7)
           off <= 3'h0;
         else if (_GEN_4)
           off <= off + 3'h1;
@@ -2201,15 +2201,16 @@ module Icache_pipeline(
       end
       else
         state_cache <= {1'h0, ~hit};
-      dataValid <= (_GEN_54 | ~redirect) & hit & from_ifu_resp_ready;
-      if (_GEN_54)
-        instReg <= _dataArray_ext_R0_data;
-      else if (redirect)
+      dataValid <= ~redirect & hit & from_ifu_resp_ready;
+      if (redirect)
         instReg <= 32'h0;
-      instRegValid <=
-        _GEN_54
-        | (redirect | ~(instRegValid & from_ifu_resp_ready & _from_ifu_resp_valid_output))
-        & instRegValid;
+      else begin
+        if (_GEN_6)
+          instReg <= _dataArray_ext_R0_data;
+        instRegValid <=
+          _GEN_6 | ~(instRegValid & from_ifu_resp_ready & _from_ifu_resp_valid_output)
+          & instRegValid;
+      end
     end
   end // always @(posedge)
   dataArray_256x32 dataArray_ext (
