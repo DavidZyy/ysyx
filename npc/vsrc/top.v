@@ -1732,7 +1732,6 @@ module IFU_pipeline(
                 to_mem_req_ready,
                 to_mem_resp_valid,
   input  [31:0] to_mem_resp_bits_rdata,
-                to_IDU_PC,
   output        to_IDU_valid,
   output [31:0] to_IDU_bits_inst,
                 to_IDU_bits_pc,
@@ -1743,19 +1742,23 @@ module IFU_pipeline(
 );
 
   reg [31:0] reg_PC;
+  reg [31:0] inst_PC;
   always @(posedge clock) begin
-    if (reset)
+    if (reset) begin
       reg_PC <= 32'h80000000;
+      inst_PC <= 32'h0;
+    end
     else if (to_mem_req_ready & to_IDU_ready) begin
       if (to_mem_req_ready & from_EXU_valid & from_EXU_bits_redirect)
         reg_PC <= from_EXU_bits_target;
       else
         reg_PC <= reg_PC + 32'h4;
+      inst_PC <= reg_PC;
     end
   end // always @(posedge)
   assign to_IDU_valid = to_mem_resp_valid;
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
-  assign to_IDU_bits_pc = to_IDU_PC;
+  assign to_IDU_bits_pc = inst_PC;
   assign from_EXU_ready = to_mem_req_ready;
   assign to_mem_req_bits_addr = reg_PC;
   assign to_mem_resp_ready = to_IDU_ready;
@@ -1804,8 +1807,7 @@ module Icache_pipeline(
   output        to_sram_ar_valid,
   output [31:0] to_sram_ar_bits_addr,
   output [7:0]  to_sram_ar_bits_len,
-  output        to_sram_r_ready,
-  output [31:0] instPC
+  output        to_sram_r_ready
 );
 
   wire              _to_sram_r_ready_output;
@@ -1954,7 +1956,6 @@ module Icache_pipeline(
   wire              _GEN_4 =
     state_cache == 2'h2 & _to_sram_r_ready_output & to_sram_r_valid;
   reg               dataValid;
-  reg  [31:0]       instPCReg;
   reg  [31:0]       instReg;
   reg               instRegValid;
   wire              _from_ifu_resp_valid_output =
@@ -2088,7 +2089,6 @@ module Icache_pipeline(
       off <= 3'h0;
       state_cache <= 2'h0;
       dataValid <= 1'h0;
-      instPCReg <= 32'h0;
       instReg <= 32'h0;
       instRegValid <= 1'h0;
     end
@@ -2202,7 +2202,6 @@ module Icache_pipeline(
       else
         state_cache <= {1'h0, ~hit};
       dataValid <= ~redirect & hit & from_ifu_resp_ready;
-      instPCReg <= from_ifu_req_bits_addr;
       if (redirect)
         instReg <= 32'h0;
       else begin
@@ -2232,7 +2231,6 @@ module Icache_pipeline(
     _to_sram_ar_valid_output ? {from_ifu_req_bits_addr[31:5], 5'h0} : 32'h0;
   assign to_sram_ar_bits_len = {5'h0, {3{_to_sram_ar_valid_output}}};
   assign to_sram_r_ready = _to_sram_r_ready_output;
-  assign instPC = instPCReg;
 endmodule
 
 // external module RamBB
@@ -3179,7 +3177,6 @@ module top(
   wire [31:0] _icache_to_sram_ar_bits_addr;
   wire [7:0]  _icache_to_sram_ar_bits_len;
   wire        _icache_to_sram_r_ready;
-  wire [31:0] _icache_instPC;
   wire        _IFU_i_to_IDU_valid;
   wire [31:0] _IFU_i_to_IDU_bits_inst;
   wire [31:0] _IFU_i_to_IDU_bits_pc;
@@ -3499,7 +3496,6 @@ module top(
     .to_mem_req_ready       (_icache_from_ifu_req_ready),
     .to_mem_resp_valid      (_icache_from_ifu_resp_valid),
     .to_mem_resp_bits_rdata (_icache_from_ifu_resp_bits_rdata),
-    .to_IDU_PC              (_icache_instPC),
     .to_IDU_valid           (_IFU_i_to_IDU_valid),
     .to_IDU_bits_inst       (_IFU_i_to_IDU_bits_inst),
     .to_IDU_bits_pc         (_IFU_i_to_IDU_bits_pc),
@@ -3524,8 +3520,7 @@ module top(
     .to_sram_ar_valid         (_icache_to_sram_ar_valid),
     .to_sram_ar_bits_addr     (_icache_to_sram_ar_bits_addr),
     .to_sram_ar_bits_len      (_icache_to_sram_ar_bits_len),
-    .to_sram_r_ready          (_icache_to_sram_r_ready),
-    .instPC                   (_icache_instPC)
+    .to_sram_r_ready          (_icache_to_sram_r_ready)
   );
   sram_axi_rw sram_i (
     .clock             (clock),
