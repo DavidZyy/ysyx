@@ -2201,7 +2201,7 @@ module Icache_pipeline(
       end
       else
         state_cache <= {1'h0, ~hit & from_ifu_resp_ready};
-      dataValid <= (_GEN_54 | ~redirect) & hit;
+      dataValid <= (_GEN_54 | ~redirect) & hit & from_ifu_resp_ready;
       if (_GEN_54)
         instReg <= _dataArray_ext_R0_data;
       else if (redirect)
