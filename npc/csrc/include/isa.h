@@ -24,8 +24,6 @@ typedef struct {
   word_t csr[3];
 
   word_t mstatus;
-  int a = 1;
-  assert(a == 1);
 } riscv32_CPU_state;
 
 

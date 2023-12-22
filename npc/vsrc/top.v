@@ -2235,7 +2235,7 @@ endmodule
 
 // external module RamBB
 
-module sram_axi_rw(
+module AXI4RAM(
   input         clock,
                 reset,
                 axi_ar_valid,
@@ -3522,7 +3522,7 @@ module top(
     .to_sram_ar_bits_len      (_icache_to_sram_ar_bits_len),
     .to_sram_r_ready          (_icache_to_sram_r_ready)
   );
-  sram_axi_rw sram_i (
+  AXI4RAM sram_i (
     .clock             (clock),
     .reset             (reset),
     .axi_ar_valid      (_icache_to_sram_ar_valid),
@@ -3601,7 +3601,7 @@ module top(
     .to_sram_w_valid          (_dcache_to_sram_w_valid),
     .to_sram_w_bits_data      (_dcache_to_sram_w_bits_data)
   );
-  sram_axi_rw sram_i2 (
+  AXI4RAM sram_i2 (
     .clock             (clock),
     .reset             (reset),
     .axi_ar_valid      (_dcache_to_sram_ar_valid),
