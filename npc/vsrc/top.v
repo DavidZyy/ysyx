@@ -1344,9 +1344,9 @@ module Lsu_simpleBus(
   output        io_out_end,
                 to_mem_req_valid,
   output [31:0] to_mem_req_bits_addr,
-  output [3:0]  to_mem_req_bits_cmd,
-  output [31:0] to_mem_req_bits_wdata,
+                to_mem_req_bits_wdata,
                 to_mem_req_bits_wmask,
+  output [3:0]  to_mem_req_bits_cmd,
   output        to_mem_resp_ready
 );
 
@@ -1403,8 +1403,6 @@ module Lsu_simpleBus(
   assign io_out_end = state_lsu == 3'h5;
   assign to_mem_req_valid = _to_mem_req_valid_output;
   assign to_mem_req_bits_addr = io_in_addr;
-  assign to_mem_req_bits_cmd =
-    {3'h0, _to_mem_req_bits_cmd_T_6 | _to_mem_req_bits_cmd_T_5};
   assign to_mem_req_bits_wdata = io_in_wdata;
   assign to_mem_req_bits_wmask =
     io_in_op == 4'h8
@@ -1419,6 +1417,8 @@ module Lsu_simpleBus(
                         ? 24'hFF0000
                         : {8'h0, io_in_addr[1:0] == 2'h1 ? 16'hFF00 : 16'hFF}})
               : 32'h0;
+  assign to_mem_req_bits_cmd =
+    {3'h0, _to_mem_req_bits_cmd_T_6 | _to_mem_req_bits_cmd_T_5};
   assign to_mem_resp_ready = _to_mem_resp_ready_output;
 endmodule
 
@@ -1584,9 +1584,9 @@ module EXU_pipeline(
                 difftest_mtvec,
   output        lsu_to_mem_req_valid,
   output [31:0] lsu_to_mem_req_bits_addr,
-  output [3:0]  lsu_to_mem_req_bits_cmd,
-  output [31:0] lsu_to_mem_req_bits_wdata,
+                lsu_to_mem_req_bits_wdata,
                 lsu_to_mem_req_bits_wmask,
+  output [3:0]  lsu_to_mem_req_bits_cmd,
   output        lsu_to_mem_resp_ready,
   output [4:0]  to_ISU_rd,
   output        to_ISU_have_wb,
@@ -1644,9 +1644,9 @@ module EXU_pipeline(
     .io_out_end             (_Lsu_i_io_out_end),
     .to_mem_req_valid       (lsu_to_mem_req_valid),
     .to_mem_req_bits_addr   (lsu_to_mem_req_bits_addr),
-    .to_mem_req_bits_cmd    (lsu_to_mem_req_bits_cmd),
     .to_mem_req_bits_wdata  (lsu_to_mem_req_bits_wdata),
     .to_mem_req_bits_wmask  (lsu_to_mem_req_bits_wmask),
+    .to_mem_req_bits_cmd    (lsu_to_mem_req_bits_cmd),
     .to_mem_resp_ready      (lsu_to_mem_resp_ready)
   );
   Csr Csr_i (
@@ -2354,9 +2354,9 @@ module SimpleBusCrossBar1toN(
                 reset,
                 io_in_req_valid,
   input  [31:0] io_in_req_bits_addr,
-  input  [3:0]  io_in_req_bits_cmd,
-  input  [31:0] io_in_req_bits_wdata,
+                io_in_req_bits_wdata,
                 io_in_req_bits_wmask,
+  input  [3:0]  io_in_req_bits_cmd,
   input         io_in_resp_ready,
                 io_out_0_req_ready,
                 io_out_0_resp_valid,
@@ -2370,14 +2370,14 @@ module SimpleBusCrossBar1toN(
   output        io_in_resp_bits_wresp,
                 io_out_0_req_valid,
   output [31:0] io_out_0_req_bits_addr,
-  output [3:0]  io_out_0_req_bits_cmd,
-  output [31:0] io_out_0_req_bits_wdata,
+                io_out_0_req_bits_wdata,
                 io_out_0_req_bits_wmask,
+  output [3:0]  io_out_0_req_bits_cmd,
   output        io_out_1_req_valid,
   output [31:0] io_out_1_req_bits_addr,
-  output [3:0]  io_out_1_req_bits_cmd,
-  output [31:0] io_out_1_req_bits_wdata,
-                io_out_1_req_bits_wmask
+                io_out_1_req_bits_wdata,
+                io_out_1_req_bits_wmask,
+  output [3:0]  io_out_1_req_bits_cmd
 );
 
   reg  [1:0] state;
@@ -2424,14 +2424,14 @@ module SimpleBusCrossBar1toN(
     & io_out_1_resp_bits_wresp;
   assign io_out_0_req_valid = outSelVec_enc[0] & io_in_req_valid & ~(|state);
   assign io_out_0_req_bits_addr = io_in_req_bits_addr;
-  assign io_out_0_req_bits_cmd = io_in_req_bits_cmd;
   assign io_out_0_req_bits_wdata = io_in_req_bits_wdata;
   assign io_out_0_req_bits_wmask = io_in_req_bits_wmask;
+  assign io_out_0_req_bits_cmd = io_in_req_bits_cmd;
   assign io_out_1_req_valid = outSelVec_enc[1] & io_in_req_valid & ~(|state);
   assign io_out_1_req_bits_addr = io_in_req_bits_addr;
-  assign io_out_1_req_bits_cmd = io_in_req_bits_cmd;
   assign io_out_1_req_bits_wdata = io_in_req_bits_wdata;
   assign io_out_1_req_bits_wmask = io_in_req_bits_wmask;
+  assign io_out_1_req_bits_cmd = io_in_req_bits_cmd;
 endmodule
 
 // VCS coverage exclude_file
@@ -2482,9 +2482,9 @@ module Dcache_SimpleBus(
                 reset,
                 from_lsu_req_valid,
   input  [31:0] from_lsu_req_bits_addr,
-  input  [3:0]  from_lsu_req_bits_cmd,
-  input  [31:0] from_lsu_req_bits_wdata,
+                from_lsu_req_bits_wdata,
                 from_lsu_req_bits_wmask,
+  input  [3:0]  from_lsu_req_bits_cmd,
   input         to_sram_ar_ready,
                 to_sram_r_valid,
   input  [31:0] to_sram_r_bits_data,
@@ -3094,9 +3094,9 @@ module MMIO(
   input         clock,
                 from_lsu_req_valid,
   input  [31:0] from_lsu_req_bits_addr,
-  input  [3:0]  from_lsu_req_bits_cmd,
-  input  [31:0] from_lsu_req_bits_wdata,
+                from_lsu_req_bits_wdata,
                 from_lsu_req_bits_wmask,
+  input  [3:0]  from_lsu_req_bits_cmd,
   output [31:0] from_lsu_resp_bits_rdata,
   output        from_lsu_resp_bits_wresp
 );
@@ -3158,14 +3158,14 @@ module top(
   wire        _memXbar_io_in_resp_bits_wresp;
   wire        _memXbar_io_out_0_req_valid;
   wire [31:0] _memXbar_io_out_0_req_bits_addr;
-  wire [3:0]  _memXbar_io_out_0_req_bits_cmd;
   wire [31:0] _memXbar_io_out_0_req_bits_wdata;
   wire [31:0] _memXbar_io_out_0_req_bits_wmask;
+  wire [3:0]  _memXbar_io_out_0_req_bits_cmd;
   wire        _memXbar_io_out_1_req_valid;
   wire [31:0] _memXbar_io_out_1_req_bits_addr;
-  wire [3:0]  _memXbar_io_out_1_req_bits_cmd;
   wire [31:0] _memXbar_io_out_1_req_bits_wdata;
   wire [31:0] _memXbar_io_out_1_req_bits_wmask;
+  wire [3:0]  _memXbar_io_out_1_req_bits_cmd;
   wire        _sram_i_axi_ar_ready;
   wire        _sram_i_axi_r_valid;
   wire [31:0] _sram_i_axi_r_bits_data;
@@ -3201,9 +3201,9 @@ module top(
   wire        _EXU_i_to_IFU_bits_redirect;
   wire        _EXU_i_lsu_to_mem_req_valid;
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_addr;
-  wire [3:0]  _EXU_i_lsu_to_mem_req_bits_cmd;
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_wdata;
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_wmask;
+  wire [3:0]  _EXU_i_lsu_to_mem_req_bits_cmd;
   wire        _EXU_i_lsu_to_mem_resp_ready;
   wire [4:0]  _EXU_i_to_ISU_rd;
   wire        _EXU_i_to_ISU_have_wb;
@@ -3464,9 +3464,9 @@ module top(
     .difftest_mtvec                   (io_out_difftest_mtvec),
     .lsu_to_mem_req_valid             (_EXU_i_lsu_to_mem_req_valid),
     .lsu_to_mem_req_bits_addr         (_EXU_i_lsu_to_mem_req_bits_addr),
-    .lsu_to_mem_req_bits_cmd          (_EXU_i_lsu_to_mem_req_bits_cmd),
     .lsu_to_mem_req_bits_wdata        (_EXU_i_lsu_to_mem_req_bits_wdata),
     .lsu_to_mem_req_bits_wmask        (_EXU_i_lsu_to_mem_req_bits_wmask),
+    .lsu_to_mem_req_bits_cmd          (_EXU_i_lsu_to_mem_req_bits_cmd),
     .lsu_to_mem_resp_ready            (_EXU_i_lsu_to_mem_resp_ready),
     .to_ISU_rd                        (_EXU_i_to_ISU_rd),
     .to_ISU_have_wb                   (_EXU_i_to_ISU_have_wb),
@@ -3548,9 +3548,9 @@ module top(
     .reset                    (reset),
     .io_in_req_valid          (_EXU_i_lsu_to_mem_req_valid),
     .io_in_req_bits_addr      (_EXU_i_lsu_to_mem_req_bits_addr),
-    .io_in_req_bits_cmd       (_EXU_i_lsu_to_mem_req_bits_cmd),
     .io_in_req_bits_wdata     (_EXU_i_lsu_to_mem_req_bits_wdata),
     .io_in_req_bits_wmask     (_EXU_i_lsu_to_mem_req_bits_wmask),
+    .io_in_req_bits_cmd       (_EXU_i_lsu_to_mem_req_bits_cmd),
     .io_in_resp_ready         (_EXU_i_lsu_to_mem_resp_ready),
     .io_out_0_req_ready       (_dcache_from_lsu_req_ready),
     .io_out_0_resp_valid      (_dcache_from_lsu_resp_valid),
@@ -3564,23 +3564,23 @@ module top(
     .io_in_resp_bits_wresp    (_memXbar_io_in_resp_bits_wresp),
     .io_out_0_req_valid       (_memXbar_io_out_0_req_valid),
     .io_out_0_req_bits_addr   (_memXbar_io_out_0_req_bits_addr),
-    .io_out_0_req_bits_cmd    (_memXbar_io_out_0_req_bits_cmd),
     .io_out_0_req_bits_wdata  (_memXbar_io_out_0_req_bits_wdata),
     .io_out_0_req_bits_wmask  (_memXbar_io_out_0_req_bits_wmask),
+    .io_out_0_req_bits_cmd    (_memXbar_io_out_0_req_bits_cmd),
     .io_out_1_req_valid       (_memXbar_io_out_1_req_valid),
     .io_out_1_req_bits_addr   (_memXbar_io_out_1_req_bits_addr),
-    .io_out_1_req_bits_cmd    (_memXbar_io_out_1_req_bits_cmd),
     .io_out_1_req_bits_wdata  (_memXbar_io_out_1_req_bits_wdata),
-    .io_out_1_req_bits_wmask  (_memXbar_io_out_1_req_bits_wmask)
+    .io_out_1_req_bits_wmask  (_memXbar_io_out_1_req_bits_wmask),
+    .io_out_1_req_bits_cmd    (_memXbar_io_out_1_req_bits_cmd)
   );
   Dcache_SimpleBus dcache (
     .clock                    (clock),
     .reset                    (reset),
     .from_lsu_req_valid       (_memXbar_io_out_0_req_valid),
     .from_lsu_req_bits_addr   (_memXbar_io_out_0_req_bits_addr),
-    .from_lsu_req_bits_cmd    (_memXbar_io_out_0_req_bits_cmd),
     .from_lsu_req_bits_wdata  (_memXbar_io_out_0_req_bits_wdata),
     .from_lsu_req_bits_wmask  (_memXbar_io_out_0_req_bits_wmask),
+    .from_lsu_req_bits_cmd    (_memXbar_io_out_0_req_bits_cmd),
     .to_sram_ar_ready         (_sram_i2_axi_ar_ready),
     .to_sram_r_valid          (_sram_i2_axi_r_valid),
     .to_sram_r_bits_data      (_sram_i2_axi_r_bits_data),
@@ -3626,9 +3626,9 @@ module top(
     .clock                    (clock),
     .from_lsu_req_valid       (_memXbar_io_out_1_req_valid),
     .from_lsu_req_bits_addr   (_memXbar_io_out_1_req_bits_addr),
-    .from_lsu_req_bits_cmd    (_memXbar_io_out_1_req_bits_cmd),
     .from_lsu_req_bits_wdata  (_memXbar_io_out_1_req_bits_wdata),
     .from_lsu_req_bits_wmask  (_memXbar_io_out_1_req_bits_wmask),
+    .from_lsu_req_bits_cmd    (_memXbar_io_out_1_req_bits_cmd),
     .from_lsu_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata),
     .from_lsu_resp_bits_wresp (_mmio_from_lsu_resp_bits_wresp)
   );
