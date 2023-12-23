@@ -126,7 +126,7 @@ void get_cpu() {
   cpu.mstatus = top->io_out_difftest_mstatus;
 
   // get pc
-  cpu.pc = top->io_out_wbu_pc;
+  cpu.pc = top->io_out_nextExecPC;
 }
 
 // execute on inst, until WB stage

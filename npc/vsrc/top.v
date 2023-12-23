@@ -2486,6 +2486,7 @@ module top(
   input         clock,
                 reset,
   output [31:0] io_out_ifu_fetchPc,
+                io_out_nextExecPC,
                 io_out_ifu_inst,
                 io_out_ifu_pc,
                 io_out_idu_inst,
@@ -2929,6 +2930,7 @@ module top(
     .axi_aw_ready      (_ram_i2_axi_aw_ready),
     .axi_b_valid       (_ram_i2_axi_b_valid)
   );
+  assign io_out_nextExecPC = valid_1 ? _EXU_i_to_WBU_bits_pc : _ISU_i_to_EXU_bits_pc;
   assign io_out_ifu_inst = _IFU_i_to_IDU_bits_inst;
   assign io_out_ifu_pc = _IFU_i_to_IDU_bits_pc;
   assign io_out_idu_inst = _IDU_i_to_ISU_bits_inst;
