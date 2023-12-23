@@ -2350,7 +2350,7 @@ module CacheStage1(
   assign io_dataReadBus_bits_raddr =
     {_GEN_2 == io_in_bits_addr[31:8], io_in_bits_addr[7:2]};
   assign io_dataWriteBus_req_valid =
-    stateCache == 3'h3 & io_mem_req_ready & _io_mem_req_valid_output;
+    stateCache == 3'h3 & _io_mem_resp_ready_output & io_mem_resp_valid;
   assign io_dataWriteBus_req_bits_waddr = {replaceWayReg, io_in_bits_addr[7:4], entryOff};
   assign io_dataWriteBus_req_bits_wdata = io_mem_resp_bits_rdata;
 endmodule
