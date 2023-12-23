@@ -3608,7 +3608,7 @@ endmodule
 module top(	// <stdin>:3749:3
   input         clock,	// <stdin>:3750:11
                 reset,	// <stdin>:3751:11
-  output [31:0] io_out_inst,	// src/main/scala/rv32e/core.scala:36:16
+  output [31:0] io_out_ifu_inst,	// src/main/scala/rv32e/core.scala:36:16
                 io_out_ifu_fetchPc,	// src/main/scala/rv32e/core.scala:36:16
                 io_out_difftest_mcause,	// src/main/scala/rv32e/core.scala:36:16
                 io_out_difftest_mepc,	// src/main/scala/rv32e/core.scala:36:16
@@ -4077,7 +4077,7 @@ module top(	// <stdin>:3749:3
     .from_lsu_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata),
     .from_lsu_resp_bits_wresp (_mmio_from_lsu_resp_bits_wresp)
   );
-  assign io_out_inst = _IFU_i_to_IDU_bits_inst;	// <stdin>:3749:3, src/main/scala/rv32e/core.scala:46:27
+  assign io_out_ifu_inst = _IFU_i_to_IDU_bits_inst;	// <stdin>:3749:3, src/main/scala/rv32e/core.scala:46:27
   assign io_out_ifu_fetchPc = _IFU_i_to_IDU_bits_pc;	// <stdin>:3749:3, src/main/scala/rv32e/core.scala:46:27
   assign io_out_wb = _WBU_i_to_IFU_valid;	// <stdin>:3749:3, src/main/scala/rv32e/core.scala:43:27
 endmodule
