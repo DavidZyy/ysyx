@@ -2343,7 +2343,7 @@ module CacheStage1(
   end // always @(posedge)
   assign io_in_ready = hit & (~(|stateCache) | stateCache == 3'h4);
   assign io_mem_req_valid = _io_mem_req_valid_output;
-  assign io_mem_req_bits_addr = {io_in_bits_addr[31:2], 2'h0};
+  assign io_mem_req_bits_addr = {io_in_bits_addr[31:4], 4'h0};
   assign io_mem_resp_ready = _io_mem_resp_ready_output;
   assign io_out_valid = hit;
   assign io_dataReadBus_valid = io_in_valid;
