@@ -2373,13 +2373,17 @@ module CacheStage2(
   output        io_in_ready,
   output [31:0] io_out_addr,
   output        io_out_resp_valid,
-  output [31:0] io_out_resp_bits_rdata
+  output [31:0] io_out_resp_bits_rdata,
+                io_in_bits_addr__bore,
+  output        io_in_valid__bore
 );
 
   assign io_in_ready = io_out_resp_ready;
   assign io_out_addr = io_in_bits_addr;
   assign io_out_resp_valid = io_in_valid;
   assign io_out_resp_bits_rdata = io_in_valid ? io_dataReadBus_rdata : 32'h0;
+  assign io_in_bits_addr__bore = io_in_bits_addr;
+  assign io_in_valid__bore = io_in_valid;
 endmodule
 
 module Cache(
@@ -2398,7 +2402,9 @@ module Cache(
   output        io_mem_req_valid,
   output [31:0] io_mem_req_bits_addr,
   output        io_mem_resp_ready,
-  output [31:0] io_stage2Addr
+  output [31:0] io_stage2Addr,
+                s2_io_in_bits_addr__bore,
+  output        s2_io_in_valid__bore
 );
 
   wire        _s2_io_in_ready;
@@ -2466,7 +2472,9 @@ module Cache(
     .io_in_ready            (_s2_io_in_ready),
     .io_out_addr            (io_stage2Addr),
     .io_out_resp_valid      (_s2_io_out_resp_valid),
-    .io_out_resp_bits_rdata (io_in_resp_bits_rdata)
+    .io_out_resp_bits_rdata (io_in_resp_bits_rdata),
+    .io_in_bits_addr__bore  (s2_io_in_bits_addr__bore),
+    .io_in_valid__bore      (s2_io_in_valid__bore)
   );
   assign io_in_resp_valid = _s2_io_out_resp_valid;
 endmodule
@@ -2516,6 +2524,8 @@ module top(
   output        io_out_wb
 );
 
+  wire [31:0] CacheStage2PC;
+  wire        CacheStage2valid;
   wire        _ram_i2_axi_ar_ready;
   wire        _ram_i2_axi_r_valid;
   wire [31:0] _ram_i2_axi_r_bits_data;
@@ -2535,6 +2545,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_addr;
   wire        _icache_io_mem_resp_ready;
   wire [31:0] _icache_io_stage2Addr;
+  wire [31:0] _icache_s2_io_in_bits_addr__bore;
+  wire        _icache_s2_io_in_valid__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -2636,6 +2648,8 @@ module top(
   reg  [2:0]  EXU_i_from_ISU_bits_r_ctrl_sig_csr_op;
   reg  [3:0]  EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op;
   reg  [31:0] EXU_i_from_ISU_bits_r_inst;
+  assign CacheStage2valid = _icache_s2_io_in_bits_addr__bore[0];
+  assign CacheStage2PC = {31'h0, _icache_s2_io_in_valid__bore};
   wire        _GEN =
     _EXU_i_to_IFU_bits_redirect & _IDU_i_from_IFU_ready & _IFU_i_to_IDU_valid;
   wire        _IDU_i_from_IFU_bits_T_1 = _IFU_i_to_IDU_valid & _IDU_i_from_IFU_ready;
@@ -2896,22 +2910,24 @@ module top(
     .axi_b_valid       (/* unused */)
   );
   Cache icache (
-    .clock                  (clock),
-    .reset                  (reset),
-    .io_in_req_valid        (_IFU_i_to_mem_req_valid),
-    .io_in_req_bits_addr    (_IFU_i_to_mem_req_bits_addr),
-    .io_in_resp_ready       (_IFU_i_to_mem_resp_ready),
-    .io_mem_req_ready       (_bridge_io_in_req_ready),
-    .io_mem_resp_valid      (_bridge_io_in_resp_valid),
-    .io_mem_resp_bits_rdata (_bridge_io_in_resp_bits_rdata),
-    .io_flush               (_EXU_i_to_IFU_bits_redirect),
-    .io_in_req_ready        (_icache_io_in_req_ready),
-    .io_in_resp_valid       (_icache_io_in_resp_valid),
-    .io_in_resp_bits_rdata  (_icache_io_in_resp_bits_rdata),
-    .io_mem_req_valid       (_icache_io_mem_req_valid),
-    .io_mem_req_bits_addr   (_icache_io_mem_req_bits_addr),
-    .io_mem_resp_ready      (_icache_io_mem_resp_ready),
-    .io_stage2Addr          (_icache_io_stage2Addr)
+    .clock                    (clock),
+    .reset                    (reset),
+    .io_in_req_valid          (_IFU_i_to_mem_req_valid),
+    .io_in_req_bits_addr      (_IFU_i_to_mem_req_bits_addr),
+    .io_in_resp_ready         (_IFU_i_to_mem_resp_ready),
+    .io_mem_req_ready         (_bridge_io_in_req_ready),
+    .io_mem_resp_valid        (_bridge_io_in_resp_valid),
+    .io_mem_resp_bits_rdata   (_bridge_io_in_resp_bits_rdata),
+    .io_flush                 (_EXU_i_to_IFU_bits_redirect),
+    .io_in_req_ready          (_icache_io_in_req_ready),
+    .io_in_resp_valid         (_icache_io_in_resp_valid),
+    .io_in_resp_bits_rdata    (_icache_io_in_resp_bits_rdata),
+    .io_mem_req_valid         (_icache_io_mem_req_valid),
+    .io_mem_req_bits_addr     (_icache_io_mem_req_bits_addr),
+    .io_mem_resp_ready        (_icache_io_mem_resp_ready),
+    .io_stage2Addr            (_icache_io_stage2Addr),
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
@@ -2952,7 +2968,9 @@ module top(
   assign io_out_nextExecPC =
     valid_1
       ? _EXU_i_to_WBU_bits_pc
-      : _IDU_i_to_ISU_valid ? _ISU_i_to_EXU_bits_pc : _IFU_i_fetch_PC;
+      : _IDU_i_to_ISU_valid
+          ? _ISU_i_to_EXU_bits_pc
+          : CacheStage2valid ? CacheStage2PC : _IFU_i_fetch_PC;
   assign io_out_ifu_inst = _IFU_i_to_IDU_bits_inst;
   assign io_out_ifu_pc = _IFU_i_to_IDU_bits_pc;
   assign io_out_idu_inst = _IDU_i_to_ISU_bits_inst;
