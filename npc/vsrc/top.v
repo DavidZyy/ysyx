@@ -1740,6 +1740,7 @@ module IFU_pipeline(
                 to_mem_req_ready,
                 to_mem_resp_valid,
   input  [31:0] to_mem_resp_bits_rdata,
+                to_IDU_PC,
   output        to_IDU_valid,
   output [31:0] to_IDU_bits_inst,
                 to_IDU_bits_pc,
@@ -1751,23 +1752,19 @@ module IFU_pipeline(
 );
 
   reg [31:0] reg_PC;
-  reg [31:0] inst_PC;
   always @(posedge clock) begin
-    if (reset) begin
+    if (reset)
       reg_PC <= 32'h80000000;
-      inst_PC <= 32'h0;
-    end
     else if (to_mem_req_ready & to_IDU_ready) begin
       if (to_mem_req_ready & from_EXU_valid & from_EXU_bits_redirect)
         reg_PC <= from_EXU_bits_target;
       else
         reg_PC <= reg_PC + 32'h4;
-      inst_PC <= reg_PC;
     end
   end // always @(posedge)
   assign to_IDU_valid = to_mem_resp_valid;
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
-  assign to_IDU_bits_pc = inst_PC;
+  assign to_IDU_bits_pc = to_IDU_PC;
   assign from_EXU_ready = to_mem_req_ready;
   assign to_mem_req_valid = to_IDU_ready;
   assign to_mem_req_bits_addr = reg_PC;
@@ -1961,7 +1958,8 @@ module CacheStage1(
   output [31:0] io_mem_req_bits_addr,
   output        io_mem_resp_ready,
                 io_out_valid,
-                io_dataReadBus_valid,
+  output [31:0] io_out_bits_addr,
+  output        io_dataReadBus_valid,
   output [6:0]  io_dataReadBus_bits_raddr,
   output        io_dataWriteBus_req_valid,
   output [6:0]  io_dataWriteBus_req_bits_waddr,
@@ -2357,6 +2355,7 @@ module CacheStage1(
   assign io_mem_req_bits_addr = {io_in_bits_addr[31:4], 4'h0};
   assign io_mem_resp_ready = _io_mem_resp_ready_output;
   assign io_out_valid = hit;
+  assign io_out_bits_addr = io_in_bits_addr;
   assign io_dataReadBus_valid = io_in_valid;
   assign io_dataReadBus_bits_raddr =
     {_GEN_2 == io_in_bits_addr[31:8], io_in_bits_addr[7:2]};
@@ -2368,14 +2367,17 @@ endmodule
 
 module CacheStage2(
   input         io_in_valid,
-  input  [31:0] io_dataReadBus_rdata,
+  input  [31:0] io_in_bits_addr,
+                io_dataReadBus_rdata,
   input         io_out_resp_ready,
   output        io_in_ready,
-                io_out_resp_valid,
+  output [31:0] io_out_addr,
+  output        io_out_resp_valid,
   output [31:0] io_out_resp_bits_rdata
 );
 
   assign io_in_ready = io_out_resp_ready;
+  assign io_out_addr = io_in_bits_addr;
   assign io_out_resp_valid = io_in_valid;
   assign io_out_resp_bits_rdata = io_in_valid ? io_dataReadBus_rdata : 32'h0;
 endmodule
@@ -2395,12 +2397,14 @@ module Cache(
   output [31:0] io_in_resp_bits_rdata,
   output        io_mem_req_valid,
   output [31:0] io_mem_req_bits_addr,
-  output        io_mem_resp_ready
+  output        io_mem_resp_ready,
+  output [31:0] io_stage2Addr
 );
 
   wire        _s2_io_in_ready;
   wire        _s2_io_out_resp_valid;
   wire        _s1_io_out_valid;
+  wire [31:0] _s1_io_out_bits_addr;
   wire        _s1_io_dataReadBus_valid;
   wire [6:0]  _s1_io_dataReadBus_bits_raddr;
   wire        _s1_io_dataWriteBus_req_valid;
@@ -2408,14 +2412,21 @@ module Cache(
   wire [31:0] _s1_io_dataWriteBus_req_bits_wdata;
   wire [31:0] _dataArray_io_r_resp_rdata;
   reg         valid;
+  reg  [31:0] s2_io_in_bits_r_addr;
+  wire        _s2_io_in_bits_T_1 = _s1_io_out_valid & _s2_io_in_ready;
   always @(posedge clock) begin
     if (reset)
       valid <= 1'h0;
     else
       valid <=
         ~io_flush
-        & (_s1_io_out_valid & _s2_io_in_ready
-           | ~(io_in_resp_ready & _s2_io_out_resp_valid) & valid);
+        & (_s2_io_in_bits_T_1 | ~(io_in_resp_ready & _s2_io_out_resp_valid) & valid);
+    if (_s2_io_in_bits_T_1) begin
+      if (io_flush)
+        s2_io_in_bits_r_addr <= 32'h0;
+      else
+        s2_io_in_bits_r_addr <= _s1_io_out_bits_addr;
+    end
   end // always @(posedge)
   SRAMTemplate dataArray (
     .clock               (clock),
@@ -2440,6 +2451,7 @@ module Cache(
     .io_mem_req_bits_addr           (io_mem_req_bits_addr),
     .io_mem_resp_ready              (io_mem_resp_ready),
     .io_out_valid                   (_s1_io_out_valid),
+    .io_out_bits_addr               (_s1_io_out_bits_addr),
     .io_dataReadBus_valid           (_s1_io_dataReadBus_valid),
     .io_dataReadBus_bits_raddr      (_s1_io_dataReadBus_bits_raddr),
     .io_dataWriteBus_req_valid      (_s1_io_dataWriteBus_req_valid),
@@ -2448,9 +2460,11 @@ module Cache(
   );
   CacheStage2 s2 (
     .io_in_valid            (valid),
+    .io_in_bits_addr        (s2_io_in_bits_r_addr),
     .io_dataReadBus_rdata   (_dataArray_io_r_resp_rdata),
     .io_out_resp_ready      (io_in_resp_ready),
     .io_in_ready            (_s2_io_in_ready),
+    .io_out_addr            (io_stage2Addr),
     .io_out_resp_valid      (_s2_io_out_resp_valid),
     .io_out_resp_bits_rdata (io_in_resp_bits_rdata)
   );
@@ -2520,6 +2534,7 @@ module top(
   wire        _icache_io_mem_req_valid;
   wire [31:0] _icache_io_mem_req_bits_addr;
   wire        _icache_io_mem_resp_ready;
+  wire [31:0] _icache_io_stage2Addr;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -2530,6 +2545,7 @@ module top(
   wire        _IFU_i_to_mem_req_valid;
   wire [31:0] _IFU_i_to_mem_req_bits_addr;
   wire        _IFU_i_to_mem_resp_ready;
+  wire [31:0] _IFU_i_fetch_PC;
   wire        _WBU_i_to_ISU_bits_reg_wen;
   wire [31:0] _WBU_i_to_ISU_bits_wdata;
   wire [4:0]  _WBU_i_to_ISU_bits_rd;
@@ -2849,6 +2865,7 @@ module top(
     .to_mem_req_ready       (_icache_io_in_req_ready),
     .to_mem_resp_valid      (_icache_io_in_resp_valid),
     .to_mem_resp_bits_rdata (_icache_io_in_resp_bits_rdata),
+    .to_IDU_PC              (_icache_io_stage2Addr),
     .to_IDU_valid           (_IFU_i_to_IDU_valid),
     .to_IDU_bits_inst       (_IFU_i_to_IDU_bits_inst),
     .to_IDU_bits_pc         (_IFU_i_to_IDU_bits_pc),
@@ -2856,7 +2873,7 @@ module top(
     .to_mem_req_valid       (_IFU_i_to_mem_req_valid),
     .to_mem_req_bits_addr   (_IFU_i_to_mem_req_bits_addr),
     .to_mem_resp_ready      (_IFU_i_to_mem_resp_ready),
-    .fetch_PC               (io_out_ifu_fetchPc)
+    .fetch_PC               (_IFU_i_fetch_PC)
   );
   AXI4RAM ram_i (
     .clock             (clock),
@@ -2893,7 +2910,8 @@ module top(
     .io_in_resp_bits_rdata  (_icache_io_in_resp_bits_rdata),
     .io_mem_req_valid       (_icache_io_mem_req_valid),
     .io_mem_req_bits_addr   (_icache_io_mem_req_bits_addr),
-    .io_mem_resp_ready      (_icache_io_mem_resp_ready)
+    .io_mem_resp_ready      (_icache_io_mem_resp_ready),
+    .io_stage2Addr          (_icache_io_stage2Addr)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
@@ -2930,7 +2948,11 @@ module top(
     .axi_aw_ready      (_ram_i2_axi_aw_ready),
     .axi_b_valid       (_ram_i2_axi_b_valid)
   );
-  assign io_out_nextExecPC = valid_1 ? _EXU_i_to_WBU_bits_pc : _ISU_i_to_EXU_bits_pc;
+  assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
+  assign io_out_nextExecPC =
+    valid_1
+      ? _EXU_i_to_WBU_bits_pc
+      : _IDU_i_to_ISU_valid ? _ISU_i_to_EXU_bits_pc : _IFU_i_fetch_PC;
   assign io_out_ifu_inst = _IFU_i_to_IDU_bits_inst;
   assign io_out_ifu_pc = _IFU_i_to_IDU_bits_pc;
   assign io_out_idu_inst = _IDU_i_to_ISU_bits_inst;
