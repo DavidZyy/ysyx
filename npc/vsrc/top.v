@@ -2492,6 +2492,8 @@ module top(
                 io_out_idu_pc,
                 io_out_exu_inst,
                 io_out_exu_pc,
+                io_out_wbu_inst,
+                io_out_wbu_pc,
                 io_out_difftest_mcause,
                 io_out_difftest_mepc,
                 io_out_difftest_mstatus,
@@ -2540,6 +2542,7 @@ module top(
   wire        _EXU_i_to_WBU_bits_reg_wen;
   wire [4:0]  _EXU_i_to_WBU_bits_rd;
   wire [2:0]  _EXU_i_to_WBU_bits_fu_op;
+  wire [31:0] _EXU_i_to_WBU_bits_inst;
   wire        _EXU_i_to_IFU_valid;
   wire [31:0] _EXU_i_to_IFU_bits_target;
   wire        _EXU_i_to_IFU_bits_redirect;
@@ -2801,7 +2804,7 @@ module top(
     .to_WBU_bits_reg_wen              (_EXU_i_to_WBU_bits_reg_wen),
     .to_WBU_bits_rd                   (_EXU_i_to_WBU_bits_rd),
     .to_WBU_bits_fu_op                (_EXU_i_to_WBU_bits_fu_op),
-    .to_WBU_bits_inst                 (io_out_exu_inst),
+    .to_WBU_bits_inst                 (_EXU_i_to_WBU_bits_inst),
     .to_IFU_valid                     (_EXU_i_to_IFU_valid),
     .to_IFU_bits_target               (_EXU_i_to_IFU_bits_target),
     .to_IFU_bits_redirect             (_EXU_i_to_IFU_bits_redirect),
@@ -2930,7 +2933,10 @@ module top(
   assign io_out_ifu_pc = _IFU_i_to_IDU_bits_pc;
   assign io_out_idu_inst = _IDU_i_to_ISU_bits_inst;
   assign io_out_idu_pc = _IDU_i_to_ISU_bits_pc;
+  assign io_out_exu_inst = _EXU_i_to_WBU_bits_inst;
   assign io_out_exu_pc = _EXU_i_to_WBU_bits_pc;
+  assign io_out_wbu_inst = _EXU_i_to_WBU_bits_inst;
+  assign io_out_wbu_pc = _EXU_i_to_WBU_bits_pc;
   assign io_out_wb = _EXU_i_to_WBU_valid;
 endmodule
 
