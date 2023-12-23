@@ -2097,7 +2097,6 @@ module CacheStage1(
     | io_in_bits_addr[31:8] == _GEN_2 & _GEN_3[io_in_bits_addr[7:4]];
   reg  [1:0]        entryOff;
   reg  [2:0]        stateCache;
-  wire              _io_in_ready_T_1 = stateCache == 3'h0;
   wire              _io_mem_req_valid_output = stateCache == 3'h2;
   wire              _io_mem_resp_ready_output = stateCache == 3'h3;
   wire              _GEN_4 = stateCache == 3'h3;
@@ -2221,9 +2220,7 @@ module CacheStage1(
       stateCache <= 3'h0;
     end
     else begin
-      if (_io_in_ready_T_1 | ~_GEN_5) begin
-      end
-      else
+      if ((|stateCache) & _GEN_5)
         replaceWayReg <= randomNum;
       randomNum <= randomNum - 1'h1;
       if (_GEN_7)
@@ -2322,27 +2319,29 @@ module CacheStage1(
       validArray_1_13 <= _GEN_50 | validArray_1_13;
       validArray_1_14 <= _GEN_51 | validArray_1_14;
       validArray_1_15 <= _GEN_52 | validArray_1_15;
-      if (_io_in_ready_T_1)
-        stateCache <= {1'h0, ~hit, 1'h0};
-      else if (_GEN_5) begin
-        entryOff <= 2'h0;
-        stateCache <= {2'h1, io_mem_req_ready & _io_mem_req_valid_output};
-      end
-      else begin
-        if (_GEN_4 & _io_mem_resp_ready_output & io_mem_resp_valid)
-          entryOff <= entryOff + 2'h1;
-        if (_GEN_4) begin
-          if (&entryOff)
-            stateCache <= 3'h4;
-          else
-            stateCache <= 3'h3;
+      if (|stateCache) begin
+        if (_GEN_5) begin
+          entryOff <= 2'h0;
+          stateCache <= {2'h1, io_mem_req_ready & _io_mem_req_valid_output};
         end
-        else if (stateCache == 3'h4)
-          stateCache <= 3'h0;
+        else begin
+          if (_GEN_4 & _io_mem_resp_ready_output & io_mem_resp_valid)
+            entryOff <= entryOff + 2'h1;
+          if (_GEN_4) begin
+            if (&entryOff)
+              stateCache <= 3'h4;
+            else
+              stateCache <= 3'h3;
+          end
+          else if (stateCache == 3'h4)
+            stateCache <= 3'h0;
+        end
       end
+      else
+        stateCache <= {1'h0, ~hit, 1'h0};
     end
   end // always @(posedge)
-  assign io_in_ready = _io_in_ready_T_1;
+  assign io_in_ready = hit & ~(|stateCache);
   assign io_mem_req_valid = _io_mem_req_valid_output;
   assign io_mem_req_bits_addr = {io_in_bits_addr[31:2], 2'h0};
   assign io_mem_resp_ready = _io_mem_resp_ready_output;
