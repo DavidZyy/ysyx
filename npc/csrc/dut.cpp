@@ -76,8 +76,8 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     if(ref_r->gpr[i] != cpu.gpr[i])
       goto error;
   }
-  // if(ref_r->pc != cpu.pc)
-  //   goto error;
+  if(ref_r->pc != cpu.pc)
+    goto error;
 
   if(!check_status_reg(ref_r))
     goto error;
