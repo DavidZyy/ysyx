@@ -126,11 +126,11 @@ void isa_reg_display(CPU_state *ref_r){
       printf("%-3s: " FMT_WORD "  ", "mepc", ref_r->csr[cpu_mepc_id]);
       printf("\n");
   }
-  if(top->io_out_difftest_mstatus != ref_r->mstatus) {
-      printf("%-3s: " FMT_WORD "  ", "mstatus", top->io_out_difftest_mstatus);
-      printf("%-3s: " FMT_WORD "  ", "mstatus", ref_r->mstatus);
-      printf("\n");
-  }
+  // if(top->io_out_difftest_mstatus != ref_r->mstatus) {
+  //     printf("%-3s: " FMT_WORD "  ", "mstatus", top->io_out_difftest_mstatus);
+  //     printf("%-3s: " FMT_WORD "  ", "mstatus", ref_r->mstatus);
+  //     printf("\n");
+  // }
   if(top->io_out_difftest_mtvec != ref_r->csr[cpu_mtvec_id]) {
       printf("%-3s: " FMT_WORD "  ", "mtvec", top->io_out_difftest_mtvec);
       printf("%-3s: " FMT_WORD "  ", "mtvec", ref_r->csr[cpu_mtvec_id]);
