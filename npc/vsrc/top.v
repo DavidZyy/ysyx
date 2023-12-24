@@ -1328,7 +1328,7 @@ module Bru(
                           : io_in_op == 4'h2 | io_in_op == 4'h1;
 endmodule
 
-module Lsu_axi(
+module Lsu_simpleBus(
   input         clock,
                 reset,
                 io_in_valid,
@@ -1336,48 +1336,47 @@ module Lsu_axi(
   input  [31:0] io_in_addr,
                 io_in_wdata,
   input  [3:0]  io_in_op,
-  input         axi_ar_ready,
-                axi_r_valid,
-  input  [31:0] axi_r_bits_data,
-  input         axi_aw_ready,
-                axi_b_valid,
+  input         to_mem_req_ready,
+                to_mem_resp_valid,
+  input  [31:0] to_mem_resp_bits_rdata,
+  input         to_mem_resp_bits_wresp,
   output [31:0] io_out_rdata,
   output        io_out_end,
-                axi_ar_valid,
-  output [31:0] axi_ar_bits_addr,
-  output        axi_r_ready,
-                axi_aw_valid,
-  output [31:0] axi_aw_bits_addr,
-  output        axi_w_valid,
-  output [31:0] axi_w_bits_data,
-  output [3:0]  axi_w_bits_strb
+                to_mem_req_valid,
+  output [31:0] to_mem_req_bits_addr,
+                to_mem_req_bits_wdata,
+                to_mem_req_bits_wmask,
+  output [3:0]  to_mem_req_bits_cmd,
+  output        to_mem_resp_ready
 );
 
   reg  [2:0]       state_lsu;
   wire             _sh_wmask_T_2 = io_in_addr[1:0] == 2'h2;
   wire [3:0][31:0] _GEN =
-    {{{{24{axi_r_bits_data[31]}}, axi_r_bits_data[31:24]}},
-     {{{24{axi_r_bits_data[23]}}, axi_r_bits_data[23:16]}},
-     {{{24{axi_r_bits_data[15]}}, axi_r_bits_data[15:8]}},
-     {{{24{axi_r_bits_data[7]}}, axi_r_bits_data[7:0]}}};
+    {{{{24{to_mem_resp_bits_rdata[31]}}, to_mem_resp_bits_rdata[31:24]}},
+     {{{24{to_mem_resp_bits_rdata[23]}}, to_mem_resp_bits_rdata[23:16]}},
+     {{{24{to_mem_resp_bits_rdata[15]}}, to_mem_resp_bits_rdata[15:8]}},
+     {{{24{to_mem_resp_bits_rdata[7]}}, to_mem_resp_bits_rdata[7:0]}}};
   wire [3:0][7:0]  _GEN_0 =
-    {{axi_r_bits_data[31:24]},
-     {axi_r_bits_data[23:16]},
-     {axi_r_bits_data[15:8]},
-     {axi_r_bits_data[7:0]}};
+    {{to_mem_resp_bits_rdata[31:24]},
+     {to_mem_resp_bits_rdata[23:16]},
+     {to_mem_resp_bits_rdata[15:8]},
+     {to_mem_resp_bits_rdata[7:0]}};
   wire             _sh_wmask_T = io_in_addr[1:0] == 2'h0;
-  wire             _axi_ar_valid_output = state_lsu == 3'h1;
-  wire             _axi_r_ready_output = state_lsu == 3'h2;
-  wire             _axi_aw_valid_output = state_lsu == 3'h3;
-  wire             _axi_b_ready_T_1 = state_lsu == 3'h4;
+  wire             _to_mem_req_bits_cmd_T_6 = state_lsu == 3'h4;
+  wire             _to_mem_resp_ready_output =
+    _to_mem_req_bits_cmd_T_6 | state_lsu == 3'h2;
+  wire             _to_mem_req_bits_cmd_T_5 = state_lsu == 3'h3;
+  wire             _to_mem_req_valid_output =
+    _to_mem_req_bits_cmd_T_5 | state_lsu == 3'h1;
   wire [7:0][2:0]  _GEN_1 =
     {{state_lsu},
      {state_lsu},
      {3'h0},
-     {{2'h2, _axi_b_ready_T_1 & axi_b_valid}},
-     {axi_aw_ready & _axi_aw_valid_output ? 3'h4 : 3'h3},
-     {_axi_r_ready_output & axi_r_valid ? 3'h5 : 3'h2},
-     {axi_ar_ready & _axi_ar_valid_output ? 3'h2 : 3'h1},
+     {{2'h2, _to_mem_resp_ready_output & to_mem_resp_valid & to_mem_resp_bits_wresp}},
+     {to_mem_req_ready & _to_mem_req_valid_output ? 3'h4 : 3'h3},
+     {_to_mem_resp_ready_output & to_mem_resp_valid ? 3'h5 : 3'h2},
+     {to_mem_req_ready & _to_mem_req_valid_output ? 3'h2 : 3'h1},
      {io_in_valid ? {1'h0, io_in_mem_wen, 1'h1} : 3'h0}};
   always @(posedge clock) begin
     if (reset)
@@ -1387,41 +1386,40 @@ module Lsu_axi(
   end // always @(posedge)
   assign io_out_rdata =
     io_in_op == 4'h3
-      ? axi_r_bits_data
+      ? to_mem_resp_bits_rdata
       : io_in_op == 4'h5
           ? (_sh_wmask_T_2
-               ? {16'h0, axi_r_bits_data[31:16]}
-               : _sh_wmask_T ? {16'h0, axi_r_bits_data[15:0]} : 32'h0)
+               ? {16'h0, to_mem_resp_bits_rdata[31:16]}
+               : _sh_wmask_T ? {16'h0, to_mem_resp_bits_rdata[15:0]} : 32'h0)
           : io_in_op == 4'h2
               ? (_sh_wmask_T_2
-                   ? {{16{axi_r_bits_data[31]}}, axi_r_bits_data[31:16]}
+                   ? {{16{to_mem_resp_bits_rdata[31]}}, to_mem_resp_bits_rdata[31:16]}
                    : _sh_wmask_T
-                       ? {{16{axi_r_bits_data[15]}}, axi_r_bits_data[15:0]}
+                       ? {{16{to_mem_resp_bits_rdata[15]}}, to_mem_resp_bits_rdata[15:0]}
                        : 32'h0)
               : io_in_op == 4'h4
                   ? {24'h0, _GEN_0[io_in_addr[1:0]]}
                   : io_in_op == 4'h1 ? _GEN[io_in_addr[1:0]] : 32'h0;
   assign io_out_end = state_lsu == 3'h5;
-  assign axi_ar_valid = _axi_ar_valid_output;
-  assign axi_ar_bits_addr = io_in_addr;
-  assign axi_r_ready = _axi_r_ready_output;
-  assign axi_aw_valid = _axi_aw_valid_output;
-  assign axi_aw_bits_addr = io_in_addr;
-  assign axi_w_valid = _axi_b_ready_T_1;
-  assign axi_w_bits_data = io_in_wdata;
-  assign axi_w_bits_strb =
+  assign to_mem_req_valid = _to_mem_req_valid_output;
+  assign to_mem_req_bits_addr = io_in_addr;
+  assign to_mem_req_bits_wdata = io_in_wdata;
+  assign to_mem_req_bits_wmask =
     io_in_op == 4'h8
-      ? 4'hF
+      ? 32'hFFFFFFFF
       : io_in_op == 4'h7
-          ? (_sh_wmask_T_2 ? 4'hC : {2'h0, {2{_sh_wmask_T}}})
+          ? (_sh_wmask_T_2 ? 32'hFFFF0000 : {16'h0, {16{_sh_wmask_T}}})
           : io_in_op == 4'h6
               ? ((&(io_in_addr[1:0]))
-                   ? 4'h8
-                   : {1'h0,
+                   ? 32'hFF000000
+                   : {8'h0,
                       _sh_wmask_T_2
-                        ? 3'h4
-                        : {1'h0, io_in_addr[1:0] == 2'h1 ? 2'h2 : 2'h1}})
-              : 4'h0;
+                        ? 24'hFF0000
+                        : {8'h0, io_in_addr[1:0] == 2'h1 ? 16'hFF00 : 16'hFF}})
+              : 32'h0;
+  assign to_mem_req_bits_cmd =
+    {3'h0, _to_mem_req_bits_cmd_T_6 | _to_mem_req_bits_cmd_T_5};
+  assign to_mem_resp_ready = _to_mem_resp_ready_output;
 endmodule
 
 module Csr(
@@ -1562,11 +1560,10 @@ module EXU_pipeline(
   input  [3:0]  from_ISU_bits_ctrl_sig_mdu_op,
   input  [31:0] from_ISU_bits_inst,
   input         to_IFU_ready,
-                lsu_to_mem_ar_ready,
-                lsu_to_mem_r_valid,
-  input  [31:0] lsu_to_mem_r_bits_data,
-  input         lsu_to_mem_aw_ready,
-                lsu_to_mem_b_valid,
+                lsu_to_mem_req_ready,
+                lsu_to_mem_resp_valid,
+  input  [31:0] lsu_to_mem_resp_bits_rdata,
+  input         lsu_to_mem_resp_bits_wresp,
   output        from_ISU_ready,
                 to_WBU_valid,
   output [31:0] to_WBU_bits_alu_result,
@@ -1585,14 +1582,12 @@ module EXU_pipeline(
                 difftest_mepc,
                 difftest_mstatus,
                 difftest_mtvec,
-  output        lsu_to_mem_ar_valid,
-  output [31:0] lsu_to_mem_ar_bits_addr,
-  output        lsu_to_mem_r_ready,
-                lsu_to_mem_aw_valid,
-  output [31:0] lsu_to_mem_aw_bits_addr,
-  output        lsu_to_mem_w_valid,
-  output [31:0] lsu_to_mem_w_bits_data,
-  output [3:0]  lsu_to_mem_w_bits_strb,
+  output        lsu_to_mem_req_valid,
+  output [31:0] lsu_to_mem_req_bits_addr,
+                lsu_to_mem_req_bits_wdata,
+                lsu_to_mem_req_bits_wmask,
+  output [3:0]  lsu_to_mem_req_bits_cmd,
+  output        lsu_to_mem_resp_ready,
   output [4:0]  to_ISU_rd,
   output        to_ISU_have_wb,
                 to_ISU_isBRU
@@ -1633,29 +1628,26 @@ module EXU_pipeline(
     .io_in_op       (from_ISU_bits_ctrl_sig_bru_op),
     .io_out_ctrl_br (_Bru_i_io_out_ctrl_br)
   );
-  Lsu_axi Lsu_i (
-    .clock            (clock),
-    .reset            (reset),
-    .io_in_valid      (from_ISU_bits_ctrl_sig_fu_op == 3'h4 & from_ISU_valid),
-    .io_in_mem_wen    (from_ISU_bits_ctrl_sig_mem_wen),
-    .io_in_addr       (_Alu_i_io_out_result),
-    .io_in_wdata      (from_ISU_bits_rdata2),
-    .io_in_op         (from_ISU_bits_ctrl_sig_lsu_op),
-    .axi_ar_ready     (lsu_to_mem_ar_ready),
-    .axi_r_valid      (lsu_to_mem_r_valid),
-    .axi_r_bits_data  (lsu_to_mem_r_bits_data),
-    .axi_aw_ready     (lsu_to_mem_aw_ready),
-    .axi_b_valid      (lsu_to_mem_b_valid),
-    .io_out_rdata     (to_WBU_bits_lsu_rdata),
-    .io_out_end       (_Lsu_i_io_out_end),
-    .axi_ar_valid     (lsu_to_mem_ar_valid),
-    .axi_ar_bits_addr (lsu_to_mem_ar_bits_addr),
-    .axi_r_ready      (lsu_to_mem_r_ready),
-    .axi_aw_valid     (lsu_to_mem_aw_valid),
-    .axi_aw_bits_addr (lsu_to_mem_aw_bits_addr),
-    .axi_w_valid      (lsu_to_mem_w_valid),
-    .axi_w_bits_data  (lsu_to_mem_w_bits_data),
-    .axi_w_bits_strb  (lsu_to_mem_w_bits_strb)
+  Lsu_simpleBus Lsu_i (
+    .clock                  (clock),
+    .reset                  (reset),
+    .io_in_valid            (from_ISU_bits_ctrl_sig_fu_op == 3'h4 & from_ISU_valid),
+    .io_in_mem_wen          (from_ISU_bits_ctrl_sig_mem_wen),
+    .io_in_addr             (_Alu_i_io_out_result),
+    .io_in_wdata            (from_ISU_bits_rdata2),
+    .io_in_op               (from_ISU_bits_ctrl_sig_lsu_op),
+    .to_mem_req_ready       (lsu_to_mem_req_ready),
+    .to_mem_resp_valid      (lsu_to_mem_resp_valid),
+    .to_mem_resp_bits_rdata (lsu_to_mem_resp_bits_rdata),
+    .to_mem_resp_bits_wresp (lsu_to_mem_resp_bits_wresp),
+    .io_out_rdata           (to_WBU_bits_lsu_rdata),
+    .io_out_end             (_Lsu_i_io_out_end),
+    .to_mem_req_valid       (lsu_to_mem_req_valid),
+    .to_mem_req_bits_addr   (lsu_to_mem_req_bits_addr),
+    .to_mem_req_bits_wdata  (lsu_to_mem_req_bits_wdata),
+    .to_mem_req_bits_wmask  (lsu_to_mem_req_bits_wmask),
+    .to_mem_req_bits_cmd    (lsu_to_mem_req_bits_cmd),
+    .to_mem_resp_ready      (lsu_to_mem_resp_ready)
   );
   Csr Csr_i (
     .clock                   (clock),
@@ -1784,15 +1776,14 @@ module AXI4RAM(
                 axi_aw_valid,
   input  [31:0] axi_aw_bits_addr,
   input  [7:0]  axi_aw_bits_len,
-  input  [1:0]  axi_aw_bits_burst,
   input         axi_w_valid,
   input  [31:0] axi_w_bits_data,
-  input  [3:0]  axi_w_bits_strb,
   output        axi_ar_ready,
                 axi_r_valid,
   output [31:0] axi_r_bits_data,
-  output        axi_aw_ready,
-                axi_b_valid
+  output        axi_r_bits_last,
+                axi_aw_ready,
+                axi_w_ready
 );
 
   reg              delay;
@@ -1805,14 +1796,15 @@ module AXI4RAM(
   wire             _axi_r_valid_T_1 = state_sram == 3'h2;
   wire             _axi_r_valid_T_2 = state_sram == 3'h3;
   wire             _axi_r_valid_output = _axi_r_valid_T_2 | _axi_r_valid_T_1;
+  wire             _axi_w_ready_output =
+    (&state_sram) | _axi_w_ready_T_2 | state_sram == 3'h5;
   wire             _GEN = _axi_aw_ready_output & axi_ar_valid;
   wire             _GEN_0 = _axi_aw_ready_output & axi_aw_valid;
   wire             _reg_addr_T = axi_r_ready & _axi_r_valid_output;
   wire             _GEN_1 = state_sram == 3'h3;
   wire             _GEN_2 = state_sram == 3'h4;
   wire             _GEN_3 = state_sram == 3'h6;
-  wire             _reg_addr_T_6 =
-    ((&state_sram) | _axi_w_ready_T_2 | state_sram == 3'h5) & axi_w_valid;
+  wire             _reg_addr_T_6 = _axi_w_ready_output & axi_w_valid;
   wire             _GEN_4 = _GEN_1 | _GEN_2 | state_sram == 3'h5;
   wire [7:0]       _GEN_5 =
     _GEN_4 | ~(_GEN_3 & _reg_addr_T_6) ? reg_AxLen : reg_AxLen - 8'h1;
@@ -1861,12 +1853,8 @@ module AXI4RAM(
              : state_sram == 3'h2 | _GEN_1 | ~_GEN_2 ? delay : delay - 1'h1);
       reg_AxLen <= _GEN_7[state_sram];
       reg_addr <= _GEN_8[state_sram];
-      if (_axi_aw_ready_output) begin
-        if (_GEN)
-          reg_burst <= 2'h1;
-        else if (_GEN_0)
-          reg_burst <= axi_aw_bits_burst;
-      end
+      if (_axi_aw_ready_output & (_GEN | _GEN_0))
+        reg_burst <= 2'h1;
       state_sram <= _GEN_9[state_sram];
     end
   end // always @(posedge)
@@ -1876,13 +1864,14 @@ module AXI4RAM(
     .mem_wen ((&state_sram) | _axi_w_ready_T_2),
     .valid   ((&state_sram) | _axi_w_ready_T_2 | _axi_r_valid_T_2 | _axi_r_valid_T_1),
     .wdata   (axi_w_bits_data),
-    .wmask   (axi_w_bits_strb),
+    .wmask   (4'hF),
     .rdata   (axi_r_bits_data)
   );
   assign axi_ar_ready = _axi_aw_ready_output;
   assign axi_r_valid = _axi_r_valid_output;
+  assign axi_r_bits_last = state_sram == 3'h3;
   assign axi_aw_ready = _axi_aw_ready_output;
-  assign axi_b_valid = &state_sram;
+  assign axi_w_ready = _axi_w_ready_output;
 endmodule
 
 // VCS coverage exclude_file
@@ -2504,6 +2493,771 @@ module SimpleBus2AXI4Converter(
   assign io_out_aw_bits_addr = io_in_req_bits_addr;
 endmodule
 
+module SimpleBusCrossBar1toN(
+  input         clock,
+                reset,
+                io_in_req_valid,
+  input  [31:0] io_in_req_bits_addr,
+                io_in_req_bits_wdata,
+                io_in_req_bits_wmask,
+  input  [3:0]  io_in_req_bits_cmd,
+  input         io_in_resp_ready,
+                io_out_0_req_ready,
+                io_out_0_resp_valid,
+  input  [31:0] io_out_0_resp_bits_rdata,
+  input         io_out_0_resp_bits_wresp,
+  input  [31:0] io_out_1_resp_bits_rdata,
+  input         io_out_1_resp_bits_wresp,
+  output        io_in_req_ready,
+                io_in_resp_valid,
+  output [31:0] io_in_resp_bits_rdata,
+  output        io_in_resp_bits_wresp,
+                io_out_0_req_valid,
+  output [31:0] io_out_0_req_bits_addr,
+                io_out_0_req_bits_wdata,
+                io_out_0_req_bits_wmask,
+  output [3:0]  io_out_0_req_bits_cmd,
+  output        io_out_1_req_valid,
+  output [31:0] io_out_1_req_bits_addr,
+                io_out_1_req_bits_wdata,
+                io_out_1_req_bits_wmask,
+  output [3:0]  io_out_1_req_bits_cmd
+);
+
+  reg  [1:0] state;
+  wire [1:0] outSelVec_enc =
+    io_in_req_bits_addr[31] & io_in_req_bits_addr < 32'h88000000
+      ? 2'h1
+      : {io_in_req_bits_addr > 32'h9FFFFFFF & io_in_req_bits_addr < 32'hA1200000, 1'h0};
+  reg        outSelRespVec_0;
+  reg        outSelRespVec_1;
+  wire       reqInvalidAddr = io_in_req_valid & outSelVec_enc == 2'h0;
+  wire       _io_in_req_ready_output =
+    outSelVec_enc[0] & io_out_0_req_ready | outSelVec_enc[1] | reqInvalidAddr;
+  wire       _io_in_resp_valid_output =
+    outSelRespVec_0 & io_out_0_resp_valid | outSelRespVec_1 | state == 2'h2;
+  wire       _outSelRespVec_T = _io_in_req_ready_output & io_in_req_valid;
+  always @(posedge clock) begin
+    if (reset) begin
+      state <= 2'h0;
+      outSelRespVec_0 <= 1'h0;
+      outSelRespVec_1 <= 1'h0;
+    end
+    else begin
+      if (|state) begin
+        if ((state == 2'h1 | state == 2'h2) & io_in_resp_ready & _io_in_resp_valid_output)
+          state <= 2'h0;
+      end
+      else if (reqInvalidAddr)
+        state <= 2'h2;
+      else if (_outSelRespVec_T)
+        state <= 2'h1;
+      if (_outSelRespVec_T & ~(|state)) begin
+        outSelRespVec_0 <= outSelVec_enc[0];
+        outSelRespVec_1 <= outSelVec_enc[1];
+      end
+    end
+  end // always @(posedge)
+  assign io_in_req_ready = _io_in_req_ready_output;
+  assign io_in_resp_valid = _io_in_resp_valid_output;
+  assign io_in_resp_bits_rdata =
+    (outSelRespVec_0 ? io_out_0_resp_bits_rdata : 32'h0)
+    | (outSelRespVec_1 ? io_out_1_resp_bits_rdata : 32'h0);
+  assign io_in_resp_bits_wresp =
+    outSelRespVec_0 & io_out_0_resp_bits_wresp | outSelRespVec_1
+    & io_out_1_resp_bits_wresp;
+  assign io_out_0_req_valid = outSelVec_enc[0] & io_in_req_valid & ~(|state);
+  assign io_out_0_req_bits_addr = io_in_req_bits_addr;
+  assign io_out_0_req_bits_wdata = io_in_req_bits_wdata;
+  assign io_out_0_req_bits_wmask = io_in_req_bits_wmask;
+  assign io_out_0_req_bits_cmd = io_in_req_bits_cmd;
+  assign io_out_1_req_valid = outSelVec_enc[1] & io_in_req_valid & ~(|state);
+  assign io_out_1_req_bits_addr = io_in_req_bits_addr;
+  assign io_out_1_req_bits_wdata = io_in_req_bits_wdata;
+  assign io_out_1_req_bits_wmask = io_in_req_bits_wmask;
+  assign io_out_1_req_bits_cmd = io_in_req_bits_cmd;
+endmodule
+
+// VCS coverage exclude_file
+module dataArray_256x32(
+  input  [7:0]  R0_addr,
+  input         R0_en,
+                R0_clk,
+  input  [7:0]  R1_addr,
+  input         R1_en,
+                R1_clk,
+  input  [7:0]  W0_addr,
+  input         W0_en,
+                W0_clk,
+  input  [31:0] W0_data,
+  input  [7:0]  W1_addr,
+  input         W1_en,
+                W1_clk,
+  input  [31:0] W1_data,
+  output [31:0] R0_data,
+                R1_data
+);
+
+  reg [31:0] Memory[0:255];
+  reg        _R0_en_d0;
+  reg [7:0]  _R0_addr_d0;
+  always @(posedge R0_clk) begin
+    _R0_en_d0 <= R0_en;
+    _R0_addr_d0 <= R0_addr;
+  end // always @(posedge)
+  reg        _R1_en_d0;
+  reg [7:0]  _R1_addr_d0;
+  always @(posedge R1_clk) begin
+    _R1_en_d0 <= R1_en;
+    _R1_addr_d0 <= R1_addr;
+  end // always @(posedge)
+  always @(posedge W0_clk) begin
+    if (W0_en)
+      Memory[W0_addr] <= W0_data;
+    if (W1_en)
+      Memory[W1_addr] <= W1_data;
+  end // always @(posedge)
+  assign R0_data = _R0_en_d0 ? Memory[_R0_addr_d0] : 32'bx;
+  assign R1_data = _R1_en_d0 ? Memory[_R1_addr_d0] : 32'bx;
+endmodule
+
+module Dcache_SimpleBus(
+  input         clock,
+                reset,
+                from_lsu_req_valid,
+  input  [31:0] from_lsu_req_bits_addr,
+                from_lsu_req_bits_wdata,
+                from_lsu_req_bits_wmask,
+  input  [3:0]  from_lsu_req_bits_cmd,
+  input         to_sram_ar_ready,
+                to_sram_r_valid,
+  input  [31:0] to_sram_r_bits_data,
+  input         to_sram_r_bits_last,
+                to_sram_aw_ready,
+                to_sram_w_ready,
+  output        from_lsu_req_ready,
+                from_lsu_resp_valid,
+  output [31:0] from_lsu_resp_bits_rdata,
+  output        from_lsu_resp_bits_wresp,
+                to_sram_ar_valid,
+  output [31:0] to_sram_ar_bits_addr,
+  output [7:0]  to_sram_ar_bits_len,
+  output        to_sram_r_ready,
+                to_sram_aw_valid,
+  output [31:0] to_sram_aw_bits_addr,
+  output [7:0]  to_sram_aw_bits_len,
+  output        to_sram_w_valid,
+  output [31:0] to_sram_w_bits_data
+);
+
+  wire              _to_sram_r_ready_output;
+  wire [31:0]       _dataArray_ext_R1_data;
+  reg               replace_set;
+  reg               random_num;
+  reg  [22:0]       tagArray_0_0;
+  reg  [22:0]       tagArray_0_1;
+  reg  [22:0]       tagArray_0_2;
+  reg  [22:0]       tagArray_0_3;
+  reg  [22:0]       tagArray_0_4;
+  reg  [22:0]       tagArray_0_5;
+  reg  [22:0]       tagArray_0_6;
+  reg  [22:0]       tagArray_0_7;
+  reg  [22:0]       tagArray_0_8;
+  reg  [22:0]       tagArray_0_9;
+  reg  [22:0]       tagArray_0_10;
+  reg  [22:0]       tagArray_0_11;
+  reg  [22:0]       tagArray_0_12;
+  reg  [22:0]       tagArray_0_13;
+  reg  [22:0]       tagArray_0_14;
+  reg  [22:0]       tagArray_0_15;
+  reg  [22:0]       tagArray_1_0;
+  reg  [22:0]       tagArray_1_1;
+  reg  [22:0]       tagArray_1_2;
+  reg  [22:0]       tagArray_1_3;
+  reg  [22:0]       tagArray_1_4;
+  reg  [22:0]       tagArray_1_5;
+  reg  [22:0]       tagArray_1_6;
+  reg  [22:0]       tagArray_1_7;
+  reg  [22:0]       tagArray_1_8;
+  reg  [22:0]       tagArray_1_9;
+  reg  [22:0]       tagArray_1_10;
+  reg  [22:0]       tagArray_1_11;
+  reg  [22:0]       tagArray_1_12;
+  reg  [22:0]       tagArray_1_13;
+  reg  [22:0]       tagArray_1_14;
+  reg  [22:0]       tagArray_1_15;
+  reg               validArray_0_0;
+  reg               validArray_0_1;
+  reg               validArray_0_2;
+  reg               validArray_0_3;
+  reg               validArray_0_4;
+  reg               validArray_0_5;
+  reg               validArray_0_6;
+  reg               validArray_0_7;
+  reg               validArray_0_8;
+  reg               validArray_0_9;
+  reg               validArray_0_10;
+  reg               validArray_0_11;
+  reg               validArray_0_12;
+  reg               validArray_0_13;
+  reg               validArray_0_14;
+  reg               validArray_0_15;
+  reg               validArray_1_0;
+  reg               validArray_1_1;
+  reg               validArray_1_2;
+  reg               validArray_1_3;
+  reg               validArray_1_4;
+  reg               validArray_1_5;
+  reg               validArray_1_6;
+  reg               validArray_1_7;
+  reg               validArray_1_8;
+  reg               validArray_1_9;
+  reg               validArray_1_10;
+  reg               validArray_1_11;
+  reg               validArray_1_12;
+  reg               validArray_1_13;
+  reg               validArray_1_14;
+  reg               validArray_1_15;
+  reg               dirtyArray_0_0;
+  reg               dirtyArray_0_1;
+  reg               dirtyArray_0_2;
+  reg               dirtyArray_0_3;
+  reg               dirtyArray_0_4;
+  reg               dirtyArray_0_5;
+  reg               dirtyArray_0_6;
+  reg               dirtyArray_0_7;
+  reg               dirtyArray_0_8;
+  reg               dirtyArray_0_9;
+  reg               dirtyArray_0_10;
+  reg               dirtyArray_0_11;
+  reg               dirtyArray_0_12;
+  reg               dirtyArray_0_13;
+  reg               dirtyArray_0_14;
+  reg               dirtyArray_0_15;
+  reg               dirtyArray_1_0;
+  reg               dirtyArray_1_1;
+  reg               dirtyArray_1_2;
+  reg               dirtyArray_1_3;
+  reg               dirtyArray_1_4;
+  reg               dirtyArray_1_5;
+  reg               dirtyArray_1_6;
+  reg               dirtyArray_1_7;
+  reg               dirtyArray_1_8;
+  reg               dirtyArray_1_9;
+  reg               dirtyArray_1_10;
+  reg               dirtyArray_1_11;
+  reg               dirtyArray_1_12;
+  reg               dirtyArray_1_13;
+  reg               dirtyArray_1_14;
+  reg               dirtyArray_1_15;
+  wire [15:0][22:0] _GEN =
+    {{tagArray_0_15},
+     {tagArray_0_14},
+     {tagArray_0_13},
+     {tagArray_0_12},
+     {tagArray_0_11},
+     {tagArray_0_10},
+     {tagArray_0_9},
+     {tagArray_0_8},
+     {tagArray_0_7},
+     {tagArray_0_6},
+     {tagArray_0_5},
+     {tagArray_0_4},
+     {tagArray_0_3},
+     {tagArray_0_2},
+     {tagArray_0_1},
+     {tagArray_0_0}};
+  wire [15:0]       _GEN_0 =
+    {{validArray_0_15},
+     {validArray_0_14},
+     {validArray_0_13},
+     {validArray_0_12},
+     {validArray_0_11},
+     {validArray_0_10},
+     {validArray_0_9},
+     {validArray_0_8},
+     {validArray_0_7},
+     {validArray_0_6},
+     {validArray_0_5},
+     {validArray_0_4},
+     {validArray_0_3},
+     {validArray_0_2},
+     {validArray_0_1},
+     {validArray_0_0}};
+  wire [15:0][22:0] _GEN_1 =
+    {{tagArray_1_15},
+     {tagArray_1_14},
+     {tagArray_1_13},
+     {tagArray_1_12},
+     {tagArray_1_11},
+     {tagArray_1_10},
+     {tagArray_1_9},
+     {tagArray_1_8},
+     {tagArray_1_7},
+     {tagArray_1_6},
+     {tagArray_1_5},
+     {tagArray_1_4},
+     {tagArray_1_3},
+     {tagArray_1_2},
+     {tagArray_1_1},
+     {tagArray_1_0}};
+  wire [22:0]       _GEN_2 = _GEN_1[from_lsu_req_bits_addr[8:5]];
+  wire [15:0]       _GEN_3 =
+    {{validArray_1_15},
+     {validArray_1_14},
+     {validArray_1_13},
+     {validArray_1_12},
+     {validArray_1_11},
+     {validArray_1_10},
+     {validArray_1_9},
+     {validArray_1_8},
+     {validArray_1_7},
+     {validArray_1_6},
+     {validArray_1_5},
+     {validArray_1_4},
+     {validArray_1_3},
+     {validArray_1_2},
+     {validArray_1_1},
+     {validArray_1_0}};
+  wire              hit =
+    from_lsu_req_bits_addr[31:9] == _GEN[from_lsu_req_bits_addr[8:5]]
+    & _GEN_0[from_lsu_req_bits_addr[8:5]] | from_lsu_req_bits_addr[31:9] == _GEN_2
+    & _GEN_3[from_lsu_req_bits_addr[8:5]];
+  wire              SetId = _GEN_2 == from_lsu_req_bits_addr[31:9];
+  wire [7:0]        hitCacheAddr = {SetId, from_lsu_req_bits_addr[8:2]};
+  reg  [2:0]        off;
+  reg  [3:0]        state_dcache;
+  wire              _from_lsu_req_ready_output = state_dcache == 4'h0;
+  wire              _GEN_4 = state_dcache == 4'h2;
+  wire              _GEN_5 =
+    state_dcache == 4'h8 & _to_sram_r_ready_output & to_sram_r_valid;
+  wire [7:0]        replaceCacheAddr = {replace_set, from_lsu_req_bits_addr[8:5], off};
+  wire [94:0]       _indata_T_1 =
+    {63'h0, from_lsu_req_bits_wdata} << {90'h0, from_lsu_req_bits_addr[1:0], 3'h0};
+  wire              _from_lsu_resp_bits_wresp_T_1 = state_dcache == 4'h2;
+  wire              _to_sram_ar_valid_output = state_dcache == 4'h7;
+  assign _to_sram_r_ready_output = state_dcache == 4'h8;
+  wire              _to_sram_aw_valid_output = state_dcache == 4'h4;
+  wire [15:0][22:0] _GEN_6 = replace_set ? _GEN_1 : _GEN;
+  wire              _to_sram_w_valid_output = state_dcache == 4'h5;
+  wire              _GEN_7 = _from_lsu_req_ready_output & from_lsu_req_valid;
+  wire              _GEN_8 = from_lsu_req_bits_addr[8:5] == 4'h0;
+  wire              _GEN_9 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_8;
+  wire              _GEN_10 = from_lsu_req_bits_addr[8:5] == 4'h1;
+  wire              _GEN_11 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_10;
+  wire              _GEN_12 = from_lsu_req_bits_addr[8:5] == 4'h2;
+  wire              _GEN_13 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_12;
+  wire              _GEN_14 = from_lsu_req_bits_addr[8:5] == 4'h3;
+  wire              _GEN_15 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_14;
+  wire              _GEN_16 = from_lsu_req_bits_addr[8:5] == 4'h4;
+  wire              _GEN_17 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_16;
+  wire              _GEN_18 = from_lsu_req_bits_addr[8:5] == 4'h5;
+  wire              _GEN_19 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_18;
+  wire              _GEN_20 = from_lsu_req_bits_addr[8:5] == 4'h6;
+  wire              _GEN_21 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_20;
+  wire              _GEN_22 = from_lsu_req_bits_addr[8:5] == 4'h7;
+  wire              _GEN_23 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_22;
+  wire              _GEN_24 = from_lsu_req_bits_addr[8:5] == 4'h8;
+  wire              _GEN_25 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_24;
+  wire              _GEN_26 = from_lsu_req_bits_addr[8:5] == 4'h9;
+  wire              _GEN_27 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_26;
+  wire              _GEN_28 = from_lsu_req_bits_addr[8:5] == 4'hA;
+  wire              _GEN_29 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_28;
+  wire              _GEN_30 = from_lsu_req_bits_addr[8:5] == 4'hB;
+  wire              _GEN_31 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_30;
+  wire              _GEN_32 = from_lsu_req_bits_addr[8:5] == 4'hC;
+  wire              _GEN_33 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_32;
+  wire              _GEN_34 = from_lsu_req_bits_addr[8:5] == 4'hD;
+  wire              _GEN_35 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_34;
+  wire              _GEN_36 = from_lsu_req_bits_addr[8:5] == 4'hE;
+  wire              _GEN_37 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_36;
+  wire              _GEN_38 =
+    _GEN_5 & to_sram_r_bits_last & ~replace_set & (&(from_lsu_req_bits_addr[8:5]));
+  wire              _GEN_39 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_8;
+  wire              _GEN_40 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_10;
+  wire              _GEN_41 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_12;
+  wire              _GEN_42 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_14;
+  wire              _GEN_43 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_16;
+  wire              _GEN_44 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_18;
+  wire              _GEN_45 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_20;
+  wire              _GEN_46 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_22;
+  wire              _GEN_47 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_24;
+  wire              _GEN_48 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_26;
+  wire              _GEN_49 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_28;
+  wire              _GEN_50 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_30;
+  wire              _GEN_51 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_32;
+  wire              _GEN_52 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_34;
+  wire              _GEN_53 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_36;
+  wire              _GEN_54 =
+    _GEN_5 & to_sram_r_bits_last & replace_set & (&(from_lsu_req_bits_addr[8:5]));
+  wire [15:0]       _GEN_55 =
+    replace_set
+      ? {{dirtyArray_1_15},
+         {dirtyArray_1_14},
+         {dirtyArray_1_13},
+         {dirtyArray_1_12},
+         {dirtyArray_1_11},
+         {dirtyArray_1_10},
+         {dirtyArray_1_9},
+         {dirtyArray_1_8},
+         {dirtyArray_1_7},
+         {dirtyArray_1_6},
+         {dirtyArray_1_5},
+         {dirtyArray_1_4},
+         {dirtyArray_1_3},
+         {dirtyArray_1_2},
+         {dirtyArray_1_1},
+         {dirtyArray_1_0}}
+      : {{dirtyArray_0_15},
+         {dirtyArray_0_14},
+         {dirtyArray_0_13},
+         {dirtyArray_0_12},
+         {dirtyArray_0_11},
+         {dirtyArray_0_10},
+         {dirtyArray_0_9},
+         {dirtyArray_0_8},
+         {dirtyArray_0_7},
+         {dirtyArray_0_6},
+         {dirtyArray_0_5},
+         {dirtyArray_0_4},
+         {dirtyArray_0_3},
+         {dirtyArray_0_2},
+         {dirtyArray_0_1},
+         {dirtyArray_0_0}};
+  wire [15:0][3:0]  _GEN_56 =
+    {{state_dcache},
+     {state_dcache},
+     {state_dcache},
+     {state_dcache},
+     {state_dcache},
+     {state_dcache},
+     {from_lsu_req_bits_cmd == 4'h1 ? 4'h2 : 4'h1},
+     {{3'h4, to_sram_r_bits_last}},
+     {to_sram_ar_ready & _to_sram_ar_valid_output ? 4'h8 : 4'h7},
+     {4'h7},
+     {(&off) ? 4'h6 : 4'h5},
+     {{3'h2, to_sram_aw_ready & _to_sram_aw_valid_output}},
+     {_GEN_55[from_lsu_req_bits_addr[8:5]] ? 4'h4 : 4'h7},
+     {4'h0},
+     {4'h0},
+     {_GEN_7 ? (hit ? (from_lsu_req_bits_cmd == 4'h1 ? 4'h2 : 4'h1) : 4'h3) : 4'h0}};
+  always @(posedge clock) begin
+    if (reset) begin
+      replace_set <= 1'h0;
+      random_num <= 1'h0;
+      tagArray_0_0 <= 23'h0;
+      tagArray_0_1 <= 23'h0;
+      tagArray_0_2 <= 23'h0;
+      tagArray_0_3 <= 23'h0;
+      tagArray_0_4 <= 23'h0;
+      tagArray_0_5 <= 23'h0;
+      tagArray_0_6 <= 23'h0;
+      tagArray_0_7 <= 23'h0;
+      tagArray_0_8 <= 23'h0;
+      tagArray_0_9 <= 23'h0;
+      tagArray_0_10 <= 23'h0;
+      tagArray_0_11 <= 23'h0;
+      tagArray_0_12 <= 23'h0;
+      tagArray_0_13 <= 23'h0;
+      tagArray_0_14 <= 23'h0;
+      tagArray_0_15 <= 23'h0;
+      tagArray_1_0 <= 23'h0;
+      tagArray_1_1 <= 23'h0;
+      tagArray_1_2 <= 23'h0;
+      tagArray_1_3 <= 23'h0;
+      tagArray_1_4 <= 23'h0;
+      tagArray_1_5 <= 23'h0;
+      tagArray_1_6 <= 23'h0;
+      tagArray_1_7 <= 23'h0;
+      tagArray_1_8 <= 23'h0;
+      tagArray_1_9 <= 23'h0;
+      tagArray_1_10 <= 23'h0;
+      tagArray_1_11 <= 23'h0;
+      tagArray_1_12 <= 23'h0;
+      tagArray_1_13 <= 23'h0;
+      tagArray_1_14 <= 23'h0;
+      tagArray_1_15 <= 23'h0;
+      validArray_0_0 <= 1'h0;
+      validArray_0_1 <= 1'h0;
+      validArray_0_2 <= 1'h0;
+      validArray_0_3 <= 1'h0;
+      validArray_0_4 <= 1'h0;
+      validArray_0_5 <= 1'h0;
+      validArray_0_6 <= 1'h0;
+      validArray_0_7 <= 1'h0;
+      validArray_0_8 <= 1'h0;
+      validArray_0_9 <= 1'h0;
+      validArray_0_10 <= 1'h0;
+      validArray_0_11 <= 1'h0;
+      validArray_0_12 <= 1'h0;
+      validArray_0_13 <= 1'h0;
+      validArray_0_14 <= 1'h0;
+      validArray_0_15 <= 1'h0;
+      validArray_1_0 <= 1'h0;
+      validArray_1_1 <= 1'h0;
+      validArray_1_2 <= 1'h0;
+      validArray_1_3 <= 1'h0;
+      validArray_1_4 <= 1'h0;
+      validArray_1_5 <= 1'h0;
+      validArray_1_6 <= 1'h0;
+      validArray_1_7 <= 1'h0;
+      validArray_1_8 <= 1'h0;
+      validArray_1_9 <= 1'h0;
+      validArray_1_10 <= 1'h0;
+      validArray_1_11 <= 1'h0;
+      validArray_1_12 <= 1'h0;
+      validArray_1_13 <= 1'h0;
+      validArray_1_14 <= 1'h0;
+      validArray_1_15 <= 1'h0;
+      dirtyArray_0_0 <= 1'h0;
+      dirtyArray_0_1 <= 1'h0;
+      dirtyArray_0_2 <= 1'h0;
+      dirtyArray_0_3 <= 1'h0;
+      dirtyArray_0_4 <= 1'h0;
+      dirtyArray_0_5 <= 1'h0;
+      dirtyArray_0_6 <= 1'h0;
+      dirtyArray_0_7 <= 1'h0;
+      dirtyArray_0_8 <= 1'h0;
+      dirtyArray_0_9 <= 1'h0;
+      dirtyArray_0_10 <= 1'h0;
+      dirtyArray_0_11 <= 1'h0;
+      dirtyArray_0_12 <= 1'h0;
+      dirtyArray_0_13 <= 1'h0;
+      dirtyArray_0_14 <= 1'h0;
+      dirtyArray_0_15 <= 1'h0;
+      dirtyArray_1_0 <= 1'h0;
+      dirtyArray_1_1 <= 1'h0;
+      dirtyArray_1_2 <= 1'h0;
+      dirtyArray_1_3 <= 1'h0;
+      dirtyArray_1_4 <= 1'h0;
+      dirtyArray_1_5 <= 1'h0;
+      dirtyArray_1_6 <= 1'h0;
+      dirtyArray_1_7 <= 1'h0;
+      dirtyArray_1_8 <= 1'h0;
+      dirtyArray_1_9 <= 1'h0;
+      dirtyArray_1_10 <= 1'h0;
+      dirtyArray_1_11 <= 1'h0;
+      dirtyArray_1_12 <= 1'h0;
+      dirtyArray_1_13 <= 1'h0;
+      dirtyArray_1_14 <= 1'h0;
+      dirtyArray_1_15 <= 1'h0;
+      off <= 3'h0;
+      state_dcache <= 4'h0;
+    end
+    else begin
+      if (~(_from_lsu_req_ready_output & _GEN_7) | hit) begin
+      end
+      else
+        replace_set <= random_num;
+      random_num <= random_num - 1'h1;
+      if (_GEN_9)
+        tagArray_0_0 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_11)
+        tagArray_0_1 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_13)
+        tagArray_0_2 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_15)
+        tagArray_0_3 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_17)
+        tagArray_0_4 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_19)
+        tagArray_0_5 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_21)
+        tagArray_0_6 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_23)
+        tagArray_0_7 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_25)
+        tagArray_0_8 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_27)
+        tagArray_0_9 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_29)
+        tagArray_0_10 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_31)
+        tagArray_0_11 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_33)
+        tagArray_0_12 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_35)
+        tagArray_0_13 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_37)
+        tagArray_0_14 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_38)
+        tagArray_0_15 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_39)
+        tagArray_1_0 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_40)
+        tagArray_1_1 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_41)
+        tagArray_1_2 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_42)
+        tagArray_1_3 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_43)
+        tagArray_1_4 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_44)
+        tagArray_1_5 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_45)
+        tagArray_1_6 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_46)
+        tagArray_1_7 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_47)
+        tagArray_1_8 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_48)
+        tagArray_1_9 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_49)
+        tagArray_1_10 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_50)
+        tagArray_1_11 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_51)
+        tagArray_1_12 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_52)
+        tagArray_1_13 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_53)
+        tagArray_1_14 <= from_lsu_req_bits_addr[31:9];
+      if (_GEN_54)
+        tagArray_1_15 <= from_lsu_req_bits_addr[31:9];
+      validArray_0_0 <= _GEN_9 | validArray_0_0;
+      validArray_0_1 <= _GEN_11 | validArray_0_1;
+      validArray_0_2 <= _GEN_13 | validArray_0_2;
+      validArray_0_3 <= _GEN_15 | validArray_0_3;
+      validArray_0_4 <= _GEN_17 | validArray_0_4;
+      validArray_0_5 <= _GEN_19 | validArray_0_5;
+      validArray_0_6 <= _GEN_21 | validArray_0_6;
+      validArray_0_7 <= _GEN_23 | validArray_0_7;
+      validArray_0_8 <= _GEN_25 | validArray_0_8;
+      validArray_0_9 <= _GEN_27 | validArray_0_9;
+      validArray_0_10 <= _GEN_29 | validArray_0_10;
+      validArray_0_11 <= _GEN_31 | validArray_0_11;
+      validArray_0_12 <= _GEN_33 | validArray_0_12;
+      validArray_0_13 <= _GEN_35 | validArray_0_13;
+      validArray_0_14 <= _GEN_37 | validArray_0_14;
+      validArray_0_15 <= _GEN_38 | validArray_0_15;
+      validArray_1_0 <= _GEN_39 | validArray_1_0;
+      validArray_1_1 <= _GEN_40 | validArray_1_1;
+      validArray_1_2 <= _GEN_41 | validArray_1_2;
+      validArray_1_3 <= _GEN_42 | validArray_1_3;
+      validArray_1_4 <= _GEN_43 | validArray_1_4;
+      validArray_1_5 <= _GEN_44 | validArray_1_5;
+      validArray_1_6 <= _GEN_45 | validArray_1_6;
+      validArray_1_7 <= _GEN_46 | validArray_1_7;
+      validArray_1_8 <= _GEN_47 | validArray_1_8;
+      validArray_1_9 <= _GEN_48 | validArray_1_9;
+      validArray_1_10 <= _GEN_49 | validArray_1_10;
+      validArray_1_11 <= _GEN_50 | validArray_1_11;
+      validArray_1_12 <= _GEN_51 | validArray_1_12;
+      validArray_1_13 <= _GEN_52 | validArray_1_13;
+      validArray_1_14 <= _GEN_53 | validArray_1_14;
+      validArray_1_15 <= _GEN_54 | validArray_1_15;
+      dirtyArray_0_0 <= _GEN_4 & ~SetId & _GEN_8 | dirtyArray_0_0;
+      dirtyArray_0_1 <= _GEN_4 & ~SetId & _GEN_10 | dirtyArray_0_1;
+      dirtyArray_0_2 <= _GEN_4 & ~SetId & _GEN_12 | dirtyArray_0_2;
+      dirtyArray_0_3 <= _GEN_4 & ~SetId & _GEN_14 | dirtyArray_0_3;
+      dirtyArray_0_4 <= _GEN_4 & ~SetId & _GEN_16 | dirtyArray_0_4;
+      dirtyArray_0_5 <= _GEN_4 & ~SetId & _GEN_18 | dirtyArray_0_5;
+      dirtyArray_0_6 <= _GEN_4 & ~SetId & _GEN_20 | dirtyArray_0_6;
+      dirtyArray_0_7 <= _GEN_4 & ~SetId & _GEN_22 | dirtyArray_0_7;
+      dirtyArray_0_8 <= _GEN_4 & ~SetId & _GEN_24 | dirtyArray_0_8;
+      dirtyArray_0_9 <= _GEN_4 & ~SetId & _GEN_26 | dirtyArray_0_9;
+      dirtyArray_0_10 <= _GEN_4 & ~SetId & _GEN_28 | dirtyArray_0_10;
+      dirtyArray_0_11 <= _GEN_4 & ~SetId & _GEN_30 | dirtyArray_0_11;
+      dirtyArray_0_12 <= _GEN_4 & ~SetId & _GEN_32 | dirtyArray_0_12;
+      dirtyArray_0_13 <= _GEN_4 & ~SetId & _GEN_34 | dirtyArray_0_13;
+      dirtyArray_0_14 <= _GEN_4 & ~SetId & _GEN_36 | dirtyArray_0_14;
+      dirtyArray_0_15 <=
+        _GEN_4 & ~SetId & (&(from_lsu_req_bits_addr[8:5])) | dirtyArray_0_15;
+      dirtyArray_1_0 <= _GEN_4 & SetId & _GEN_8 | dirtyArray_1_0;
+      dirtyArray_1_1 <= _GEN_4 & SetId & _GEN_10 | dirtyArray_1_1;
+      dirtyArray_1_2 <= _GEN_4 & SetId & _GEN_12 | dirtyArray_1_2;
+      dirtyArray_1_3 <= _GEN_4 & SetId & _GEN_14 | dirtyArray_1_3;
+      dirtyArray_1_4 <= _GEN_4 & SetId & _GEN_16 | dirtyArray_1_4;
+      dirtyArray_1_5 <= _GEN_4 & SetId & _GEN_18 | dirtyArray_1_5;
+      dirtyArray_1_6 <= _GEN_4 & SetId & _GEN_20 | dirtyArray_1_6;
+      dirtyArray_1_7 <= _GEN_4 & SetId & _GEN_22 | dirtyArray_1_7;
+      dirtyArray_1_8 <= _GEN_4 & SetId & _GEN_24 | dirtyArray_1_8;
+      dirtyArray_1_9 <= _GEN_4 & SetId & _GEN_26 | dirtyArray_1_9;
+      dirtyArray_1_10 <= _GEN_4 & SetId & _GEN_28 | dirtyArray_1_10;
+      dirtyArray_1_11 <= _GEN_4 & SetId & _GEN_30 | dirtyArray_1_11;
+      dirtyArray_1_12 <= _GEN_4 & SetId & _GEN_32 | dirtyArray_1_12;
+      dirtyArray_1_13 <= _GEN_4 & SetId & _GEN_34 | dirtyArray_1_13;
+      dirtyArray_1_14 <= _GEN_4 & SetId & _GEN_36 | dirtyArray_1_14;
+      dirtyArray_1_15 <=
+        _GEN_4 & SetId & (&(from_lsu_req_bits_addr[8:5])) | dirtyArray_1_15;
+      if (~(_from_lsu_req_ready_output | state_dcache == 4'h1 | _GEN_4
+            | state_dcache == 4'h3)) begin
+        if (state_dcache == 4'h4)
+          off <= 3'h0;
+        else if (state_dcache == 4'h5) begin
+          if (to_sram_w_ready & _to_sram_w_valid_output)
+            off <= off + 3'h1;
+        end
+        else if (state_dcache != 4'h6) begin
+          if (state_dcache == 4'h7)
+            off <= 3'h0;
+          else if (_GEN_5)
+            off <= off + 3'h1;
+        end
+      end
+      state_dcache <= _GEN_56[state_dcache];
+    end
+  end // always @(posedge)
+  dataArray_256x32 dataArray_ext (
+    .R0_addr (replaceCacheAddr),
+    .R0_en   (1'h1),
+    .R0_clk  (clock),
+    .R1_addr (hitCacheAddr),
+    .R1_en   (1'h1),
+    .R1_clk  (clock),
+    .W0_addr (hitCacheAddr),
+    .W0_en   (_GEN_4),
+    .W0_clk  (clock),
+    .W0_data
+      (_indata_T_1[31:0] & from_lsu_req_bits_wmask | _dataArray_ext_R1_data
+       & ~from_lsu_req_bits_wmask),
+    .W1_addr (replaceCacheAddr),
+    .W1_en   (_GEN_5),
+    .W1_clk  (clock),
+    .W1_data (to_sram_r_bits_data),
+    .R0_data (to_sram_w_bits_data),
+    .R1_data (_dataArray_ext_R1_data)
+  );
+  assign from_lsu_req_ready = _from_lsu_req_ready_output;
+  assign from_lsu_resp_valid = _from_lsu_resp_bits_wresp_T_1 | state_dcache == 4'h1;
+  assign from_lsu_resp_bits_rdata = hit ? _dataArray_ext_R1_data : 32'h0;
+  assign from_lsu_resp_bits_wresp = _from_lsu_resp_bits_wresp_T_1;
+  assign to_sram_ar_valid = _to_sram_ar_valid_output;
+  assign to_sram_ar_bits_addr =
+    _to_sram_ar_valid_output ? {from_lsu_req_bits_addr[31:5], 5'h0} : 32'h0;
+  assign to_sram_ar_bits_len = {5'h0, {3{_to_sram_ar_valid_output}}};
+  assign to_sram_r_ready = _to_sram_r_ready_output;
+  assign to_sram_aw_valid = _to_sram_aw_valid_output;
+  assign to_sram_aw_bits_addr =
+    {_GEN_6[from_lsu_req_bits_addr[8:5]], from_lsu_req_bits_addr[8:5], 5'h0};
+  assign to_sram_aw_bits_len = {5'h0, {3{_to_sram_aw_valid_output}}};
+  assign to_sram_w_valid = _to_sram_w_valid_output;
+endmodule
+
+module MMIO(
+  input         clock,
+                from_lsu_req_valid,
+  input  [31:0] from_lsu_req_bits_addr,
+                from_lsu_req_bits_wdata,
+                from_lsu_req_bits_wmask,
+  input  [3:0]  from_lsu_req_bits_cmd,
+  output [31:0] from_lsu_resp_bits_rdata,
+  output        from_lsu_resp_bits_wresp
+);
+
+  wire _from_lsu_resp_bits_wresp_T = from_lsu_req_bits_cmd == 4'h1;
+  RamBB RamBB_i1 (
+    .clock   (clock),
+    .addr    (from_lsu_req_bits_addr),
+    .mem_wen (_from_lsu_resp_bits_wresp_T),
+    .valid   (from_lsu_req_valid),
+    .wdata   (from_lsu_req_bits_wdata),
+    .wmask   (from_lsu_req_bits_wmask[3:0]),
+    .rdata   (from_lsu_resp_bits_rdata)
+  );
+  assign from_lsu_resp_bits_wresp = _from_lsu_resp_bits_wresp_T;
+endmodule
+
 module top(
   input         clock,
                 reset,
@@ -2524,11 +3278,41 @@ module top(
   output        io_out_wb
 );
 
+  wire [31:0] _mmio_from_lsu_resp_bits_rdata;
+  wire        _mmio_from_lsu_resp_bits_wresp;
+  wire        _dcache_from_lsu_req_ready;
+  wire        _dcache_from_lsu_resp_valid;
+  wire [31:0] _dcache_from_lsu_resp_bits_rdata;
+  wire        _dcache_from_lsu_resp_bits_wresp;
+  wire        _dcache_to_sram_ar_valid;
+  wire [31:0] _dcache_to_sram_ar_bits_addr;
+  wire [7:0]  _dcache_to_sram_ar_bits_len;
+  wire        _dcache_to_sram_r_ready;
+  wire        _dcache_to_sram_aw_valid;
+  wire [31:0] _dcache_to_sram_aw_bits_addr;
+  wire [7:0]  _dcache_to_sram_aw_bits_len;
+  wire        _dcache_to_sram_w_valid;
+  wire [31:0] _dcache_to_sram_w_bits_data;
+  wire        _memXbar_io_in_req_ready;
+  wire        _memXbar_io_in_resp_valid;
+  wire [31:0] _memXbar_io_in_resp_bits_rdata;
+  wire        _memXbar_io_in_resp_bits_wresp;
+  wire        _memXbar_io_out_0_req_valid;
+  wire [31:0] _memXbar_io_out_0_req_bits_addr;
+  wire [31:0] _memXbar_io_out_0_req_bits_wdata;
+  wire [31:0] _memXbar_io_out_0_req_bits_wmask;
+  wire [3:0]  _memXbar_io_out_0_req_bits_cmd;
+  wire        _memXbar_io_out_1_req_valid;
+  wire [31:0] _memXbar_io_out_1_req_bits_addr;
+  wire [31:0] _memXbar_io_out_1_req_bits_wdata;
+  wire [31:0] _memXbar_io_out_1_req_bits_wmask;
+  wire [3:0]  _memXbar_io_out_1_req_bits_cmd;
   wire        _ram_i2_axi_ar_ready;
   wire        _ram_i2_axi_r_valid;
   wire [31:0] _ram_i2_axi_r_bits_data;
+  wire        _ram_i2_axi_r_bits_last;
   wire        _ram_i2_axi_aw_ready;
-  wire        _ram_i2_axi_b_valid;
+  wire        _ram_i2_axi_w_ready;
   wire        _bridge_io_in_req_ready;
   wire        _bridge_io_in_resp_valid;
   wire [31:0] _bridge_io_in_resp_bits_rdata;
@@ -2573,14 +3357,12 @@ module top(
   wire        _EXU_i_to_IFU_valid;
   wire [31:0] _EXU_i_to_IFU_bits_target;
   wire        _EXU_i_to_IFU_bits_redirect;
-  wire        _EXU_i_lsu_to_mem_ar_valid;
-  wire [31:0] _EXU_i_lsu_to_mem_ar_bits_addr;
-  wire        _EXU_i_lsu_to_mem_r_ready;
-  wire        _EXU_i_lsu_to_mem_aw_valid;
-  wire [31:0] _EXU_i_lsu_to_mem_aw_bits_addr;
-  wire        _EXU_i_lsu_to_mem_w_valid;
-  wire [31:0] _EXU_i_lsu_to_mem_w_bits_data;
-  wire [3:0]  _EXU_i_lsu_to_mem_w_bits_strb;
+  wire        _EXU_i_lsu_to_mem_req_valid;
+  wire [31:0] _EXU_i_lsu_to_mem_req_bits_addr;
+  wire [31:0] _EXU_i_lsu_to_mem_req_bits_wdata;
+  wire [31:0] _EXU_i_lsu_to_mem_req_bits_wmask;
+  wire [3:0]  _EXU_i_lsu_to_mem_req_bits_cmd;
+  wire        _EXU_i_lsu_to_mem_resp_ready;
   wire [4:0]  _EXU_i_to_ISU_rd;
   wire        _EXU_i_to_ISU_have_wb;
   wire        _EXU_i_to_ISU_isBRU;
@@ -2816,11 +3598,10 @@ module top(
     .from_ISU_bits_ctrl_sig_mdu_op    (EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op),
     .from_ISU_bits_inst               (EXU_i_from_ISU_bits_r_inst),
     .to_IFU_ready                     (_IFU_i_from_EXU_ready),
-    .lsu_to_mem_ar_ready              (_ram_i2_axi_ar_ready),
-    .lsu_to_mem_r_valid               (_ram_i2_axi_r_valid),
-    .lsu_to_mem_r_bits_data           (_ram_i2_axi_r_bits_data),
-    .lsu_to_mem_aw_ready              (_ram_i2_axi_aw_ready),
-    .lsu_to_mem_b_valid               (_ram_i2_axi_b_valid),
+    .lsu_to_mem_req_ready             (_memXbar_io_in_req_ready),
+    .lsu_to_mem_resp_valid            (_memXbar_io_in_resp_valid),
+    .lsu_to_mem_resp_bits_rdata       (_memXbar_io_in_resp_bits_rdata),
+    .lsu_to_mem_resp_bits_wresp       (_memXbar_io_in_resp_bits_wresp),
     .from_ISU_ready                   (_EXU_i_from_ISU_ready),
     .to_WBU_valid                     (_EXU_i_to_WBU_valid),
     .to_WBU_bits_alu_result           (_EXU_i_to_WBU_bits_alu_result),
@@ -2839,14 +3620,12 @@ module top(
     .difftest_mepc                    (io_out_difftest_mepc),
     .difftest_mstatus                 (io_out_difftest_mstatus),
     .difftest_mtvec                   (io_out_difftest_mtvec),
-    .lsu_to_mem_ar_valid              (_EXU_i_lsu_to_mem_ar_valid),
-    .lsu_to_mem_ar_bits_addr          (_EXU_i_lsu_to_mem_ar_bits_addr),
-    .lsu_to_mem_r_ready               (_EXU_i_lsu_to_mem_r_ready),
-    .lsu_to_mem_aw_valid              (_EXU_i_lsu_to_mem_aw_valid),
-    .lsu_to_mem_aw_bits_addr          (_EXU_i_lsu_to_mem_aw_bits_addr),
-    .lsu_to_mem_w_valid               (_EXU_i_lsu_to_mem_w_valid),
-    .lsu_to_mem_w_bits_data           (_EXU_i_lsu_to_mem_w_bits_data),
-    .lsu_to_mem_w_bits_strb           (_EXU_i_lsu_to_mem_w_bits_strb),
+    .lsu_to_mem_req_valid             (_EXU_i_lsu_to_mem_req_valid),
+    .lsu_to_mem_req_bits_addr         (_EXU_i_lsu_to_mem_req_bits_addr),
+    .lsu_to_mem_req_bits_wdata        (_EXU_i_lsu_to_mem_req_bits_wdata),
+    .lsu_to_mem_req_bits_wmask        (_EXU_i_lsu_to_mem_req_bits_wmask),
+    .lsu_to_mem_req_bits_cmd          (_EXU_i_lsu_to_mem_req_bits_cmd),
+    .lsu_to_mem_resp_ready            (_EXU_i_lsu_to_mem_resp_ready),
     .to_ISU_rd                        (_EXU_i_to_ISU_rd),
     .to_ISU_have_wb                   (_EXU_i_to_ISU_have_wb),
     .to_ISU_isBRU                     (_EXU_i_to_ISU_isBRU)
@@ -2886,24 +3665,23 @@ module top(
     .fetch_PC               (_IFU_i_fetch_PC)
   );
   AXI4RAM ram_i (
-    .clock             (clock),
-    .reset             (reset),
-    .axi_ar_valid      (_bridge_io_out_ar_valid),
-    .axi_ar_bits_addr  (_bridge_io_out_ar_bits_addr),
-    .axi_ar_bits_len   (8'h3),
-    .axi_r_ready       (_bridge_io_out_r_ready),
-    .axi_aw_valid      (1'h0),
-    .axi_aw_bits_addr  (_bridge_io_out_aw_bits_addr),
-    .axi_aw_bits_len   (8'h3),
-    .axi_aw_bits_burst (2'h1),
-    .axi_w_valid       (1'h0),
-    .axi_w_bits_data   (32'h0),
-    .axi_w_bits_strb   (4'hF),
-    .axi_ar_ready      (_ram_i_axi_ar_ready),
-    .axi_r_valid       (_ram_i_axi_r_valid),
-    .axi_r_bits_data   (_ram_i_axi_r_bits_data),
-    .axi_aw_ready      (/* unused */),
-    .axi_b_valid       (/* unused */)
+    .clock            (clock),
+    .reset            (reset),
+    .axi_ar_valid     (_bridge_io_out_ar_valid),
+    .axi_ar_bits_addr (_bridge_io_out_ar_bits_addr),
+    .axi_ar_bits_len  (8'h3),
+    .axi_r_ready      (_bridge_io_out_r_ready),
+    .axi_aw_valid     (1'h0),
+    .axi_aw_bits_addr (_bridge_io_out_aw_bits_addr),
+    .axi_aw_bits_len  (8'h3),
+    .axi_w_valid      (1'h0),
+    .axi_w_bits_data  (32'h0),
+    .axi_ar_ready     (_ram_i_axi_ar_ready),
+    .axi_r_valid      (_ram_i_axi_r_valid),
+    .axi_r_bits_data  (_ram_i_axi_r_bits_data),
+    .axi_r_bits_last  (/* unused */),
+    .axi_aw_ready     (/* unused */),
+    .axi_w_ready      (/* unused */)
   );
   Cache icache (
     .clock                    (clock),
@@ -2941,24 +3719,91 @@ module top(
     .io_out_aw_bits_addr   (_bridge_io_out_aw_bits_addr)
   );
   AXI4RAM ram_i2 (
-    .clock             (clock),
-    .reset             (reset),
-    .axi_ar_valid      (_EXU_i_lsu_to_mem_ar_valid),
-    .axi_ar_bits_addr  (_EXU_i_lsu_to_mem_ar_bits_addr),
-    .axi_ar_bits_len   (8'h0),
-    .axi_r_ready       (_EXU_i_lsu_to_mem_r_ready),
-    .axi_aw_valid      (_EXU_i_lsu_to_mem_aw_valid),
-    .axi_aw_bits_addr  (_EXU_i_lsu_to_mem_aw_bits_addr),
-    .axi_aw_bits_len   (8'h0),
-    .axi_aw_bits_burst (2'h0),
-    .axi_w_valid       (_EXU_i_lsu_to_mem_w_valid),
-    .axi_w_bits_data   (_EXU_i_lsu_to_mem_w_bits_data),
-    .axi_w_bits_strb   (_EXU_i_lsu_to_mem_w_bits_strb),
-    .axi_ar_ready      (_ram_i2_axi_ar_ready),
-    .axi_r_valid       (_ram_i2_axi_r_valid),
-    .axi_r_bits_data   (_ram_i2_axi_r_bits_data),
-    .axi_aw_ready      (_ram_i2_axi_aw_ready),
-    .axi_b_valid       (_ram_i2_axi_b_valid)
+    .clock            (clock),
+    .reset            (reset),
+    .axi_ar_valid     (_dcache_to_sram_ar_valid),
+    .axi_ar_bits_addr (_dcache_to_sram_ar_bits_addr),
+    .axi_ar_bits_len  (_dcache_to_sram_ar_bits_len),
+    .axi_r_ready      (_dcache_to_sram_r_ready),
+    .axi_aw_valid     (_dcache_to_sram_aw_valid),
+    .axi_aw_bits_addr (_dcache_to_sram_aw_bits_addr),
+    .axi_aw_bits_len  (_dcache_to_sram_aw_bits_len),
+    .axi_w_valid      (_dcache_to_sram_w_valid),
+    .axi_w_bits_data  (_dcache_to_sram_w_bits_data),
+    .axi_ar_ready     (_ram_i2_axi_ar_ready),
+    .axi_r_valid      (_ram_i2_axi_r_valid),
+    .axi_r_bits_data  (_ram_i2_axi_r_bits_data),
+    .axi_r_bits_last  (_ram_i2_axi_r_bits_last),
+    .axi_aw_ready     (_ram_i2_axi_aw_ready),
+    .axi_w_ready      (_ram_i2_axi_w_ready)
+  );
+  SimpleBusCrossBar1toN memXbar (
+    .clock                    (clock),
+    .reset                    (reset),
+    .io_in_req_valid          (_EXU_i_lsu_to_mem_req_valid),
+    .io_in_req_bits_addr      (_EXU_i_lsu_to_mem_req_bits_addr),
+    .io_in_req_bits_wdata     (_EXU_i_lsu_to_mem_req_bits_wdata),
+    .io_in_req_bits_wmask     (_EXU_i_lsu_to_mem_req_bits_wmask),
+    .io_in_req_bits_cmd       (_EXU_i_lsu_to_mem_req_bits_cmd),
+    .io_in_resp_ready         (_EXU_i_lsu_to_mem_resp_ready),
+    .io_out_0_req_ready       (_dcache_from_lsu_req_ready),
+    .io_out_0_resp_valid      (_dcache_from_lsu_resp_valid),
+    .io_out_0_resp_bits_rdata (_dcache_from_lsu_resp_bits_rdata),
+    .io_out_0_resp_bits_wresp (_dcache_from_lsu_resp_bits_wresp),
+    .io_out_1_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata),
+    .io_out_1_resp_bits_wresp (_mmio_from_lsu_resp_bits_wresp),
+    .io_in_req_ready          (_memXbar_io_in_req_ready),
+    .io_in_resp_valid         (_memXbar_io_in_resp_valid),
+    .io_in_resp_bits_rdata    (_memXbar_io_in_resp_bits_rdata),
+    .io_in_resp_bits_wresp    (_memXbar_io_in_resp_bits_wresp),
+    .io_out_0_req_valid       (_memXbar_io_out_0_req_valid),
+    .io_out_0_req_bits_addr   (_memXbar_io_out_0_req_bits_addr),
+    .io_out_0_req_bits_wdata  (_memXbar_io_out_0_req_bits_wdata),
+    .io_out_0_req_bits_wmask  (_memXbar_io_out_0_req_bits_wmask),
+    .io_out_0_req_bits_cmd    (_memXbar_io_out_0_req_bits_cmd),
+    .io_out_1_req_valid       (_memXbar_io_out_1_req_valid),
+    .io_out_1_req_bits_addr   (_memXbar_io_out_1_req_bits_addr),
+    .io_out_1_req_bits_wdata  (_memXbar_io_out_1_req_bits_wdata),
+    .io_out_1_req_bits_wmask  (_memXbar_io_out_1_req_bits_wmask),
+    .io_out_1_req_bits_cmd    (_memXbar_io_out_1_req_bits_cmd)
+  );
+  Dcache_SimpleBus dcache (
+    .clock                    (clock),
+    .reset                    (reset),
+    .from_lsu_req_valid       (_memXbar_io_out_0_req_valid),
+    .from_lsu_req_bits_addr   (_memXbar_io_out_0_req_bits_addr),
+    .from_lsu_req_bits_wdata  (_memXbar_io_out_0_req_bits_wdata),
+    .from_lsu_req_bits_wmask  (_memXbar_io_out_0_req_bits_wmask),
+    .from_lsu_req_bits_cmd    (_memXbar_io_out_0_req_bits_cmd),
+    .to_sram_ar_ready         (_ram_i2_axi_ar_ready),
+    .to_sram_r_valid          (_ram_i2_axi_r_valid),
+    .to_sram_r_bits_data      (_ram_i2_axi_r_bits_data),
+    .to_sram_r_bits_last      (_ram_i2_axi_r_bits_last),
+    .to_sram_aw_ready         (_ram_i2_axi_aw_ready),
+    .to_sram_w_ready          (_ram_i2_axi_w_ready),
+    .from_lsu_req_ready       (_dcache_from_lsu_req_ready),
+    .from_lsu_resp_valid      (_dcache_from_lsu_resp_valid),
+    .from_lsu_resp_bits_rdata (_dcache_from_lsu_resp_bits_rdata),
+    .from_lsu_resp_bits_wresp (_dcache_from_lsu_resp_bits_wresp),
+    .to_sram_ar_valid         (_dcache_to_sram_ar_valid),
+    .to_sram_ar_bits_addr     (_dcache_to_sram_ar_bits_addr),
+    .to_sram_ar_bits_len      (_dcache_to_sram_ar_bits_len),
+    .to_sram_r_ready          (_dcache_to_sram_r_ready),
+    .to_sram_aw_valid         (_dcache_to_sram_aw_valid),
+    .to_sram_aw_bits_addr     (_dcache_to_sram_aw_bits_addr),
+    .to_sram_aw_bits_len      (_dcache_to_sram_aw_bits_len),
+    .to_sram_w_valid          (_dcache_to_sram_w_valid),
+    .to_sram_w_bits_data      (_dcache_to_sram_w_bits_data)
+  );
+  MMIO mmio (
+    .clock                    (clock),
+    .from_lsu_req_valid       (_memXbar_io_out_1_req_valid),
+    .from_lsu_req_bits_addr   (_memXbar_io_out_1_req_bits_addr),
+    .from_lsu_req_bits_wdata  (_memXbar_io_out_1_req_bits_wdata),
+    .from_lsu_req_bits_wmask  (_memXbar_io_out_1_req_bits_wmask),
+    .from_lsu_req_bits_cmd    (_memXbar_io_out_1_req_bits_cmd),
+    .from_lsu_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata),
+    .from_lsu_resp_bits_wresp (_mmio_from_lsu_resp_bits_wresp)
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
