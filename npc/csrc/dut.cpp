@@ -160,8 +160,8 @@ static void checkmem(uint8_t *ref_mem) {
     if(*(uint32_t *)(pmem + i) != *(uint32_t *)(ref_mem )) {
       printf(ANSI_FMT("mem Error:\n", ANSI_FG_RED));
       printf("npc(dut)     nemu(ref)\n");
-      printf("addr:" FMT_WORD, RESET_VECTOR+4*i\n);
-      printf(FMT_WORD "  " FMT_WORD, *(uint32_t *)(pmem + i), *(uint32_t *)(ref_mem + i));
+      printf("addr:" FMT_WORD"\n", RESET_VECTOR+4*i);
+      printf(FMT_WORD "  " FMT_WORD"\n", *(uint32_t *)(pmem + i), *(uint32_t *)(ref_mem + i));
       terminal = 1;
       status = 1;
       break;
