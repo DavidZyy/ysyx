@@ -3268,6 +3268,8 @@ module top(
                 io_out_ifu_pc,
                 io_out_idu_inst,
                 io_out_idu_pc,
+                io_out_isu_inst,
+                io_out_isu_pc,
                 io_out_exu_inst,
                 io_out_exu_pc,
                 io_out_wbu_inst,
@@ -3884,6 +3886,8 @@ module top(
   assign io_out_ifu_pc = _IFU_i_to_IDU_bits_pc;
   assign io_out_idu_inst = _IDU_i_to_ISU_bits_inst;
   assign io_out_idu_pc = _IDU_i_to_ISU_bits_pc;
+  assign io_out_isu_inst = _ISU_i_to_EXU_bits_inst;
+  assign io_out_isu_pc = _ISU_i_to_EXU_bits_pc;
   assign io_out_exu_inst = _EXU_i_to_WBU_bits_inst;
   assign io_out_exu_pc = _EXU_i_to_WBU_bits_pc;
   assign io_out_wbu_inst = _EXU_i_to_WBU_bits_inst;
