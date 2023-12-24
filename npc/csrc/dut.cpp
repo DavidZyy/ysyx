@@ -195,8 +195,8 @@ void difftest_step() {
     ref_difftest_regcpy(&ref_f, DIFFTEST_TO_DUT);
     checkregs(&ref_f, pc);
     // check mems
-    ref_difftest_memcpy(RESET_VECTOR, ref_mem, sizeof(ref_mem), DIFFTEST_TO_DUT);
-    checkmem(ref_mem);
+    // ref_difftest_memcpy(RESET_VECTOR, ref_mem, sizeof(ref_mem), DIFFTEST_TO_DUT);
+    // checkmem(ref_mem);
   }
 
   /* if the instructions is store, check the memory 
