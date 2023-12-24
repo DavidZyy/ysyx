@@ -169,7 +169,7 @@ void init_pmem() {
 long load_img(const char *img_file) {
   // !!!!!!!!!!!!!!!!!!! memset 1 ???? what shit?
   // memset(pmem, 0, sizeof(pmem));
-  // init_pmem();
+  init_pmem();
   assert(img_file != NULL);
 
   FILE *fp = fopen(img_file, "rb");
