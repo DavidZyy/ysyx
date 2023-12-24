@@ -42,7 +42,7 @@ extern int terminal;
 static void out_of_bound(paddr_t addr) {
   terminal = 1;
   panic("npc: address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-      addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_ifu_fetchPc);
+      addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_exu_pc);
 }
 
 extern int npc_read_device;
@@ -136,7 +136,7 @@ extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
 extern word_t text_max;
 extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
   if(raddr >= text_max)
-    IFDEF(CONFIG_MTRACE, log_write("r, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_ifu_fetchPc, top->io_out_ifu_inst));
+    IFDEF(CONFIG_MTRACE, log_write("r, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_exu_pc, top->io_out_exu_inst));
   else
     IFDEF(CONFIG_ITRACE, log_write("cur pc:" FMT_WORD" ", top->io_out_ifu_fetchPc));
   // printf("%x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
@@ -152,7 +152,7 @@ extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
 }
 
 extern "C" void vaddr_write(sword_t waddr, sword_t wdata, char wmask) {
-  IFDEF(CONFIG_MTRACE, log_write("w, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_ifu_fetchPc, top->io_out_ifu_inst));
+  IFDEF(CONFIG_MTRACE, log_write("w, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_exu_pc, top->io_out_exu_inst));
   IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
   pmem_write(waddr, wdata, wmask);
 }
