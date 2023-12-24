@@ -1187,7 +1187,7 @@ module ISU(
   input         to_EXU_ready,
   input  [4:0]  from_EXU_rd,
   input         from_EXU_have_wb,
-                from_EXU_isBRU,
+                from_EXU_isBR,
   output        from_IDU_ready,
                 to_EXU_valid,
   output [31:0] to_EXU_bits_imm,
@@ -1212,7 +1212,7 @@ module ISU(
 
   wire has_hazard =
     (from_EXU_rd == from_IDU_bits_rs1 | from_EXU_rd == from_IDU_bits_rs2)
-    & ~from_EXU_have_wb & from_IDU_valid & ~from_EXU_isBRU;
+    & ~from_EXU_have_wb & from_IDU_valid & ~from_EXU_isBR;
   RegFile RegFile_i (
     .clock         (clock),
     .reset         (reset),
@@ -1595,7 +1595,7 @@ module EXU_pipeline(
   output [3:0]  lsu_to_mem_w_bits_strb,
   output [4:0]  to_ISU_rd,
   output        to_ISU_have_wb,
-                to_ISU_isBRU
+                to_ISU_isBR
 );
 
   wire        _to_IFU_valid_output;
@@ -1698,7 +1698,8 @@ module EXU_pipeline(
     (_Bru_i_io_out_ctrl_br | _Csr_i_io_out_csr_br) & from_ISU_valid;
   assign to_ISU_rd = from_ISU_bits_rd;
   assign to_ISU_have_wb = ~from_ISU_valid;
-  assign to_ISU_isBRU = from_ISU_bits_ctrl_sig_fu_op == 3'h3;
+  assign to_ISU_isBR =
+    from_ISU_bits_ctrl_sig_fu_op == 3'h3 | from_ISU_bits_ctrl_sig_fu_op == 3'h5;
 endmodule
 
 module WBU(
@@ -2583,7 +2584,7 @@ module top(
   wire [3:0]  _EXU_i_lsu_to_mem_w_bits_strb;
   wire [4:0]  _EXU_i_to_ISU_rd;
   wire        _EXU_i_to_ISU_have_wb;
-  wire        _EXU_i_to_ISU_isBRU;
+  wire        _EXU_i_to_ISU_isBR;
   wire        _ISU_i_from_IDU_ready;
   wire        _ISU_i_to_EXU_valid;
   wire [31:0] _ISU_i_to_EXU_bits_imm;
@@ -2771,7 +2772,7 @@ module top(
     .to_EXU_ready                     (_EXU_i_from_ISU_ready),
     .from_EXU_rd                      (_EXU_i_to_ISU_rd),
     .from_EXU_have_wb                 (_EXU_i_to_ISU_have_wb),
-    .from_EXU_isBRU                   (_EXU_i_to_ISU_isBRU),
+    .from_EXU_isBR                    (_EXU_i_to_ISU_isBR),
     .from_IDU_ready                   (_ISU_i_from_IDU_ready),
     .to_EXU_valid                     (_ISU_i_to_EXU_valid),
     .to_EXU_bits_imm                  (_ISU_i_to_EXU_bits_imm),
@@ -2849,7 +2850,7 @@ module top(
     .lsu_to_mem_w_bits_strb           (_EXU_i_lsu_to_mem_w_bits_strb),
     .to_ISU_rd                        (_EXU_i_to_ISU_rd),
     .to_ISU_have_wb                   (_EXU_i_to_ISU_have_wb),
-    .to_ISU_isBRU                     (_EXU_i_to_ISU_isBRU)
+    .to_ISU_isBR                      (_EXU_i_to_ISU_isBR)
   );
   WBU WBU_i (
     .from_EXU_valid           (_EXU_i_to_WBU_valid),
