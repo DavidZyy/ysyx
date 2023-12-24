@@ -1670,8 +1670,7 @@ module EXU_pipeline(
   not_impl_moudle not_impl_moudle_i (
     .not_impl (from_ISU_bits_ctrl_sig_not_impl & from_ISU_valid)
   );
-  assign from_ISU_ready =
-    _GEN_0 ? to_IFU_ready : _GEN | ~from_ISU_valid | _Lsu_i_io_out_end;
+  assign from_ISU_ready = ~_GEN_0 & (_GEN | _Lsu_i_io_out_end) | ~from_ISU_valid;
   assign to_WBU_valid =
     from_ISU_valid
     & (_GEN_0 ? to_IFU_ready & _to_IFU_valid_output : _GEN | _Lsu_i_io_out_end);
