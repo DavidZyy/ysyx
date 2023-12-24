@@ -2364,16 +2364,16 @@ module CacheStage2(
   output [31:0] io_out_addr,
   output        io_out_resp_valid,
   output [31:0] io_out_resp_bits_rdata,
-  output        io_in_valid__bore,
-  output [31:0] io_in_bits_addr__bore
+                io_in_bits_addr__bore,
+  output        io_in_valid__bore
 );
 
   assign io_in_ready = io_out_resp_ready;
   assign io_out_addr = io_in_bits_addr;
   assign io_out_resp_valid = io_in_valid;
   assign io_out_resp_bits_rdata = io_in_valid ? io_dataReadBus_rdata : 32'h0;
-  assign io_in_valid__bore = io_in_valid;
   assign io_in_bits_addr__bore = io_in_bits_addr;
+  assign io_in_valid__bore = io_in_valid;
 endmodule
 
 module Cache(
@@ -2393,8 +2393,8 @@ module Cache(
   output [31:0] io_mem_req_bits_addr,
   output        io_mem_resp_ready,
   output [31:0] io_stage2Addr,
-  output        s2_io_in_valid__bore,
-  output [31:0] s2_io_in_bits_addr__bore
+                s2_io_in_bits_addr__bore,
+  output        s2_io_in_valid__bore
 );
 
   wire        _s2_io_in_ready;
@@ -2463,8 +2463,8 @@ module Cache(
     .io_out_addr            (io_stage2Addr),
     .io_out_resp_valid      (_s2_io_out_resp_valid),
     .io_out_resp_bits_rdata (io_in_resp_bits_rdata),
-    .io_in_valid__bore      (s2_io_in_valid__bore),
-    .io_in_bits_addr__bore  (s2_io_in_bits_addr__bore)
+    .io_in_bits_addr__bore  (s2_io_in_bits_addr__bore),
+    .io_in_valid__bore      (s2_io_in_valid__bore)
   );
   assign io_in_resp_valid = _s2_io_out_resp_valid;
 endmodule
@@ -3328,8 +3328,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_addr;
   wire        _icache_io_mem_resp_ready;
   wire [31:0] _icache_io_stage2Addr;
-  wire        _icache_s2_io_in_valid__bore;
   wire [31:0] _icache_s2_io_in_bits_addr__bore;
+  wire        _icache_s2_io_in_valid__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3411,6 +3411,25 @@ module top(
   reg  [31:0] IDU_i_from_IFU_bits_r_inst;
   reg  [31:0] IDU_i_from_IFU_bits_r_pc;
   reg         valid_1;
+  reg  [31:0] ISU_i_from_IDU_bits_r_imm;
+  reg  [31:0] ISU_i_from_IDU_bits_r_pc;
+  reg  [4:0]  ISU_i_from_IDU_bits_r_rs1;
+  reg  [4:0]  ISU_i_from_IDU_bits_r_rs2;
+  reg  [4:0]  ISU_i_from_IDU_bits_r_rd;
+  reg         ISU_i_from_IDU_bits_r_ctrl_sig_reg_wen;
+  reg  [2:0]  ISU_i_from_IDU_bits_r_ctrl_sig_fu_op;
+  reg         ISU_i_from_IDU_bits_r_ctrl_sig_mem_wen;
+  reg         ISU_i_from_IDU_bits_r_ctrl_sig_is_ebreak;
+  reg         ISU_i_from_IDU_bits_r_ctrl_sig_not_impl;
+  reg  [1:0]  ISU_i_from_IDU_bits_r_ctrl_sig_src1_op;
+  reg  [1:0]  ISU_i_from_IDU_bits_r_ctrl_sig_src2_op;
+  reg  [3:0]  ISU_i_from_IDU_bits_r_ctrl_sig_alu_op;
+  reg  [3:0]  ISU_i_from_IDU_bits_r_ctrl_sig_lsu_op;
+  reg  [3:0]  ISU_i_from_IDU_bits_r_ctrl_sig_bru_op;
+  reg  [2:0]  ISU_i_from_IDU_bits_r_ctrl_sig_csr_op;
+  reg  [3:0]  ISU_i_from_IDU_bits_r_ctrl_sig_mdu_op;
+  reg  [31:0] ISU_i_from_IDU_bits_r_inst;
+  reg         valid_2;
   reg  [31:0] EXU_i_from_ISU_bits_r_imm;
   reg  [31:0] EXU_i_from_ISU_bits_r_pc;
   reg  [31:0] EXU_i_from_ISU_bits_r_rdata1;
@@ -3429,26 +3448,28 @@ module top(
   reg  [2:0]  EXU_i_from_ISU_bits_r_ctrl_sig_csr_op;
   reg  [3:0]  EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op;
   reg  [31:0] EXU_i_from_ISU_bits_r_inst;
-  wire        _GEN =
+  wire        _GEN = _ISU_i_from_IDU_ready & _IDU_i_to_ISU_valid;
+  wire        _GEN_0 =
     _EXU_i_to_IFU_bits_redirect & _IDU_i_from_IFU_ready & _IFU_i_to_IDU_valid;
   wire        _IDU_i_from_IFU_bits_T_1 = _IFU_i_to_IDU_valid & _IDU_i_from_IFU_ready;
-  wire        _GEN_0 =
-    _EXU_i_to_IFU_bits_redirect & _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;
+  wire        _GEN_1 = _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;
+  wire        _GEN_2 = _EXU_i_to_IFU_bits_redirect & _GEN;
+  wire        _ISU_i_from_IDU_bits_T_1 = _IDU_i_to_ISU_valid & _ISU_i_from_IDU_ready;
+  wire        _GEN_3 = _EXU_i_to_IFU_bits_redirect & _GEN_1;
   wire        _EXU_i_from_ISU_bits_T_1 = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;
   always @(posedge clock) begin
     if (reset) begin
       valid <= 1'h0;
       valid_1 <= 1'h0;
+      valid_2 <= 1'h0;
     end
     else begin
-      valid <=
-        ~_GEN
-        & (_IDU_i_from_IFU_bits_T_1 | ~(_ISU_i_from_IDU_ready & _IDU_i_to_ISU_valid)
-           & valid);
-      valid_1 <= ~_GEN_0 & (_EXU_i_from_ISU_bits_T_1 | ~_EXU_i_to_WBU_valid & valid_1);
+      valid <= ~_GEN_0 & (_IDU_i_from_IFU_bits_T_1 | ~_GEN & valid);
+      valid_1 <= ~_GEN_2 & (_ISU_i_from_IDU_bits_T_1 | ~_GEN_1 & valid_1);
+      valid_2 <= ~_GEN_3 & (_EXU_i_from_ISU_bits_T_1 | ~_EXU_i_to_WBU_valid & valid_2);
     end
     if (_IDU_i_from_IFU_bits_T_1) begin
-      if (_GEN) begin
+      if (_GEN_0) begin
         IDU_i_from_IFU_bits_r_inst <= 32'h0;
         IDU_i_from_IFU_bits_r_pc <= 32'h0;
       end
@@ -3457,8 +3478,50 @@ module top(
         IDU_i_from_IFU_bits_r_pc <= _IFU_i_to_IDU_bits_pc;
       end
     end
+    if (_ISU_i_from_IDU_bits_T_1) begin
+      if (_GEN_2) begin
+        ISU_i_from_IDU_bits_r_imm <= 32'h0;
+        ISU_i_from_IDU_bits_r_pc <= 32'h0;
+        ISU_i_from_IDU_bits_r_rs1 <= 5'h0;
+        ISU_i_from_IDU_bits_r_rs2 <= 5'h0;
+        ISU_i_from_IDU_bits_r_rd <= 5'h0;
+        ISU_i_from_IDU_bits_r_ctrl_sig_fu_op <= 3'h0;
+        ISU_i_from_IDU_bits_r_ctrl_sig_src1_op <= 2'h0;
+        ISU_i_from_IDU_bits_r_ctrl_sig_src2_op <= 2'h0;
+        ISU_i_from_IDU_bits_r_ctrl_sig_alu_op <= 4'h0;
+        ISU_i_from_IDU_bits_r_ctrl_sig_lsu_op <= 4'h0;
+        ISU_i_from_IDU_bits_r_ctrl_sig_bru_op <= 4'h0;
+        ISU_i_from_IDU_bits_r_ctrl_sig_csr_op <= 3'h0;
+        ISU_i_from_IDU_bits_r_ctrl_sig_mdu_op <= 4'h0;
+        ISU_i_from_IDU_bits_r_inst <= 32'h0;
+      end
+      else begin
+        ISU_i_from_IDU_bits_r_imm <= _IDU_i_to_ISU_bits_imm;
+        ISU_i_from_IDU_bits_r_pc <= _IDU_i_to_ISU_bits_pc;
+        ISU_i_from_IDU_bits_r_rs1 <= _IDU_i_to_ISU_bits_rs1;
+        ISU_i_from_IDU_bits_r_rs2 <= _IDU_i_to_ISU_bits_rs2;
+        ISU_i_from_IDU_bits_r_rd <= _IDU_i_to_ISU_bits_rd;
+        ISU_i_from_IDU_bits_r_ctrl_sig_fu_op <= _IDU_i_to_ISU_bits_ctrl_sig_fu_op;
+        ISU_i_from_IDU_bits_r_ctrl_sig_src1_op <= _IDU_i_to_ISU_bits_ctrl_sig_src1_op;
+        ISU_i_from_IDU_bits_r_ctrl_sig_src2_op <= _IDU_i_to_ISU_bits_ctrl_sig_src2_op;
+        ISU_i_from_IDU_bits_r_ctrl_sig_alu_op <= _IDU_i_to_ISU_bits_ctrl_sig_alu_op;
+        ISU_i_from_IDU_bits_r_ctrl_sig_lsu_op <= _IDU_i_to_ISU_bits_ctrl_sig_lsu_op;
+        ISU_i_from_IDU_bits_r_ctrl_sig_bru_op <= _IDU_i_to_ISU_bits_ctrl_sig_bru_op;
+        ISU_i_from_IDU_bits_r_ctrl_sig_csr_op <= _IDU_i_to_ISU_bits_ctrl_sig_csr_op;
+        ISU_i_from_IDU_bits_r_ctrl_sig_mdu_op <= _IDU_i_to_ISU_bits_ctrl_sig_mdu_op;
+        ISU_i_from_IDU_bits_r_inst <= _IDU_i_to_ISU_bits_inst;
+      end
+      ISU_i_from_IDU_bits_r_ctrl_sig_reg_wen <=
+        ~_GEN_2 & _IDU_i_to_ISU_bits_ctrl_sig_reg_wen;
+      ISU_i_from_IDU_bits_r_ctrl_sig_mem_wen <=
+        ~_GEN_2 & _IDU_i_to_ISU_bits_ctrl_sig_mem_wen;
+      ISU_i_from_IDU_bits_r_ctrl_sig_is_ebreak <=
+        ~_GEN_2 & _IDU_i_to_ISU_bits_ctrl_sig_is_ebreak;
+      ISU_i_from_IDU_bits_r_ctrl_sig_not_impl <=
+        ~_GEN_2 & _IDU_i_to_ISU_bits_ctrl_sig_not_impl;
+    end
     if (_EXU_i_from_ISU_bits_T_1) begin
-      if (_GEN_0) begin
+      if (_GEN_3) begin
         EXU_i_from_ISU_bits_r_imm <= 32'h0;
         EXU_i_from_ISU_bits_r_pc <= 32'h0;
         EXU_i_from_ISU_bits_r_rdata1 <= 32'h0;
@@ -3491,13 +3554,13 @@ module top(
         EXU_i_from_ISU_bits_r_inst <= _ISU_i_to_EXU_bits_inst;
       end
       EXU_i_from_ISU_bits_r_ctrl_sig_reg_wen <=
-        ~_GEN_0 & _ISU_i_to_EXU_bits_ctrl_sig_reg_wen;
+        ~_GEN_3 & _ISU_i_to_EXU_bits_ctrl_sig_reg_wen;
       EXU_i_from_ISU_bits_r_ctrl_sig_mem_wen <=
-        ~_GEN_0 & _ISU_i_to_EXU_bits_ctrl_sig_mem_wen;
+        ~_GEN_3 & _ISU_i_to_EXU_bits_ctrl_sig_mem_wen;
       EXU_i_from_ISU_bits_r_ctrl_sig_is_ebreak <=
-        ~_GEN_0 & _ISU_i_to_EXU_bits_ctrl_sig_is_ebreak;
+        ~_GEN_3 & _ISU_i_to_EXU_bits_ctrl_sig_is_ebreak;
       EXU_i_from_ISU_bits_r_ctrl_sig_not_impl <=
-        ~_GEN_0 & _ISU_i_to_EXU_bits_ctrl_sig_not_impl;
+        ~_GEN_3 & _ISU_i_to_EXU_bits_ctrl_sig_not_impl;
     end
   end // always @(posedge)
   IDU IDU_i (
@@ -3529,25 +3592,25 @@ module top(
   ISU ISU_i (
     .clock                            (clock),
     .reset                            (reset),
-    .from_IDU_valid                   (_IDU_i_to_ISU_valid),
-    .from_IDU_bits_imm                (_IDU_i_to_ISU_bits_imm),
-    .from_IDU_bits_pc                 (_IDU_i_to_ISU_bits_pc),
-    .from_IDU_bits_rs1                (_IDU_i_to_ISU_bits_rs1),
-    .from_IDU_bits_rs2                (_IDU_i_to_ISU_bits_rs2),
-    .from_IDU_bits_rd                 (_IDU_i_to_ISU_bits_rd),
-    .from_IDU_bits_ctrl_sig_reg_wen   (_IDU_i_to_ISU_bits_ctrl_sig_reg_wen),
-    .from_IDU_bits_ctrl_sig_fu_op     (_IDU_i_to_ISU_bits_ctrl_sig_fu_op),
-    .from_IDU_bits_ctrl_sig_mem_wen   (_IDU_i_to_ISU_bits_ctrl_sig_mem_wen),
-    .from_IDU_bits_ctrl_sig_is_ebreak (_IDU_i_to_ISU_bits_ctrl_sig_is_ebreak),
-    .from_IDU_bits_ctrl_sig_not_impl  (_IDU_i_to_ISU_bits_ctrl_sig_not_impl),
-    .from_IDU_bits_ctrl_sig_src1_op   (_IDU_i_to_ISU_bits_ctrl_sig_src1_op),
-    .from_IDU_bits_ctrl_sig_src2_op   (_IDU_i_to_ISU_bits_ctrl_sig_src2_op),
-    .from_IDU_bits_ctrl_sig_alu_op    (_IDU_i_to_ISU_bits_ctrl_sig_alu_op),
-    .from_IDU_bits_ctrl_sig_lsu_op    (_IDU_i_to_ISU_bits_ctrl_sig_lsu_op),
-    .from_IDU_bits_ctrl_sig_bru_op    (_IDU_i_to_ISU_bits_ctrl_sig_bru_op),
-    .from_IDU_bits_ctrl_sig_csr_op    (_IDU_i_to_ISU_bits_ctrl_sig_csr_op),
-    .from_IDU_bits_ctrl_sig_mdu_op    (_IDU_i_to_ISU_bits_ctrl_sig_mdu_op),
-    .from_IDU_bits_inst               (_IDU_i_to_ISU_bits_inst),
+    .from_IDU_valid                   (valid_1),
+    .from_IDU_bits_imm                (ISU_i_from_IDU_bits_r_imm),
+    .from_IDU_bits_pc                 (ISU_i_from_IDU_bits_r_pc),
+    .from_IDU_bits_rs1                (ISU_i_from_IDU_bits_r_rs1),
+    .from_IDU_bits_rs2                (ISU_i_from_IDU_bits_r_rs2),
+    .from_IDU_bits_rd                 (ISU_i_from_IDU_bits_r_rd),
+    .from_IDU_bits_ctrl_sig_reg_wen   (ISU_i_from_IDU_bits_r_ctrl_sig_reg_wen),
+    .from_IDU_bits_ctrl_sig_fu_op     (ISU_i_from_IDU_bits_r_ctrl_sig_fu_op),
+    .from_IDU_bits_ctrl_sig_mem_wen   (ISU_i_from_IDU_bits_r_ctrl_sig_mem_wen),
+    .from_IDU_bits_ctrl_sig_is_ebreak (ISU_i_from_IDU_bits_r_ctrl_sig_is_ebreak),
+    .from_IDU_bits_ctrl_sig_not_impl  (ISU_i_from_IDU_bits_r_ctrl_sig_not_impl),
+    .from_IDU_bits_ctrl_sig_src1_op   (ISU_i_from_IDU_bits_r_ctrl_sig_src1_op),
+    .from_IDU_bits_ctrl_sig_src2_op   (ISU_i_from_IDU_bits_r_ctrl_sig_src2_op),
+    .from_IDU_bits_ctrl_sig_alu_op    (ISU_i_from_IDU_bits_r_ctrl_sig_alu_op),
+    .from_IDU_bits_ctrl_sig_lsu_op    (ISU_i_from_IDU_bits_r_ctrl_sig_lsu_op),
+    .from_IDU_bits_ctrl_sig_bru_op    (ISU_i_from_IDU_bits_r_ctrl_sig_bru_op),
+    .from_IDU_bits_ctrl_sig_csr_op    (ISU_i_from_IDU_bits_r_ctrl_sig_csr_op),
+    .from_IDU_bits_ctrl_sig_mdu_op    (ISU_i_from_IDU_bits_r_ctrl_sig_mdu_op),
+    .from_IDU_bits_inst               (ISU_i_from_IDU_bits_r_inst),
     .from_WBU_bits_reg_wen            (_WBU_i_to_ISU_bits_reg_wen),
     .from_WBU_bits_wdata              (_WBU_i_to_ISU_bits_wdata),
     .from_WBU_bits_rd                 (_WBU_i_to_ISU_bits_rd),
@@ -3579,7 +3642,7 @@ module top(
   EXU_pipeline EXU_i (
     .clock                            (clock),
     .reset                            (reset),
-    .from_ISU_valid                   (valid_1),
+    .from_ISU_valid                   (valid_2),
     .from_ISU_bits_imm                (EXU_i_from_ISU_bits_r_imm),
     .from_ISU_bits_pc                 (EXU_i_from_ISU_bits_r_pc),
     .from_ISU_bits_rdata1             (EXU_i_from_ISU_bits_r_rdata1),
@@ -3701,8 +3764,8 @@ module top(
     .io_mem_req_bits_addr     (_icache_io_mem_req_bits_addr),
     .io_mem_resp_ready        (_icache_io_mem_resp_ready),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
@@ -3808,9 +3871,9 @@ module top(
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
-    valid_1
+    valid_2
       ? _EXU_i_to_WBU_bits_pc
-      : _IDU_i_to_ISU_valid
+      : valid_1
           ? _ISU_i_to_EXU_bits_pc
           : _icache_s2_io_in_valid__bore
               ? _icache_s2_io_in_bits_addr__bore
