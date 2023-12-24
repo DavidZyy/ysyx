@@ -24,12 +24,11 @@
 #define bl(str) 	"\e[34;1m"str"\e[0m"
 
 void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
-  printf("direction: %d\n", direction);
   if(direction == DIFFTEST_TO_REF){
     for (int i = 0; i < n; i++) {
       *guest_to_host(addr + i) = *(uint8_t *)(buf + i);
     }
-  } else if(DIFFTEST_TO_DUT) {
+  } else if(direction == DIFFTEST_TO_DUT) {
     for (int i = 0; i < n; i++) {
       *(uint8_t *)(buf + i) = *guest_to_host(addr + i);
     }
