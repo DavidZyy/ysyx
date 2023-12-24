@@ -157,7 +157,7 @@ uint8_t ref_mem[CONFIG_MSIZE];
 
 static void checkmem(uint8_t *ref_mem) {
   for(int i=0; i<sizeof(ref_mem)/sizeof(uint32_t); i++) {
-    if(*(uint32_t *)(pmem + i) != *(uint32_t *)(ref_mem + i)) {
+    if(*(uint32_t *)(pmem + i) != *(uint32_t *)(ref_mem )) {
       printf(ANSI_FMT("mem Error:\n", ANSI_FG_RED));
       printf("npc(dut)     nemu(ref)\n");
       printf("addr:" FMT_WORD, RESET_VECTOR+4*i);
