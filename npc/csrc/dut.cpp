@@ -153,12 +153,25 @@ static void checkregs(CPU_state *ref, vaddr_t pc){
   }
 }
 
-static void checkmem(){
+uint8_t ref_mem[CONFIG_MSIZE];
 
+static void checkmem(uint8_t *ref_mem) {
+  for(int i=0; i<sizeof(ref_mem)/sizeof(uint32_t); i++) {
+    if(*(uint32_t *)(pmem + i) != *(uint32_t *)(ref_mem + i)) {
+      printf(ANSI_FMT("mem Error:\n", ANSI_FG_RED));
+      printf("npc(dut)     nemu(ref)\n");
+      printf("addr:" FMT_WORD, RESET_VECTOR+4*i);
+      printf(FMT_WORD "  " FMT_WORD, *(uint32_t *)(pmem + i), *(uint32_t *)(ref_mem + i));
+      terminal = 1;
+      status = 1;
+      break;
+    }
+  }
 }
 
 int npc_read_device = 0;
 int npc_write_device = 0;
+
 
 void difftest_step() {
   CPU_state ref_f;
@@ -179,8 +192,12 @@ void difftest_step() {
     npc_write_device = 0;
   } else {
     ref_difftest_exec(1);
+    // check regs
     ref_difftest_regcpy(&ref_f, DIFFTEST_TO_DUT);
     checkregs(&ref_f, pc);
+    // check mems
+    ref_difftest_memcpy(RESET_VECTOR, ref_mem, sizeof(ref_mem), DIFFTEST_TO_DUT);
+    checkmem(ref_mem);
   }
 
   /* if the instructions is store, check the memory 
