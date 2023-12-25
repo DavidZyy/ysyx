@@ -3903,15 +3903,17 @@ module top(
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
-    valid_2
-      ? EXU_i_from_ISU_bits_r_pc
-      : valid_1
-          ? ISU_i_from_IDU_bits_r_pc
-          : valid
-              ? IDU_i_from_IFU_bits_r_pc
-              : _icache_s2_io_in_valid__bore
-                  ? _icache_s2_io_in_bits_addr__bore
-                  : _IFU_i_fetch_PC;
+    _EXU_i_to_WBU_valid
+      ? _EXU_i_to_WBU_bits_pc
+      : valid_2
+          ? EXU_i_from_ISU_bits_r_pc
+          : valid_1
+              ? ISU_i_from_IDU_bits_r_pc
+              : valid
+                  ? IDU_i_from_IFU_bits_r_pc
+                  : _icache_s2_io_in_valid__bore
+                      ? _icache_s2_io_in_bits_addr__bore
+                      : _IFU_i_fetch_PC;
   assign io_out_ifu_inst = _IFU_i_to_IDU_bits_inst;
   assign io_out_ifu_pc = _IFU_i_to_IDU_bits_pc;
   assign io_out_idu_inst = _IDU_i_to_ISU_bits_inst;
