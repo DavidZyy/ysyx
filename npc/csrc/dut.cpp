@@ -52,8 +52,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   //     "If it is not necessary, you can turn it off in menuconfig.", ref_so_file);
 
   ref_difftest_init(port);
-  ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), sizeof(pmem), DIFFTEST_TO_REF); // should copy all pmem, not just img_size here, or 0xdeadbeef not copy to nemu
-  // ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF); // should copy all pmem, not just img_size here, or 0xdeadbeef not copy to nemu
+  // ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), sizeof(pmem), DIFFTEST_TO_REF); // should copy all pmem, not just img_size here, or 0xdeadbeef not copy to nemu
+  ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF); // should copy all pmem, not just img_size here, or 0xdeadbeef not copy to nemu, if just copy img_size make it faster, mem should be initialized to 0.
   // printf(ANSI_FMT("dut cpu pc is: %p\n", ANSI_FG_GREEN), &cpu.pc);
   // printf(ANSI_FMT("cpu addr is: %p\n", ANSI_FG_GREEN), &cpu);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
