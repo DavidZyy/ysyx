@@ -161,7 +161,8 @@ void init_pmem() {
   uint32_t *temp = (uint32_t *)pmem;
   for(int i=0; i<CONFIG_MSIZE/sizeof(int); i++) {
     assert((uint64_t)temp < (uint64_t)(pmem + CONFIG_MSIZE));
-    *temp = 0xdeadbeef;
+    // *temp = 0xdeadbeef;
+    *temp = 0;
     temp++;
   }
 }
