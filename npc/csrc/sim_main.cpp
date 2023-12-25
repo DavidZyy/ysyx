@@ -230,7 +230,7 @@ int main(int argc, char *argv[]) {
     // dump_gpr();
     // printf("\n\n");
     // vga_update_screen();
-    // nemu_exec_once();
+    nemu_exec_once();
     // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_wbu_pc, top->io_out_ifu_inst);
     
     if(terminal)

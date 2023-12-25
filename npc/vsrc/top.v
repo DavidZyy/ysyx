@@ -3904,11 +3904,11 @@ module top(
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
     valid_2
-      ? _EXU_i_to_WBU_bits_pc
+      ? EXU_i_from_ISU_bits_r_pc
       : valid_1
-          ? _ISU_i_to_EXU_bits_pc
+          ? ISU_i_from_IDU_bits_r_pc
           : valid
-              ? _IDU_i_to_ISU_bits_pc
+              ? IDU_i_from_IFU_bits_r_pc
               : _icache_s2_io_in_valid__bore
                   ? _icache_s2_io_in_bits_addr__bore
                   : _IFU_i_fetch_PC;
