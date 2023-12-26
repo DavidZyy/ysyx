@@ -67,6 +67,7 @@ ELF := $(patsubst %.bin, %.elf, $(IMG))
 # SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv32-nemu-interpreter-so
 SO = $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 LOG_FILE = $(NPC_HOME)/build/npc-log.txt
+LOG_FILE2 = $(NPC_HOME)/build/npc-log2.txt
 
 sim:
 # DO NOT REMOVE THIS LINE!!!
@@ -76,7 +77,7 @@ sim:
 	$(addprefix -LDFLAGS , $(LDFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(CPP_FILES) $(C_FILES) $(VSRCS) $(SVSRCS)
-	-@obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE) $(ELF)
+	-@obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE) $(ELF) > $(LOG_FILE2)
 	@gtkwave dump.vcd
 
 # sim:
