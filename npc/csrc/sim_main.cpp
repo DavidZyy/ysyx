@@ -28,8 +28,8 @@ VerilatedVcdC* tfp = NULL;
 Vtop* top;
 
 CPU_state cpu;
-double g_cycle = 0;
-double g_nr_guest_inst = 0;
+uint64_t g_cycle = 0;
+uint64_t g_nr_guest_inst = 0;
 
 /**
  * close vcd will much faster!
