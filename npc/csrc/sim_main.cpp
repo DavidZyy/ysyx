@@ -36,8 +36,8 @@ uint64_t g_nr_guest_inst = 0;
  */
 void step_and_dump_wave(){
   top->eval();
-  // contextp->timeInc(1);
-  // tfp->dump(contextp->time());
+  contextp->timeInc(1);
+  tfp->dump(contextp->time());
 }
 
 void sim_init(){
