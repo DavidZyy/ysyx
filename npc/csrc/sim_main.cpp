@@ -208,7 +208,7 @@ void get_text_addr_range(const char *elf_file) {
 static void statistic() {
   Log("host cpu cycle spent = %u" , g_cycle);
   Log("total guest instructions = %u",  g_nr_guest_inst);
-  if (g_cycle > 0) Log("ipc = %d ", (double)(g_nr_guest_inst / g_cycle));
+  if (g_cycle > 0) Log("ipc = %d ", (double)g_nr_guest_inst / (double)g_cycle);
   else Log("Finish running in less than 1 cycle and can not calculate the ipc");
 }
 
