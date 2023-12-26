@@ -1755,7 +1755,7 @@ module WBU(
     always @(posedge clock) begin
       if ((`PRINTF_COND_) & _wb_output & ~reset) begin
         $fwrite(32'h80000002, "[%d]: ", c);
-        $fwrite(32'h80000002, "pc:%d, inst:%d\n", from_EXU_bits_pc, from_EXU_bits_inst);
+        $fwrite(32'h80000002, "pc:%x, inst:%x\n", from_EXU_bits_pc, from_EXU_bits_inst);
       end
     end // always @(posedge)
   `endif // not def SYNTHESIS
@@ -2422,16 +2422,16 @@ module CacheStage2(
   output [31:0] io_out_addr,
   output        io_out_resp_valid,
   output [31:0] io_out_resp_bits_rdata,
-                io_in_bits_addr__bore,
-  output        io_in_valid__bore
+  output        io_in_valid__bore,
+  output [31:0] io_in_bits_addr__bore
 );
 
   assign io_in_ready = io_out_resp_ready;
   assign io_out_addr = io_in_bits_addr;
   assign io_out_resp_valid = io_in_valid;
   assign io_out_resp_bits_rdata = io_in_valid ? io_dataReadBus_rdata : 32'h0;
-  assign io_in_bits_addr__bore = io_in_bits_addr;
   assign io_in_valid__bore = io_in_valid;
+  assign io_in_bits_addr__bore = io_in_bits_addr;
 endmodule
 
 module Cache(
@@ -2451,8 +2451,8 @@ module Cache(
   output [31:0] io_mem_req_bits_addr,
   output        io_mem_resp_ready,
   output [31:0] io_stage2Addr,
-                s2_io_in_bits_addr__bore,
-  output        s2_io_in_valid__bore
+  output        s2_io_in_valid__bore,
+  output [31:0] s2_io_in_bits_addr__bore
 );
 
   wire        _s2_io_in_ready;
@@ -2521,8 +2521,8 @@ module Cache(
     .io_out_addr            (io_stage2Addr),
     .io_out_resp_valid      (_s2_io_out_resp_valid),
     .io_out_resp_bits_rdata (io_in_resp_bits_rdata),
-    .io_in_bits_addr__bore  (s2_io_in_bits_addr__bore),
-    .io_in_valid__bore      (s2_io_in_valid__bore)
+    .io_in_valid__bore      (s2_io_in_valid__bore),
+    .io_in_bits_addr__bore  (s2_io_in_bits_addr__bore)
   );
   assign io_in_resp_valid = _s2_io_out_resp_valid;
 endmodule
@@ -3388,8 +3388,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_addr;
   wire        _icache_io_mem_resp_ready;
   wire [31:0] _icache_io_stage2Addr;
-  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _icache_s2_io_in_valid__bore;
+  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3852,8 +3852,8 @@ module top(
     .io_mem_req_bits_addr     (_icache_io_mem_req_bits_addr),
     .io_mem_resp_ready        (_icache_io_mem_resp_ready),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
