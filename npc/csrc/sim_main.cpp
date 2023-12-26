@@ -28,7 +28,8 @@ VerilatedVcdC* tfp = NULL;
 Vtop* top;
 
 CPU_state cpu;
-// uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+double g_cycle = 0;
+double g_nr_guest_inst = 0;
 
 /**
  * close vcd will much faster!
@@ -202,6 +203,13 @@ void get_text_addr_range(const char *elf_file) {
   printf("text_max: 0x%x\n", text_max);
 }
 
+static void statistic() {
+  Log("host cpu cycle spent = %u" , g_cycle);
+  Log("total guest instructions = %u",  g_nr_guest_inst);
+  if (g_cycle > 0) Log("ipc = %d ", g_nr_guest_inst / g_cycle);
+  else Log("Finish running in less than 1 cycle and can not calculate the ipc");
+}
+
 void dump_gpr();
 int main(int argc, char *argv[]) {
   get_text_addr_range(argv[4]);
@@ -236,6 +244,7 @@ int main(int argc, char *argv[]) {
     if(terminal)
       break;
   }
+  statistic();
 
   sim_exit();
   return status;

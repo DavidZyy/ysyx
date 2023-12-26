@@ -69,6 +69,7 @@ SO = $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 LOG_FILE = $(NPC_HOME)/build/npc-log.txt
 LOG_FILE2 = $(NPC_HOME)/build/npc-log2.txt
 
+# the output from verilog codes is stderr
 sim:
 # DO NOT REMOVE THIS LINE!!!
 	$(call git_commit, "sim RTL")
