@@ -75,7 +75,7 @@ void print_clkdiv(long long clkdiv){
 }
 
 void print_serial(long long ch){
-  printf("%c", ch);
+  printf("%c", (char)ch);
 }
 
 /**
