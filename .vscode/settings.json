@@ -84,6 +84,9 @@
     "reent.h": "c",
     "system_error": "c",
     "limits": "cpp",
-    "streambuf": "c"
-  }
+    "streambuf": "c",
+    "coremark.h": "c"
+  },
+  "digital-ide.dont-show-again.propose.issue": true,
+  "digital-ide.welcome.show": false
 }

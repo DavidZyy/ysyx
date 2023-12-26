@@ -1,3 +1,4 @@
+
 import "DPI-C" function void not_impl_exception();
 
 module NotImplBB(
@@ -11,3 +12,4 @@ always @(*) begin
 end
  
 endmodule //Not_impl
+

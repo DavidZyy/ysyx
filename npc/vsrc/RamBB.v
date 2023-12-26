@@ -1,3 +1,4 @@
+
 /* verilator lint_off UNUSEDSIGNAL */
 /* verilator lint_off BLKSEQ */
 import "DPI-C" function void vaddr_read(
@@ -35,7 +36,7 @@ always @(negedge clock) begin
     end
   end
   else begin
-    rdata = 0;
+    rdata = rdata;
   end
 end
 

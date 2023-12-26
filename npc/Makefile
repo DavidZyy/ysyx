@@ -63,10 +63,13 @@ all:
 # the program to be executed on npc, about ?=, 
 # see gnu make 6.2.4 Conditional Variable Assignment
 IMG ?= 
+ELF := $(patsubst %.bin, %.elf, $(IMG))
 # SO = /home/zhuyangyang/project/ysyx-workbench/nemu/build/riscv32-nemu-interpreter-so
 SO = $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 LOG_FILE = $(NPC_HOME)/build/npc-log.txt
+LOG_FILE2 = $(NPC_HOME)/build/npc-log2.txt
 
+# the output from verilog codes is stderr
 sim:
 # DO NOT REMOVE THIS LINE!!!
 	$(call git_commit, "sim RTL")
@@ -75,8 +78,8 @@ sim:
 	$(addprefix -LDFLAGS , $(LDFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(CPP_FILES) $(C_FILES) $(VSRCS) $(SVSRCS)
-	-@obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE)
-	# @gtkwave dump.vcd
+	-@(obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE) $(ELF)) 2> $(LOG_FILE2)
+	@gtkwave dump.vcd
 
 # sim:
 # 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!

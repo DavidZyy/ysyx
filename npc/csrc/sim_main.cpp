@@ -19,6 +19,7 @@
 // #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <elf.h>
 
 void init_log(const char *log_file);
 
@@ -27,15 +28,16 @@ VerilatedVcdC* tfp = NULL;
 Vtop* top;
 
 CPU_state cpu;
-// uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+uint64_t g_cycle = 0;
+uint64_t g_nr_guest_inst = 0;
 
 /**
  * close vcd will much faster!
  */
 void step_and_dump_wave(){
   top->eval();
-  contextp->timeInc(1);
-  tfp->dump(contextp->time());
+  // contextp->timeInc(1);
+  // tfp->dump(contextp->time());
 }
 
 void sim_init(){
@@ -54,6 +56,7 @@ void sim_exit(){
 }
 
 void single_cycle() {
+  g_cycle++;
   top->clock = 0;
   step_and_dump_wave();
   top->clock = 1;
@@ -64,8 +67,7 @@ void single_cycle() {
 int terminal = 0;
 extern "C" void exit_code(){
   terminal = 1;
-  printf(ANSI_FMT("program exit at %p\n", ANSI_FG_RED), 
-        (void *)top->io_out_pc);
+  printf(ANSI_FMT("program exit at " FMT_WORD "\n", ANSI_FG_RED), top->io_out_wbu_pc);
 }
 
 void print_clkdiv(long long clkdiv){
@@ -73,7 +75,7 @@ void print_clkdiv(long long clkdiv){
 }
 
 void print_serial(long long ch){
-  printf("%c", ch);
+  printf("%c", (char)ch);
 }
 
 /**
@@ -83,10 +85,10 @@ void print_serial(long long ch){
  * I add the condition "top->pc > 0".
  */
 extern "C" void not_impl_exception(){
-  if(top->io_out_pc){
+  if(top->io_out_wbu_pc){
   terminal = 1;
   printf(ANSI_FMT("instructions has not been immplemented!\n", ANSI_FG_RED));
-  printf("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
+  printf("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_wbu_pc, top->io_out_ifu_inst);
   // printf(ANSI_FMT("pc: %p  %08x\n", ANSI_FG_RED), 
     // (void *)top->pc_IF, *((uint32_t *)(&pmem[top->pc_IF - 0x80000000])));
     // (void *)top->pc, top->inst);
@@ -125,13 +127,16 @@ void get_cpu() {
   cpu.mstatus = top->io_out_difftest_mstatus;
 
   // get pc
-  cpu.pc = top->io_out_pc;
+  cpu.pc = top->io_out_nextExecPC;
 }
 
 // execute on inst, until WB stage
 void npc_exec_once() {
-  while(!top->io_out_wb){
+  g_nr_guest_inst++;
+  int n=1000;
+  while(!top->io_out_wb && n){
     single_cycle();
+    n--;
   }
   single_cycle();
     get_cpu();
@@ -164,8 +169,52 @@ int status = 0;
 void vga_update_screen();
 extern uint8_t pmem[CONFIG_MSIZE];
 
+
+// void print_section_header() {
+//   printf("  Type: %u ", section_header->sh_type);
+//   printf("  Address: 0x%lx ", section_header->sh_addr);
+//   printf("  Offset: 0x%lx ", section_header->sh_offset);
+//   printf("  Size: 0x%lx ", section_header->sh_size);
+//   printf("  EntSize: 0x%lx ", section_header->sh_entsize);
+//   printf("  Flags: 0x%lx ", section_header->sh_flags);
+//   printf("  Link: %u ", section_header->sh_link);
+//   printf("  Info: %u ", section_header->sh_info);
+//   printf("  Align: 0x%lx ", section_header->sh_addralign);
+// }
+
+word_t text_max;
+#define Elf_Ehdr MUXDEF(CONFIG_ISA64, Elf64_Ehdr, Elf32_Ehdr)
+#define Elf_Phdr MUXDEF(CONFIG_ISA64, Elf64_Phdr, Elf32_Phdr)
+#define Elf_Shdr MUXDEF(CONFIG_ISA64, Elf64_Shdr, Elf32_Shdr)
+#define Elf_Sym  MUXDEF(CONFIG_ISA64, Elf64_Sym,  Elf32_Sym)
+Elf_Shdr section_header;
+void get_text_addr_range(const char *elf_file) {
+  assert(elf_file);
+  FILE *file = fopen(elf_file, "rb");
+  assert(file);
+
+  Elf_Ehdr elf_header;
+  assert(fread(&elf_header, sizeof(Elf_Ehdr), 1, file) == 1);
+
+  // locate to .text section
+  fseek(file, elf_header.e_shoff + sizeof(Elf_Shdr), SEEK_SET);
+  // read it
+  assert(fread(&section_header, sizeof(Elf_Shdr), 1, file) == 1);
+  text_max = section_header.sh_addr + section_header.sh_size;
+  printf("text_max: 0x%x\n", text_max);
+}
+
+static void statistic() {
+  Log("host cpu cycle spent = " "%'" "l" "u" , g_cycle);
+  Log("total guest instructions = %'lu",  g_nr_guest_inst);
+  if (g_cycle > 0) Log("ipc = %lf ", (double)g_nr_guest_inst / (double)g_cycle);
+  else Log("Finish running in less than 1 cycle and can not calculate the ipc");
+}
+
 void dump_gpr();
 int main(int argc, char *argv[]) {
+  get_text_addr_range(argv[4]);
+  // print_arg(argc, argv);
   init_monitor(argc, argv);
   // init_device();
   Log("wave has closed to make it sim faster");
@@ -178,8 +227,7 @@ int main(int argc, char *argv[]) {
 
   uint64_t i;
   uint64_t times = -1;
-  // uint64_t times = 1000000;
-  // uint64_t times = 100;
+  // uint64_t times = 1000;
 
   int begin = 1;
 
@@ -191,12 +239,13 @@ int main(int argc, char *argv[]) {
     // dump_gpr();
     // printf("\n\n");
     // vga_update_screen();
-    nemu_exec_once();
-    // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst);
+    // nemu_exec_once();
+    // log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_wbu_pc, top->io_out_ifu_inst);
     
     if(terminal)
       break;
   }
+  statistic();
 
   sim_exit();
   return status;

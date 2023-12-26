@@ -38,9 +38,11 @@ static inline bool in_vmem(paddr_t addr) {
   return (addr >= FB_ADDR) && (addr < FB_ADDR+SCREEN_SZ);
 }
 
+extern int terminal;
 static void out_of_bound(paddr_t addr) {
+  terminal = 1;
   panic("npc: address = " FMT_PADDR " is out of bound of pmem [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
-      addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_pc);
+      addr, PMEM_LEFT, PMEM_RIGHT, top->io_out_exu_pc);
 }
 
 extern int npc_read_device;
@@ -51,10 +53,10 @@ extern uint32_t vmem[SCREEN_W * SCREEN_H];
 extern uint32_t vgactl_port_base[2];
 #include<sys/time.h>
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
-  // Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_pc, top->io_out_inst);
+  // Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_ifu_fetchPc, top->io_out_ifu_inst);
 
   raddr = raddr & ~align_mask;
-  if (raddr == 0 && top->io_out_pc == 0) {
+  if (raddr == 0 && top->io_out_ifu_fetchPc == 0) {
     // not ready for inst fetch
     return;
   } else if (raddr == RTC_ADDR+4) {
@@ -84,10 +86,9 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
 }
 
 extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
-  // Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_pc, top->io_out_inst);
+  // Assert(!(waddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, waddr, top->io_out_ifu_fetchPc, top->io_out_ifu_inst);
 
   if (waddr == SERIAL_PORT) {
-    // printf("%d: %c", waddr, (char)wdata);
     printf("%c", (char)wdata);
     npc_write_device = 1;
   } else if(in_vmem(waddr)) {
@@ -101,6 +102,8 @@ extern "C" void pmem_write(sword_t waddr, sword_t wdata, char wmask) {
     npc_write_device = 1;
   } else {
     if(!in_pmem(waddr)) out_of_bound(waddr);
+    // if can not see wave to debug because of out of memory, use the following line.
+    // if(!in_pmem(waddr)) return;
 
     char addr_low = waddr & align_mask;
 
@@ -130,25 +133,42 @@ extern "C" void vaddr_ifetch(sword_t raddr, sword_t *rdata) {
   pmem_read(raddr, rdata);
 }
 
+extern word_t text_max;
 extern "C" void vaddr_read(sword_t raddr, sword_t *rdata) {
+  if(raddr >= text_max)
+    IFDEF(CONFIG_MTRACE, log_write("r, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_exu_pc, top->io_out_exu_inst));
+  else
+    IFDEF(CONFIG_ITRACE, log_write("cur pc:" FMT_WORD" ", top->io_out_ifu_fetchPc));
   // printf("%x\n", *(uint32_t *)guest_to_host(0x8000dfe0));
   pmem_read(raddr, rdata);
   // store also call read
-  // if(top->io_out_is_load) {
-    IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+  if(raddr >= text_max) {
+    // mtrace here, if small, is instruction fetch
     IFDEF(CONFIG_MTRACE, log_write("raddr:" FMT_WORD", rdata:" FMT_WORD"\n\n", raddr, *rdata));
-  // }
+  } else {
+    // inst trace here
+    IFDEF(CONFIG_ITRACE, log_write("read pc:" FMT_WORD",  read inst:" FMT_WORD"\n", raddr, *rdata));
+  }
 }
 
 extern "C" void vaddr_write(sword_t waddr, sword_t wdata, char wmask) {
-  pmem_write(waddr, wdata, wmask);
-  IFDEF(CONFIG_MTRACE, log_write("pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_pc, top->io_out_inst));
+  IFDEF(CONFIG_MTRACE, log_write("w, pc:" FMT_WORD", inst:" FMT_WORD"\n", top->io_out_exu_pc, top->io_out_exu_inst));
   IFDEF(CONFIG_MTRACE, log_write("waddr:" FMT_WORD", wdata:" FMT_WORD"\n\n", waddr, wdata));
+  pmem_write(waddr, wdata, wmask);
+}
+
+void init_pmem() {
+  uint32_t *temp = (uint32_t *)pmem;
+  for(int i=0; i<CONFIG_MSIZE/sizeof(int); i++) {
+    assert((uint64_t)temp < (uint64_t)(pmem + CONFIG_MSIZE));
+    // *temp = 0xdeadbeef;
+    *temp = 0;
+    temp++;
+  }
 }
 
 long load_img(const char *img_file) {
-  // !!!!!!!!!!!!!!!!!!! memset 1 ???? what shit?
-  memset(pmem, 0, sizeof(pmem));
+  init_pmem();
   assert(img_file != NULL);
 
   FILE *fp = fopen(img_file, "rb");
