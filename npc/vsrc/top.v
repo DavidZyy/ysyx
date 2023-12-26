@@ -1736,8 +1736,6 @@ module WBU(
   wire             _to_ISU_bits_wdata_T_6 = from_EXU_bits_fu_op == 3'h3;
   wire             _to_ISU_bits_wdata_T_8 = from_EXU_bits_fu_op == 3'h5;
   wire             _GEN = _to_ISU_bits_wdata_T_8 | _to_ISU_bits_wdata_T_6;
-  wire             _wb_output =
-    _GEN ? to_IFU_ready & _to_IFU_valid_output : from_EXU_valid;
   wire             _from_EXU_ready_output = ~_GEN | to_IFU_ready;
   assign _to_IFU_valid_output =
     from_EXU_valid & (_to_ISU_bits_wdata_T_8 | _to_ISU_bits_wdata_T_6);
@@ -1751,14 +1749,6 @@ module WBU(
      {from_EXU_bits_alu_result},
      {32'h0}};
   reg  [63:0]      c;
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if ((`PRINTF_COND_) & _wb_output & ~reset) begin
-        $fwrite(32'h80000002, "[%d]: ", c);
-        $fwrite(32'h80000002, "pc:%x, inst:%x\n", from_EXU_bits_pc, from_EXU_bits_inst);
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
   always @(posedge clock) begin
     if (reset)
       c <= 64'h0;
@@ -1778,7 +1768,7 @@ module WBU(
   assign to_IFU_valid = _to_IFU_valid_output;
   assign to_IFU_bits_redirect_valid = from_EXU_bits_redirect_valid & from_EXU_valid;
   assign to_IFU_bits_redirect_target = from_EXU_bits_redirect_target;
-  assign wb = _wb_output;
+  assign wb = _GEN ? to_IFU_ready & _to_IFU_valid_output : from_EXU_valid;
 endmodule
 
 module IFU_pipeline(
