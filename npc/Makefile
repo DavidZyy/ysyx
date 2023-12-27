@@ -78,7 +78,7 @@ sim:
 	$(addprefix -LDFLAGS , $(LDFLAGS)) \
 	-trace --cc --exe --build -Wall \
 	$(CPP_FILES) $(C_FILES) $(VSRCS) $(SVSRCS)
-	-@(obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE) $(ELF)) 2> $(LOG_FILE2)
+	-@(obj_dir/Vtop $(IMG) $(SO) $(LOG_FILE) $(ELF)) # 2> $(LOG_FILE2)
 	# @gtkwave dump.vcd
 
 # sim:
