@@ -170,24 +170,18 @@ static void checkmem(uint8_t *ref_mem) {
   }
 }
 
-int npc_read_device = 0;
-int npc_write_device = 0;
+int npc_access_device = 0;
 
 void difftest_step() {
   CPU_state ref_f;
   int pc = 0;
 
-// fiadfasd
-  if (npc_read_device) {
-    // not exec, copy regs and memory to ref
+  if (npc_access_device) {
+    // not exec, copy regs to ref, load nead to copy pc and the changed reg, and store need to copy pc!
+    // do not need to copy mem, it will cause cache coherence problem in cache system.
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
     // reset
-    npc_read_device = 0;
-  } else if(npc_write_device) {
-    // do noting
-    // ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
-    // reset
-    npc_write_device = 0;
+    npc_access_device = 0;
   } else {
     ref_difftest_exec(1);
     // check regs
