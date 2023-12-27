@@ -204,7 +204,7 @@ void get_text_addr_range(const char *elf_file) {
   printf("text_max: 0x%x\n", text_max);
 }
 
-static void statistic() {
+void statistic() {
   Log("host cpu cycle spent = " "%'" "l" "u" , g_cycle);
   Log("total guest instructions = %'lu",  g_nr_guest_inst);
   if (g_cycle > 0) Log("ipc = %lf ", (double)g_nr_guest_inst / (double)g_cycle);
