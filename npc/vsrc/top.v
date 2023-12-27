@@ -1736,6 +1736,8 @@ module WBU(
   wire             _to_ISU_bits_wdata_T_6 = from_EXU_bits_fu_op == 3'h3;
   wire             _to_ISU_bits_wdata_T_8 = from_EXU_bits_fu_op == 3'h5;
   wire             _GEN = _to_ISU_bits_wdata_T_8 | _to_ISU_bits_wdata_T_6;
+  wire             _wb_output =
+    _GEN ? to_IFU_ready & _to_IFU_valid_output : from_EXU_valid;
   wire             _from_EXU_ready_output = ~_GEN | to_IFU_ready;
   assign _to_IFU_valid_output =
     from_EXU_valid & (_to_ISU_bits_wdata_T_8 | _to_ISU_bits_wdata_T_6);
@@ -1749,6 +1751,14 @@ module WBU(
      {from_EXU_bits_alu_result},
      {32'h0}};
   reg  [63:0]      c;
+  `ifndef SYNTHESIS
+    always @(posedge clock) begin
+      if ((`PRINTF_COND_) & _wb_output & ~reset) begin
+        $fwrite(32'h80000002, "[%d]: ", c);
+        $fwrite(32'h80000002, "pc:%x, inst:%x\n", from_EXU_bits_pc, from_EXU_bits_inst);
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
   always @(posedge clock) begin
     if (reset)
       c <= 64'h0;
@@ -1768,7 +1778,7 @@ module WBU(
   assign to_IFU_valid = _to_IFU_valid_output;
   assign to_IFU_bits_redirect_valid = from_EXU_bits_redirect_valid & from_EXU_valid;
   assign to_IFU_bits_redirect_target = from_EXU_bits_redirect_target;
-  assign wb = _GEN ? to_IFU_ready & _to_IFU_valid_output : from_EXU_valid;
+  assign wb = _wb_output;
 endmodule
 
 module IFU_pipeline(
@@ -2143,15 +2153,11 @@ module CacheStage1(
     io_in_bits_addr[31:8] == _GEN[io_in_bits_addr[7:4]] & _GEN_0[io_in_bits_addr[7:4]]
     | io_in_bits_addr[31:8] == _GEN_2 & _GEN_3[io_in_bits_addr[7:4]];
   reg  [1:0]        entryOff;
-  reg  [1:0]        stateCache;
-  wire              _io_mem_req_valid_output = stateCache == 2'h1;
-  wire              _io_mem_resp_ready_output = stateCache == 2'h2;
-  wire [3:0][1:0]   _GEN_4 =
-    {{2'h0},
-     {{1'h1, &entryOff}},
-     {io_mem_req_ready & _io_mem_req_valid_output ? 2'h2 : 2'h1},
-     {stateCache}};
-  wire              _GEN_5 = stateCache == 2'h1;
+  reg  [2:0]        stateCache;
+  wire              _io_mem_req_valid_output = stateCache == 3'h1;
+  wire              _io_mem_resp_ready_output = stateCache == 3'h2;
+  wire              _GEN_4 = stateCache == 3'h2;
+  wire              _GEN_5 = stateCache == 3'h1;
   wire              _GEN_6 = io_in_bits_addr[7:4] == 4'h0;
   wire              _GEN_7 = (&entryOff) & ~replaceWayReg & _GEN_6;
   wire              _GEN_8 = io_in_bits_addr[7:4] == 4'h1;
@@ -2268,7 +2274,7 @@ module CacheStage1(
       validArray_1_14 <= 1'h0;
       validArray_1_15 <= 1'h0;
       entryOff <= 2'h0;
-      stateCache <= 2'h0;
+      stateCache <= 3'h0;
     end
     else begin
       if ((|stateCache) & _GEN_5)
@@ -2371,17 +2377,31 @@ module CacheStage1(
       validArray_1_14 <= _GEN_51 | validArray_1_14;
       validArray_1_15 <= _GEN_52 | validArray_1_15;
       if (|stateCache) begin
-        if (_GEN_5)
+        if (_GEN_5) begin
           entryOff <= 2'h0;
-        else if (stateCache == 2'h2 & _io_mem_resp_ready_output & io_mem_resp_valid)
-          entryOff <= entryOff + 2'h1;
-        stateCache <= _GEN_4[stateCache];
+          if (io_mem_req_ready & _io_mem_req_valid_output)
+            stateCache <= 3'h2;
+          else
+            stateCache <= 3'h1;
+        end
+        else begin
+          if (_GEN_4 & _io_mem_resp_ready_output & io_mem_resp_valid)
+            entryOff <= entryOff + 2'h1;
+          if (_GEN_4) begin
+            if (&entryOff)
+              stateCache <= 3'h4;
+            else
+              stateCache <= 3'h2;
+          end
+          else if (stateCache == 3'h4)
+            stateCache <= 3'h0;
+        end
       end
       else
-        stateCache <= {1'h0, ~hit};
+        stateCache <= {2'h0, ~hit};
     end
   end // always @(posedge)
-  assign io_in_ready = hit & (~(|stateCache) | (&stateCache));
+  assign io_in_ready = hit & (~(|stateCache) | stateCache == 3'h4);
   assign io_mem_req_valid = _io_mem_req_valid_output;
   assign io_mem_req_bits_addr = {io_in_bits_addr[31:4], 4'h0};
   assign io_mem_resp_ready = _io_mem_resp_ready_output;
@@ -2391,7 +2411,7 @@ module CacheStage1(
   assign io_dataReadBus_bits_raddr =
     {_GEN_2 == io_in_bits_addr[31:8], io_in_bits_addr[7:2]};
   assign io_dataWriteBus_req_valid =
-    stateCache == 2'h2 & _io_mem_resp_ready_output & io_mem_resp_valid;
+    stateCache == 3'h2 & _io_mem_resp_ready_output & io_mem_resp_valid;
   assign io_dataWriteBus_req_bits_waddr = {replaceWayReg, io_in_bits_addr[7:4], entryOff};
   assign io_dataWriteBus_req_bits_wdata = io_mem_resp_bits_rdata;
 endmodule
