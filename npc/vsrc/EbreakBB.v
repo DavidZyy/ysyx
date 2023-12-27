@@ -3,6 +3,7 @@
 import "DPI-C" function void exit_code();
 
 module EbreakBB (
+    input      clock,
     input      is_ebreak
 );
 
