@@ -6,7 +6,7 @@ module EbreakBB (
     input      is_ebreak
 );
 
-always @(*) begin
+always @(posedge clock) begin
     if(is_ebreak) begin
         exit_code();
     end

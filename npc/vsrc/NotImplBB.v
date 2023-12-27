@@ -5,7 +5,7 @@ module NotImplBB(
     input not_impl
 );
 
-always @(*) begin
+always @(posedge clock) begin
     if(not_impl) begin
         not_impl_exception();
     end
