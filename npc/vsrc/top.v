@@ -1346,23 +1346,29 @@ module Bru(
                           : io_in_op == 4'h2 | io_in_op == 4'h1;
 endmodule
 
-module LSUPipeline(
-  input         io_in_valid,
+module Lsu_simpleBus(
+  input         clock,
+                reset,
+                io_in_valid,
                 io_in_mem_wen,
   input  [31:0] io_in_addr,
                 io_in_wdata,
   input  [3:0]  io_in_op,
-  input         to_mem_resp_valid,
+  input         to_mem_req_ready,
+                to_mem_resp_valid,
   input  [31:0] to_mem_resp_bits_rdata,
+  input         to_mem_resp_bits_wresp,
   output [31:0] io_out_rdata,
   output        io_out_end,
                 to_mem_req_valid,
   output [31:0] to_mem_req_bits_addr,
                 to_mem_req_bits_wdata,
                 to_mem_req_bits_wmask,
-  output [3:0]  to_mem_req_bits_cmd
+  output [3:0]  to_mem_req_bits_cmd,
+  output        to_mem_resp_ready
 );
 
+  reg  [2:0]       state_lsu;
   wire             _sh_wmask_T_2 = io_in_addr[1:0] == 2'h2;
   wire [3:0][31:0] _GEN =
     {{{{24{to_mem_resp_bits_rdata[31]}}, to_mem_resp_bits_rdata[31:24]}},
@@ -1375,6 +1381,27 @@ module LSUPipeline(
      {to_mem_resp_bits_rdata[15:8]},
      {to_mem_resp_bits_rdata[7:0]}};
   wire             _sh_wmask_T = io_in_addr[1:0] == 2'h0;
+  wire             _to_mem_req_bits_cmd_T_6 = state_lsu == 3'h4;
+  wire             _to_mem_resp_ready_output =
+    _to_mem_req_bits_cmd_T_6 | state_lsu == 3'h2;
+  wire             _to_mem_req_bits_cmd_T_5 = state_lsu == 3'h3;
+  wire             _to_mem_req_valid_output =
+    _to_mem_req_bits_cmd_T_5 | state_lsu == 3'h1;
+  wire [7:0][2:0]  _GEN_1 =
+    {{state_lsu},
+     {state_lsu},
+     {3'h0},
+     {{2'h2, _to_mem_resp_ready_output & to_mem_resp_valid & to_mem_resp_bits_wresp}},
+     {to_mem_req_ready & _to_mem_req_valid_output ? 3'h4 : 3'h3},
+     {_to_mem_resp_ready_output & to_mem_resp_valid ? 3'h5 : 3'h2},
+     {to_mem_req_ready & _to_mem_req_valid_output ? 3'h2 : 3'h1},
+     {io_in_valid ? {1'h0, io_in_mem_wen, 1'h1} : 3'h0}};
+  always @(posedge clock) begin
+    if (reset)
+      state_lsu <= 3'h0;
+    else
+      state_lsu <= _GEN_1[state_lsu];
+  end // always @(posedge)
   assign io_out_rdata =
     io_in_op == 4'h3
       ? to_mem_resp_bits_rdata
@@ -1391,8 +1418,8 @@ module LSUPipeline(
               : io_in_op == 4'h4
                   ? {24'h0, _GEN_0[io_in_addr[1:0]]}
                   : io_in_op == 4'h1 ? _GEN[io_in_addr[1:0]] : 32'h0;
-  assign io_out_end = to_mem_resp_valid;
-  assign to_mem_req_valid = io_in_valid;
+  assign io_out_end = state_lsu == 3'h5;
+  assign to_mem_req_valid = _to_mem_req_valid_output;
   assign to_mem_req_bits_addr = io_in_addr;
   assign to_mem_req_bits_wdata = io_in_wdata;
   assign to_mem_req_bits_wmask =
@@ -1408,7 +1435,9 @@ module LSUPipeline(
                         ? 24'hFF0000
                         : {8'h0, io_in_addr[1:0] == 2'h1 ? 16'hFF00 : 16'hFF}})
               : 32'h0;
-  assign to_mem_req_bits_cmd = {3'h0, io_in_mem_wen};
+  assign to_mem_req_bits_cmd =
+    {3'h0, _to_mem_req_bits_cmd_T_6 | _to_mem_req_bits_cmd_T_5};
+  assign to_mem_resp_ready = _to_mem_resp_ready_output;
 endmodule
 
 module Csr(
@@ -1553,8 +1582,10 @@ module EXU_pipeline(
   input  [3:0]  from_ISU_bits_ctrl_sig_mdu_op,
   input  [31:0] from_ISU_bits_inst,
   input         to_WBU_ready,
+                lsu_to_mem_req_ready,
                 lsu_to_mem_resp_valid,
   input  [31:0] lsu_to_mem_resp_bits_rdata,
+  input         lsu_to_mem_resp_bits_wresp,
   output        from_ISU_ready,
                 to_WBU_valid,
   output [31:0] to_WBU_bits_alu_result,
@@ -1577,6 +1608,7 @@ module EXU_pipeline(
                 lsu_to_mem_req_bits_wdata,
                 lsu_to_mem_req_bits_wmask,
   output [3:0]  lsu_to_mem_req_bits_cmd,
+  output        lsu_to_mem_resp_ready,
   output [4:0]  to_ISU_hazard_rd,
   output        to_ISU_hazard_have_wb,
                 to_ISU_hazard_isBR
@@ -1615,21 +1647,26 @@ module EXU_pipeline(
     .io_in_op       (from_ISU_bits_ctrl_sig_bru_op),
     .io_out_ctrl_br (_Bru_i_io_out_ctrl_br)
   );
-  LSUPipeline Lsu_i (
+  Lsu_simpleBus Lsu_i (
+    .clock                  (clock),
+    .reset                  (reset),
     .io_in_valid            (from_ISU_bits_ctrl_sig_fu_op == 3'h4 & from_ISU_valid),
     .io_in_mem_wen          (from_ISU_bits_ctrl_sig_mem_wen),
     .io_in_addr             (_Alu_i_io_out_result),
     .io_in_wdata            (from_ISU_bits_rdata2),
     .io_in_op               (from_ISU_bits_ctrl_sig_lsu_op),
+    .to_mem_req_ready       (lsu_to_mem_req_ready),
     .to_mem_resp_valid      (lsu_to_mem_resp_valid),
     .to_mem_resp_bits_rdata (lsu_to_mem_resp_bits_rdata),
+    .to_mem_resp_bits_wresp (lsu_to_mem_resp_bits_wresp),
     .io_out_rdata           (to_WBU_bits_lsu_rdata),
     .io_out_end             (_Lsu_i_io_out_end),
     .to_mem_req_valid       (lsu_to_mem_req_valid),
     .to_mem_req_bits_addr   (lsu_to_mem_req_bits_addr),
     .to_mem_req_bits_wdata  (lsu_to_mem_req_bits_wdata),
     .to_mem_req_bits_wmask  (lsu_to_mem_req_bits_wmask),
-    .to_mem_req_bits_cmd    (lsu_to_mem_req_bits_cmd)
+    .to_mem_req_bits_cmd    (lsu_to_mem_req_bits_cmd),
+    .to_mem_resp_ready      (lsu_to_mem_resp_ready)
   );
   Csr Csr_i (
     .clock                   (clock),
@@ -2397,16 +2434,16 @@ module CacheStage2(
   output [31:0] io_out_addr,
   output        io_out_resp_valid,
   output [31:0] io_out_resp_bits_rdata,
-                io_in_bits_addr__bore,
-  output        io_in_valid__bore
+  output        io_in_valid__bore,
+  output [31:0] io_in_bits_addr__bore
 );
 
   assign io_in_ready = io_out_resp_ready;
   assign io_out_addr = io_in_bits_addr;
   assign io_out_resp_valid = io_in_valid;
   assign io_out_resp_bits_rdata = io_in_valid ? io_dataReadBus_rdata : 32'h0;
-  assign io_in_bits_addr__bore = io_in_bits_addr;
   assign io_in_valid__bore = io_in_valid;
+  assign io_in_bits_addr__bore = io_in_bits_addr;
 endmodule
 
 module Cache(
@@ -2426,8 +2463,8 @@ module Cache(
   output [31:0] io_mem_req_bits_addr,
   output        io_mem_resp_ready,
   output [31:0] io_stage2Addr,
-                s2_io_in_bits_addr__bore,
-  output        s2_io_in_valid__bore
+  output        s2_io_in_valid__bore,
+  output [31:0] s2_io_in_bits_addr__bore
 );
 
   wire        _s2_io_in_ready;
@@ -2496,8 +2533,8 @@ module Cache(
     .io_out_addr            (io_stage2Addr),
     .io_out_resp_valid      (_s2_io_out_resp_valid),
     .io_out_resp_bits_rdata (io_in_resp_bits_rdata),
-    .io_in_bits_addr__bore  (s2_io_in_bits_addr__bore),
-    .io_in_valid__bore      (s2_io_in_valid__bore)
+    .io_in_valid__bore      (s2_io_in_valid__bore),
+    .io_in_bits_addr__bore  (s2_io_in_bits_addr__bore)
   );
   assign io_in_resp_valid = _s2_io_out_resp_valid;
 endmodule
@@ -2535,13 +2572,18 @@ module SimpleBusCrossBar1toN(
                 io_in_req_bits_wdata,
                 io_in_req_bits_wmask,
   input  [3:0]  io_in_req_bits_cmd,
-  input         io_out_0_req_ready,
+  input         io_in_resp_ready,
+                io_out_0_req_ready,
                 io_out_0_resp_valid,
   input  [31:0] io_out_0_resp_bits_rdata,
-                io_out_1_resp_bits_rdata,
-  output        io_in_resp_valid,
+  input         io_out_0_resp_bits_wresp,
+  input  [31:0] io_out_1_resp_bits_rdata,
+  input         io_out_1_resp_bits_wresp,
+  output        io_in_req_ready,
+                io_in_resp_valid,
   output [31:0] io_in_resp_bits_rdata,
-  output        io_out_0_req_valid,
+  output        io_in_resp_bits_wresp,
+                io_out_0_req_valid,
   output [31:0] io_out_0_req_bits_addr,
                 io_out_0_req_bits_wdata,
                 io_out_0_req_bits_wmask,
@@ -2561,11 +2603,11 @@ module SimpleBusCrossBar1toN(
   reg        outSelRespVec_0;
   reg        outSelRespVec_1;
   wire       reqInvalidAddr = io_in_req_valid & outSelVec_enc == 2'h0;
+  wire       _io_in_req_ready_output =
+    outSelVec_enc[0] & io_out_0_req_ready | outSelVec_enc[1] | reqInvalidAddr;
   wire       _io_in_resp_valid_output =
     outSelRespVec_0 & io_out_0_resp_valid | outSelRespVec_1 | state == 2'h2;
-  wire       _outSelRespVec_T =
-    (outSelVec_enc[0] & io_out_0_req_ready | outSelVec_enc[1] | reqInvalidAddr)
-    & io_in_req_valid;
+  wire       _outSelRespVec_T = _io_in_req_ready_output & io_in_req_valid;
   always @(posedge clock) begin
     if (reset) begin
       state <= 2'h0;
@@ -2574,7 +2616,7 @@ module SimpleBusCrossBar1toN(
     end
     else begin
       if (|state) begin
-        if ((state == 2'h1 | state == 2'h2) & _io_in_resp_valid_output)
+        if ((state == 2'h1 | state == 2'h2) & io_in_resp_ready & _io_in_resp_valid_output)
           state <= 2'h0;
       end
       else if (reqInvalidAddr)
@@ -2587,10 +2629,14 @@ module SimpleBusCrossBar1toN(
       end
     end
   end // always @(posedge)
+  assign io_in_req_ready = _io_in_req_ready_output;
   assign io_in_resp_valid = _io_in_resp_valid_output;
   assign io_in_resp_bits_rdata =
     (outSelRespVec_0 ? io_out_0_resp_bits_rdata : 32'h0)
     | (outSelRespVec_1 ? io_out_1_resp_bits_rdata : 32'h0);
+  assign io_in_resp_bits_wresp =
+    outSelRespVec_0 & io_out_0_resp_bits_wresp | outSelRespVec_1
+    & io_out_1_resp_bits_wresp;
   assign io_out_0_req_valid = outSelVec_enc[0] & io_in_req_valid & ~(|state);
   assign io_out_0_req_bits_addr = io_in_req_bits_addr;
   assign io_out_0_req_bits_wdata = io_in_req_bits_wdata;
@@ -2663,7 +2709,8 @@ module Dcache_SimpleBus(
   output        from_lsu_req_ready,
                 from_lsu_resp_valid,
   output [31:0] from_lsu_resp_bits_rdata,
-  output        to_sram_ar_valid,
+  output        from_lsu_resp_bits_wresp,
+                to_sram_ar_valid,
   output [31:0] to_sram_ar_bits_addr,
   output [7:0]  to_sram_ar_bits_len,
   output        to_sram_r_ready,
@@ -2858,6 +2905,7 @@ module Dcache_SimpleBus(
   wire [7:0]        replaceCacheAddr = {replace_set, from_lsu_req_bits_addr[8:5], off};
   wire [94:0]       _indata_T_1 =
     {63'h0, from_lsu_req_bits_wdata} << {90'h0, from_lsu_req_bits_addr[1:0], 3'h0};
+  wire              _from_lsu_resp_bits_wresp_T_1 = state_dcache == 4'h2;
   wire              _to_sram_ar_valid_output = state_dcache == 4'h7;
   assign _to_sram_r_ready_output = state_dcache == 4'h8;
   wire              _to_sram_aw_valid_output = state_dcache == 4'h4;
@@ -3242,8 +3290,9 @@ module Dcache_SimpleBus(
     .R1_data (_dataArray_ext_R1_data)
   );
   assign from_lsu_req_ready = _from_lsu_req_ready_output;
-  assign from_lsu_resp_valid = state_dcache == 4'h2 | state_dcache == 4'h1;
+  assign from_lsu_resp_valid = _from_lsu_resp_bits_wresp_T_1 | state_dcache == 4'h1;
   assign from_lsu_resp_bits_rdata = hit ? _dataArray_ext_R1_data : 32'h0;
+  assign from_lsu_resp_bits_wresp = _from_lsu_resp_bits_wresp_T_1;
   assign to_sram_ar_valid = _to_sram_ar_valid_output;
   assign to_sram_ar_bits_addr =
     _to_sram_ar_valid_output ? {from_lsu_req_bits_addr[31:5], 5'h0} : 32'h0;
@@ -3263,18 +3312,21 @@ module MMIO(
                 from_lsu_req_bits_wdata,
                 from_lsu_req_bits_wmask,
   input  [3:0]  from_lsu_req_bits_cmd,
-  output [31:0] from_lsu_resp_bits_rdata
+  output [31:0] from_lsu_resp_bits_rdata,
+  output        from_lsu_resp_bits_wresp
 );
 
+  wire _from_lsu_resp_bits_wresp_T = from_lsu_req_bits_cmd == 4'h1;
   RamBB RamBB_i1 (
     .clock   (clock),
     .addr    (from_lsu_req_bits_addr),
-    .mem_wen (from_lsu_req_bits_cmd == 4'h1),
+    .mem_wen (_from_lsu_resp_bits_wresp_T),
     .valid   (from_lsu_req_valid),
     .wdata   (from_lsu_req_bits_wdata),
     .wmask   (from_lsu_req_bits_wmask[3:0]),
     .rdata   (from_lsu_resp_bits_rdata)
   );
+  assign from_lsu_resp_bits_wresp = _from_lsu_resp_bits_wresp_T;
 endmodule
 
 module top(
@@ -3300,9 +3352,11 @@ module top(
 );
 
   wire [31:0] _mmio_from_lsu_resp_bits_rdata;
+  wire        _mmio_from_lsu_resp_bits_wresp;
   wire        _dcache_from_lsu_req_ready;
   wire        _dcache_from_lsu_resp_valid;
   wire [31:0] _dcache_from_lsu_resp_bits_rdata;
+  wire        _dcache_from_lsu_resp_bits_wresp;
   wire        _dcache_to_sram_ar_valid;
   wire [31:0] _dcache_to_sram_ar_bits_addr;
   wire [7:0]  _dcache_to_sram_ar_bits_len;
@@ -3312,8 +3366,10 @@ module top(
   wire [7:0]  _dcache_to_sram_aw_bits_len;
   wire        _dcache_to_sram_w_valid;
   wire [31:0] _dcache_to_sram_w_bits_data;
+  wire        _memXbar_io_in_req_ready;
   wire        _memXbar_io_in_resp_valid;
   wire [31:0] _memXbar_io_in_resp_bits_rdata;
+  wire        _memXbar_io_in_resp_bits_wresp;
   wire        _memXbar_io_out_0_req_valid;
   wire [31:0] _memXbar_io_out_0_req_bits_addr;
   wire [31:0] _memXbar_io_out_0_req_bits_wdata;
@@ -3344,8 +3400,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_addr;
   wire        _icache_io_mem_resp_ready;
   wire [31:0] _icache_io_stage2Addr;
-  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _icache_s2_io_in_valid__bore;
+  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3386,6 +3442,7 @@ module top(
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_wdata;
   wire [31:0] _EXU_i_lsu_to_mem_req_bits_wmask;
   wire [3:0]  _EXU_i_lsu_to_mem_req_bits_cmd;
+  wire        _EXU_i_lsu_to_mem_resp_ready;
   wire [4:0]  _EXU_i_to_ISU_hazard_rd;
   wire        _EXU_i_to_ISU_hazard_have_wb;
   wire        _EXU_i_to_ISU_hazard_isBR;
@@ -3691,8 +3748,10 @@ module top(
     .from_ISU_bits_ctrl_sig_mdu_op    (EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op),
     .from_ISU_bits_inst               (EXU_i_from_ISU_bits_r_inst),
     .to_WBU_ready                     (_WBU_i_from_EXU_ready),
+    .lsu_to_mem_req_ready             (_memXbar_io_in_req_ready),
     .lsu_to_mem_resp_valid            (_memXbar_io_in_resp_valid),
     .lsu_to_mem_resp_bits_rdata       (_memXbar_io_in_resp_bits_rdata),
+    .lsu_to_mem_resp_bits_wresp       (_memXbar_io_in_resp_bits_wresp),
     .from_ISU_ready                   (_EXU_i_from_ISU_ready),
     .to_WBU_valid                     (_EXU_i_to_WBU_valid),
     .to_WBU_bits_alu_result           (_EXU_i_to_WBU_bits_alu_result),
@@ -3715,6 +3774,7 @@ module top(
     .lsu_to_mem_req_bits_wdata        (_EXU_i_lsu_to_mem_req_bits_wdata),
     .lsu_to_mem_req_bits_wmask        (_EXU_i_lsu_to_mem_req_bits_wmask),
     .lsu_to_mem_req_bits_cmd          (_EXU_i_lsu_to_mem_req_bits_cmd),
+    .lsu_to_mem_resp_ready            (_EXU_i_lsu_to_mem_resp_ready),
     .to_ISU_hazard_rd                 (_EXU_i_to_ISU_hazard_rd),
     .to_ISU_hazard_have_wb            (_EXU_i_to_ISU_hazard_have_wb),
     .to_ISU_hazard_isBR               (_EXU_i_to_ISU_hazard_isBR)
@@ -3804,8 +3864,8 @@ module top(
     .io_mem_req_bits_addr     (_icache_io_mem_req_bits_addr),
     .io_mem_resp_ready        (_icache_io_mem_resp_ready),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
@@ -3849,12 +3909,17 @@ module top(
     .io_in_req_bits_wdata     (_EXU_i_lsu_to_mem_req_bits_wdata),
     .io_in_req_bits_wmask     (_EXU_i_lsu_to_mem_req_bits_wmask),
     .io_in_req_bits_cmd       (_EXU_i_lsu_to_mem_req_bits_cmd),
+    .io_in_resp_ready         (_EXU_i_lsu_to_mem_resp_ready),
     .io_out_0_req_ready       (_dcache_from_lsu_req_ready),
     .io_out_0_resp_valid      (_dcache_from_lsu_resp_valid),
     .io_out_0_resp_bits_rdata (_dcache_from_lsu_resp_bits_rdata),
+    .io_out_0_resp_bits_wresp (_dcache_from_lsu_resp_bits_wresp),
     .io_out_1_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata),
+    .io_out_1_resp_bits_wresp (_mmio_from_lsu_resp_bits_wresp),
+    .io_in_req_ready          (_memXbar_io_in_req_ready),
     .io_in_resp_valid         (_memXbar_io_in_resp_valid),
     .io_in_resp_bits_rdata    (_memXbar_io_in_resp_bits_rdata),
+    .io_in_resp_bits_wresp    (_memXbar_io_in_resp_bits_wresp),
     .io_out_0_req_valid       (_memXbar_io_out_0_req_valid),
     .io_out_0_req_bits_addr   (_memXbar_io_out_0_req_bits_addr),
     .io_out_0_req_bits_wdata  (_memXbar_io_out_0_req_bits_wdata),
@@ -3883,6 +3948,7 @@ module top(
     .from_lsu_req_ready       (_dcache_from_lsu_req_ready),
     .from_lsu_resp_valid      (_dcache_from_lsu_resp_valid),
     .from_lsu_resp_bits_rdata (_dcache_from_lsu_resp_bits_rdata),
+    .from_lsu_resp_bits_wresp (_dcache_from_lsu_resp_bits_wresp),
     .to_sram_ar_valid         (_dcache_to_sram_ar_valid),
     .to_sram_ar_bits_addr     (_dcache_to_sram_ar_bits_addr),
     .to_sram_ar_bits_len      (_dcache_to_sram_ar_bits_len),
@@ -3900,7 +3966,8 @@ module top(
     .from_lsu_req_bits_wdata  (_memXbar_io_out_1_req_bits_wdata),
     .from_lsu_req_bits_wmask  (_memXbar_io_out_1_req_bits_wmask),
     .from_lsu_req_bits_cmd    (_memXbar_io_out_1_req_bits_cmd),
-    .from_lsu_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata)
+    .from_lsu_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata),
+    .from_lsu_resp_bits_wresp (_mmio_from_lsu_resp_bits_wresp)
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
