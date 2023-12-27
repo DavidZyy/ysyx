@@ -185,7 +185,7 @@ void difftest_step() {
     npc_read_device = 0;
   } else if(npc_write_device) {
     // do noting
-    // ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+    ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
     // reset
     npc_write_device = 0;
   } else {
