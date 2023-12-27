@@ -180,7 +180,7 @@ void difftest_step() {
 // fiadfasd
   if (npc_read_device) {
     // not exec, copy regs and memory to ref
-    ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+    // ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
     // reset
     npc_read_device = 0;
   } else if(npc_write_device) {
