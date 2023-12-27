@@ -181,13 +181,11 @@ void difftest_step() {
   if (npc_read_device) {
     // not exec, copy regs and memory to ref
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
-    // ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), sizeof(pmem), DIFFTEST_TO_REF);
     // reset
     npc_read_device = 0;
   } else if(npc_write_device) {
     // do noting
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
-    // ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), sizeof(pmem), DIFFTEST_TO_REF);
     // reset
     npc_write_device = 0;
   } else {
