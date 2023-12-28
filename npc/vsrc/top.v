@@ -2562,10 +2562,11 @@ module SimpleBusCrossBar1toN(
   reg        outSelRespVec_1;
   wire       reqInvalidAddr = io_in_req_valid & outSelVec_enc == 2'h0;
   wire       _io_in_resp_valid_output =
-    outSelRespVec_0 & io_out_0_resp_valid | outSelRespVec_1 | state == 2'h2;
+    (outSelRespVec_0 & io_out_0_resp_valid | outSelRespVec_1) & state == 2'h1
+    | state == 2'h2;
   wire       _outSelRespVec_T =
-    (outSelVec_enc[0] & io_out_0_req_ready | outSelVec_enc[1] | reqInvalidAddr)
-    & io_in_req_valid;
+    ((outSelVec_enc[0] & io_out_0_req_ready | outSelVec_enc[1]) & ~(|state)
+     | reqInvalidAddr) & io_in_req_valid;
   always @(posedge clock) begin
     if (reset) begin
       state <= 2'h0;
