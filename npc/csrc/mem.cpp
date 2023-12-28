@@ -70,14 +70,14 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     *rdata = (uint32_t)us;
     npc_access_device = 1;
   } else if (raddr == SERIAL_PORT) {
-
+    // write dev, not read
   } else if (raddr == VGACTL_ADDR) {
     *rdata = vgactl_port_base[0];
     npc_access_device = 1;
   } else if (raddr == VGACTL_ADDR+4) {
-
+    npc_access_device = 1;
   } else if (in_vmem(raddr)) {
-
+    // write dev, not read
   } else {
     // memory
     if(!in_pmem(raddr)) out_of_bound(raddr);
