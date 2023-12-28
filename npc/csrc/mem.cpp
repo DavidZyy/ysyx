@@ -75,7 +75,7 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     *rdata = vgactl_port_base[0];
     npc_access_device = 1;
   } else if (raddr == VGACTL_ADDR+4) {
-    printf("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\n");
+    *rdata = vgactl_port_base[1];
     npc_access_device = 1;
   } else if (in_vmem(raddr)) {
     // write dev, not read
