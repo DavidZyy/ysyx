@@ -80,8 +80,8 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   if(ref_r->pc != cpu.pc)
     goto error;
 
-  // if(!check_status_reg(ref_r))
-  //   goto error;
+  if(!check_status_reg(ref_r))
+    goto error;
 
   return true;
 
