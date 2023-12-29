@@ -176,7 +176,7 @@ void difftest_step() {
   CPU_state ref_f;
   int pc = 0;
 
-  if (npc_access_device ) {
+  if (npc_access_device == 1) {
     // not exec, copy regs to ref, load nead to copy pc and the changed reg, and store need to copy pc!
     // do not need to copy mem, it will cause cache coherence problem in cache system.
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
