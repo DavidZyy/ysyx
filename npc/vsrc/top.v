@@ -1783,8 +1783,7 @@ module AXI4RAM(
                 axi_ar_valid,
   input  [31:0] axi_ar_bits_addr,
   input  [7:0]  axi_ar_bits_len,
-  input         axi_r_ready,
-                axi_aw_valid,
+  input         axi_aw_valid,
   input  [31:0] axi_aw_bits_addr,
   input  [7:0]  axi_aw_bits_len,
   input         axi_w_valid,
@@ -1806,28 +1805,26 @@ module AXI4RAM(
   wire             _axi_w_ready_T_2 = state_sram == 3'h6;
   wire             _axi_r_valid_T_1 = state_sram == 3'h2;
   wire             _axi_r_valid_T_2 = state_sram == 3'h3;
-  wire             _axi_r_valid_output = _axi_r_valid_T_2 | _axi_r_valid_T_1;
   wire             _axi_w_ready_output =
     (&state_sram) | _axi_w_ready_T_2 | state_sram == 3'h5;
   wire             _GEN = _axi_aw_ready_output & axi_ar_valid;
   wire             _GEN_0 = _axi_aw_ready_output & axi_aw_valid;
-  wire             _reg_addr_T = axi_r_ready & _axi_r_valid_output;
   wire             _GEN_1 = state_sram == 3'h3;
   wire             _GEN_2 = state_sram == 3'h4;
   wire             _GEN_3 = state_sram == 3'h6;
-  wire             _reg_addr_T_6 = _axi_w_ready_output & axi_w_valid;
+  wire             _reg_addr_T_4 = _axi_w_ready_output & axi_w_valid;
   wire             _GEN_4 = _GEN_1 | _GEN_2 | state_sram == 3'h5;
   wire [7:0]       _GEN_5 =
-    _GEN_4 | ~(_GEN_3 & _reg_addr_T_6) ? reg_AxLen : reg_AxLen - 8'h1;
+    _GEN_4 | ~(_GEN_3 & _reg_addr_T_4) ? reg_AxLen : reg_AxLen - 8'h1;
   wire [31:0]      _GEN_6 =
-    _GEN_4 | ~(_GEN_3 & reg_burst == 2'h1 & _reg_addr_T_6) ? reg_addr : reg_addr + 32'h4;
+    _GEN_4 | ~(_GEN_3 & reg_burst == 2'h1 & _reg_addr_T_4) ? reg_addr : reg_addr + 32'h4;
   wire [7:0][7:0]  _GEN_7 =
     {{_GEN_5},
      {_GEN_5},
      {reg_AxLen},
      {reg_AxLen},
      {reg_AxLen},
-     {_reg_addr_T ? reg_AxLen - 8'h1 : reg_AxLen},
+     {reg_AxLen - 8'h1},
      {reg_AxLen},
      {_GEN ? axi_ar_bits_len : _GEN_0 ? axi_aw_bits_len : reg_AxLen}};
   wire [7:0][31:0] _GEN_8 =
@@ -1836,7 +1833,7 @@ module AXI4RAM(
      {reg_addr},
      {reg_addr},
      {reg_addr},
-     {reg_burst == 2'h1 & _reg_addr_T ? reg_addr + 32'h4 : reg_addr},
+     {reg_burst == 2'h1 ? reg_addr + 32'h4 : reg_addr},
      {reg_addr},
      {_GEN ? axi_ar_bits_addr : _GEN_0 ? axi_aw_bits_addr : reg_addr}};
   wire [7:0][2:0]  _GEN_9 =
@@ -1879,7 +1876,7 @@ module AXI4RAM(
     .rdata   (axi_r_bits_data)
   );
   assign axi_ar_ready = _axi_aw_ready_output;
-  assign axi_r_valid = _axi_r_valid_output;
+  assign axi_r_valid = _axi_r_valid_T_2 | _axi_r_valid_T_1;
   assign axi_r_bits_last = state_sram == 3'h3;
   assign axi_aw_ready = _axi_aw_ready_output;
   assign axi_w_ready = _axi_w_ready_output;
@@ -1957,8 +1954,7 @@ module CacheStage1(
   output        io_in_ready,
                 io_mem_req_valid,
   output [31:0] io_mem_req_bits_addr,
-  output        io_mem_resp_ready,
-                io_out_valid,
+  output        io_out_valid,
   output [31:0] io_out_bits_addr,
   output        io_dataReadBus_valid,
   output [6:0]  io_dataReadBus_bits_raddr,
@@ -2108,7 +2104,7 @@ module CacheStage1(
   reg  [1:0]        entryOff;
   reg  [2:0]        stateCache;
   wire              _io_mem_req_valid_output = stateCache == 3'h1;
-  wire              _io_mem_resp_ready_output = stateCache == 3'h2;
+  wire              _io_mem_resp_ready_T_1 = stateCache == 3'h2;
   wire              _GEN_4 = stateCache == 3'h2;
   wire              _GEN_5 = stateCache == 3'h1;
   wire              _GEN_6 = io_in_bits_addr[7:4] == 4'h0;
@@ -2329,7 +2325,11 @@ module CacheStage1(
       validArray_1_13 <= _GEN_50 | validArray_1_13;
       validArray_1_14 <= _GEN_51 | validArray_1_14;
       validArray_1_15 <= _GEN_52 | validArray_1_15;
-      if (|stateCache) begin
+      if (io_flush) begin
+        entryOff <= 2'h0;
+        stateCache <= 3'h0;
+      end
+      else if (|stateCache) begin
         if (_GEN_5) begin
           entryOff <= 2'h0;
           if (io_mem_req_ready & _io_mem_req_valid_output)
@@ -2338,7 +2338,7 @@ module CacheStage1(
             stateCache <= 3'h1;
         end
         else begin
-          if (_GEN_4 & _io_mem_resp_ready_output & io_mem_resp_valid)
+          if (_GEN_4 & _io_mem_resp_ready_T_1 & io_mem_resp_valid)
             entryOff <= entryOff + 2'h1;
           if (_GEN_4) begin
             if (&entryOff)
@@ -2351,20 +2351,19 @@ module CacheStage1(
         end
       end
       else
-        stateCache <= {2'h0, ~hit & ~io_flush};
+        stateCache <= {2'h0, ~hit};
     end
   end // always @(posedge)
   assign io_in_ready = hit & (~(|stateCache) | stateCache == 3'h4);
   assign io_mem_req_valid = _io_mem_req_valid_output;
   assign io_mem_req_bits_addr = {io_in_bits_addr[31:4], 4'h0};
-  assign io_mem_resp_ready = _io_mem_resp_ready_output;
   assign io_out_valid = hit;
   assign io_out_bits_addr = io_in_bits_addr;
   assign io_dataReadBus_valid = io_in_valid;
   assign io_dataReadBus_bits_raddr =
     {_GEN_2 == io_in_bits_addr[31:8], io_in_bits_addr[7:2]};
   assign io_dataWriteBus_req_valid =
-    stateCache == 3'h2 & _io_mem_resp_ready_output & io_mem_resp_valid;
+    stateCache == 3'h2 & _io_mem_resp_ready_T_1 & io_mem_resp_valid;
   assign io_dataWriteBus_req_bits_waddr = {replaceWayReg, io_in_bits_addr[7:4], entryOff};
   assign io_dataWriteBus_req_bits_wdata = io_mem_resp_bits_rdata;
 endmodule
@@ -2405,8 +2404,7 @@ module Cache(
   output [31:0] io_in_resp_bits_rdata,
   output        io_mem_req_valid,
   output [31:0] io_mem_req_bits_addr,
-  output        io_mem_resp_ready,
-  output [31:0] io_stage2Addr,
+                io_stage2Addr,
                 s2_io_in_bits_addr__bore,
   output        s2_io_in_valid__bore
 );
@@ -2460,7 +2458,6 @@ module Cache(
     .io_in_ready                    (io_in_req_ready),
     .io_mem_req_valid               (io_mem_req_valid),
     .io_mem_req_bits_addr           (io_mem_req_bits_addr),
-    .io_mem_resp_ready              (io_mem_resp_ready),
     .io_out_valid                   (_s1_io_out_valid),
     .io_out_bits_addr               (_s1_io_out_bits_addr),
     .io_dataReadBus_valid           (_s1_io_dataReadBus_valid),
@@ -2487,8 +2484,7 @@ endmodule
 module SimpleBus2AXI4Converter(
   input         io_in_req_valid,
   input  [31:0] io_in_req_bits_addr,
-  input         io_in_resp_ready,
-                io_out_ar_ready,
+  input         io_out_ar_ready,
                 io_out_r_valid,
   input  [31:0] io_out_r_bits_data,
   output        io_in_req_ready,
@@ -2496,8 +2492,7 @@ module SimpleBus2AXI4Converter(
   output [31:0] io_in_resp_bits_rdata,
   output        io_out_ar_valid,
   output [31:0] io_out_ar_bits_addr,
-  output        io_out_r_ready,
-  output [31:0] io_out_aw_bits_addr
+                io_out_aw_bits_addr
 );
 
   assign io_in_req_ready = io_out_ar_ready;
@@ -2505,7 +2500,6 @@ module SimpleBus2AXI4Converter(
   assign io_in_resp_bits_rdata = io_out_r_bits_data;
   assign io_out_ar_valid = io_in_req_valid;
   assign io_out_ar_bits_addr = io_in_req_bits_addr;
-  assign io_out_r_ready = io_in_resp_ready;
   assign io_out_aw_bits_addr = io_in_req_bits_addr;
 endmodule
 
@@ -2649,15 +2643,14 @@ module Dcache_SimpleBus(
   output        to_sram_ar_valid,
   output [31:0] to_sram_ar_bits_addr,
   output [7:0]  to_sram_ar_bits_len,
-  output        to_sram_r_ready,
-                to_sram_aw_valid,
+  output        to_sram_aw_valid,
   output [31:0] to_sram_aw_bits_addr,
   output [7:0]  to_sram_aw_bits_len,
   output        to_sram_w_valid,
   output [31:0] to_sram_w_bits_data
 );
 
-  wire              _to_sram_r_ready_output;
+  wire              _to_sram_r_ready_T_1;
   wire [31:0]       _dataArray_ext_R1_data;
   reg               replace_set;
   reg               random_num;
@@ -2837,12 +2830,12 @@ module Dcache_SimpleBus(
   wire              _from_lsu_req_ready_output = state_dcache == 4'h0;
   wire              _GEN_4 = state_dcache == 4'h2;
   wire              _GEN_5 =
-    state_dcache == 4'h8 & _to_sram_r_ready_output & to_sram_r_valid;
+    state_dcache == 4'h8 & _to_sram_r_ready_T_1 & to_sram_r_valid;
   wire [7:0]        replaceCacheAddr = {replace_set, from_lsu_req_bits_addr[8:5], off};
   wire [94:0]       _indata_T_1 =
     {63'h0, from_lsu_req_bits_wdata} << {90'h0, from_lsu_req_bits_addr[1:0], 3'h0};
   wire              _to_sram_ar_valid_output = state_dcache == 4'h7;
-  assign _to_sram_r_ready_output = state_dcache == 4'h8;
+  assign _to_sram_r_ready_T_1 = state_dcache == 4'h8;
   wire              _to_sram_aw_valid_output = state_dcache == 4'h4;
   wire [15:0][22:0] _GEN_6 = replace_set ? _GEN_1 : _GEN;
   wire              _to_sram_w_valid_output = state_dcache == 4'h5;
@@ -3231,7 +3224,6 @@ module Dcache_SimpleBus(
   assign to_sram_ar_bits_addr =
     _to_sram_ar_valid_output ? {from_lsu_req_bits_addr[31:5], 5'h0} : 32'h0;
   assign to_sram_ar_bits_len = {5'h0, {3{_to_sram_ar_valid_output}}};
-  assign to_sram_r_ready = _to_sram_r_ready_output;
   assign to_sram_aw_valid = _to_sram_aw_valid_output;
   assign to_sram_aw_bits_addr =
     {_GEN_6[from_lsu_req_bits_addr[8:5]], from_lsu_req_bits_addr[8:5], 5'h0};
@@ -3289,7 +3281,6 @@ module top(
   wire        _dcache_to_sram_ar_valid;
   wire [31:0] _dcache_to_sram_ar_bits_addr;
   wire [7:0]  _dcache_to_sram_ar_bits_len;
-  wire        _dcache_to_sram_r_ready;
   wire        _dcache_to_sram_aw_valid;
   wire [31:0] _dcache_to_sram_aw_bits_addr;
   wire [7:0]  _dcache_to_sram_aw_bits_len;
@@ -3318,14 +3309,12 @@ module top(
   wire [31:0] _bridge_io_in_resp_bits_rdata;
   wire        _bridge_io_out_ar_valid;
   wire [31:0] _bridge_io_out_ar_bits_addr;
-  wire        _bridge_io_out_r_ready;
   wire [31:0] _bridge_io_out_aw_bits_addr;
   wire        _icache_io_in_req_ready;
   wire        _icache_io_in_resp_valid;
   wire [31:0] _icache_io_in_resp_bits_rdata;
   wire        _icache_io_mem_req_valid;
   wire [31:0] _icache_io_mem_req_bits_addr;
-  wire        _icache_io_mem_resp_ready;
   wire [31:0] _icache_io_stage2Addr;
   wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _icache_s2_io_in_valid__bore;
@@ -3745,7 +3734,6 @@ module top(
     .axi_ar_valid     (_bridge_io_out_ar_valid),
     .axi_ar_bits_addr (_bridge_io_out_ar_bits_addr),
     .axi_ar_bits_len  (8'h3),
-    .axi_r_ready      (_bridge_io_out_r_ready),
     .axi_aw_valid     (1'h0),
     .axi_aw_bits_addr (_bridge_io_out_aw_bits_addr),
     .axi_aw_bits_len  (8'h3),
@@ -3773,7 +3761,6 @@ module top(
     .io_in_resp_bits_rdata    (_icache_io_in_resp_bits_rdata),
     .io_mem_req_valid         (_icache_io_mem_req_valid),
     .io_mem_req_bits_addr     (_icache_io_mem_req_bits_addr),
-    .io_mem_resp_ready        (_icache_io_mem_resp_ready),
     .io_stage2Addr            (_icache_io_stage2Addr),
     .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
     .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
@@ -3781,7 +3768,6 @@ module top(
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
     .io_in_req_bits_addr   (_icache_io_mem_req_bits_addr),
-    .io_in_resp_ready      (_icache_io_mem_resp_ready),
     .io_out_ar_ready       (_ram_i_axi_ar_ready),
     .io_out_r_valid        (_ram_i_axi_r_valid),
     .io_out_r_bits_data    (_ram_i_axi_r_bits_data),
@@ -3790,7 +3776,6 @@ module top(
     .io_in_resp_bits_rdata (_bridge_io_in_resp_bits_rdata),
     .io_out_ar_valid       (_bridge_io_out_ar_valid),
     .io_out_ar_bits_addr   (_bridge_io_out_ar_bits_addr),
-    .io_out_r_ready        (_bridge_io_out_r_ready),
     .io_out_aw_bits_addr   (_bridge_io_out_aw_bits_addr)
   );
   AXI4RAM ram_i2 (
@@ -3799,7 +3784,6 @@ module top(
     .axi_ar_valid     (_dcache_to_sram_ar_valid),
     .axi_ar_bits_addr (_dcache_to_sram_ar_bits_addr),
     .axi_ar_bits_len  (_dcache_to_sram_ar_bits_len),
-    .axi_r_ready      (_dcache_to_sram_r_ready),
     .axi_aw_valid     (_dcache_to_sram_aw_valid),
     .axi_aw_bits_addr (_dcache_to_sram_aw_bits_addr),
     .axi_aw_bits_len  (_dcache_to_sram_aw_bits_len),
@@ -3857,7 +3841,6 @@ module top(
     .to_sram_ar_valid         (_dcache_to_sram_ar_valid),
     .to_sram_ar_bits_addr     (_dcache_to_sram_ar_bits_addr),
     .to_sram_ar_bits_len      (_dcache_to_sram_ar_bits_len),
-    .to_sram_r_ready          (_dcache_to_sram_r_ready),
     .to_sram_aw_valid         (_dcache_to_sram_aw_valid),
     .to_sram_aw_bits_addr     (_dcache_to_sram_aw_bits_addr),
     .to_sram_aw_bits_len      (_dcache_to_sram_aw_bits_len),
