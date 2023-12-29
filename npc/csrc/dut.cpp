@@ -65,8 +65,8 @@ bool check_status_reg(CPU_state *ref_r) {
     return false;
   if(top->io_out_difftest_mepc != ref_r->csr[cpu_mepc_id])
     return false;
-  // if(top->io_out_difftest_mstatus != ref_r->mstatus)
-  //   return false;
+  if(top->io_out_difftest_mstatus != ref_r->mstatus)
+    return false;
   if(top->io_out_difftest_mtvec != ref_r->csr[cpu_mtvec_id])
     return false;
   return true;
