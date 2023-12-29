@@ -2105,7 +2105,9 @@ module CacheStage1(
   reg  [2:0]        stateCache;
   wire              _io_mem_req_valid_output = stateCache == 3'h1;
   wire              _io_mem_resp_ready_T_1 = stateCache == 3'h2;
-  wire              _GEN_4 = io_in_valid & entryOff == 2'h0;
+  wire              _io_dataWriteBus_req_valid_output =
+    stateCache == 3'h2 & _io_mem_resp_ready_T_1 & io_mem_resp_valid;
+  wire              _GEN_4 = _io_dataWriteBus_req_valid_output & entryOff == 2'h0;
   wire              _GEN_5 = stateCache == 3'h2;
   wire              _GEN_6 = stateCache == 3'h1;
   wire              _GEN_7 = io_in_bits_addr[7:4] == 4'h0;
@@ -2399,8 +2401,7 @@ module CacheStage1(
   assign io_dataReadBus_valid = io_in_valid;
   assign io_dataReadBus_bits_raddr =
     {_GEN_2 == io_in_bits_addr[31:8], io_in_bits_addr[7:2]};
-  assign io_dataWriteBus_req_valid =
-    stateCache == 3'h2 & _io_mem_resp_ready_T_1 & io_mem_resp_valid;
+  assign io_dataWriteBus_req_valid = _io_dataWriteBus_req_valid_output;
   assign io_dataWriteBus_req_bits_waddr = {replaceWayReg, io_in_bits_addr[7:4], entryOff};
   assign io_dataWriteBus_req_bits_wdata = io_mem_resp_bits_rdata;
 endmodule
