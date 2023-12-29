@@ -3471,7 +3471,6 @@ module top(
   wire        _WBU_i_to_ISU_bits_hazard_isBR;
   wire        _WBU_i_to_IFU_bits_redirect_valid;
   wire [31:0] _WBU_i_to_IFU_bits_redirect_target;
-  wire        _WBU_i_wb;
   wire        _EXU_i_from_ISU_ready;
   wire        _EXU_i_to_WBU_valid;
   wire [31:0] _EXU_i_to_WBU_bits_alu_result;
@@ -3574,18 +3573,6 @@ module top(
   reg  [2:0]  EXU_i_from_ISU_bits_r_ctrl_sig_csr_op;
   reg  [3:0]  EXU_i_from_ISU_bits_r_ctrl_sig_mdu_op;
   reg  [31:0] EXU_i_from_ISU_bits_r_inst;
-  reg         valid_3;
-  reg  [31:0] WBU_i_from_EXU_bits_r_alu_result;
-  reg  [31:0] WBU_i_from_EXU_bits_r_mdu_result;
-  reg  [31:0] WBU_i_from_EXU_bits_r_lsu_rdata;
-  reg  [31:0] WBU_i_from_EXU_bits_r_csr_rdata;
-  reg  [31:0] WBU_i_from_EXU_bits_r_pc;
-  reg         WBU_i_from_EXU_bits_r_reg_wen;
-  reg  [4:0]  WBU_i_from_EXU_bits_r_rd;
-  reg  [2:0]  WBU_i_from_EXU_bits_r_fu_op;
-  reg         WBU_i_from_EXU_bits_r_redirect_valid;
-  reg  [31:0] WBU_i_from_EXU_bits_r_redirect_target;
-  reg  [31:0] WBU_i_from_EXU_bits_r_inst;
   wire        _IDU_i_from_IFU_bits_T_1 = _IFU_i_to_IDU_valid & _IDU_i_from_IFU_ready;
   wire        _ISU_i_from_IDU_bits_T_1 = _IDU_i_to_ISU_valid & _ISU_i_from_IDU_ready;
   wire        _EXU_i_from_ISU_bits_T_1 = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;
@@ -3594,7 +3581,6 @@ module top(
       valid <= 1'h0;
       valid_1 <= 1'h0;
       valid_2 <= 1'h0;
-      valid_3 <= 1'h0;
     end
     else begin
       valid <=
@@ -3608,8 +3594,6 @@ module top(
       valid_2 <=
         ~_WBU_i_to_IFU_bits_redirect_valid
         & (_EXU_i_from_ISU_bits_T_1 | ~_EXU_i_to_WBU_valid & valid_2);
-      valid_3 <=
-        ~_WBU_i_to_IFU_bits_redirect_valid & (_EXU_i_to_WBU_valid | ~_WBU_i_wb & valid_3);
     end
     if (_IDU_i_from_IFU_bits_T_1) begin
       if (_WBU_i_to_IFU_bits_redirect_valid) begin
@@ -3704,34 +3688,6 @@ module top(
         ~_WBU_i_to_IFU_bits_redirect_valid & _ISU_i_to_EXU_bits_ctrl_sig_is_ebreak;
       EXU_i_from_ISU_bits_r_ctrl_sig_not_impl <=
         ~_WBU_i_to_IFU_bits_redirect_valid & _ISU_i_to_EXU_bits_ctrl_sig_not_impl;
-    end
-    if (_EXU_i_to_WBU_valid) begin
-      if (_WBU_i_to_IFU_bits_redirect_valid) begin
-        WBU_i_from_EXU_bits_r_alu_result <= 32'h0;
-        WBU_i_from_EXU_bits_r_mdu_result <= 32'h0;
-        WBU_i_from_EXU_bits_r_lsu_rdata <= 32'h0;
-        WBU_i_from_EXU_bits_r_csr_rdata <= 32'h0;
-        WBU_i_from_EXU_bits_r_pc <= 32'h0;
-        WBU_i_from_EXU_bits_r_rd <= 5'h0;
-        WBU_i_from_EXU_bits_r_fu_op <= 3'h0;
-        WBU_i_from_EXU_bits_r_redirect_target <= 32'h0;
-        WBU_i_from_EXU_bits_r_inst <= 32'h0;
-      end
-      else begin
-        WBU_i_from_EXU_bits_r_alu_result <= _EXU_i_to_WBU_bits_alu_result;
-        WBU_i_from_EXU_bits_r_mdu_result <= _EXU_i_to_WBU_bits_mdu_result;
-        WBU_i_from_EXU_bits_r_lsu_rdata <= _EXU_i_to_WBU_bits_lsu_rdata;
-        WBU_i_from_EXU_bits_r_csr_rdata <= _EXU_i_to_WBU_bits_csr_rdata;
-        WBU_i_from_EXU_bits_r_pc <= _EXU_i_to_WBU_bits_pc;
-        WBU_i_from_EXU_bits_r_rd <= _EXU_i_to_WBU_bits_rd;
-        WBU_i_from_EXU_bits_r_fu_op <= _EXU_i_to_WBU_bits_fu_op;
-        WBU_i_from_EXU_bits_r_redirect_target <= _EXU_i_to_WBU_bits_redirect_target;
-        WBU_i_from_EXU_bits_r_inst <= _EXU_i_to_WBU_bits_inst;
-      end
-      WBU_i_from_EXU_bits_r_reg_wen <=
-        ~_WBU_i_to_IFU_bits_redirect_valid & _EXU_i_to_WBU_bits_reg_wen;
-      WBU_i_from_EXU_bits_r_redirect_valid <=
-        ~_WBU_i_to_IFU_bits_redirect_valid & _EXU_i_to_WBU_bits_redirect_valid;
     end
   end // always @(posedge)
   IDU IDU_i (
@@ -3867,18 +3823,18 @@ module top(
   WBU WBU_i (
     .clock                         (clock),
     .reset                         (reset),
-    .from_EXU_valid                (valid_3),
-    .from_EXU_bits_alu_result      (WBU_i_from_EXU_bits_r_alu_result),
-    .from_EXU_bits_mdu_result      (WBU_i_from_EXU_bits_r_mdu_result),
-    .from_EXU_bits_lsu_rdata       (WBU_i_from_EXU_bits_r_lsu_rdata),
-    .from_EXU_bits_csr_rdata       (WBU_i_from_EXU_bits_r_csr_rdata),
-    .from_EXU_bits_pc              (WBU_i_from_EXU_bits_r_pc),
-    .from_EXU_bits_reg_wen         (WBU_i_from_EXU_bits_r_reg_wen),
-    .from_EXU_bits_rd              (WBU_i_from_EXU_bits_r_rd),
-    .from_EXU_bits_fu_op           (WBU_i_from_EXU_bits_r_fu_op),
-    .from_EXU_bits_redirect_valid  (WBU_i_from_EXU_bits_r_redirect_valid),
-    .from_EXU_bits_redirect_target (WBU_i_from_EXU_bits_r_redirect_target),
-    .from_EXU_bits_inst            (WBU_i_from_EXU_bits_r_inst),
+    .from_EXU_valid                (_EXU_i_to_WBU_valid),
+    .from_EXU_bits_alu_result      (_EXU_i_to_WBU_bits_alu_result),
+    .from_EXU_bits_mdu_result      (_EXU_i_to_WBU_bits_mdu_result),
+    .from_EXU_bits_lsu_rdata       (_EXU_i_to_WBU_bits_lsu_rdata),
+    .from_EXU_bits_csr_rdata       (_EXU_i_to_WBU_bits_csr_rdata),
+    .from_EXU_bits_pc              (_EXU_i_to_WBU_bits_pc),
+    .from_EXU_bits_reg_wen         (_EXU_i_to_WBU_bits_reg_wen),
+    .from_EXU_bits_rd              (_EXU_i_to_WBU_bits_rd),
+    .from_EXU_bits_fu_op           (_EXU_i_to_WBU_bits_fu_op),
+    .from_EXU_bits_redirect_valid  (_EXU_i_to_WBU_bits_redirect_valid),
+    .from_EXU_bits_redirect_target (_EXU_i_to_WBU_bits_redirect_target),
+    .from_EXU_bits_inst            (_EXU_i_to_WBU_bits_inst),
     .to_ISU_valid                  (_WBU_i_to_ISU_valid),
     .to_ISU_bits_reg_wen           (_WBU_i_to_ISU_bits_reg_wen),
     .to_ISU_bits_wdata             (_WBU_i_to_ISU_bits_wdata),
@@ -3888,7 +3844,7 @@ module top(
     .to_ISU_bits_hazard_isBR       (_WBU_i_to_ISU_bits_hazard_isBR),
     .to_IFU_bits_redirect_valid    (_WBU_i_to_IFU_bits_redirect_valid),
     .to_IFU_bits_redirect_target   (_WBU_i_to_IFU_bits_redirect_target),
-    .wb                            (_WBU_i_wb)
+    .wb                            (io_out_wb)
   );
   IFU_pipeline IFU_i (
     .clock                         (clock),
@@ -4038,8 +3994,8 @@ module top(
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
-    valid_3
-      ? WBU_i_from_EXU_bits_r_pc
+    _EXU_i_to_WBU_valid
+      ? _EXU_i_to_WBU_bits_pc
       : valid_2
           ? EXU_i_from_ISU_bits_r_pc
           : valid_1
@@ -4057,9 +4013,8 @@ module top(
   assign io_out_isu_pc = _ISU_i_to_EXU_bits_pc;
   assign io_out_exu_inst = _EXU_i_to_WBU_bits_inst;
   assign io_out_exu_pc = _EXU_i_to_WBU_bits_pc;
-  assign io_out_wbu_inst = WBU_i_from_EXU_bits_r_inst;
-  assign io_out_wbu_pc = WBU_i_from_EXU_bits_r_pc;
-  assign io_out_wb = _WBU_i_wb;
+  assign io_out_wbu_inst = _EXU_i_to_WBU_bits_inst;
+  assign io_out_wbu_pc = _EXU_i_to_WBU_bits_pc;
 endmodule
 
 
