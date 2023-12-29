@@ -130,6 +130,7 @@ void get_cpu() {
   cpu.pc = top->io_out_nextExecPC;
 }
 
+extern int npc_access_device;
 // execute on inst, until WB stage
 void npc_exec_once() {
   g_nr_guest_inst++;
@@ -138,6 +139,7 @@ void npc_exec_once() {
     single_cycle();
     n--;
   }
+  if(top->io_out_is_mmio) npc_access_device=1;
   single_cycle();
     get_cpu();
 }

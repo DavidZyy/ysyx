@@ -183,7 +183,6 @@ void difftest_step() {
     // reset
     npc_access_device = 0;
   } else {
-    if(npc_access_device == 2) npc_access_device--; // wait for access dev in exu wb in wbu.
     ref_difftest_exec(1);
     // check regs
     ref_difftest_regcpy(&ref_f, DIFFTEST_TO_DUT);
