@@ -2105,55 +2105,56 @@ module CacheStage1(
   reg  [2:0]        stateCache;
   wire              _io_mem_req_valid_output = stateCache == 3'h1;
   wire              _io_mem_resp_ready_T_1 = stateCache == 3'h2;
-  wire              _GEN_4 = stateCache == 3'h2;
-  wire              _GEN_5 = stateCache == 3'h1;
-  wire              _GEN_6 = io_in_bits_addr[7:4] == 4'h0;
-  wire              _GEN_7 = (&entryOff) & ~replaceWayReg & _GEN_6;
-  wire              _GEN_8 = io_in_bits_addr[7:4] == 4'h1;
-  wire              _GEN_9 = (&entryOff) & ~replaceWayReg & _GEN_8;
-  wire              _GEN_10 = io_in_bits_addr[7:4] == 4'h2;
-  wire              _GEN_11 = (&entryOff) & ~replaceWayReg & _GEN_10;
-  wire              _GEN_12 = io_in_bits_addr[7:4] == 4'h3;
-  wire              _GEN_13 = (&entryOff) & ~replaceWayReg & _GEN_12;
-  wire              _GEN_14 = io_in_bits_addr[7:4] == 4'h4;
-  wire              _GEN_15 = (&entryOff) & ~replaceWayReg & _GEN_14;
-  wire              _GEN_16 = io_in_bits_addr[7:4] == 4'h5;
-  wire              _GEN_17 = (&entryOff) & ~replaceWayReg & _GEN_16;
-  wire              _GEN_18 = io_in_bits_addr[7:4] == 4'h6;
-  wire              _GEN_19 = (&entryOff) & ~replaceWayReg & _GEN_18;
-  wire              _GEN_20 = io_in_bits_addr[7:4] == 4'h7;
-  wire              _GEN_21 = (&entryOff) & ~replaceWayReg & _GEN_20;
-  wire              _GEN_22 = io_in_bits_addr[7:4] == 4'h8;
-  wire              _GEN_23 = (&entryOff) & ~replaceWayReg & _GEN_22;
-  wire              _GEN_24 = io_in_bits_addr[7:4] == 4'h9;
-  wire              _GEN_25 = (&entryOff) & ~replaceWayReg & _GEN_24;
-  wire              _GEN_26 = io_in_bits_addr[7:4] == 4'hA;
-  wire              _GEN_27 = (&entryOff) & ~replaceWayReg & _GEN_26;
-  wire              _GEN_28 = io_in_bits_addr[7:4] == 4'hB;
-  wire              _GEN_29 = (&entryOff) & ~replaceWayReg & _GEN_28;
-  wire              _GEN_30 = io_in_bits_addr[7:4] == 4'hC;
-  wire              _GEN_31 = (&entryOff) & ~replaceWayReg & _GEN_30;
-  wire              _GEN_32 = io_in_bits_addr[7:4] == 4'hD;
-  wire              _GEN_33 = (&entryOff) & ~replaceWayReg & _GEN_32;
-  wire              _GEN_34 = io_in_bits_addr[7:4] == 4'hE;
-  wire              _GEN_35 = (&entryOff) & ~replaceWayReg & _GEN_34;
-  wire              _GEN_36 = (&entryOff) & ~replaceWayReg & (&(io_in_bits_addr[7:4]));
-  wire              _GEN_37 = (&entryOff) & replaceWayReg & _GEN_6;
-  wire              _GEN_38 = (&entryOff) & replaceWayReg & _GEN_8;
-  wire              _GEN_39 = (&entryOff) & replaceWayReg & _GEN_10;
-  wire              _GEN_40 = (&entryOff) & replaceWayReg & _GEN_12;
-  wire              _GEN_41 = (&entryOff) & replaceWayReg & _GEN_14;
-  wire              _GEN_42 = (&entryOff) & replaceWayReg & _GEN_16;
-  wire              _GEN_43 = (&entryOff) & replaceWayReg & _GEN_18;
-  wire              _GEN_44 = (&entryOff) & replaceWayReg & _GEN_20;
-  wire              _GEN_45 = (&entryOff) & replaceWayReg & _GEN_22;
-  wire              _GEN_46 = (&entryOff) & replaceWayReg & _GEN_24;
-  wire              _GEN_47 = (&entryOff) & replaceWayReg & _GEN_26;
-  wire              _GEN_48 = (&entryOff) & replaceWayReg & _GEN_28;
-  wire              _GEN_49 = (&entryOff) & replaceWayReg & _GEN_30;
-  wire              _GEN_50 = (&entryOff) & replaceWayReg & _GEN_32;
-  wire              _GEN_51 = (&entryOff) & replaceWayReg & _GEN_34;
-  wire              _GEN_52 = (&entryOff) & replaceWayReg & (&(io_in_bits_addr[7:4]));
+  wire              _GEN_4 = io_in_valid & entryOff == 2'h0;
+  wire              _GEN_5 = stateCache == 3'h2;
+  wire              _GEN_6 = stateCache == 3'h1;
+  wire              _GEN_7 = io_in_bits_addr[7:4] == 4'h0;
+  wire              _GEN_8 = ~replaceWayReg & _GEN_7;
+  wire              _GEN_9 = io_in_bits_addr[7:4] == 4'h1;
+  wire              _GEN_10 = ~replaceWayReg & _GEN_9;
+  wire              _GEN_11 = io_in_bits_addr[7:4] == 4'h2;
+  wire              _GEN_12 = ~replaceWayReg & _GEN_11;
+  wire              _GEN_13 = io_in_bits_addr[7:4] == 4'h3;
+  wire              _GEN_14 = ~replaceWayReg & _GEN_13;
+  wire              _GEN_15 = io_in_bits_addr[7:4] == 4'h4;
+  wire              _GEN_16 = ~replaceWayReg & _GEN_15;
+  wire              _GEN_17 = io_in_bits_addr[7:4] == 4'h5;
+  wire              _GEN_18 = ~replaceWayReg & _GEN_17;
+  wire              _GEN_19 = io_in_bits_addr[7:4] == 4'h6;
+  wire              _GEN_20 = ~replaceWayReg & _GEN_19;
+  wire              _GEN_21 = io_in_bits_addr[7:4] == 4'h7;
+  wire              _GEN_22 = ~replaceWayReg & _GEN_21;
+  wire              _GEN_23 = io_in_bits_addr[7:4] == 4'h8;
+  wire              _GEN_24 = ~replaceWayReg & _GEN_23;
+  wire              _GEN_25 = io_in_bits_addr[7:4] == 4'h9;
+  wire              _GEN_26 = ~replaceWayReg & _GEN_25;
+  wire              _GEN_27 = io_in_bits_addr[7:4] == 4'hA;
+  wire              _GEN_28 = ~replaceWayReg & _GEN_27;
+  wire              _GEN_29 = io_in_bits_addr[7:4] == 4'hB;
+  wire              _GEN_30 = ~replaceWayReg & _GEN_29;
+  wire              _GEN_31 = io_in_bits_addr[7:4] == 4'hC;
+  wire              _GEN_32 = ~replaceWayReg & _GEN_31;
+  wire              _GEN_33 = io_in_bits_addr[7:4] == 4'hD;
+  wire              _GEN_34 = ~replaceWayReg & _GEN_33;
+  wire              _GEN_35 = io_in_bits_addr[7:4] == 4'hE;
+  wire              _GEN_36 = ~replaceWayReg & _GEN_35;
+  wire              _GEN_37 = ~replaceWayReg & (&(io_in_bits_addr[7:4]));
+  wire              _GEN_38 = replaceWayReg & _GEN_7;
+  wire              _GEN_39 = replaceWayReg & _GEN_9;
+  wire              _GEN_40 = replaceWayReg & _GEN_11;
+  wire              _GEN_41 = replaceWayReg & _GEN_13;
+  wire              _GEN_42 = replaceWayReg & _GEN_15;
+  wire              _GEN_43 = replaceWayReg & _GEN_17;
+  wire              _GEN_44 = replaceWayReg & _GEN_19;
+  wire              _GEN_45 = replaceWayReg & _GEN_21;
+  wire              _GEN_46 = replaceWayReg & _GEN_23;
+  wire              _GEN_47 = replaceWayReg & _GEN_25;
+  wire              _GEN_48 = replaceWayReg & _GEN_27;
+  wire              _GEN_49 = replaceWayReg & _GEN_29;
+  wire              _GEN_50 = replaceWayReg & _GEN_31;
+  wire              _GEN_51 = replaceWayReg & _GEN_33;
+  wire              _GEN_52 = replaceWayReg & _GEN_35;
+  wire              _GEN_53 = replaceWayReg & (&(io_in_bits_addr[7:4]));
   always @(posedge clock) begin
     if (reset) begin
       replaceWayReg <= 1'h0;
@@ -2226,111 +2227,147 @@ module CacheStage1(
       stateCache <= 3'h0;
     end
     else begin
-      if ((|stateCache) & _GEN_5)
+      if ((|stateCache) & _GEN_6)
         replaceWayReg <= randomNum;
       randomNum <= randomNum - 1'h1;
-      if (_GEN_7)
+      if ((&entryOff) & _GEN_8)
         tagArray_0_0 <= io_in_bits_addr[31:8];
-      if (_GEN_9)
+      if ((&entryOff) & _GEN_10)
         tagArray_0_1 <= io_in_bits_addr[31:8];
-      if (_GEN_11)
+      if ((&entryOff) & _GEN_12)
         tagArray_0_2 <= io_in_bits_addr[31:8];
-      if (_GEN_13)
+      if ((&entryOff) & _GEN_14)
         tagArray_0_3 <= io_in_bits_addr[31:8];
-      if (_GEN_15)
+      if ((&entryOff) & _GEN_16)
         tagArray_0_4 <= io_in_bits_addr[31:8];
-      if (_GEN_17)
+      if ((&entryOff) & _GEN_18)
         tagArray_0_5 <= io_in_bits_addr[31:8];
-      if (_GEN_19)
+      if ((&entryOff) & _GEN_20)
         tagArray_0_6 <= io_in_bits_addr[31:8];
-      if (_GEN_21)
+      if ((&entryOff) & _GEN_22)
         tagArray_0_7 <= io_in_bits_addr[31:8];
-      if (_GEN_23)
+      if ((&entryOff) & _GEN_24)
         tagArray_0_8 <= io_in_bits_addr[31:8];
-      if (_GEN_25)
+      if ((&entryOff) & _GEN_26)
         tagArray_0_9 <= io_in_bits_addr[31:8];
-      if (_GEN_27)
+      if ((&entryOff) & _GEN_28)
         tagArray_0_10 <= io_in_bits_addr[31:8];
-      if (_GEN_29)
+      if ((&entryOff) & _GEN_30)
         tagArray_0_11 <= io_in_bits_addr[31:8];
-      if (_GEN_31)
+      if ((&entryOff) & _GEN_32)
         tagArray_0_12 <= io_in_bits_addr[31:8];
-      if (_GEN_33)
+      if ((&entryOff) & _GEN_34)
         tagArray_0_13 <= io_in_bits_addr[31:8];
-      if (_GEN_35)
+      if ((&entryOff) & _GEN_36)
         tagArray_0_14 <= io_in_bits_addr[31:8];
-      if (_GEN_36)
+      if ((&entryOff) & _GEN_37)
         tagArray_0_15 <= io_in_bits_addr[31:8];
-      if (_GEN_37)
+      if ((&entryOff) & _GEN_38)
         tagArray_1_0 <= io_in_bits_addr[31:8];
-      if (_GEN_38)
+      if ((&entryOff) & _GEN_39)
         tagArray_1_1 <= io_in_bits_addr[31:8];
-      if (_GEN_39)
+      if ((&entryOff) & _GEN_40)
         tagArray_1_2 <= io_in_bits_addr[31:8];
-      if (_GEN_40)
+      if ((&entryOff) & _GEN_41)
         tagArray_1_3 <= io_in_bits_addr[31:8];
-      if (_GEN_41)
+      if ((&entryOff) & _GEN_42)
         tagArray_1_4 <= io_in_bits_addr[31:8];
-      if (_GEN_42)
+      if ((&entryOff) & _GEN_43)
         tagArray_1_5 <= io_in_bits_addr[31:8];
-      if (_GEN_43)
+      if ((&entryOff) & _GEN_44)
         tagArray_1_6 <= io_in_bits_addr[31:8];
-      if (_GEN_44)
+      if ((&entryOff) & _GEN_45)
         tagArray_1_7 <= io_in_bits_addr[31:8];
-      if (_GEN_45)
+      if ((&entryOff) & _GEN_46)
         tagArray_1_8 <= io_in_bits_addr[31:8];
-      if (_GEN_46)
+      if ((&entryOff) & _GEN_47)
         tagArray_1_9 <= io_in_bits_addr[31:8];
-      if (_GEN_47)
+      if ((&entryOff) & _GEN_48)
         tagArray_1_10 <= io_in_bits_addr[31:8];
-      if (_GEN_48)
+      if ((&entryOff) & _GEN_49)
         tagArray_1_11 <= io_in_bits_addr[31:8];
-      if (_GEN_49)
+      if ((&entryOff) & _GEN_50)
         tagArray_1_12 <= io_in_bits_addr[31:8];
-      if (_GEN_50)
+      if ((&entryOff) & _GEN_51)
         tagArray_1_13 <= io_in_bits_addr[31:8];
-      if (_GEN_51)
+      if ((&entryOff) & _GEN_52)
         tagArray_1_14 <= io_in_bits_addr[31:8];
-      if (_GEN_52)
+      if ((&entryOff) & _GEN_53)
         tagArray_1_15 <= io_in_bits_addr[31:8];
-      validArray_0_0 <= _GEN_7 | validArray_0_0;
-      validArray_0_1 <= _GEN_9 | validArray_0_1;
-      validArray_0_2 <= _GEN_11 | validArray_0_2;
-      validArray_0_3 <= _GEN_13 | validArray_0_3;
-      validArray_0_4 <= _GEN_15 | validArray_0_4;
-      validArray_0_5 <= _GEN_17 | validArray_0_5;
-      validArray_0_6 <= _GEN_19 | validArray_0_6;
-      validArray_0_7 <= _GEN_21 | validArray_0_7;
-      validArray_0_8 <= _GEN_23 | validArray_0_8;
-      validArray_0_9 <= _GEN_25 | validArray_0_9;
-      validArray_0_10 <= _GEN_27 | validArray_0_10;
-      validArray_0_11 <= _GEN_29 | validArray_0_11;
-      validArray_0_12 <= _GEN_31 | validArray_0_12;
-      validArray_0_13 <= _GEN_33 | validArray_0_13;
-      validArray_0_14 <= _GEN_35 | validArray_0_14;
-      validArray_0_15 <= _GEN_36 | validArray_0_15;
-      validArray_1_0 <= _GEN_37 | validArray_1_0;
-      validArray_1_1 <= _GEN_38 | validArray_1_1;
-      validArray_1_2 <= _GEN_39 | validArray_1_2;
-      validArray_1_3 <= _GEN_40 | validArray_1_3;
-      validArray_1_4 <= _GEN_41 | validArray_1_4;
-      validArray_1_5 <= _GEN_42 | validArray_1_5;
-      validArray_1_6 <= _GEN_43 | validArray_1_6;
-      validArray_1_7 <= _GEN_44 | validArray_1_7;
-      validArray_1_8 <= _GEN_45 | validArray_1_8;
-      validArray_1_9 <= _GEN_46 | validArray_1_9;
-      validArray_1_10 <= _GEN_47 | validArray_1_10;
-      validArray_1_11 <= _GEN_48 | validArray_1_11;
-      validArray_1_12 <= _GEN_49 | validArray_1_12;
-      validArray_1_13 <= _GEN_50 | validArray_1_13;
-      validArray_1_14 <= _GEN_51 | validArray_1_14;
-      validArray_1_15 <= _GEN_52 | validArray_1_15;
+      if (&entryOff) begin
+        validArray_0_0 <= _GEN_8 | validArray_0_0;
+        validArray_0_1 <= _GEN_10 | validArray_0_1;
+        validArray_0_2 <= _GEN_12 | validArray_0_2;
+        validArray_0_3 <= _GEN_14 | validArray_0_3;
+        validArray_0_4 <= _GEN_16 | validArray_0_4;
+        validArray_0_5 <= _GEN_18 | validArray_0_5;
+        validArray_0_6 <= _GEN_20 | validArray_0_6;
+        validArray_0_7 <= _GEN_22 | validArray_0_7;
+        validArray_0_8 <= _GEN_24 | validArray_0_8;
+        validArray_0_9 <= _GEN_26 | validArray_0_9;
+        validArray_0_10 <= _GEN_28 | validArray_0_10;
+        validArray_0_11 <= _GEN_30 | validArray_0_11;
+        validArray_0_12 <= _GEN_32 | validArray_0_12;
+        validArray_0_13 <= _GEN_34 | validArray_0_13;
+        validArray_0_14 <= _GEN_36 | validArray_0_14;
+        validArray_0_15 <= _GEN_37 | validArray_0_15;
+        validArray_1_0 <= _GEN_38 | validArray_1_0;
+        validArray_1_1 <= _GEN_39 | validArray_1_1;
+        validArray_1_2 <= _GEN_40 | validArray_1_2;
+        validArray_1_3 <= _GEN_41 | validArray_1_3;
+        validArray_1_4 <= _GEN_42 | validArray_1_4;
+        validArray_1_5 <= _GEN_43 | validArray_1_5;
+        validArray_1_6 <= _GEN_44 | validArray_1_6;
+        validArray_1_7 <= _GEN_45 | validArray_1_7;
+        validArray_1_8 <= _GEN_46 | validArray_1_8;
+        validArray_1_9 <= _GEN_47 | validArray_1_9;
+        validArray_1_10 <= _GEN_48 | validArray_1_10;
+        validArray_1_11 <= _GEN_49 | validArray_1_11;
+        validArray_1_12 <= _GEN_50 | validArray_1_12;
+        validArray_1_13 <= _GEN_51 | validArray_1_13;
+        validArray_1_14 <= _GEN_52 | validArray_1_14;
+        validArray_1_15 <= _GEN_53 | validArray_1_15;
+      end
+      else begin
+        validArray_0_0 <= ~(_GEN_4 & _GEN_8) & validArray_0_0;
+        validArray_0_1 <= ~(_GEN_4 & _GEN_10) & validArray_0_1;
+        validArray_0_2 <= ~(_GEN_4 & _GEN_12) & validArray_0_2;
+        validArray_0_3 <= ~(_GEN_4 & _GEN_14) & validArray_0_3;
+        validArray_0_4 <= ~(_GEN_4 & _GEN_16) & validArray_0_4;
+        validArray_0_5 <= ~(_GEN_4 & _GEN_18) & validArray_0_5;
+        validArray_0_6 <= ~(_GEN_4 & _GEN_20) & validArray_0_6;
+        validArray_0_7 <= ~(_GEN_4 & _GEN_22) & validArray_0_7;
+        validArray_0_8 <= ~(_GEN_4 & _GEN_24) & validArray_0_8;
+        validArray_0_9 <= ~(_GEN_4 & _GEN_26) & validArray_0_9;
+        validArray_0_10 <= ~(_GEN_4 & _GEN_28) & validArray_0_10;
+        validArray_0_11 <= ~(_GEN_4 & _GEN_30) & validArray_0_11;
+        validArray_0_12 <= ~(_GEN_4 & _GEN_32) & validArray_0_12;
+        validArray_0_13 <= ~(_GEN_4 & _GEN_34) & validArray_0_13;
+        validArray_0_14 <= ~(_GEN_4 & _GEN_36) & validArray_0_14;
+        validArray_0_15 <= ~(_GEN_4 & _GEN_37) & validArray_0_15;
+        validArray_1_0 <= ~(_GEN_4 & _GEN_38) & validArray_1_0;
+        validArray_1_1 <= ~(_GEN_4 & _GEN_39) & validArray_1_1;
+        validArray_1_2 <= ~(_GEN_4 & _GEN_40) & validArray_1_2;
+        validArray_1_3 <= ~(_GEN_4 & _GEN_41) & validArray_1_3;
+        validArray_1_4 <= ~(_GEN_4 & _GEN_42) & validArray_1_4;
+        validArray_1_5 <= ~(_GEN_4 & _GEN_43) & validArray_1_5;
+        validArray_1_6 <= ~(_GEN_4 & _GEN_44) & validArray_1_6;
+        validArray_1_7 <= ~(_GEN_4 & _GEN_45) & validArray_1_7;
+        validArray_1_8 <= ~(_GEN_4 & _GEN_46) & validArray_1_8;
+        validArray_1_9 <= ~(_GEN_4 & _GEN_47) & validArray_1_9;
+        validArray_1_10 <= ~(_GEN_4 & _GEN_48) & validArray_1_10;
+        validArray_1_11 <= ~(_GEN_4 & _GEN_49) & validArray_1_11;
+        validArray_1_12 <= ~(_GEN_4 & _GEN_50) & validArray_1_12;
+        validArray_1_13 <= ~(_GEN_4 & _GEN_51) & validArray_1_13;
+        validArray_1_14 <= ~(_GEN_4 & _GEN_52) & validArray_1_14;
+        validArray_1_15 <= ~(_GEN_4 & _GEN_53) & validArray_1_15;
+      end
       if (io_flush) begin
         entryOff <= 2'h0;
         stateCache <= 3'h0;
       end
       else if (|stateCache) begin
-        if (_GEN_5) begin
+        if (_GEN_6) begin
           entryOff <= 2'h0;
           if (io_mem_req_ready & _io_mem_req_valid_output)
             stateCache <= 3'h2;
@@ -2338,9 +2375,9 @@ module CacheStage1(
             stateCache <= 3'h1;
         end
         else begin
-          if (_GEN_4 & _io_mem_resp_ready_T_1 & io_mem_resp_valid)
+          if (_GEN_5 & _io_mem_resp_ready_T_1 & io_mem_resp_valid)
             entryOff <= entryOff + 2'h1;
-          if (_GEN_4) begin
+          if (_GEN_5) begin
             if (&entryOff)
               stateCache <= 3'h4;
             else
