@@ -1699,12 +1699,9 @@ module WBU(
                 to_IFU_bits_redirect_valid,
   output [31:0] to_IFU_bits_redirect_target,
   output        wb,
-                is_mmio,
-                to_IFU_bits_redirect_valid__bore
+                is_mmio
 );
 
-  wire             _to_IFU_bits_redirect_valid_output =
-    from_EXU_bits_redirect_valid & from_EXU_valid;
   wire [7:0][31:0] _GEN =
     {{32'h0},
      {32'h0},
@@ -1745,11 +1742,10 @@ module WBU(
   assign to_ISU_bits_hazard_have_wb = ~from_EXU_valid;
   assign to_ISU_bits_hazard_isBR =
     from_EXU_bits_fu_op == 3'h3 | from_EXU_bits_fu_op == 3'h5;
-  assign to_IFU_bits_redirect_valid = _to_IFU_bits_redirect_valid_output;
+  assign to_IFU_bits_redirect_valid = from_EXU_bits_redirect_valid & from_EXU_valid;
   assign to_IFU_bits_redirect_target = from_EXU_bits_redirect_target;
   assign wb = from_EXU_valid;
   assign is_mmio = from_EXU_bits_is_mmio;
-  assign to_IFU_bits_redirect_valid__bore = _to_IFU_bits_redirect_valid_output;
 endmodule
 
 module IFU_pipeline(
@@ -1798,17 +1794,14 @@ module AXI4RAM(
                 reset,
                 axi_ar_valid,
   input  [31:0] axi_ar_bits_addr,
-  input  [7:0]  axi_ar_bits_len,
   input         axi_aw_valid,
   input  [31:0] axi_aw_bits_addr,
-  input  [7:0]  axi_aw_bits_len,
   input         axi_w_valid,
   input  [31:0] axi_w_bits_data,
   output        axi_ar_ready,
                 axi_r_valid,
   output [31:0] axi_r_bits_data,
-  output        axi_r_bits_last,
-                axi_aw_ready,
+  output        axi_aw_ready,
                 axi_w_ready
 );
 
@@ -1825,34 +1818,35 @@ module AXI4RAM(
     (&state_sram) | _axi_w_ready_T_2 | state_sram == 3'h5;
   wire             _GEN = _axi_aw_ready_output & axi_ar_valid;
   wire             _GEN_0 = _axi_aw_ready_output & axi_aw_valid;
-  wire             _GEN_1 = state_sram == 3'h3;
-  wire             _GEN_2 = state_sram == 3'h4;
-  wire             _GEN_3 = state_sram == 3'h6;
+  wire             _GEN_1 = _GEN | _GEN_0;
+  wire             _GEN_2 = state_sram == 3'h3;
+  wire             _GEN_3 = state_sram == 3'h4;
+  wire             _GEN_4 = state_sram == 3'h6;
   wire             _reg_addr_T_4 = _axi_w_ready_output & axi_w_valid;
-  wire             _GEN_4 = _GEN_1 | _GEN_2 | state_sram == 3'h5;
-  wire [7:0]       _GEN_5 =
-    _GEN_4 | ~(_GEN_3 & _reg_addr_T_4) ? reg_AxLen : reg_AxLen - 8'h1;
-  wire [31:0]      _GEN_6 =
-    _GEN_4 | ~(_GEN_3 & reg_burst == 2'h1 & _reg_addr_T_4) ? reg_addr : reg_addr + 32'h4;
-  wire [7:0][7:0]  _GEN_7 =
-    {{_GEN_5},
-     {_GEN_5},
+  wire             _GEN_5 = _GEN_2 | _GEN_3 | state_sram == 3'h5;
+  wire [7:0]       _GEN_6 =
+    _GEN_5 | ~(_GEN_4 & _reg_addr_T_4) ? reg_AxLen : reg_AxLen - 8'h1;
+  wire [31:0]      _GEN_7 =
+    _GEN_5 | ~(_GEN_4 & reg_burst == 2'h1 & _reg_addr_T_4) ? reg_addr : reg_addr + 32'h4;
+  wire [7:0][7:0]  _GEN_8 =
+    {{_GEN_6},
+     {_GEN_6},
      {reg_AxLen},
      {reg_AxLen},
      {reg_AxLen},
      {reg_AxLen - 8'h1},
      {reg_AxLen},
-     {_GEN ? axi_ar_bits_len : _GEN_0 ? axi_aw_bits_len : reg_AxLen}};
-  wire [7:0][31:0] _GEN_8 =
-    {{_GEN_6},
-     {_GEN_6},
+     {_GEN_1 ? 8'h3 : reg_AxLen}};
+  wire [7:0][31:0] _GEN_9 =
+    {{_GEN_7},
+     {_GEN_7},
      {reg_addr},
      {reg_addr},
      {reg_addr},
      {reg_burst == 2'h1 ? reg_addr + 32'h4 : reg_addr},
      {reg_addr},
      {_GEN ? axi_ar_bits_addr : _GEN_0 ? axi_aw_bits_addr : reg_addr}};
-  wire [7:0][2:0]  _GEN_9 =
+  wire [7:0][2:0]  _GEN_10 =
     {{3'h0},
      {{2'h3, reg_AxLen == 8'h1}},
      {{2'h3, ~(|reg_AxLen)}},
@@ -1874,12 +1868,12 @@ module AXI4RAM(
         ~_axi_aw_ready_output
         & (state_sram == 3'h1
              ? delay - 1'h1
-             : state_sram == 3'h2 | _GEN_1 | ~_GEN_2 ? delay : delay - 1'h1);
-      reg_AxLen <= _GEN_7[state_sram];
-      reg_addr <= _GEN_8[state_sram];
-      if (_axi_aw_ready_output & (_GEN | _GEN_0))
+             : state_sram == 3'h2 | _GEN_2 | ~_GEN_3 ? delay : delay - 1'h1);
+      reg_AxLen <= _GEN_8[state_sram];
+      reg_addr <= _GEN_9[state_sram];
+      if (_axi_aw_ready_output & _GEN_1)
         reg_burst <= 2'h1;
-      state_sram <= _GEN_9[state_sram];
+      state_sram <= _GEN_10[state_sram];
     end
   end // always @(posedge)
   RamBB RamBB_i1 (
@@ -1893,7 +1887,6 @@ module AXI4RAM(
   );
   assign axi_ar_ready = _axi_aw_ready_output;
   assign axi_r_valid = _axi_r_valid_T_2 | _axi_r_valid_T_1;
-  assign axi_r_bits_last = state_sram == 3'h3;
   assign axi_aw_ready = _axi_aw_ready_output;
   assign axi_w_ready = _axi_w_ready_output;
 endmodule
@@ -1963,6 +1956,9 @@ module CacheStage1(
                 reset,
                 io_in_valid,
   input  [31:0] io_in_bits_addr,
+                io_in_bits_wdata,
+                io_in_bits_wmask,
+  input  [3:0]  io_in_bits_cmd,
   input         io_mem_req_ready,
                 io_mem_resp_valid,
   input  [31:0] io_mem_resp_bits_rdata,
@@ -1975,7 +1971,9 @@ module CacheStage1(
   output [3:0]  io_mem_req_bits_cmd,
   output        io_out_valid,
   output [31:0] io_out_bits_addr,
+  output        io_out_bits_is_write,
   output [6:0]  io_out_bits_waddr,
+  output [3:0]  io_out_bits_wmask,
   output [31:0] io_out_bits_wdata,
   output        io_dataReadBus_req_valid,
   output [6:0]  io_dataReadBus_req_bits_raddr,
@@ -2127,7 +2125,8 @@ module CacheStage1(
   reg  [1:0]        entryOff;
   reg  [2:0]        stateCache;
   wire [6:0]        writeCacheAddr = {replaceWayReg, io_in_bits_addr[7:4], entryOff};
-  wire [94:0]       _io_out_bits_wdata_T_1 = 95'h0 << {90'h0, io_in_bits_addr[1:0], 3'h0};
+  wire [94:0]       _io_out_bits_wdata_T_1 =
+    {63'h0, io_in_bits_wdata} << {90'h0, io_in_bits_addr[1:0], 3'h0};
   wire              _io_mem_req_bits_addr_T_7 = stateCache == 3'h2;
   wire              _io_mem_req_bits_cmd_T_4 = stateCache == 3'h4;
   wire              _GEN_4 = _io_mem_req_bits_cmd_T_4 | _io_mem_req_bits_addr_T_7;
@@ -2532,7 +2531,9 @@ module CacheStage1(
        : _io_mem_req_bits_addr_T_7 ? 3'h4 : {2'h0, _io_mem_req_bits_addr_T_5}};
   assign io_out_valid = hit;
   assign io_out_bits_addr = io_in_bits_addr;
+  assign io_out_bits_is_write = io_in_bits_cmd == 4'h2;
   assign io_out_bits_waddr = hitCacheAddr;
+  assign io_out_bits_wmask = io_in_bits_wmask[3:0];
   assign io_out_bits_wdata = _io_out_bits_wdata_T_1[31:0];
   assign io_dataReadBus_req_valid =
     io_in_valid | _io_mem_req_bits_cmd_T_4 | _io_mem_req_bits_addr_T_7;
@@ -2629,7 +2630,9 @@ module Cache(
   wire [31:0] _s2_io_dataWriteBus_req_bits_wdata;
   wire        _s1_io_out_valid;
   wire [31:0] _s1_io_out_bits_addr;
+  wire        _s1_io_out_bits_is_write;
   wire [6:0]  _s1_io_out_bits_waddr;
+  wire [3:0]  _s1_io_out_bits_wmask;
   wire [31:0] _s1_io_out_bits_wdata;
   wire        _s1_io_dataReadBus_req_valid;
   wire [6:0]  _s1_io_dataReadBus_req_bits_raddr;
@@ -2655,16 +2658,17 @@ module Cache(
       if (io_flush) begin
         s2_io_in_bits_r_addr <= 32'h0;
         s2_io_in_bits_r_waddr <= 7'h0;
+        s2_io_in_bits_r_wmask <= 4'h0;
         s2_io_in_bits_r_wdata <= 32'h0;
       end
       else begin
         s2_io_in_bits_r_addr <= _s1_io_out_bits_addr;
         s2_io_in_bits_r_waddr <= _s1_io_out_bits_waddr;
+        s2_io_in_bits_r_wmask <= _s1_io_out_bits_wmask;
         s2_io_in_bits_r_wdata <= _s1_io_out_bits_wdata;
       end
-      s2_io_in_bits_r_wmask <= 4'h0;
+      s2_io_in_bits_r_is_write <= ~io_flush & _s1_io_out_bits_is_write;
     end
-    s2_io_in_bits_r_is_write <= ~_s2_io_in_bits_T_1 & s2_io_in_bits_r_is_write;
   end // always @(posedge)
   SRAMTemplate dataArray (
     .clock               (clock),
@@ -2681,6 +2685,9 @@ module Cache(
     .reset                          (reset),
     .io_in_valid                    (io_in_req_valid),
     .io_in_bits_addr                (io_in_req_bits_addr),
+    .io_in_bits_wdata               (32'h0),
+    .io_in_bits_wmask               (32'h0),
+    .io_in_bits_cmd                 (4'h1),
     .io_mem_req_ready               (io_mem_req_ready),
     .io_mem_resp_valid              (io_mem_resp_valid),
     .io_mem_resp_bits_rdata         (io_mem_resp_bits_rdata),
@@ -2693,7 +2700,9 @@ module Cache(
     .io_mem_req_bits_cmd            (io_mem_req_bits_cmd),
     .io_out_valid                   (_s1_io_out_valid),
     .io_out_bits_addr               (_s1_io_out_bits_addr),
+    .io_out_bits_is_write           (_s1_io_out_bits_is_write),
     .io_out_bits_waddr              (_s1_io_out_bits_waddr),
+    .io_out_bits_wmask              (_s1_io_out_bits_wmask),
     .io_out_bits_wdata              (_s1_io_out_bits_wdata),
     .io_dataReadBus_req_valid       (_s1_io_dataReadBus_req_valid),
     .io_dataReadBus_req_bits_raddr  (_s1_io_dataReadBus_req_bits_raddr),
@@ -2791,7 +2800,8 @@ module SimpleBusCrossBar1toN(
                 io_out_0_req_bits_wdata,
                 io_out_0_req_bits_wmask,
   output [3:0]  io_out_0_req_bits_cmd,
-  output        io_out_1_req_valid,
+  output        io_out_0_resp_ready,
+                io_out_1_req_valid,
   output [31:0] io_out_1_req_bits_addr,
                 io_out_1_req_bits_wdata,
                 io_out_1_req_bits_wmask,
@@ -2806,8 +2816,9 @@ module SimpleBusCrossBar1toN(
   reg        outSelRespVec_0;
   reg        outSelRespVec_1;
   wire       reqInvalidAddr = io_in_req_valid & outSelVec_enc == 2'h0;
+  wire       _io_out_1_resp_ready_T_1 = state == 2'h1;
   wire       _io_in_resp_valid_output =
-    (outSelRespVec_0 & io_out_0_resp_valid | outSelRespVec_1) & state == 2'h1
+    (outSelRespVec_0 & io_out_0_resp_valid | outSelRespVec_1) & _io_out_1_resp_ready_T_1
     | state == 2'h2;
   wire       _outSelRespVec_T =
     ((outSelVec_enc[0] & io_out_0_req_ready | outSelVec_enc[1]) & ~(|state)
@@ -2842,6 +2853,7 @@ module SimpleBusCrossBar1toN(
   assign io_out_0_req_bits_wdata = io_in_req_bits_wdata;
   assign io_out_0_req_bits_wmask = io_in_req_bits_wmask;
   assign io_out_0_req_bits_cmd = io_in_req_bits_cmd;
+  assign io_out_0_resp_ready = outSelRespVec_0 & _io_out_1_resp_ready_T_1;
   assign io_out_1_req_valid = outSelVec_enc[1] & io_in_req_valid & ~(|state);
   assign io_out_1_req_bits_addr = io_in_req_bits_addr;
   assign io_out_1_req_bits_wdata = io_in_req_bits_wdata;
@@ -2849,660 +2861,172 @@ module SimpleBusCrossBar1toN(
   assign io_out_1_req_bits_cmd = io_in_req_bits_cmd;
 endmodule
 
-// VCS coverage exclude_file
-module dataArray_256x32(
-  input  [7:0]  R0_addr,
-  input         R0_en,
-                R0_clk,
-  input  [7:0]  R1_addr,
-  input         R1_en,
-                R1_clk,
-  input  [7:0]  W0_addr,
-  input         W0_en,
-                W0_clk,
-  input  [31:0] W0_data,
-  input  [7:0]  W1_addr,
-  input         W1_en,
-                W1_clk,
-  input  [31:0] W1_data,
-  output [31:0] R0_data,
-                R1_data
+module CacheStage2_1(
+  input         io_in_valid,
+                io_in_bits_is_write,
+  input  [6:0]  io_in_bits_waddr,
+  input  [3:0]  io_in_bits_wmask,
+  input  [31:0] io_in_bits_wdata,
+                io_dataReadBus_rdata,
+  input         io_out_resp_ready,
+  output        io_in_ready,
+                io_out_resp_valid,
+  output [31:0] io_out_resp_bits_rdata,
+  output        io_dataWriteBus_req_valid,
+  output [6:0]  io_dataWriteBus_req_bits_waddr,
+  output [31:0] io_dataWriteBus_req_bits_wdata
 );
 
-  reg [31:0] Memory[0:255];
-  reg        _R0_en_d0;
-  reg [7:0]  _R0_addr_d0;
-  always @(posedge R0_clk) begin
-    _R0_en_d0 <= R0_en;
-    _R0_addr_d0 <= R0_addr;
-  end // always @(posedge)
-  reg        _R1_en_d0;
-  reg [7:0]  _R1_addr_d0;
-  always @(posedge R1_clk) begin
-    _R1_en_d0 <= R1_en;
-    _R1_addr_d0 <= R1_addr;
-  end // always @(posedge)
-  always @(posedge W0_clk) begin
-    if (W0_en)
-      Memory[W0_addr] <= W0_data;
-    if (W1_en)
-      Memory[W1_addr] <= W1_data;
-  end // always @(posedge)
-  assign R0_data = _R0_en_d0 ? Memory[_R0_addr_d0] : 32'bx;
-  assign R1_data = _R1_en_d0 ? Memory[_R1_addr_d0] : 32'bx;
+  wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
+    {{8{io_in_bits_wmask[3]}},
+     {8{io_in_bits_wmask[2]}},
+     {8{io_in_bits_wmask[1]}},
+     {8{io_in_bits_wmask[0]}}};
+  assign io_in_ready = io_out_resp_ready;
+  assign io_out_resp_valid = io_in_valid & ~io_in_bits_is_write;
+  assign io_out_resp_bits_rdata = io_in_valid ? io_dataReadBus_rdata : 32'h0;
+  assign io_dataWriteBus_req_valid = io_in_valid & io_in_bits_is_write;
+  assign io_dataWriteBus_req_bits_waddr = io_in_bits_waddr;
+  assign io_dataWriteBus_req_bits_wdata =
+    io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
+    & ~_io_dataWriteBus_req_bits_wdata_T_12;
 endmodule
 
-module Dcache_SimpleBus(
+module Cache_1(
   input         clock,
                 reset,
-                from_lsu_req_valid,
-  input  [31:0] from_lsu_req_bits_addr,
-                from_lsu_req_bits_wdata,
-                from_lsu_req_bits_wmask,
-  input  [3:0]  from_lsu_req_bits_cmd,
-  input         to_sram_ar_ready,
-                to_sram_r_valid,
-  input  [31:0] to_sram_r_bits_data,
-  input         to_sram_r_bits_last,
-                to_sram_aw_ready,
-                to_sram_w_ready,
-                flush__bore,
-  output        from_lsu_req_ready,
-                from_lsu_resp_valid,
-  output [31:0] from_lsu_resp_bits_rdata,
-  output        to_sram_ar_valid,
-  output [31:0] to_sram_ar_bits_addr,
-  output [7:0]  to_sram_ar_bits_len,
-  output        to_sram_aw_valid,
-  output [31:0] to_sram_aw_bits_addr,
-  output [7:0]  to_sram_aw_bits_len,
-  output        to_sram_w_valid,
-  output [31:0] to_sram_w_bits_data
+                io_in_req_valid,
+  input  [31:0] io_in_req_bits_addr,
+                io_in_req_bits_wdata,
+                io_in_req_bits_wmask,
+  input  [3:0]  io_in_req_bits_cmd,
+  input         io_in_resp_ready,
+                io_mem_req_ready,
+                io_mem_resp_valid,
+  input  [31:0] io_mem_resp_bits_rdata,
+  input         io_flush,
+  output        io_in_req_ready,
+                io_in_resp_valid,
+  output [31:0] io_in_resp_bits_rdata,
+  output        io_mem_req_valid,
+  output [31:0] io_mem_req_bits_addr,
+                io_mem_req_bits_wdata,
+  output [3:0]  io_mem_req_bits_cmd
 );
 
-  wire              _to_sram_r_ready_T_1;
-  wire [31:0]       _dataArray_ext_R1_data;
-  reg               replace_set;
-  reg               random_num;
-  reg  [22:0]       tagArray_0_0;
-  reg  [22:0]       tagArray_0_1;
-  reg  [22:0]       tagArray_0_2;
-  reg  [22:0]       tagArray_0_3;
-  reg  [22:0]       tagArray_0_4;
-  reg  [22:0]       tagArray_0_5;
-  reg  [22:0]       tagArray_0_6;
-  reg  [22:0]       tagArray_0_7;
-  reg  [22:0]       tagArray_0_8;
-  reg  [22:0]       tagArray_0_9;
-  reg  [22:0]       tagArray_0_10;
-  reg  [22:0]       tagArray_0_11;
-  reg  [22:0]       tagArray_0_12;
-  reg  [22:0]       tagArray_0_13;
-  reg  [22:0]       tagArray_0_14;
-  reg  [22:0]       tagArray_0_15;
-  reg  [22:0]       tagArray_1_0;
-  reg  [22:0]       tagArray_1_1;
-  reg  [22:0]       tagArray_1_2;
-  reg  [22:0]       tagArray_1_3;
-  reg  [22:0]       tagArray_1_4;
-  reg  [22:0]       tagArray_1_5;
-  reg  [22:0]       tagArray_1_6;
-  reg  [22:0]       tagArray_1_7;
-  reg  [22:0]       tagArray_1_8;
-  reg  [22:0]       tagArray_1_9;
-  reg  [22:0]       tagArray_1_10;
-  reg  [22:0]       tagArray_1_11;
-  reg  [22:0]       tagArray_1_12;
-  reg  [22:0]       tagArray_1_13;
-  reg  [22:0]       tagArray_1_14;
-  reg  [22:0]       tagArray_1_15;
-  reg               validArray_0_0;
-  reg               validArray_0_1;
-  reg               validArray_0_2;
-  reg               validArray_0_3;
-  reg               validArray_0_4;
-  reg               validArray_0_5;
-  reg               validArray_0_6;
-  reg               validArray_0_7;
-  reg               validArray_0_8;
-  reg               validArray_0_9;
-  reg               validArray_0_10;
-  reg               validArray_0_11;
-  reg               validArray_0_12;
-  reg               validArray_0_13;
-  reg               validArray_0_14;
-  reg               validArray_0_15;
-  reg               validArray_1_0;
-  reg               validArray_1_1;
-  reg               validArray_1_2;
-  reg               validArray_1_3;
-  reg               validArray_1_4;
-  reg               validArray_1_5;
-  reg               validArray_1_6;
-  reg               validArray_1_7;
-  reg               validArray_1_8;
-  reg               validArray_1_9;
-  reg               validArray_1_10;
-  reg               validArray_1_11;
-  reg               validArray_1_12;
-  reg               validArray_1_13;
-  reg               validArray_1_14;
-  reg               validArray_1_15;
-  reg               dirtyArray_0_0;
-  reg               dirtyArray_0_1;
-  reg               dirtyArray_0_2;
-  reg               dirtyArray_0_3;
-  reg               dirtyArray_0_4;
-  reg               dirtyArray_0_5;
-  reg               dirtyArray_0_6;
-  reg               dirtyArray_0_7;
-  reg               dirtyArray_0_8;
-  reg               dirtyArray_0_9;
-  reg               dirtyArray_0_10;
-  reg               dirtyArray_0_11;
-  reg               dirtyArray_0_12;
-  reg               dirtyArray_0_13;
-  reg               dirtyArray_0_14;
-  reg               dirtyArray_0_15;
-  reg               dirtyArray_1_0;
-  reg               dirtyArray_1_1;
-  reg               dirtyArray_1_2;
-  reg               dirtyArray_1_3;
-  reg               dirtyArray_1_4;
-  reg               dirtyArray_1_5;
-  reg               dirtyArray_1_6;
-  reg               dirtyArray_1_7;
-  reg               dirtyArray_1_8;
-  reg               dirtyArray_1_9;
-  reg               dirtyArray_1_10;
-  reg               dirtyArray_1_11;
-  reg               dirtyArray_1_12;
-  reg               dirtyArray_1_13;
-  reg               dirtyArray_1_14;
-  reg               dirtyArray_1_15;
-  wire [15:0][22:0] _GEN =
-    {{tagArray_0_15},
-     {tagArray_0_14},
-     {tagArray_0_13},
-     {tagArray_0_12},
-     {tagArray_0_11},
-     {tagArray_0_10},
-     {tagArray_0_9},
-     {tagArray_0_8},
-     {tagArray_0_7},
-     {tagArray_0_6},
-     {tagArray_0_5},
-     {tagArray_0_4},
-     {tagArray_0_3},
-     {tagArray_0_2},
-     {tagArray_0_1},
-     {tagArray_0_0}};
-  wire [15:0]       _GEN_0 =
-    {{validArray_0_15},
-     {validArray_0_14},
-     {validArray_0_13},
-     {validArray_0_12},
-     {validArray_0_11},
-     {validArray_0_10},
-     {validArray_0_9},
-     {validArray_0_8},
-     {validArray_0_7},
-     {validArray_0_6},
-     {validArray_0_5},
-     {validArray_0_4},
-     {validArray_0_3},
-     {validArray_0_2},
-     {validArray_0_1},
-     {validArray_0_0}};
-  wire [15:0][22:0] _GEN_1 =
-    {{tagArray_1_15},
-     {tagArray_1_14},
-     {tagArray_1_13},
-     {tagArray_1_12},
-     {tagArray_1_11},
-     {tagArray_1_10},
-     {tagArray_1_9},
-     {tagArray_1_8},
-     {tagArray_1_7},
-     {tagArray_1_6},
-     {tagArray_1_5},
-     {tagArray_1_4},
-     {tagArray_1_3},
-     {tagArray_1_2},
-     {tagArray_1_1},
-     {tagArray_1_0}};
-  wire [22:0]       _GEN_2 = _GEN_1[from_lsu_req_bits_addr[8:5]];
-  wire [15:0]       _GEN_3 =
-    {{validArray_1_15},
-     {validArray_1_14},
-     {validArray_1_13},
-     {validArray_1_12},
-     {validArray_1_11},
-     {validArray_1_10},
-     {validArray_1_9},
-     {validArray_1_8},
-     {validArray_1_7},
-     {validArray_1_6},
-     {validArray_1_5},
-     {validArray_1_4},
-     {validArray_1_3},
-     {validArray_1_2},
-     {validArray_1_1},
-     {validArray_1_0}};
-  wire              hit =
-    from_lsu_req_bits_addr[31:9] == _GEN[from_lsu_req_bits_addr[8:5]]
-    & _GEN_0[from_lsu_req_bits_addr[8:5]] | from_lsu_req_bits_addr[31:9] == _GEN_2
-    & _GEN_3[from_lsu_req_bits_addr[8:5]];
-  wire              SetId = _GEN_2 == from_lsu_req_bits_addr[31:9];
-  wire [7:0]        hitCacheAddr = {SetId, from_lsu_req_bits_addr[8:2]};
-  reg  [2:0]        off;
-  reg  [3:0]        state_dcache;
-  wire              _from_lsu_req_ready_output = state_dcache == 4'h0;
-  wire              _GEN_4 = state_dcache == 4'h2;
-  wire              _GEN_5 =
-    state_dcache == 4'h8 & _to_sram_r_ready_T_1 & to_sram_r_valid;
-  wire [7:0]        replaceCacheAddr = {replace_set, from_lsu_req_bits_addr[8:5], off};
-  wire [94:0]       _indata_T_1 =
-    {63'h0, from_lsu_req_bits_wdata} << {90'h0, from_lsu_req_bits_addr[1:0], 3'h0};
-  wire [31:0]       _GEN_6 =
-    {{8{from_lsu_req_bits_wmask[3]}},
-     {8{from_lsu_req_bits_wmask[2]}},
-     {8{from_lsu_req_bits_wmask[1]}},
-     {8{from_lsu_req_bits_wmask[0]}}};
-  wire              _to_sram_ar_valid_output = state_dcache == 4'h7;
-  assign _to_sram_r_ready_T_1 = state_dcache == 4'h8;
-  wire              _to_sram_aw_valid_output = state_dcache == 4'h4;
-  wire [15:0][22:0] _GEN_7 = replace_set ? _GEN_1 : _GEN;
-  wire              _to_sram_w_valid_output = state_dcache == 4'h5;
-  wire              _GEN_8 =
-    _from_lsu_req_ready_output & from_lsu_req_valid & ~flush__bore;
-  wire              _GEN_9 = from_lsu_req_bits_addr[8:5] == 4'h0;
-  wire              _GEN_10 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_9;
-  wire              _GEN_11 = from_lsu_req_bits_addr[8:5] == 4'h1;
-  wire              _GEN_12 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_11;
-  wire              _GEN_13 = from_lsu_req_bits_addr[8:5] == 4'h2;
-  wire              _GEN_14 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_13;
-  wire              _GEN_15 = from_lsu_req_bits_addr[8:5] == 4'h3;
-  wire              _GEN_16 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_15;
-  wire              _GEN_17 = from_lsu_req_bits_addr[8:5] == 4'h4;
-  wire              _GEN_18 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_17;
-  wire              _GEN_19 = from_lsu_req_bits_addr[8:5] == 4'h5;
-  wire              _GEN_20 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_19;
-  wire              _GEN_21 = from_lsu_req_bits_addr[8:5] == 4'h6;
-  wire              _GEN_22 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_21;
-  wire              _GEN_23 = from_lsu_req_bits_addr[8:5] == 4'h7;
-  wire              _GEN_24 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_23;
-  wire              _GEN_25 = from_lsu_req_bits_addr[8:5] == 4'h8;
-  wire              _GEN_26 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_25;
-  wire              _GEN_27 = from_lsu_req_bits_addr[8:5] == 4'h9;
-  wire              _GEN_28 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_27;
-  wire              _GEN_29 = from_lsu_req_bits_addr[8:5] == 4'hA;
-  wire              _GEN_30 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_29;
-  wire              _GEN_31 = from_lsu_req_bits_addr[8:5] == 4'hB;
-  wire              _GEN_32 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_31;
-  wire              _GEN_33 = from_lsu_req_bits_addr[8:5] == 4'hC;
-  wire              _GEN_34 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_33;
-  wire              _GEN_35 = from_lsu_req_bits_addr[8:5] == 4'hD;
-  wire              _GEN_36 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_35;
-  wire              _GEN_37 = from_lsu_req_bits_addr[8:5] == 4'hE;
-  wire              _GEN_38 = _GEN_5 & to_sram_r_bits_last & ~replace_set & _GEN_37;
-  wire              _GEN_39 =
-    _GEN_5 & to_sram_r_bits_last & ~replace_set & (&(from_lsu_req_bits_addr[8:5]));
-  wire              _GEN_40 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_9;
-  wire              _GEN_41 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_11;
-  wire              _GEN_42 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_13;
-  wire              _GEN_43 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_15;
-  wire              _GEN_44 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_17;
-  wire              _GEN_45 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_19;
-  wire              _GEN_46 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_21;
-  wire              _GEN_47 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_23;
-  wire              _GEN_48 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_25;
-  wire              _GEN_49 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_27;
-  wire              _GEN_50 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_29;
-  wire              _GEN_51 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_31;
-  wire              _GEN_52 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_33;
-  wire              _GEN_53 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_35;
-  wire              _GEN_54 = _GEN_5 & to_sram_r_bits_last & replace_set & _GEN_37;
-  wire              _GEN_55 =
-    _GEN_5 & to_sram_r_bits_last & replace_set & (&(from_lsu_req_bits_addr[8:5]));
-  wire [15:0]       _GEN_56 =
-    replace_set
-      ? {{dirtyArray_1_15},
-         {dirtyArray_1_14},
-         {dirtyArray_1_13},
-         {dirtyArray_1_12},
-         {dirtyArray_1_11},
-         {dirtyArray_1_10},
-         {dirtyArray_1_9},
-         {dirtyArray_1_8},
-         {dirtyArray_1_7},
-         {dirtyArray_1_6},
-         {dirtyArray_1_5},
-         {dirtyArray_1_4},
-         {dirtyArray_1_3},
-         {dirtyArray_1_2},
-         {dirtyArray_1_1},
-         {dirtyArray_1_0}}
-      : {{dirtyArray_0_15},
-         {dirtyArray_0_14},
-         {dirtyArray_0_13},
-         {dirtyArray_0_12},
-         {dirtyArray_0_11},
-         {dirtyArray_0_10},
-         {dirtyArray_0_9},
-         {dirtyArray_0_8},
-         {dirtyArray_0_7},
-         {dirtyArray_0_6},
-         {dirtyArray_0_5},
-         {dirtyArray_0_4},
-         {dirtyArray_0_3},
-         {dirtyArray_0_2},
-         {dirtyArray_0_1},
-         {dirtyArray_0_0}};
-  wire [15:0][3:0]  _GEN_57 =
-    {{state_dcache},
-     {state_dcache},
-     {state_dcache},
-     {state_dcache},
-     {state_dcache},
-     {state_dcache},
-     {from_lsu_req_bits_cmd == 4'h2 ? 4'h2 : 4'h1},
-     {{3'h4, to_sram_r_bits_last}},
-     {to_sram_ar_ready & _to_sram_ar_valid_output ? 4'h8 : 4'h7},
-     {4'h7},
-     {(&off) ? 4'h6 : 4'h5},
-     {{3'h2, to_sram_aw_ready & _to_sram_aw_valid_output}},
-     {_GEN_56[from_lsu_req_bits_addr[8:5]] ? 4'h4 : 4'h7},
-     {4'h0},
-     {4'h0},
-     {_GEN_8 ? (hit ? (from_lsu_req_bits_cmd == 4'h2 ? 4'h2 : 4'h1) : 4'h3) : 4'h0}};
+  wire        _dataWriteArb_io_out_valid;
+  wire [6:0]  _dataWriteArb_io_out_bits_waddr;
+  wire [31:0] _dataWriteArb_io_out_bits_wdata;
+  wire        _s2_io_in_ready;
+  wire        _s2_io_out_resp_valid;
+  wire        _s2_io_dataWriteBus_req_valid;
+  wire [6:0]  _s2_io_dataWriteBus_req_bits_waddr;
+  wire [31:0] _s2_io_dataWriteBus_req_bits_wdata;
+  wire        _s1_io_out_valid;
+  wire        _s1_io_out_bits_is_write;
+  wire [6:0]  _s1_io_out_bits_waddr;
+  wire [3:0]  _s1_io_out_bits_wmask;
+  wire [31:0] _s1_io_out_bits_wdata;
+  wire        _s1_io_dataReadBus_req_valid;
+  wire [6:0]  _s1_io_dataReadBus_req_bits_raddr;
+  wire        _s1_io_dataWriteBus_req_valid;
+  wire [6:0]  _s1_io_dataWriteBus_req_bits_waddr;
+  wire [31:0] _s1_io_dataWriteBus_req_bits_wdata;
+  wire [31:0] _dataArray_io_r_resp_rdata;
+  reg         valid;
+  reg         s2_io_in_bits_r_is_write;
+  reg  [6:0]  s2_io_in_bits_r_waddr;
+  reg  [3:0]  s2_io_in_bits_r_wmask;
+  reg  [31:0] s2_io_in_bits_r_wdata;
+  wire        _s2_io_in_bits_T_1 = _s1_io_out_valid & _s2_io_in_ready;
   always @(posedge clock) begin
-    if (reset) begin
-      replace_set <= 1'h0;
-      random_num <= 1'h0;
-      tagArray_0_0 <= 23'h0;
-      tagArray_0_1 <= 23'h0;
-      tagArray_0_2 <= 23'h0;
-      tagArray_0_3 <= 23'h0;
-      tagArray_0_4 <= 23'h0;
-      tagArray_0_5 <= 23'h0;
-      tagArray_0_6 <= 23'h0;
-      tagArray_0_7 <= 23'h0;
-      tagArray_0_8 <= 23'h0;
-      tagArray_0_9 <= 23'h0;
-      tagArray_0_10 <= 23'h0;
-      tagArray_0_11 <= 23'h0;
-      tagArray_0_12 <= 23'h0;
-      tagArray_0_13 <= 23'h0;
-      tagArray_0_14 <= 23'h0;
-      tagArray_0_15 <= 23'h0;
-      tagArray_1_0 <= 23'h0;
-      tagArray_1_1 <= 23'h0;
-      tagArray_1_2 <= 23'h0;
-      tagArray_1_3 <= 23'h0;
-      tagArray_1_4 <= 23'h0;
-      tagArray_1_5 <= 23'h0;
-      tagArray_1_6 <= 23'h0;
-      tagArray_1_7 <= 23'h0;
-      tagArray_1_8 <= 23'h0;
-      tagArray_1_9 <= 23'h0;
-      tagArray_1_10 <= 23'h0;
-      tagArray_1_11 <= 23'h0;
-      tagArray_1_12 <= 23'h0;
-      tagArray_1_13 <= 23'h0;
-      tagArray_1_14 <= 23'h0;
-      tagArray_1_15 <= 23'h0;
-      validArray_0_0 <= 1'h0;
-      validArray_0_1 <= 1'h0;
-      validArray_0_2 <= 1'h0;
-      validArray_0_3 <= 1'h0;
-      validArray_0_4 <= 1'h0;
-      validArray_0_5 <= 1'h0;
-      validArray_0_6 <= 1'h0;
-      validArray_0_7 <= 1'h0;
-      validArray_0_8 <= 1'h0;
-      validArray_0_9 <= 1'h0;
-      validArray_0_10 <= 1'h0;
-      validArray_0_11 <= 1'h0;
-      validArray_0_12 <= 1'h0;
-      validArray_0_13 <= 1'h0;
-      validArray_0_14 <= 1'h0;
-      validArray_0_15 <= 1'h0;
-      validArray_1_0 <= 1'h0;
-      validArray_1_1 <= 1'h0;
-      validArray_1_2 <= 1'h0;
-      validArray_1_3 <= 1'h0;
-      validArray_1_4 <= 1'h0;
-      validArray_1_5 <= 1'h0;
-      validArray_1_6 <= 1'h0;
-      validArray_1_7 <= 1'h0;
-      validArray_1_8 <= 1'h0;
-      validArray_1_9 <= 1'h0;
-      validArray_1_10 <= 1'h0;
-      validArray_1_11 <= 1'h0;
-      validArray_1_12 <= 1'h0;
-      validArray_1_13 <= 1'h0;
-      validArray_1_14 <= 1'h0;
-      validArray_1_15 <= 1'h0;
-      dirtyArray_0_0 <= 1'h0;
-      dirtyArray_0_1 <= 1'h0;
-      dirtyArray_0_2 <= 1'h0;
-      dirtyArray_0_3 <= 1'h0;
-      dirtyArray_0_4 <= 1'h0;
-      dirtyArray_0_5 <= 1'h0;
-      dirtyArray_0_6 <= 1'h0;
-      dirtyArray_0_7 <= 1'h0;
-      dirtyArray_0_8 <= 1'h0;
-      dirtyArray_0_9 <= 1'h0;
-      dirtyArray_0_10 <= 1'h0;
-      dirtyArray_0_11 <= 1'h0;
-      dirtyArray_0_12 <= 1'h0;
-      dirtyArray_0_13 <= 1'h0;
-      dirtyArray_0_14 <= 1'h0;
-      dirtyArray_0_15 <= 1'h0;
-      dirtyArray_1_0 <= 1'h0;
-      dirtyArray_1_1 <= 1'h0;
-      dirtyArray_1_2 <= 1'h0;
-      dirtyArray_1_3 <= 1'h0;
-      dirtyArray_1_4 <= 1'h0;
-      dirtyArray_1_5 <= 1'h0;
-      dirtyArray_1_6 <= 1'h0;
-      dirtyArray_1_7 <= 1'h0;
-      dirtyArray_1_8 <= 1'h0;
-      dirtyArray_1_9 <= 1'h0;
-      dirtyArray_1_10 <= 1'h0;
-      dirtyArray_1_11 <= 1'h0;
-      dirtyArray_1_12 <= 1'h0;
-      dirtyArray_1_13 <= 1'h0;
-      dirtyArray_1_14 <= 1'h0;
-      dirtyArray_1_15 <= 1'h0;
-      off <= 3'h0;
-      state_dcache <= 4'h0;
-    end
-    else begin
-      if (~(_from_lsu_req_ready_output & _GEN_8) | hit) begin
+    if (reset)
+      valid <= 1'h0;
+    else
+      valid <=
+        ~io_flush
+        & (_s2_io_in_bits_T_1 | ~(io_in_resp_ready & _s2_io_out_resp_valid) & valid);
+    if (_s2_io_in_bits_T_1) begin
+      s2_io_in_bits_r_is_write <= ~io_flush & _s1_io_out_bits_is_write;
+      if (io_flush) begin
+        s2_io_in_bits_r_waddr <= 7'h0;
+        s2_io_in_bits_r_wmask <= 4'h0;
+        s2_io_in_bits_r_wdata <= 32'h0;
       end
-      else
-        replace_set <= random_num;
-      random_num <= random_num - 1'h1;
-      if (_GEN_10)
-        tagArray_0_0 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_12)
-        tagArray_0_1 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_14)
-        tagArray_0_2 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_16)
-        tagArray_0_3 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_18)
-        tagArray_0_4 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_20)
-        tagArray_0_5 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_22)
-        tagArray_0_6 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_24)
-        tagArray_0_7 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_26)
-        tagArray_0_8 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_28)
-        tagArray_0_9 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_30)
-        tagArray_0_10 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_32)
-        tagArray_0_11 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_34)
-        tagArray_0_12 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_36)
-        tagArray_0_13 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_38)
-        tagArray_0_14 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_39)
-        tagArray_0_15 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_40)
-        tagArray_1_0 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_41)
-        tagArray_1_1 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_42)
-        tagArray_1_2 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_43)
-        tagArray_1_3 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_44)
-        tagArray_1_4 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_45)
-        tagArray_1_5 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_46)
-        tagArray_1_6 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_47)
-        tagArray_1_7 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_48)
-        tagArray_1_8 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_49)
-        tagArray_1_9 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_50)
-        tagArray_1_10 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_51)
-        tagArray_1_11 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_52)
-        tagArray_1_12 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_53)
-        tagArray_1_13 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_54)
-        tagArray_1_14 <= from_lsu_req_bits_addr[31:9];
-      if (_GEN_55)
-        tagArray_1_15 <= from_lsu_req_bits_addr[31:9];
-      validArray_0_0 <= _GEN_10 | validArray_0_0;
-      validArray_0_1 <= _GEN_12 | validArray_0_1;
-      validArray_0_2 <= _GEN_14 | validArray_0_2;
-      validArray_0_3 <= _GEN_16 | validArray_0_3;
-      validArray_0_4 <= _GEN_18 | validArray_0_4;
-      validArray_0_5 <= _GEN_20 | validArray_0_5;
-      validArray_0_6 <= _GEN_22 | validArray_0_6;
-      validArray_0_7 <= _GEN_24 | validArray_0_7;
-      validArray_0_8 <= _GEN_26 | validArray_0_8;
-      validArray_0_9 <= _GEN_28 | validArray_0_9;
-      validArray_0_10 <= _GEN_30 | validArray_0_10;
-      validArray_0_11 <= _GEN_32 | validArray_0_11;
-      validArray_0_12 <= _GEN_34 | validArray_0_12;
-      validArray_0_13 <= _GEN_36 | validArray_0_13;
-      validArray_0_14 <= _GEN_38 | validArray_0_14;
-      validArray_0_15 <= _GEN_39 | validArray_0_15;
-      validArray_1_0 <= _GEN_40 | validArray_1_0;
-      validArray_1_1 <= _GEN_41 | validArray_1_1;
-      validArray_1_2 <= _GEN_42 | validArray_1_2;
-      validArray_1_3 <= _GEN_43 | validArray_1_3;
-      validArray_1_4 <= _GEN_44 | validArray_1_4;
-      validArray_1_5 <= _GEN_45 | validArray_1_5;
-      validArray_1_6 <= _GEN_46 | validArray_1_6;
-      validArray_1_7 <= _GEN_47 | validArray_1_7;
-      validArray_1_8 <= _GEN_48 | validArray_1_8;
-      validArray_1_9 <= _GEN_49 | validArray_1_9;
-      validArray_1_10 <= _GEN_50 | validArray_1_10;
-      validArray_1_11 <= _GEN_51 | validArray_1_11;
-      validArray_1_12 <= _GEN_52 | validArray_1_12;
-      validArray_1_13 <= _GEN_53 | validArray_1_13;
-      validArray_1_14 <= _GEN_54 | validArray_1_14;
-      validArray_1_15 <= _GEN_55 | validArray_1_15;
-      dirtyArray_0_0 <= _GEN_4 & ~SetId & _GEN_9 | dirtyArray_0_0;
-      dirtyArray_0_1 <= _GEN_4 & ~SetId & _GEN_11 | dirtyArray_0_1;
-      dirtyArray_0_2 <= _GEN_4 & ~SetId & _GEN_13 | dirtyArray_0_2;
-      dirtyArray_0_3 <= _GEN_4 & ~SetId & _GEN_15 | dirtyArray_0_3;
-      dirtyArray_0_4 <= _GEN_4 & ~SetId & _GEN_17 | dirtyArray_0_4;
-      dirtyArray_0_5 <= _GEN_4 & ~SetId & _GEN_19 | dirtyArray_0_5;
-      dirtyArray_0_6 <= _GEN_4 & ~SetId & _GEN_21 | dirtyArray_0_6;
-      dirtyArray_0_7 <= _GEN_4 & ~SetId & _GEN_23 | dirtyArray_0_7;
-      dirtyArray_0_8 <= _GEN_4 & ~SetId & _GEN_25 | dirtyArray_0_8;
-      dirtyArray_0_9 <= _GEN_4 & ~SetId & _GEN_27 | dirtyArray_0_9;
-      dirtyArray_0_10 <= _GEN_4 & ~SetId & _GEN_29 | dirtyArray_0_10;
-      dirtyArray_0_11 <= _GEN_4 & ~SetId & _GEN_31 | dirtyArray_0_11;
-      dirtyArray_0_12 <= _GEN_4 & ~SetId & _GEN_33 | dirtyArray_0_12;
-      dirtyArray_0_13 <= _GEN_4 & ~SetId & _GEN_35 | dirtyArray_0_13;
-      dirtyArray_0_14 <= _GEN_4 & ~SetId & _GEN_37 | dirtyArray_0_14;
-      dirtyArray_0_15 <=
-        _GEN_4 & ~SetId & (&(from_lsu_req_bits_addr[8:5])) | dirtyArray_0_15;
-      dirtyArray_1_0 <= _GEN_4 & SetId & _GEN_9 | dirtyArray_1_0;
-      dirtyArray_1_1 <= _GEN_4 & SetId & _GEN_11 | dirtyArray_1_1;
-      dirtyArray_1_2 <= _GEN_4 & SetId & _GEN_13 | dirtyArray_1_2;
-      dirtyArray_1_3 <= _GEN_4 & SetId & _GEN_15 | dirtyArray_1_3;
-      dirtyArray_1_4 <= _GEN_4 & SetId & _GEN_17 | dirtyArray_1_4;
-      dirtyArray_1_5 <= _GEN_4 & SetId & _GEN_19 | dirtyArray_1_5;
-      dirtyArray_1_6 <= _GEN_4 & SetId & _GEN_21 | dirtyArray_1_6;
-      dirtyArray_1_7 <= _GEN_4 & SetId & _GEN_23 | dirtyArray_1_7;
-      dirtyArray_1_8 <= _GEN_4 & SetId & _GEN_25 | dirtyArray_1_8;
-      dirtyArray_1_9 <= _GEN_4 & SetId & _GEN_27 | dirtyArray_1_9;
-      dirtyArray_1_10 <= _GEN_4 & SetId & _GEN_29 | dirtyArray_1_10;
-      dirtyArray_1_11 <= _GEN_4 & SetId & _GEN_31 | dirtyArray_1_11;
-      dirtyArray_1_12 <= _GEN_4 & SetId & _GEN_33 | dirtyArray_1_12;
-      dirtyArray_1_13 <= _GEN_4 & SetId & _GEN_35 | dirtyArray_1_13;
-      dirtyArray_1_14 <= _GEN_4 & SetId & _GEN_37 | dirtyArray_1_14;
-      dirtyArray_1_15 <=
-        _GEN_4 & SetId & (&(from_lsu_req_bits_addr[8:5])) | dirtyArray_1_15;
-      if (~(_from_lsu_req_ready_output | state_dcache == 4'h1 | _GEN_4
-            | state_dcache == 4'h3)) begin
-        if (state_dcache == 4'h4)
-          off <= 3'h0;
-        else if (state_dcache == 4'h5) begin
-          if (to_sram_w_ready & _to_sram_w_valid_output)
-            off <= off + 3'h1;
-        end
-        else if (state_dcache != 4'h6) begin
-          if (state_dcache == 4'h7)
-            off <= 3'h0;
-          else if (_GEN_5)
-            off <= off + 3'h1;
-        end
+      else begin
+        s2_io_in_bits_r_waddr <= _s1_io_out_bits_waddr;
+        s2_io_in_bits_r_wmask <= _s1_io_out_bits_wmask;
+        s2_io_in_bits_r_wdata <= _s1_io_out_bits_wdata;
       end
-      state_dcache <= _GEN_57[state_dcache];
     end
   end // always @(posedge)
-  dataArray_256x32 dataArray_ext (
-    .R0_addr (replaceCacheAddr),
-    .R0_en   (1'h1),
-    .R0_clk  (clock),
-    .R1_addr (hitCacheAddr),
-    .R1_en   (1'h1),
-    .R1_clk  (clock),
-    .W0_addr (hitCacheAddr),
-    .W0_en   (_GEN_4),
-    .W0_clk  (clock),
-    .W0_data (_GEN_6 & _indata_T_1[31:0] | ~_GEN_6 & _dataArray_ext_R1_data),
-    .W1_addr (replaceCacheAddr),
-    .W1_en   (_GEN_5),
-    .W1_clk  (clock),
-    .W1_data (to_sram_r_bits_data),
-    .R0_data (to_sram_w_bits_data),
-    .R1_data (_dataArray_ext_R1_data)
+  SRAMTemplate dataArray (
+    .clock               (clock),
+    .reset               (reset),
+    .io_r_req_valid      (_s1_io_dataReadBus_req_valid),
+    .io_r_req_bits_raddr (_s1_io_dataReadBus_req_bits_raddr),
+    .io_w_req_valid      (_dataWriteArb_io_out_valid),
+    .io_w_req_bits_waddr (_dataWriteArb_io_out_bits_waddr),
+    .io_w_req_bits_wdata (_dataWriteArb_io_out_bits_wdata),
+    .io_r_resp_rdata     (_dataArray_io_r_resp_rdata)
   );
-  assign from_lsu_req_ready = _from_lsu_req_ready_output;
-  assign from_lsu_resp_valid = state_dcache == 4'h2 | state_dcache == 4'h1;
-  assign from_lsu_resp_bits_rdata = hit ? _dataArray_ext_R1_data : 32'h0;
-  assign to_sram_ar_valid = _to_sram_ar_valid_output;
-  assign to_sram_ar_bits_addr =
-    _to_sram_ar_valid_output ? {from_lsu_req_bits_addr[31:5], 5'h0} : 32'h0;
-  assign to_sram_ar_bits_len = {5'h0, {3{_to_sram_ar_valid_output}}};
-  assign to_sram_aw_valid = _to_sram_aw_valid_output;
-  assign to_sram_aw_bits_addr =
-    {_GEN_7[from_lsu_req_bits_addr[8:5]], from_lsu_req_bits_addr[8:5], 5'h0};
-  assign to_sram_aw_bits_len = {5'h0, {3{_to_sram_aw_valid_output}}};
-  assign to_sram_w_valid = _to_sram_w_valid_output;
+  CacheStage1 s1 (
+    .clock                          (clock),
+    .reset                          (reset),
+    .io_in_valid                    (io_in_req_valid),
+    .io_in_bits_addr                (io_in_req_bits_addr),
+    .io_in_bits_wdata               (io_in_req_bits_wdata),
+    .io_in_bits_wmask               (io_in_req_bits_wmask),
+    .io_in_bits_cmd                 (io_in_req_bits_cmd),
+    .io_mem_req_ready               (io_mem_req_ready),
+    .io_mem_resp_valid              (io_mem_resp_valid),
+    .io_mem_resp_bits_rdata         (io_mem_resp_bits_rdata),
+    .io_dataReadBus_resp_rdata      (_dataArray_io_r_resp_rdata),
+    .io_flush                       (io_flush),
+    .io_in_ready                    (io_in_req_ready),
+    .io_mem_req_valid               (io_mem_req_valid),
+    .io_mem_req_bits_addr           (io_mem_req_bits_addr),
+    .io_mem_req_bits_wdata          (io_mem_req_bits_wdata),
+    .io_mem_req_bits_cmd            (io_mem_req_bits_cmd),
+    .io_out_valid                   (_s1_io_out_valid),
+    .io_out_bits_addr               (/* unused */),
+    .io_out_bits_is_write           (_s1_io_out_bits_is_write),
+    .io_out_bits_waddr              (_s1_io_out_bits_waddr),
+    .io_out_bits_wmask              (_s1_io_out_bits_wmask),
+    .io_out_bits_wdata              (_s1_io_out_bits_wdata),
+    .io_dataReadBus_req_valid       (_s1_io_dataReadBus_req_valid),
+    .io_dataReadBus_req_bits_raddr  (_s1_io_dataReadBus_req_bits_raddr),
+    .io_dataWriteBus_req_valid      (_s1_io_dataWriteBus_req_valid),
+    .io_dataWriteBus_req_bits_waddr (_s1_io_dataWriteBus_req_bits_waddr),
+    .io_dataWriteBus_req_bits_wdata (_s1_io_dataWriteBus_req_bits_wdata)
+  );
+  CacheStage2_1 s2 (
+    .io_in_valid                    (valid),
+    .io_in_bits_is_write            (s2_io_in_bits_r_is_write),
+    .io_in_bits_waddr               (s2_io_in_bits_r_waddr),
+    .io_in_bits_wmask               (s2_io_in_bits_r_wmask),
+    .io_in_bits_wdata               (s2_io_in_bits_r_wdata),
+    .io_dataReadBus_rdata           (_dataArray_io_r_resp_rdata),
+    .io_out_resp_ready              (io_in_resp_ready),
+    .io_in_ready                    (_s2_io_in_ready),
+    .io_out_resp_valid              (_s2_io_out_resp_valid),
+    .io_out_resp_bits_rdata         (io_in_resp_bits_rdata),
+    .io_dataWriteBus_req_valid      (_s2_io_dataWriteBus_req_valid),
+    .io_dataWriteBus_req_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
+    .io_dataWriteBus_req_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata)
+  );
+  Arbiter2_SRAMBundleWriteReq dataWriteArb (
+    .io_in_0_valid      (_s1_io_dataWriteBus_req_valid),
+    .io_in_0_bits_waddr (_s1_io_dataWriteBus_req_bits_waddr),
+    .io_in_0_bits_wdata (_s1_io_dataWriteBus_req_bits_wdata),
+    .io_in_1_valid      (_s2_io_dataWriteBus_req_valid),
+    .io_in_1_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
+    .io_in_1_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata),
+    .io_out_valid       (_dataWriteArb_io_out_valid),
+    .io_out_bits_waddr  (_dataWriteArb_io_out_bits_waddr),
+    .io_out_bits_wdata  (_dataWriteArb_io_out_bits_wdata)
+  );
+  assign io_in_resp_valid = _s2_io_out_resp_valid;
 endmodule
 
 module MMIO(
@@ -3549,18 +3073,23 @@ module top(
                 io_out_wb
 );
 
+  wire        _bridge_1_io_in_req_ready;
+  wire        _bridge_1_io_in_resp_valid;
+  wire [31:0] _bridge_1_io_in_resp_bits_rdata;
+  wire        _bridge_1_io_out_ar_valid;
+  wire [31:0] _bridge_1_io_out_ar_bits_addr;
+  wire        _bridge_1_io_out_aw_valid;
+  wire [31:0] _bridge_1_io_out_aw_bits_addr;
+  wire        _bridge_1_io_out_w_valid;
+  wire [31:0] _bridge_1_io_out_w_bits_data;
   wire [31:0] _mmio_from_lsu_resp_bits_rdata;
-  wire        _dcache_from_lsu_req_ready;
-  wire        _dcache_from_lsu_resp_valid;
-  wire [31:0] _dcache_from_lsu_resp_bits_rdata;
-  wire        _dcache_to_sram_ar_valid;
-  wire [31:0] _dcache_to_sram_ar_bits_addr;
-  wire [7:0]  _dcache_to_sram_ar_bits_len;
-  wire        _dcache_to_sram_aw_valid;
-  wire [31:0] _dcache_to_sram_aw_bits_addr;
-  wire [7:0]  _dcache_to_sram_aw_bits_len;
-  wire        _dcache_to_sram_w_valid;
-  wire [31:0] _dcache_to_sram_w_bits_data;
+  wire        _dcache_io_in_req_ready;
+  wire        _dcache_io_in_resp_valid;
+  wire [31:0] _dcache_io_in_resp_bits_rdata;
+  wire        _dcache_io_mem_req_valid;
+  wire [31:0] _dcache_io_mem_req_bits_addr;
+  wire [31:0] _dcache_io_mem_req_bits_wdata;
+  wire [3:0]  _dcache_io_mem_req_bits_cmd;
   wire        _memXbar_io_in_resp_valid;
   wire [31:0] _memXbar_io_in_resp_bits_rdata;
   wire        _memXbar_io_out_0_req_valid;
@@ -3568,6 +3097,7 @@ module top(
   wire [31:0] _memXbar_io_out_0_req_bits_wdata;
   wire [31:0] _memXbar_io_out_0_req_bits_wmask;
   wire [3:0]  _memXbar_io_out_0_req_bits_cmd;
+  wire        _memXbar_io_out_0_resp_ready;
   wire        _memXbar_io_out_1_req_valid;
   wire [31:0] _memXbar_io_out_1_req_bits_addr;
   wire [31:0] _memXbar_io_out_1_req_bits_wdata;
@@ -3576,7 +3106,6 @@ module top(
   wire        _ram_i2_axi_ar_ready;
   wire        _ram_i2_axi_r_valid;
   wire [31:0] _ram_i2_axi_r_bits_data;
-  wire        _ram_i2_axi_r_bits_last;
   wire        _ram_i2_axi_aw_ready;
   wire        _ram_i2_axi_w_ready;
   wire        _bridge_io_in_req_ready;
@@ -3620,7 +3149,6 @@ module top(
   wire        _WBU_i_to_IFU_bits_redirect_valid;
   wire [31:0] _WBU_i_to_IFU_bits_redirect_target;
   wire        _WBU_i_wb;
-  wire        _WBU_i_to_IFU_bits_redirect_valid__bore;
   wire        _EXU_i_from_ISU_ready;
   wire        _EXU_i_to_WBU_valid;
   wire [31:0] _EXU_i_to_WBU_bits_alu_result;
@@ -4029,35 +3557,34 @@ module top(
     .to_ISU_hazard_isBR               (_EXU_i_to_ISU_hazard_isBR)
   );
   WBU WBU_i (
-    .clock                            (clock),
-    .reset                            (reset),
-    .from_EXU_valid                   (valid_3),
-    .from_EXU_bits_alu_result         (WBU_i_from_EXU_bits_r_alu_result),
-    .from_EXU_bits_mdu_result         (WBU_i_from_EXU_bits_r_mdu_result),
-    .from_EXU_bits_lsu_rdata          (WBU_i_from_EXU_bits_r_lsu_rdata),
-    .from_EXU_bits_csr_rdata          (WBU_i_from_EXU_bits_r_csr_rdata),
-    .from_EXU_bits_pc                 (WBU_i_from_EXU_bits_r_pc),
-    .from_EXU_bits_reg_wen            (WBU_i_from_EXU_bits_r_reg_wen),
-    .from_EXU_bits_rd                 (WBU_i_from_EXU_bits_r_rd),
-    .from_EXU_bits_fu_op              (WBU_i_from_EXU_bits_r_fu_op),
-    .from_EXU_bits_redirect_valid     (WBU_i_from_EXU_bits_r_redirect_valid),
-    .from_EXU_bits_redirect_target    (WBU_i_from_EXU_bits_r_redirect_target),
-    .from_EXU_bits_is_ebreak          (WBU_i_from_EXU_bits_r_is_ebreak),
-    .from_EXU_bits_not_impl           (WBU_i_from_EXU_bits_r_not_impl),
-    .from_EXU_bits_is_mmio            (WBU_i_from_EXU_bits_r_is_mmio),
-    .from_EXU_bits_inst               (WBU_i_from_EXU_bits_r_inst),
-    .to_ISU_valid                     (_WBU_i_to_ISU_valid),
-    .to_ISU_bits_reg_wen              (_WBU_i_to_ISU_bits_reg_wen),
-    .to_ISU_bits_wdata                (_WBU_i_to_ISU_bits_wdata),
-    .to_ISU_bits_rd                   (_WBU_i_to_ISU_bits_rd),
-    .to_ISU_bits_hazard_rd            (_WBU_i_to_ISU_bits_hazard_rd),
-    .to_ISU_bits_hazard_have_wb       (_WBU_i_to_ISU_bits_hazard_have_wb),
-    .to_ISU_bits_hazard_isBR          (_WBU_i_to_ISU_bits_hazard_isBR),
-    .to_IFU_bits_redirect_valid       (_WBU_i_to_IFU_bits_redirect_valid),
-    .to_IFU_bits_redirect_target      (_WBU_i_to_IFU_bits_redirect_target),
-    .wb                               (_WBU_i_wb),
-    .is_mmio                          (io_out_is_mmio),
-    .to_IFU_bits_redirect_valid__bore (_WBU_i_to_IFU_bits_redirect_valid__bore)
+    .clock                         (clock),
+    .reset                         (reset),
+    .from_EXU_valid                (valid_3),
+    .from_EXU_bits_alu_result      (WBU_i_from_EXU_bits_r_alu_result),
+    .from_EXU_bits_mdu_result      (WBU_i_from_EXU_bits_r_mdu_result),
+    .from_EXU_bits_lsu_rdata       (WBU_i_from_EXU_bits_r_lsu_rdata),
+    .from_EXU_bits_csr_rdata       (WBU_i_from_EXU_bits_r_csr_rdata),
+    .from_EXU_bits_pc              (WBU_i_from_EXU_bits_r_pc),
+    .from_EXU_bits_reg_wen         (WBU_i_from_EXU_bits_r_reg_wen),
+    .from_EXU_bits_rd              (WBU_i_from_EXU_bits_r_rd),
+    .from_EXU_bits_fu_op           (WBU_i_from_EXU_bits_r_fu_op),
+    .from_EXU_bits_redirect_valid  (WBU_i_from_EXU_bits_r_redirect_valid),
+    .from_EXU_bits_redirect_target (WBU_i_from_EXU_bits_r_redirect_target),
+    .from_EXU_bits_is_ebreak       (WBU_i_from_EXU_bits_r_is_ebreak),
+    .from_EXU_bits_not_impl        (WBU_i_from_EXU_bits_r_not_impl),
+    .from_EXU_bits_is_mmio         (WBU_i_from_EXU_bits_r_is_mmio),
+    .from_EXU_bits_inst            (WBU_i_from_EXU_bits_r_inst),
+    .to_ISU_valid                  (_WBU_i_to_ISU_valid),
+    .to_ISU_bits_reg_wen           (_WBU_i_to_ISU_bits_reg_wen),
+    .to_ISU_bits_wdata             (_WBU_i_to_ISU_bits_wdata),
+    .to_ISU_bits_rd                (_WBU_i_to_ISU_bits_rd),
+    .to_ISU_bits_hazard_rd         (_WBU_i_to_ISU_bits_hazard_rd),
+    .to_ISU_bits_hazard_have_wb    (_WBU_i_to_ISU_bits_hazard_have_wb),
+    .to_ISU_bits_hazard_isBR       (_WBU_i_to_ISU_bits_hazard_isBR),
+    .to_IFU_bits_redirect_valid    (_WBU_i_to_IFU_bits_redirect_valid),
+    .to_IFU_bits_redirect_target   (_WBU_i_to_IFU_bits_redirect_target),
+    .wb                            (_WBU_i_wb),
+    .is_mmio                       (io_out_is_mmio)
   );
   IFU_pipeline IFU_i (
     .clock                         (clock),
@@ -4082,16 +3609,13 @@ module top(
     .reset            (reset),
     .axi_ar_valid     (_bridge_io_out_ar_valid),
     .axi_ar_bits_addr (_bridge_io_out_ar_bits_addr),
-    .axi_ar_bits_len  (8'h3),
     .axi_aw_valid     (_bridge_io_out_aw_valid),
     .axi_aw_bits_addr (_bridge_io_out_aw_bits_addr),
-    .axi_aw_bits_len  (8'h3),
     .axi_w_valid      (_bridge_io_out_w_valid),
     .axi_w_bits_data  (_bridge_io_out_w_bits_data),
     .axi_ar_ready     (_ram_i_axi_ar_ready),
     .axi_r_valid      (_ram_i_axi_r_valid),
     .axi_r_bits_data  (_ram_i_axi_r_bits_data),
-    .axi_r_bits_last  (/* unused */),
     .axi_aw_ready     (_ram_i_axi_aw_ready),
     .axi_w_ready      (_ram_i_axi_w_ready)
   );
@@ -4139,18 +3663,15 @@ module top(
   AXI4RAM ram_i2 (
     .clock            (clock),
     .reset            (reset),
-    .axi_ar_valid     (_dcache_to_sram_ar_valid),
-    .axi_ar_bits_addr (_dcache_to_sram_ar_bits_addr),
-    .axi_ar_bits_len  (_dcache_to_sram_ar_bits_len),
-    .axi_aw_valid     (_dcache_to_sram_aw_valid),
-    .axi_aw_bits_addr (_dcache_to_sram_aw_bits_addr),
-    .axi_aw_bits_len  (_dcache_to_sram_aw_bits_len),
-    .axi_w_valid      (_dcache_to_sram_w_valid),
-    .axi_w_bits_data  (_dcache_to_sram_w_bits_data),
+    .axi_ar_valid     (_bridge_1_io_out_ar_valid),
+    .axi_ar_bits_addr (_bridge_1_io_out_ar_bits_addr),
+    .axi_aw_valid     (_bridge_1_io_out_aw_valid),
+    .axi_aw_bits_addr (_bridge_1_io_out_aw_bits_addr),
+    .axi_w_valid      (_bridge_1_io_out_w_valid),
+    .axi_w_bits_data  (_bridge_1_io_out_w_bits_data),
     .axi_ar_ready     (_ram_i2_axi_ar_ready),
     .axi_r_valid      (_ram_i2_axi_r_valid),
     .axi_r_bits_data  (_ram_i2_axi_r_bits_data),
-    .axi_r_bits_last  (_ram_i2_axi_r_bits_last),
     .axi_aw_ready     (_ram_i2_axi_aw_ready),
     .axi_w_ready      (_ram_i2_axi_w_ready)
   );
@@ -4162,9 +3683,9 @@ module top(
     .io_in_req_bits_wdata     (_EXU_i_lsu_to_mem_req_bits_wdata),
     .io_in_req_bits_wmask     (_EXU_i_lsu_to_mem_req_bits_wmask),
     .io_in_req_bits_cmd       (_EXU_i_lsu_to_mem_req_bits_cmd),
-    .io_out_0_req_ready       (_dcache_from_lsu_req_ready),
-    .io_out_0_resp_valid      (_dcache_from_lsu_resp_valid),
-    .io_out_0_resp_bits_rdata (_dcache_from_lsu_resp_bits_rdata),
+    .io_out_0_req_ready       (_dcache_io_in_req_ready),
+    .io_out_0_resp_valid      (_dcache_io_in_resp_valid),
+    .io_out_0_resp_bits_rdata (_dcache_io_in_resp_bits_rdata),
     .io_out_1_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata),
     .io_flush                 (_WBU_i_to_IFU_bits_redirect_valid),
     .io_in_resp_valid         (_memXbar_io_in_resp_valid),
@@ -4174,38 +3695,33 @@ module top(
     .io_out_0_req_bits_wdata  (_memXbar_io_out_0_req_bits_wdata),
     .io_out_0_req_bits_wmask  (_memXbar_io_out_0_req_bits_wmask),
     .io_out_0_req_bits_cmd    (_memXbar_io_out_0_req_bits_cmd),
+    .io_out_0_resp_ready      (_memXbar_io_out_0_resp_ready),
     .io_out_1_req_valid       (_memXbar_io_out_1_req_valid),
     .io_out_1_req_bits_addr   (_memXbar_io_out_1_req_bits_addr),
     .io_out_1_req_bits_wdata  (_memXbar_io_out_1_req_bits_wdata),
     .io_out_1_req_bits_wmask  (_memXbar_io_out_1_req_bits_wmask),
     .io_out_1_req_bits_cmd    (_memXbar_io_out_1_req_bits_cmd)
   );
-  Dcache_SimpleBus dcache (
-    .clock                    (clock),
-    .reset                    (reset),
-    .from_lsu_req_valid       (_memXbar_io_out_0_req_valid),
-    .from_lsu_req_bits_addr   (_memXbar_io_out_0_req_bits_addr),
-    .from_lsu_req_bits_wdata  (_memXbar_io_out_0_req_bits_wdata),
-    .from_lsu_req_bits_wmask  (_memXbar_io_out_0_req_bits_wmask),
-    .from_lsu_req_bits_cmd    (_memXbar_io_out_0_req_bits_cmd),
-    .to_sram_ar_ready         (_ram_i2_axi_ar_ready),
-    .to_sram_r_valid          (_ram_i2_axi_r_valid),
-    .to_sram_r_bits_data      (_ram_i2_axi_r_bits_data),
-    .to_sram_r_bits_last      (_ram_i2_axi_r_bits_last),
-    .to_sram_aw_ready         (_ram_i2_axi_aw_ready),
-    .to_sram_w_ready          (_ram_i2_axi_w_ready),
-    .flush__bore              (_WBU_i_to_IFU_bits_redirect_valid__bore),
-    .from_lsu_req_ready       (_dcache_from_lsu_req_ready),
-    .from_lsu_resp_valid      (_dcache_from_lsu_resp_valid),
-    .from_lsu_resp_bits_rdata (_dcache_from_lsu_resp_bits_rdata),
-    .to_sram_ar_valid         (_dcache_to_sram_ar_valid),
-    .to_sram_ar_bits_addr     (_dcache_to_sram_ar_bits_addr),
-    .to_sram_ar_bits_len      (_dcache_to_sram_ar_bits_len),
-    .to_sram_aw_valid         (_dcache_to_sram_aw_valid),
-    .to_sram_aw_bits_addr     (_dcache_to_sram_aw_bits_addr),
-    .to_sram_aw_bits_len      (_dcache_to_sram_aw_bits_len),
-    .to_sram_w_valid          (_dcache_to_sram_w_valid),
-    .to_sram_w_bits_data      (_dcache_to_sram_w_bits_data)
+  Cache_1 dcache (
+    .clock                  (clock),
+    .reset                  (reset),
+    .io_in_req_valid        (_memXbar_io_out_0_req_valid),
+    .io_in_req_bits_addr    (_memXbar_io_out_0_req_bits_addr),
+    .io_in_req_bits_wdata   (_memXbar_io_out_0_req_bits_wdata),
+    .io_in_req_bits_wmask   (_memXbar_io_out_0_req_bits_wmask),
+    .io_in_req_bits_cmd     (_memXbar_io_out_0_req_bits_cmd),
+    .io_in_resp_ready       (_memXbar_io_out_0_resp_ready),
+    .io_mem_req_ready       (_bridge_1_io_in_req_ready),
+    .io_mem_resp_valid      (_bridge_1_io_in_resp_valid),
+    .io_mem_resp_bits_rdata (_bridge_1_io_in_resp_bits_rdata),
+    .io_flush               (_WBU_i_to_IFU_bits_redirect_valid),
+    .io_in_req_ready        (_dcache_io_in_req_ready),
+    .io_in_resp_valid       (_dcache_io_in_resp_valid),
+    .io_in_resp_bits_rdata  (_dcache_io_in_resp_bits_rdata),
+    .io_mem_req_valid       (_dcache_io_mem_req_valid),
+    .io_mem_req_bits_addr   (_dcache_io_mem_req_bits_addr),
+    .io_mem_req_bits_wdata  (_dcache_io_mem_req_bits_wdata),
+    .io_mem_req_bits_cmd    (_dcache_io_mem_req_bits_cmd)
   );
   MMIO mmio (
     .clock                    (clock),
@@ -4215,6 +3731,26 @@ module top(
     .from_lsu_req_bits_wmask  (_memXbar_io_out_1_req_bits_wmask),
     .from_lsu_req_bits_cmd    (_memXbar_io_out_1_req_bits_cmd),
     .from_lsu_resp_bits_rdata (_mmio_from_lsu_resp_bits_rdata)
+  );
+  SimpleBus2AXI4Converter bridge_1 (
+    .io_in_req_valid       (_dcache_io_mem_req_valid),
+    .io_in_req_bits_addr   (_dcache_io_mem_req_bits_addr),
+    .io_in_req_bits_wdata  (_dcache_io_mem_req_bits_wdata),
+    .io_in_req_bits_cmd    (_dcache_io_mem_req_bits_cmd),
+    .io_out_ar_ready       (_ram_i2_axi_ar_ready),
+    .io_out_r_valid        (_ram_i2_axi_r_valid),
+    .io_out_r_bits_data    (_ram_i2_axi_r_bits_data),
+    .io_out_aw_ready       (_ram_i2_axi_aw_ready),
+    .io_out_w_ready        (_ram_i2_axi_w_ready),
+    .io_in_req_ready       (_bridge_1_io_in_req_ready),
+    .io_in_resp_valid      (_bridge_1_io_in_resp_valid),
+    .io_in_resp_bits_rdata (_bridge_1_io_in_resp_bits_rdata),
+    .io_out_ar_valid       (_bridge_1_io_out_ar_valid),
+    .io_out_ar_bits_addr   (_bridge_1_io_out_ar_bits_addr),
+    .io_out_aw_valid       (_bridge_1_io_out_aw_valid),
+    .io_out_aw_bits_addr   (_bridge_1_io_out_aw_bits_addr),
+    .io_out_w_valid        (_bridge_1_io_out_w_valid),
+    .io_out_w_bits_data    (_bridge_1_io_out_w_bits_data)
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
