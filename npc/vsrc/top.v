@@ -1943,12 +1943,12 @@ module SRAMTemplate(
     always @(posedge clock) begin
       if ((`PRINTF_COND_) & REG & ~reset) begin
         $fwrite(32'h80000002, "[%d]: ", c);
-        $fwrite(32'h80000002, "[SRAM], raddr:%x, rdata:%x\n", io_r_req_bits_raddr,
+        $fwrite(32'h80000002, "[SRAM][icache], raddr:%x, rdata:%x\n", io_r_req_bits_raddr,
                 _array_ext_R0_data);
       end
       if ((`PRINTF_COND_) & io_w_req_valid & ~reset) begin
         $fwrite(32'h80000002, "[%d]: ", c_1);
-        $fwrite(32'h80000002, "[SRAM], waddr:%x, wdata:%x\n", io_w_req_bits_waddr,
+        $fwrite(32'h80000002, "[SRAM][icache], waddr:%x, wdata:%x\n", io_w_req_bits_waddr,
                 io_w_req_bits_wdata);
       end
     end // always @(posedge)
@@ -2890,6 +2890,65 @@ module SimpleBusCrossBar1toN(
   assign io_out_1_req_bits_cmd = io_in_req_bits_cmd;
 endmodule
 
+module SRAMTemplate_1(
+  input         clock,
+                reset,
+                io_r_req_valid,
+  input  [6:0]  io_r_req_bits_raddr,
+  input         io_w_req_valid,
+  input  [6:0]  io_w_req_bits_waddr,
+  input  [31:0] io_w_req_bits_wdata,
+  output [31:0] io_r_resp_rdata
+);
+
+  wire [31:0] _array_ext_R0_data;
+  reg         io_r_resp_rdata_REG;
+  reg  [31:0] io_r_resp_rdata_r;
+  reg         REG;
+  reg  [63:0] c;
+  reg  [63:0] c_1;
+  `ifndef SYNTHESIS
+    always @(posedge clock) begin
+      if ((`PRINTF_COND_) & REG & ~reset) begin
+        $fwrite(32'h80000002, "[%d]: ", c);
+        $fwrite(32'h80000002, "[SRAM][dcache], raddr:%x, rdata:%x\n", io_r_req_bits_raddr,
+                _array_ext_R0_data);
+      end
+      if ((`PRINTF_COND_) & io_w_req_valid & ~reset) begin
+        $fwrite(32'h80000002, "[%d]: ", c_1);
+        $fwrite(32'h80000002, "[SRAM][dcache], waddr:%x, wdata:%x\n", io_w_req_bits_waddr,
+                io_w_req_bits_wdata);
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
+  always @(posedge clock) begin
+    io_r_resp_rdata_REG <= io_r_req_valid;
+    REG <= io_r_req_valid;
+    if (reset) begin
+      io_r_resp_rdata_r <= 32'h0;
+      c <= 64'h0;
+      c_1 <= 64'h0;
+    end
+    else begin
+      if (io_r_resp_rdata_REG)
+        io_r_resp_rdata_r <= _array_ext_R0_data;
+      c <= c + 64'h1;
+      c_1 <= c_1 + 64'h1;
+    end
+  end // always @(posedge)
+  array_128x32 array_ext (
+    .R0_addr (io_r_req_bits_raddr),
+    .R0_en   (io_r_req_valid),
+    .R0_clk  (clock),
+    .W0_addr (io_w_req_bits_waddr),
+    .W0_en   (io_w_req_valid),
+    .W0_clk  (clock),
+    .W0_data (io_w_req_bits_wdata),
+    .R0_data (_array_ext_R0_data)
+  );
+  assign io_r_resp_rdata = io_r_resp_rdata_REG ? _array_ext_R0_data : io_r_resp_rdata_r;
+endmodule
+
 module CacheStage2_1(
   input         clock,
                 reset,
@@ -3009,7 +3068,7 @@ module Cache_1(
       end
     end
   end // always @(posedge)
-  SRAMTemplate dataArray (
+  SRAMTemplate_1 dataArray (
     .clock               (clock),
     .reset               (reset),
     .io_r_req_valid      (_s1_io_dataReadBus_req_valid),
