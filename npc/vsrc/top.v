@@ -1805,7 +1805,7 @@ module AXI4RAM(
                 axi_w_ready
 );
 
-  reg              delay;
+  reg  [3:0]       delay;
   reg  [7:0]       reg_AxLen;
   reg  [31:0]      reg_addr;
   reg  [1:0]       reg_burst;
@@ -1819,61 +1819,65 @@ module AXI4RAM(
   wire             _GEN = _axi_aw_ready_output & axi_ar_valid;
   wire             _GEN_0 = _axi_aw_ready_output & axi_aw_valid;
   wire             _GEN_1 = _GEN | _GEN_0;
-  wire             _GEN_2 = state_sram == 3'h3;
-  wire             _GEN_3 = state_sram == 3'h4;
-  wire             _GEN_4 = state_sram == 3'h6;
+  wire             _GEN_2 = delay == 4'h0;
+  wire             _GEN_3 = state_sram == 3'h3;
+  wire             _GEN_4 = state_sram == 3'h4;
+  wire             _GEN_5 = state_sram == 3'h6;
   wire             _reg_addr_T_4 = _axi_w_ready_output & axi_w_valid;
-  wire             _GEN_5 = _GEN_2 | _GEN_3 | state_sram == 3'h5;
-  wire [7:0]       _GEN_6 =
-    _GEN_5 | ~(_GEN_4 & _reg_addr_T_4) ? reg_AxLen : reg_AxLen - 8'h1;
-  wire [31:0]      _GEN_7 =
-    _GEN_5 | ~(_GEN_4 & reg_burst == 2'h1 & _reg_addr_T_4) ? reg_addr : reg_addr + 32'h4;
-  wire [7:0][7:0]  _GEN_8 =
-    {{_GEN_6},
-     {_GEN_6},
+  wire             _GEN_6 = _GEN_3 | _GEN_4 | state_sram == 3'h5;
+  wire [7:0]       _GEN_7 =
+    _GEN_6 | ~(_GEN_5 & _reg_addr_T_4) ? reg_AxLen : reg_AxLen - 8'h1;
+  wire [31:0]      _GEN_8 =
+    _GEN_6 | ~(_GEN_5 & reg_burst == 2'h1 & _reg_addr_T_4) ? reg_addr : reg_addr + 32'h4;
+  wire [7:0][7:0]  _GEN_9 =
+    {{_GEN_7},
+     {_GEN_7},
      {reg_AxLen},
      {reg_AxLen},
      {reg_AxLen},
      {reg_AxLen - 8'h1},
      {reg_AxLen},
      {_GEN_1 ? 8'h3 : reg_AxLen}};
-  wire [7:0][31:0] _GEN_9 =
-    {{_GEN_7},
-     {_GEN_7},
+  wire [7:0][31:0] _GEN_10 =
+    {{_GEN_8},
+     {_GEN_8},
      {reg_addr},
      {reg_addr},
      {reg_addr},
      {reg_burst == 2'h1 ? reg_addr + 32'h4 : reg_addr},
      {reg_addr},
      {_GEN ? axi_ar_bits_addr : _GEN_0 ? axi_aw_bits_addr : reg_addr}};
-  wire [7:0][2:0]  _GEN_10 =
+  wire [7:0][2:0]  _GEN_11 =
     {{3'h0},
      {{2'h3, reg_AxLen == 8'h1}},
      {{2'h3, ~(|reg_AxLen)}},
-     {{2'h2, ~delay}},
+     {{2'h2, _GEN_2}},
      {3'h0},
      {{2'h1, reg_AxLen == 8'h1}},
-     {delay ? 3'h1 : {2'h1, ~(|reg_AxLen)}},
+     {_GEN_2 ? {2'h1, ~(|reg_AxLen)} : 3'h1},
      {_GEN ? 3'h1 : {_GEN_0, 2'h0}}};
   always @(posedge clock) begin
     if (reset) begin
-      delay <= 1'h0;
+      delay <= 4'h0;
       reg_AxLen <= 8'h0;
       reg_addr <= 32'h0;
       reg_burst <= 2'h3;
       state_sram <= 3'h0;
     end
     else begin
-      delay <=
-        ~_axi_aw_ready_output
-        & (state_sram == 3'h1
-             ? delay - 1'h1
-             : state_sram == 3'h2 | _GEN_2 | ~_GEN_3 ? delay : delay - 1'h1);
-      reg_AxLen <= _GEN_8[state_sram];
-      reg_addr <= _GEN_9[state_sram];
+      if (_axi_aw_ready_output)
+        delay <= 4'hA;
+      else if (state_sram == 3'h1)
+        delay <= delay - 4'h1;
+      else if (state_sram == 3'h2 | _GEN_3 | ~_GEN_4) begin
+      end
+      else
+        delay <= delay - 4'h1;
+      reg_AxLen <= _GEN_9[state_sram];
+      reg_addr <= _GEN_10[state_sram];
       if (_axi_aw_ready_output & _GEN_1)
         reg_burst <= 2'h1;
-      state_sram <= _GEN_10[state_sram];
+      state_sram <= _GEN_11[state_sram];
     end
   end // always @(posedge)
   RamBB RamBB_i1 (
