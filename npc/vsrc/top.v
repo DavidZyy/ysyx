@@ -1809,8 +1809,7 @@ module AXI4RAM(
   output [31:0] axi_r_bits_data,
   output        axi_r_bits_last,
                 axi_aw_ready,
-                axi_w_ready,
-                axi_b_valid
+                axi_w_ready
 );
 
   reg              delay;
@@ -1897,7 +1896,6 @@ module AXI4RAM(
   assign axi_r_bits_last = state_sram == 3'h3;
   assign axi_aw_ready = _axi_aw_ready_output;
   assign axi_w_ready = _axi_w_ready_output;
-  assign axi_b_valid = &state_sram;
 endmodule
 
 // VCS coverage exclude_file
@@ -2746,7 +2744,6 @@ module SimpleBus2AXI4Converter(
   input  [31:0] io_out_r_bits_data,
   input         io_out_aw_ready,
                 io_out_w_ready,
-                io_out_b_valid,
   output        io_in_req_ready,
                 io_in_resp_valid,
   output [31:0] io_in_resp_bits_rdata,
@@ -2758,16 +2755,15 @@ module SimpleBus2AXI4Converter(
   output [31:0] io_out_w_bits_data
 );
 
-  wire _io_in_resp_valid_T = io_in_req_bits_cmd == 4'h1;
   assign io_in_req_ready =
     io_in_req_bits_cmd == 4'h2
       ? io_out_w_ready
       : io_in_req_bits_cmd == 4'h4
           ? io_out_aw_ready
           : io_in_req_bits_cmd == 4'h1 & io_out_ar_ready;
-  assign io_in_resp_valid = _io_in_resp_valid_T ? io_out_r_valid : io_out_b_valid;
+  assign io_in_resp_valid = io_out_r_valid;
   assign io_in_resp_bits_rdata = io_out_r_bits_data;
-  assign io_out_ar_valid = io_in_req_valid & _io_in_resp_valid_T;
+  assign io_out_ar_valid = io_in_req_valid & io_in_req_bits_cmd == 4'h1;
   assign io_out_ar_bits_addr = io_in_req_bits_addr;
   assign io_out_aw_valid = io_in_req_valid & io_in_req_bits_cmd == 4'h4;
   assign io_out_aw_bits_addr = io_in_req_bits_addr;
@@ -3607,7 +3603,6 @@ module top(
   wire [31:0] _ram_i_axi_r_bits_data;
   wire        _ram_i_axi_aw_ready;
   wire        _ram_i_axi_w_ready;
-  wire        _ram_i_axi_b_valid;
   wire        _IFU_i_to_IDU_valid;
   wire [31:0] _IFU_i_to_IDU_bits_inst;
   wire [31:0] _IFU_i_to_IDU_bits_pc;
@@ -4098,8 +4093,7 @@ module top(
     .axi_r_bits_data  (_ram_i_axi_r_bits_data),
     .axi_r_bits_last  (/* unused */),
     .axi_aw_ready     (_ram_i_axi_aw_ready),
-    .axi_w_ready      (_ram_i_axi_w_ready),
-    .axi_b_valid      (_ram_i_axi_b_valid)
+    .axi_w_ready      (_ram_i_axi_w_ready)
   );
   Cache icache (
     .clock                    (clock),
@@ -4132,7 +4126,6 @@ module top(
     .io_out_r_bits_data    (_ram_i_axi_r_bits_data),
     .io_out_aw_ready       (_ram_i_axi_aw_ready),
     .io_out_w_ready        (_ram_i_axi_w_ready),
-    .io_out_b_valid        (_ram_i_axi_b_valid),
     .io_in_req_ready       (_bridge_io_in_req_ready),
     .io_in_resp_valid      (_bridge_io_in_resp_valid),
     .io_in_resp_bits_rdata (_bridge_io_in_resp_bits_rdata),
@@ -4159,8 +4152,7 @@ module top(
     .axi_r_bits_data  (_ram_i2_axi_r_bits_data),
     .axi_r_bits_last  (_ram_i2_axi_r_bits_last),
     .axi_aw_ready     (_ram_i2_axi_aw_ready),
-    .axi_w_ready      (_ram_i2_axi_w_ready),
-    .axi_b_valid      (/* unused */)
+    .axi_w_ready      (_ram_i2_axi_w_ready)
   );
   SimpleBusCrossBar1toN memXbar (
     .clock                    (clock),
