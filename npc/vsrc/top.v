@@ -2547,7 +2547,9 @@ module CacheStage1(
 endmodule
 
 module CacheStage2(
-  input         io_in_valid,
+  input         clock,
+                reset,
+                io_in_valid,
   input  [31:0] io_in_bits_addr,
   input         io_in_bits_is_write,
   input  [6:0]  io_in_bits_waddr,
@@ -2566,20 +2568,38 @@ module CacheStage2(
   output [31:0] io_in_bits_addr__bore
 );
 
+  wire        _io_dataWriteBus_req_valid_output = io_in_valid & io_in_bits_is_write;
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
     {{8{io_in_bits_wmask[3]}},
      {8{io_in_bits_wmask[2]}},
      {8{io_in_bits_wmask[1]}},
      {8{io_in_bits_wmask[0]}}};
+  wire [31:0] _io_dataWriteBus_req_bits_wdata_output =
+    io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
+    & ~_io_dataWriteBus_req_bits_wdata_T_12;
+  reg  [63:0] c;
+  `ifndef SYNTHESIS
+    always @(posedge clock) begin
+      if ((`PRINTF_COND_) & _io_dataWriteBus_req_valid_output & ~reset) begin
+        $fwrite(32'h80000002, "[%d]: ", c);
+        $fwrite(32'h80000002, "[L1$], waddr:%x, wdata:%x\n", io_in_bits_waddr,
+                _io_dataWriteBus_req_bits_wdata_output);
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
+  always @(posedge clock) begin
+    if (reset)
+      c <= 64'h0;
+    else
+      c <= c + 64'h1;
+  end // always @(posedge)
   assign io_in_ready = io_out_resp_ready;
   assign io_out_addr = io_in_bits_addr;
   assign io_out_resp_valid = io_in_valid & ~io_in_bits_is_write;
   assign io_out_resp_bits_rdata = io_in_valid ? io_dataReadBus_rdata : 32'h0;
-  assign io_dataWriteBus_req_valid = io_in_valid & io_in_bits_is_write;
+  assign io_dataWriteBus_req_valid = _io_dataWriteBus_req_valid_output;
   assign io_dataWriteBus_req_bits_waddr = io_in_bits_waddr;
-  assign io_dataWriteBus_req_bits_wdata =
-    io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
-    & ~_io_dataWriteBus_req_bits_wdata_T_12;
+  assign io_dataWriteBus_req_bits_wdata = _io_dataWriteBus_req_bits_wdata_output;
   assign io_in_valid__bore = io_in_valid;
   assign io_in_bits_addr__bore = io_in_bits_addr;
 endmodule
@@ -2714,6 +2734,8 @@ module Cache(
     .io_dataWriteBus_req_bits_wdata (_s1_io_dataWriteBus_req_bits_wdata)
   );
   CacheStage2 s2 (
+    .clock                          (clock),
+    .reset                          (reset),
     .io_in_valid                    (valid),
     .io_in_bits_addr                (s2_io_in_bits_r_addr),
     .io_in_bits_is_write            (s2_io_in_bits_r_is_write),
@@ -2865,7 +2887,9 @@ module SimpleBusCrossBar1toN(
 endmodule
 
 module CacheStage2_1(
-  input         io_in_valid,
+  input         clock,
+                reset,
+                io_in_valid,
                 io_in_bits_is_write,
   input  [6:0]  io_in_bits_waddr,
   input  [3:0]  io_in_bits_wmask,
@@ -2880,19 +2904,37 @@ module CacheStage2_1(
   output [31:0] io_dataWriteBus_req_bits_wdata
 );
 
+  wire        _io_dataWriteBus_req_valid_output = io_in_valid & io_in_bits_is_write;
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
     {{8{io_in_bits_wmask[3]}},
      {8{io_in_bits_wmask[2]}},
      {8{io_in_bits_wmask[1]}},
      {8{io_in_bits_wmask[0]}}};
+  wire [31:0] _io_dataWriteBus_req_bits_wdata_output =
+    io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
+    & ~_io_dataWriteBus_req_bits_wdata_T_12;
+  reg  [63:0] c;
+  `ifndef SYNTHESIS
+    always @(posedge clock) begin
+      if ((`PRINTF_COND_) & _io_dataWriteBus_req_valid_output & ~reset) begin
+        $fwrite(32'h80000002, "[%d]: ", c);
+        $fwrite(32'h80000002, "[L1$], waddr:%x, wdata:%x\n", io_in_bits_waddr,
+                _io_dataWriteBus_req_bits_wdata_output);
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
+  always @(posedge clock) begin
+    if (reset)
+      c <= 64'h0;
+    else
+      c <= c + 64'h1;
+  end // always @(posedge)
   assign io_in_ready = io_out_resp_ready;
   assign io_out_resp_valid = io_in_valid & ~io_in_bits_is_write;
   assign io_out_resp_bits_rdata = io_in_valid ? io_dataReadBus_rdata : 32'h0;
-  assign io_dataWriteBus_req_valid = io_in_valid & io_in_bits_is_write;
+  assign io_dataWriteBus_req_valid = _io_dataWriteBus_req_valid_output;
   assign io_dataWriteBus_req_bits_waddr = io_in_bits_waddr;
-  assign io_dataWriteBus_req_bits_wdata =
-    io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
-    & ~_io_dataWriteBus_req_bits_wdata_T_12;
+  assign io_dataWriteBus_req_bits_wdata = _io_dataWriteBus_req_bits_wdata_output;
 endmodule
 
 module Cache_1(
@@ -3004,6 +3046,8 @@ module Cache_1(
     .io_dataWriteBus_req_bits_wdata (_s1_io_dataWriteBus_req_bits_wdata)
   );
   CacheStage2_1 s2 (
+    .clock                          (clock),
+    .reset                          (reset),
     .io_in_valid                    (valid),
     .io_in_bits_is_write            (s2_io_in_bits_r_is_write),
     .io_in_bits_waddr               (s2_io_in_bits_r_waddr),
