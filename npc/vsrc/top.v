@@ -1898,28 +1898,26 @@ endmodule
 
 // VCS coverage exclude_file
 module array_128x32(
-  input  [6:0]  R0_addr,
-  input         R0_en,
-                R0_clk,
-  input  [6:0]  W0_addr,
-  input         W0_en,
-                W0_clk,
-  input  [31:0] W0_data,
-  output [31:0] R0_data
+  input  [6:0]  RW0_addr,
+  input         RW0_en,
+                RW0_clk,
+                RW0_wmode,
+  input  [31:0] RW0_wdata,
+  output [31:0] RW0_rdata
 );
 
   reg [31:0] Memory[0:127];
-  reg        _R0_en_d0;
-  reg [6:0]  _R0_addr_d0;
-  always @(posedge R0_clk) begin
-    _R0_en_d0 <= R0_en;
-    _R0_addr_d0 <= R0_addr;
+  reg [6:0]  _RW0_raddr_d0;
+  reg        _RW0_ren_d0;
+  reg        _RW0_rmode_d0;
+  always @(posedge RW0_clk) begin
+    _RW0_raddr_d0 <= RW0_addr;
+    _RW0_ren_d0 <= RW0_en;
+    _RW0_rmode_d0 <= RW0_wmode;
+    if (RW0_en & RW0_wmode)
+      Memory[RW0_addr] <= RW0_wdata;
   end // always @(posedge)
-  always @(posedge W0_clk) begin
-    if (W0_en)
-      Memory[W0_addr] <= W0_data;
-  end // always @(posedge)
-  assign R0_data = _R0_en_d0 ? Memory[_R0_addr_d0] : 32'bx;
+  assign RW0_rdata = _RW0_ren_d0 & ~_RW0_rmode_d0 ? Memory[_RW0_raddr_d0] : 32'bx;
 endmodule
 
 module SRAMTemplate(
@@ -1933,7 +1931,9 @@ module SRAMTemplate(
   output [31:0] io_r_resp_rdata
 );
 
-  wire [31:0] _array_ext_R0_data;
+  wire        readEnable;
+  wire [31:0] _array_ext_RW0_rdata;
+  assign readEnable = io_r_req_valid & ~io_w_req_valid;
   reg         io_r_resp_rdata_REG;
   reg  [31:0] io_r_resp_rdata_r;
   reg         REG;
@@ -1944,7 +1944,7 @@ module SRAMTemplate(
       if ((`PRINTF_COND_) & REG & ~reset) begin
         $fwrite(32'h80000002, "[%d]: ", c);
         $fwrite(32'h80000002, "[SRAM][icache], raddr:%x, rdata:%x\n", io_r_req_bits_raddr,
-                _array_ext_R0_data);
+                _array_ext_RW0_rdata);
       end
       if ((`PRINTF_COND_) & io_w_req_valid & ~reset) begin
         $fwrite(32'h80000002, "[%d]: ", c_1);
@@ -1955,7 +1955,7 @@ module SRAMTemplate(
   `endif // not def SYNTHESIS
   always @(posedge clock) begin
     io_r_resp_rdata_REG <= io_r_req_valid;
-    REG <= io_r_req_valid;
+    REG <= readEnable;
     if (reset) begin
       io_r_resp_rdata_r <= 32'h0;
       c <= 64'h0;
@@ -1963,22 +1963,20 @@ module SRAMTemplate(
     end
     else begin
       if (io_r_resp_rdata_REG)
-        io_r_resp_rdata_r <= _array_ext_R0_data;
+        io_r_resp_rdata_r <= _array_ext_RW0_rdata;
       c <= c + 64'h1;
       c_1 <= c_1 + 64'h1;
     end
   end // always @(posedge)
   array_128x32 array_ext (
-    .R0_addr (io_r_req_bits_raddr),
-    .R0_en   (io_r_req_valid),
-    .R0_clk  (clock),
-    .W0_addr (io_w_req_bits_waddr),
-    .W0_en   (io_w_req_valid),
-    .W0_clk  (clock),
-    .W0_data (io_w_req_bits_wdata),
-    .R0_data (_array_ext_R0_data)
+    .RW0_addr  (io_w_req_valid ? io_w_req_bits_waddr : io_r_req_bits_raddr),
+    .RW0_en    (readEnable | io_w_req_valid),
+    .RW0_clk   (clock),
+    .RW0_wmode (io_w_req_valid),
+    .RW0_wdata (io_w_req_bits_wdata),
+    .RW0_rdata (_array_ext_RW0_rdata)
   );
-  assign io_r_resp_rdata = io_r_resp_rdata_REG ? _array_ext_R0_data : io_r_resp_rdata_r;
+  assign io_r_resp_rdata = io_r_resp_rdata_REG ? _array_ext_RW0_rdata : io_r_resp_rdata_r;
 endmodule
 
 module CacheStage1(
@@ -2901,7 +2899,9 @@ module SRAMTemplate_1(
   output [31:0] io_r_resp_rdata
 );
 
-  wire [31:0] _array_ext_R0_data;
+  wire        readEnable;
+  wire [31:0] _array_ext_RW0_rdata;
+  assign readEnable = io_r_req_valid & ~io_w_req_valid;
   reg         io_r_resp_rdata_REG;
   reg  [31:0] io_r_resp_rdata_r;
   reg         REG;
@@ -2912,7 +2912,7 @@ module SRAMTemplate_1(
       if ((`PRINTF_COND_) & REG & ~reset) begin
         $fwrite(32'h80000002, "[%d]: ", c);
         $fwrite(32'h80000002, "[SRAM][dcache], raddr:%x, rdata:%x\n", io_r_req_bits_raddr,
-                _array_ext_R0_data);
+                _array_ext_RW0_rdata);
       end
       if ((`PRINTF_COND_) & io_w_req_valid & ~reset) begin
         $fwrite(32'h80000002, "[%d]: ", c_1);
@@ -2923,7 +2923,7 @@ module SRAMTemplate_1(
   `endif // not def SYNTHESIS
   always @(posedge clock) begin
     io_r_resp_rdata_REG <= io_r_req_valid;
-    REG <= io_r_req_valid;
+    REG <= readEnable;
     if (reset) begin
       io_r_resp_rdata_r <= 32'h0;
       c <= 64'h0;
@@ -2931,22 +2931,20 @@ module SRAMTemplate_1(
     end
     else begin
       if (io_r_resp_rdata_REG)
-        io_r_resp_rdata_r <= _array_ext_R0_data;
+        io_r_resp_rdata_r <= _array_ext_RW0_rdata;
       c <= c + 64'h1;
       c_1 <= c_1 + 64'h1;
     end
   end // always @(posedge)
   array_128x32 array_ext (
-    .R0_addr (io_r_req_bits_raddr),
-    .R0_en   (io_r_req_valid),
-    .R0_clk  (clock),
-    .W0_addr (io_w_req_bits_waddr),
-    .W0_en   (io_w_req_valid),
-    .W0_clk  (clock),
-    .W0_data (io_w_req_bits_wdata),
-    .R0_data (_array_ext_R0_data)
+    .RW0_addr  (io_w_req_valid ? io_w_req_bits_waddr : io_r_req_bits_raddr),
+    .RW0_en    (readEnable | io_w_req_valid),
+    .RW0_clk   (clock),
+    .RW0_wmode (io_w_req_valid),
+    .RW0_wdata (io_w_req_bits_wdata),
+    .RW0_rdata (_array_ext_RW0_rdata)
   );
-  assign io_r_resp_rdata = io_r_resp_rdata_REG ? _array_ext_R0_data : io_r_resp_rdata_r;
+  assign io_r_resp_rdata = io_r_resp_rdata_REG ? _array_ext_RW0_rdata : io_r_resp_rdata_r;
 endmodule
 
 module CacheStage2_1(
