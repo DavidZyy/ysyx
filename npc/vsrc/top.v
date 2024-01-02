@@ -1716,7 +1716,8 @@ module WBU(
     always @(posedge clock) begin
       if ((`PRINTF_COND_) & from_EXU_valid & ~reset) begin
         $fwrite(32'h80000002, "[%d]: ", c);
-        $fwrite(32'h80000002, "pc:%x, inst:%x\n", from_EXU_bits_pc, from_EXU_bits_inst);
+        $fwrite(32'h80000002, "[wbu], pc:%x, inst:%x\n", from_EXU_bits_pc,
+                from_EXU_bits_inst);
       end
     end // always @(posedge)
   `endif // not def SYNTHESIS
@@ -2562,8 +2563,8 @@ module CacheStage2(
   output        io_dataWriteBus_req_valid,
   output [6:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-                io_in_bits_addr__bore,
-  output        io_in_valid__bore
+  output        io_in_valid__bore,
+  output [31:0] io_in_bits_addr__bore
 );
 
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
@@ -2573,15 +2574,15 @@ module CacheStage2(
      {8{io_in_bits_wmask[0]}}};
   assign io_in_ready = io_out_resp_ready;
   assign io_out_addr = io_in_bits_addr;
-  assign io_out_resp_valid = io_in_valid & ~io_in_bits_is_write;
+  assign io_out_resp_valid = io_in_valid;
   assign io_out_resp_bits_rdata = io_in_valid ? io_dataReadBus_rdata : 32'h0;
   assign io_dataWriteBus_req_valid = io_in_valid & io_in_bits_is_write;
   assign io_dataWriteBus_req_bits_waddr = io_in_bits_waddr;
   assign io_dataWriteBus_req_bits_wdata =
     io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
     & ~_io_dataWriteBus_req_bits_wdata_T_12;
-  assign io_in_bits_addr__bore = io_in_bits_addr;
   assign io_in_valid__bore = io_in_valid;
+  assign io_in_bits_addr__bore = io_in_bits_addr;
 endmodule
 
 module Arbiter2_SRAMBundleWriteReq(
@@ -2619,8 +2620,8 @@ module Cache(
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
   output [31:0] io_stage2Addr,
-                s2_io_in_bits_addr__bore,
-  output        s2_io_in_valid__bore
+  output        s2_io_in_valid__bore,
+  output [31:0] s2_io_in_bits_addr__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -2729,8 +2730,8 @@ module Cache(
     .io_dataWriteBus_req_valid      (_s2_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata),
-    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore),
-    .io_in_valid__bore              (s2_io_in_valid__bore)
+    .io_in_valid__bore              (s2_io_in_valid__bore),
+    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore)
   );
   Arbiter2_SRAMBundleWriteReq dataWriteArb (
     .io_in_0_valid      (_s1_io_dataWriteBus_req_valid),
@@ -2908,7 +2909,7 @@ module CacheStage2_1(
       c <= c + 64'h1;
   end // always @(posedge)
   assign io_in_ready = io_out_resp_ready;
-  assign io_out_resp_valid = io_in_valid & ~io_in_bits_is_write;
+  assign io_out_resp_valid = io_in_valid;
   assign io_out_resp_bits_rdata = io_in_valid ? io_dataReadBus_rdata : 32'h0;
   assign io_dataWriteBus_req_valid = _io_dataWriteBus_req_valid_output;
   assign io_dataWriteBus_req_bits_waddr = io_in_bits_waddr;
@@ -3150,8 +3151,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_wdata;
   wire [3:0]  _icache_io_mem_req_bits_cmd;
   wire [31:0] _icache_io_stage2Addr;
-  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _icache_s2_io_in_valid__bore;
+  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3662,8 +3663,8 @@ module top(
     .io_mem_req_bits_wdata    (_icache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd      (_icache_io_mem_req_bits_cmd),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
