@@ -2184,6 +2184,7 @@ module CacheStage1(
   wire [6:0]        hitCacheAddr = {wayIdx, io_in_bits_addr[7:2]};
   reg  [1:0]        entryOff;
   reg  [2:0]        stateCache;
+  wire              _io_dataWriteBus_req_valid_T = stateCache == 3'h3;
   wire [6:0]        writeCacheAddr = {replaceWayReg, io_in_bits_addr[7:4], entryOff};
   wire              _io_out_valid_output = hit & io_in_valid;
   wire              _io_out_bits_is_write_output = io_in_bits_cmd == 4'h2;
@@ -2197,7 +2198,7 @@ module CacheStage1(
   wire [15:0][23:0] _GEN_5 = replaceWayReg ? _GEN_1 : _GEN;
   wire              _io_mem_resp_ready_T_1 = stateCache == 3'h3;
   wire              _io_dataWriteBus_req_valid_output =
-    stateCache == 3'h3 & _io_mem_resp_ready_T_1 & io_mem_resp_valid;
+    _io_dataWriteBus_req_valid_T & _io_mem_resp_ready_T_1 & io_mem_resp_valid;
   wire              _GEN_6 = _io_dataWriteBus_req_valid_output & entryOff == 2'h0;
   wire [7:0][2:0]   _GEN_7 =
     {{stateCache},
@@ -2430,7 +2431,7 @@ module CacheStage1(
       if (~(|stateCache) & _GEN_9)
         replaceWayReg <= randomNum;
       randomNum <= randomNum - 1'h1;
-      if (&entryOff) begin
+      if ((&entryOff) & _io_dataWriteBus_req_valid_T) begin
         if (_GEN_11)
           tagArray_0_0 <= io_in_bits_addr[31:8];
         if (_GEN_13)
@@ -2725,8 +2726,8 @@ module CacheStage2(
   output        io_dataWriteBus_req_valid,
   output [6:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-                io_in_bits_addr__bore,
-  output        io_in_valid__bore
+  output        io_in_valid__bore,
+  output [31:0] io_in_bits_addr__bore
 );
 
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
@@ -2743,8 +2744,8 @@ module CacheStage2(
   assign io_dataWriteBus_req_bits_wdata =
     io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
     & ~_io_dataWriteBus_req_bits_wdata_T_12;
-  assign io_in_bits_addr__bore = io_in_bits_addr;
   assign io_in_valid__bore = io_in_valid;
+  assign io_in_bits_addr__bore = io_in_bits_addr;
 endmodule
 
 module Arbiter2_SRAMBundleWriteReq(
@@ -2782,8 +2783,8 @@ module Cache(
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
   output [31:0] io_stage2Addr,
-                s2_io_in_bits_addr__bore,
-  output        s2_io_in_valid__bore
+  output        s2_io_in_valid__bore,
+  output [31:0] s2_io_in_bits_addr__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -2892,8 +2893,8 @@ module Cache(
     .io_dataWriteBus_req_valid      (_s2_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata),
-    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore),
-    .io_in_valid__bore              (s2_io_in_valid__bore)
+    .io_in_valid__bore              (s2_io_in_valid__bore),
+    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore)
   );
   Arbiter2_SRAMBundleWriteReq dataWriteArb (
     .io_in_0_valid      (_s1_io_dataWriteBus_req_valid),
@@ -3382,8 +3383,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_wdata;
   wire [3:0]  _icache_io_mem_req_bits_cmd;
   wire [31:0] _icache_io_stage2Addr;
-  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _icache_s2_io_in_valid__bore;
+  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3894,8 +3895,8 @@ module top(
     .io_mem_req_bits_wdata    (_icache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd      (_icache_io_mem_req_bits_cmd),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
