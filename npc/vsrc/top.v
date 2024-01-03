@@ -2563,7 +2563,7 @@ module CacheStage1(
   assign io_out_bits_wmask = io_in_bits_wmask[3:0];
   assign io_out_bits_wdata = _io_out_bits_wdata_T_1[31:0];
   assign io_dataReadBus_req_valid =
-    io_in_valid | _io_mem_req_bits_cmd_T_4 | _io_mem_req_bits_addr_T_7;
+    io_in_valid & hit | _io_mem_req_bits_cmd_T_4 | _io_mem_req_bits_addr_T_7;
   assign io_dataReadBus_req_bits_raddr = _GEN_4 ? writeCacheAddr : hitCacheAddr;
   assign io_dataWriteBus_req_valid = _io_dataWriteBus_req_valid_output;
   assign io_dataWriteBus_req_bits_waddr = writeCacheAddr;
