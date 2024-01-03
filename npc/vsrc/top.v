@@ -2586,8 +2586,8 @@ module CacheStage2(
   output        io_dataWriteBus_req_valid,
   output [6:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-  output        io_in_valid__bore,
-  output [31:0] io_in_bits_addr__bore
+                io_in_bits_addr__bore,
+  output        io_in_valid__bore
 );
 
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
@@ -2604,8 +2604,8 @@ module CacheStage2(
   assign io_dataWriteBus_req_bits_wdata =
     io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
     & ~_io_dataWriteBus_req_bits_wdata_T_12;
-  assign io_in_valid__bore = io_in_valid;
   assign io_in_bits_addr__bore = io_in_bits_addr;
+  assign io_in_valid__bore = io_in_valid;
 endmodule
 
 module Arbiter2_SRAMBundleWriteReq(
@@ -2643,8 +2643,8 @@ module Cache(
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
   output [31:0] io_stage2Addr,
-  output        s2_io_in_valid__bore,
-  output [31:0] s2_io_in_bits_addr__bore
+                s2_io_in_bits_addr__bore,
+  output        s2_io_in_valid__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -2753,8 +2753,8 @@ module Cache(
     .io_dataWriteBus_req_valid      (_s2_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata),
-    .io_in_valid__bore              (s2_io_in_valid__bore),
-    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore)
+    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore),
+    .io_in_valid__bore              (s2_io_in_valid__bore)
   );
   Arbiter2_SRAMBundleWriteReq dataWriteArb (
     .io_in_0_valid      (_s1_io_dataWriteBus_req_valid),
@@ -2842,14 +2842,14 @@ module SimpleBusCrossBar1toN(
       : {io_in_req_bits_addr > 32'h9FFFFFFF & io_in_req_bits_addr < 32'hA1200000, 1'h0};
   reg        outSelRespVec_0;
   reg        outSelRespVec_1;
-  wire       reqInvalidAddr = io_in_req_valid & outSelVec_enc == 2'h0;
-  wire       _io_out_1_resp_ready_T_1 = state == 2'h1;
+  wire       _io_out_1_resp_ready_T_2 = state == 2'h1;
   wire       _io_in_resp_valid_output =
-    (outSelRespVec_0 & io_out_0_resp_valid | outSelRespVec_1) & _io_out_1_resp_ready_T_1
-    | state == 2'h2;
+    _io_out_1_resp_ready_T_2
+      ? outSelRespVec_0 & io_out_0_resp_valid | outSelRespVec_1
+      : ~(|state) & (outSelVec_enc[0] & io_out_0_resp_valid | outSelVec_enc[1]);
   wire       _outSelRespVec_T =
-    ((outSelVec_enc[0] & io_out_0_req_ready | outSelVec_enc[1]) & ~(|state)
-     | reqInvalidAddr) & io_in_req_valid;
+    (outSelVec_enc[0] & io_out_0_req_ready | outSelVec_enc[1]) & ~(|state)
+    & io_in_req_valid;
   always @(posedge clock) begin
     if (reset) begin
       state <= 2'h0;
@@ -2858,13 +2858,17 @@ module SimpleBusCrossBar1toN(
     end
     else begin
       if (|state) begin
-        if ((state == 2'h1 | state == 2'h2) & _io_in_resp_valid_output)
+        if (state == 2'h1)
+          state <= {1'h0, ~_io_in_resp_valid_output};
+        else if (state == 2'h2)
           state <= 2'h0;
       end
-      else if (reqInvalidAddr & ~io_flush)
-        state <= 2'h2;
-      else if (_outSelRespVec_T & ~io_flush)
+      else if (_io_in_resp_valid_output | io_flush)
+        state <= 2'h0;
+      else if (_outSelRespVec_T)
         state <= 2'h1;
+      else if (io_in_req_valid & outSelVec_enc == 2'h0)
+        state <= 2'h2;
       if (_outSelRespVec_T & ~(|state)) begin
         outSelRespVec_0 <= outSelVec_enc[0];
         outSelRespVec_1 <= outSelVec_enc[1];
@@ -2873,14 +2877,20 @@ module SimpleBusCrossBar1toN(
   end // always @(posedge)
   assign io_in_resp_valid = _io_in_resp_valid_output;
   assign io_in_resp_bits_rdata =
-    (outSelRespVec_0 ? io_out_0_resp_bits_rdata : 32'h0)
-    | (outSelRespVec_1 ? io_out_1_resp_bits_rdata : 32'h0);
+    _io_out_1_resp_ready_T_2
+      ? (outSelRespVec_0 ? io_out_0_resp_bits_rdata : 32'h0)
+        | (outSelRespVec_1 ? io_out_1_resp_bits_rdata : 32'h0)
+      : (|state)
+          ? 32'h0
+          : (outSelVec_enc[0] ? io_out_0_resp_bits_rdata : 32'h0)
+            | (outSelVec_enc[1] ? io_out_1_resp_bits_rdata : 32'h0);
   assign io_out_0_req_valid = outSelVec_enc[0] & io_in_req_valid & ~(|state);
   assign io_out_0_req_bits_addr = io_in_req_bits_addr;
   assign io_out_0_req_bits_wdata = io_in_req_bits_wdata;
   assign io_out_0_req_bits_wmask = io_in_req_bits_wmask;
   assign io_out_0_req_bits_cmd = io_in_req_bits_cmd;
-  assign io_out_0_resp_ready = outSelRespVec_0 & _io_out_1_resp_ready_T_1;
+  assign io_out_0_resp_ready =
+    _io_out_1_resp_ready_T_2 ? outSelRespVec_0 : ~(|state) & outSelVec_enc[0];
   assign io_out_1_req_valid = outSelVec_enc[1] & io_in_req_valid & ~(|state);
   assign io_out_1_req_bits_addr = io_in_req_bits_addr;
   assign io_out_1_req_bits_wdata = io_in_req_bits_wdata;
@@ -3233,8 +3243,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_wdata;
   wire [3:0]  _icache_io_mem_req_bits_cmd;
   wire [31:0] _icache_io_stage2Addr;
-  wire        _icache_s2_io_in_valid__bore;
   wire [31:0] _icache_s2_io_in_bits_addr__bore;
+  wire        _icache_s2_io_in_valid__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3745,8 +3755,8 @@ module top(
     .io_mem_req_bits_wdata    (_icache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd      (_icache_io_mem_req_bits_cmd),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
