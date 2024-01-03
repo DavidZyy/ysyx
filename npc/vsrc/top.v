@@ -1621,7 +1621,7 @@ module EXU_pipeline(
     .io_out_difftest_mstatus (difftest_mstatus),
     .io_out_difftest_mtvec   (difftest_mtvec)
   );
-  assign from_ISU_ready = _GEN | ~from_ISU_valid | _Lsu_i_io_out_end;
+  assign from_ISU_ready = _GEN | _Lsu_i_io_out_end;
   assign to_WBU_valid = from_ISU_valid & (_GEN | _Lsu_i_io_out_end);
   assign to_WBU_bits_alu_result = _Alu_i_io_out_result;
   assign to_WBU_bits_pc = from_ISU_bits_pc;
