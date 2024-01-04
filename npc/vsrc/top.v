@@ -1575,7 +1575,8 @@ module EXU_pipeline(
   wire [31:0] _Alu_i_io_out_result;
   wire        _to_WBU_bits_is_mmio_T = from_ISU_bits_ctrl_sig_fu_op == 3'h4;
   wire        lsuStore =
-    (&from_ISU_bits_ctrl_sig_fu_op) | from_ISU_bits_ctrl_sig_fu_op == 3'h6;
+    from_ISU_bits_ctrl_sig_lsu_op == 4'hB | from_ISU_bits_ctrl_sig_lsu_op == 4'h8
+    | from_ISU_bits_ctrl_sig_lsu_op == 4'h7 | from_ISU_bits_ctrl_sig_lsu_op == 4'h6;
   wire        _GEN = from_ISU_bits_ctrl_sig_fu_op != 3'h4;
   Alu Alu_i (
     .io_in_src1
