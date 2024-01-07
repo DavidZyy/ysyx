@@ -1704,7 +1704,6 @@ module WBU(
                 to_ISU_bits_hazard_isBR,
                 to_IFU_bits_redirect_valid,
   output [31:0] to_IFU_bits_redirect_target,
-                to_IFU_bits_pc,
   output        wb,
                 is_mmio
 );
@@ -1752,128 +1751,8 @@ module WBU(
     from_EXU_bits_fu_op == 3'h3 | from_EXU_bits_fu_op == 3'h5;
   assign to_IFU_bits_redirect_valid = from_EXU_bits_redirect_valid & from_EXU_valid;
   assign to_IFU_bits_redirect_target = from_EXU_bits_redirect_target;
-  assign to_IFU_bits_pc = from_EXU_bits_pc;
   assign wb = from_EXU_valid;
   assign is_mmio = from_EXU_bits_is_mmio;
-endmodule
-
-// VCS coverage exclude_file
-module array_4096x65(
-  input  [11:0] RW0_addr,
-  input         RW0_en,
-                RW0_clk,
-                RW0_wmode,
-  input  [64:0] RW0_wdata,
-  output [64:0] RW0_rdata
-);
-
-  reg [64:0] Memory[0:4095];
-  reg [11:0] _RW0_raddr_d0;
-  reg        _RW0_ren_d0;
-  reg        _RW0_rmode_d0;
-  always @(posedge RW0_clk) begin
-    _RW0_raddr_d0 <= RW0_addr;
-    _RW0_ren_d0 <= RW0_en;
-    _RW0_rmode_d0 <= RW0_wmode;
-    if (RW0_en & RW0_wmode)
-      Memory[RW0_addr] <= RW0_wdata;
-  end // always @(posedge)
-  assign RW0_rdata = _RW0_ren_d0 & ~_RW0_rmode_d0 ? Memory[_RW0_raddr_d0] : 65'bx;
-endmodule
-
-module SRAMTemplate(
-  input         clock,
-                reset,
-                io_r_req_valid,
-  input  [11:0] io_r_req_bits_raddr,
-  input         io_w_req_valid,
-  input  [11:0] io_w_req_bits_waddr,
-  input  [64:0] io_w_req_bits_wdata,
-  output [64:0] io_r_resp_rdata
-);
-
-  wire        readEnable;
-  wire [64:0] _array_ext_RW0_rdata;
-  assign readEnable = io_r_req_valid & ~io_w_req_valid;
-  reg         io_r_resp_rdata_REG;
-  reg  [64:0] io_r_resp_rdata_r;
-  reg         REG;
-  reg  [11:0] REG_1;
-  reg  [31:0] c;
-  reg  [31:0] c_1;
-  `ifndef SYNTHESIS
-    always @(posedge clock) begin
-      if ((`PRINTF_COND_) & REG & ~reset) begin
-        $fwrite(32'h80000002, "[%d]: ", c - 32'h2);
-        $fwrite(32'h80000002, "[SRAM][BTB], raddr:%x, rdata:%x\n", REG_1,
-                _array_ext_RW0_rdata);
-      end
-      if ((`PRINTF_COND_) & io_w_req_valid & ~reset) begin
-        $fwrite(32'h80000002, "[%d]: ", c_1);
-        $fwrite(32'h80000002, "[SRAM][BTB], waddr:%x, wdata:%x\n", io_w_req_bits_waddr,
-                io_w_req_bits_wdata);
-      end
-    end // always @(posedge)
-  `endif // not def SYNTHESIS
-  always @(posedge clock) begin
-    io_r_resp_rdata_REG <= io_r_req_valid;
-    REG <= readEnable;
-    REG_1 <= io_r_req_bits_raddr;
-    if (reset) begin
-      io_r_resp_rdata_r <= 65'h0;
-      c <= 32'h4;
-      c_1 <= 32'h4;
-    end
-    else begin
-      if (io_r_resp_rdata_REG)
-        io_r_resp_rdata_r <= _array_ext_RW0_rdata;
-      c <= c + 32'h2;
-      c_1 <= c_1 + 32'h2;
-    end
-  end // always @(posedge)
-  array_4096x65 array_ext (
-    .RW0_addr  (io_w_req_valid ? io_w_req_bits_waddr : io_r_req_bits_raddr),
-    .RW0_en    (readEnable | io_w_req_valid),
-    .RW0_clk   (clock),
-    .RW0_wmode (io_w_req_valid),
-    .RW0_wdata (io_w_req_bits_wdata),
-    .RW0_rdata (_array_ext_RW0_rdata)
-  );
-  assign io_r_resp_rdata = io_r_resp_rdata_REG ? _array_ext_RW0_rdata : io_r_resp_rdata_r;
-endmodule
-
-module BPU(
-  input         clock,
-                reset,
-                io_in_pc_valid,
-  input  [31:0] io_in_pc_bits,
-  input         io_in_redirect_valid,
-  input  [31:0] io_in_redirect_target,
-                io_in_missPC,
-  output        io_out_valid,
-  output [31:0] io_out_target
-);
-
-  wire [64:0] _btb_io_r_resp_rdata;
-  reg  [31:0] pcLatch;
-  always @(posedge clock) begin
-    if (io_in_pc_valid)
-      pcLatch <= io_in_pc_bits;
-  end // always @(posedge)
-  SRAMTemplate btb (
-    .clock               (clock),
-    .reset               (reset),
-    .io_r_req_valid      (io_in_pc_valid),
-    .io_r_req_bits_raddr ({11'h0, io_in_pc_bits[13]}),
-    .io_w_req_valid      (io_in_redirect_valid),
-    .io_w_req_bits_waddr (io_in_missPC[13:2]),
-    .io_w_req_bits_wdata ({1'h1, io_in_missPC, io_in_redirect_target}),
-    .io_r_resp_rdata     (_btb_io_r_resp_rdata)
-  );
-  assign io_out_valid =
-    _btb_io_r_resp_rdata[64] & _btb_io_r_resp_rdata[63:32] == pcLatch
-    & ~io_in_redirect_valid;
-  assign io_out_target = _btb_io_r_resp_rdata[31:0];
 endmodule
 
 module IFU_pipeline(
@@ -1882,7 +1761,6 @@ module IFU_pipeline(
                 to_IDU_ready,
                 from_WBU_bits_redirect_valid,
   input  [31:0] from_WBU_bits_redirect_target,
-                from_WBU_bits_pc,
   input         to_mem_req_ready,
                 to_mem_resp_valid,
   input  [31:0] to_mem_resp_bits_rdata,
@@ -1896,37 +1774,17 @@ module IFU_pipeline(
   output [31:0] fetch_PC
 );
 
-  wire        _BPU_i_io_out_valid;
-  wire [31:0] _BPU_i_io_out_target;
-  reg  [31:0] reg_PC;
-  wire        _BPU_i_io_in_pc_valid_T = to_mem_req_ready & to_IDU_ready;
-  wire [31:0] _npc_T = reg_PC + 32'h4;
+  reg [31:0] reg_PC;
   always @(posedge clock) begin
     if (reset)
       reg_PC <= 32'h80000000;
-    else if (_BPU_i_io_in_pc_valid_T | from_WBU_bits_redirect_valid) begin
+    else if (to_mem_req_ready & to_IDU_ready | from_WBU_bits_redirect_valid) begin
       if (from_WBU_bits_redirect_valid)
         reg_PC <= from_WBU_bits_redirect_target;
-      else if (_BPU_i_io_out_valid)
-        reg_PC <= _BPU_i_io_out_target;
       else
-        reg_PC <= _npc_T;
+        reg_PC <= reg_PC + 32'h4;
     end
   end // always @(posedge)
-  BPU BPU_i (
-    .clock                 (clock),
-    .reset                 (reset),
-    .io_in_pc_valid        (_BPU_i_io_in_pc_valid_T),
-    .io_in_pc_bits
-      (from_WBU_bits_redirect_valid
-         ? from_WBU_bits_redirect_target
-         : _BPU_i_io_out_valid ? _BPU_i_io_out_target : _npc_T),
-    .io_in_redirect_valid  (from_WBU_bits_redirect_valid),
-    .io_in_redirect_target (from_WBU_bits_redirect_target),
-    .io_in_missPC          (from_WBU_bits_pc),
-    .io_out_valid          (_BPU_i_io_out_valid),
-    .io_out_target         (_BPU_i_io_out_target)
-  );
   assign to_IDU_valid = to_mem_resp_valid;
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
   assign to_IDU_bits_pc = to_IDU_PC;
@@ -2068,7 +1926,7 @@ module array_512x32(
   assign RW0_rdata = _RW0_ren_d0 & ~_RW0_rmode_d0 ? Memory[_RW0_raddr_d0] : 32'bx;
 endmodule
 
-module SRAMTemplate_1(
+module SRAMTemplate(
   input         clock,
                 reset,
                 io_r_req_valid,
@@ -2876,8 +2734,8 @@ module CacheStage2(
   output        io_dataWriteBus_req_valid,
   output [8:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-  output        io_in_valid__bore,
-  output [31:0] io_in_bits_addr__bore
+                io_in_bits_addr__bore,
+  output        io_in_valid__bore
 );
 
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
@@ -2894,8 +2752,8 @@ module CacheStage2(
   assign io_dataWriteBus_req_bits_wdata =
     io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
     & ~_io_dataWriteBus_req_bits_wdata_T_12;
-  assign io_in_valid__bore = io_in_valid;
   assign io_in_bits_addr__bore = io_in_bits_addr;
+  assign io_in_valid__bore = io_in_valid;
 endmodule
 
 module Arbiter2_SRAMBundleWriteReq(
@@ -2933,8 +2791,8 @@ module Cache(
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
   output [31:0] io_stage2Addr,
-  output        s2_io_in_valid__bore,
-  output [31:0] s2_io_in_bits_addr__bore
+                s2_io_in_bits_addr__bore,
+  output        s2_io_in_valid__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -2987,7 +2845,7 @@ module Cache(
       s2_io_in_bits_r_is_write <= ~io_flush & _s1_io_out_bits_is_write;
     end
   end // always @(posedge)
-  SRAMTemplate_1 dataArray (
+  SRAMTemplate dataArray (
     .clock               (clock),
     .reset               (reset),
     .io_r_req_valid      (_s1_io_dataReadBus_req_valid),
@@ -3043,8 +2901,8 @@ module Cache(
     .io_dataWriteBus_req_valid      (_s2_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata),
-    .io_in_valid__bore              (s2_io_in_valid__bore),
-    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore)
+    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore),
+    .io_in_valid__bore              (s2_io_in_valid__bore)
   );
   Arbiter2_SRAMBundleWriteReq dataWriteArb (
     .io_in_0_valid      (_s1_io_dataWriteBus_req_valid),
@@ -3190,7 +3048,7 @@ module SimpleBusCrossBar1toN(
   assign io_out_1_req_bits_cmd = io_in_req_bits_cmd;
 endmodule
 
-module SRAMTemplate_2(
+module SRAMTemplate_1(
   input         clock,
                 reset,
                 io_r_req_valid,
@@ -3370,7 +3228,7 @@ module Cache_1(
       end
     end
   end // always @(posedge)
-  SRAMTemplate_2 dataArray (
+  SRAMTemplate_1 dataArray (
     .clock               (clock),
     .reset               (reset),
     .io_r_req_valid      (_s1_io_dataReadBus_req_valid),
@@ -3537,8 +3395,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_wdata;
   wire [3:0]  _icache_io_mem_req_bits_cmd;
   wire [31:0] _icache_io_stage2Addr;
-  wire        _icache_s2_io_in_valid__bore;
   wire [31:0] _icache_s2_io_in_bits_addr__bore;
+  wire        _icache_s2_io_in_valid__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3560,7 +3418,6 @@ module top(
   wire        _WBU_i_to_ISU_bits_hazard_isBR;
   wire        _WBU_i_to_IFU_bits_redirect_valid;
   wire [31:0] _WBU_i_to_IFU_bits_redirect_target;
-  wire [31:0] _WBU_i_to_IFU_bits_pc;
   wire        _WBU_i_wb;
   wire        _EXU_i_from_ISU_ready;
   wire        _EXU_i_to_WBU_valid;
@@ -3998,7 +3855,6 @@ module top(
     .to_ISU_bits_hazard_isBR       (_WBU_i_to_ISU_bits_hazard_isBR),
     .to_IFU_bits_redirect_valid    (_WBU_i_to_IFU_bits_redirect_valid),
     .to_IFU_bits_redirect_target   (_WBU_i_to_IFU_bits_redirect_target),
-    .to_IFU_bits_pc                (_WBU_i_to_IFU_bits_pc),
     .wb                            (_WBU_i_wb),
     .is_mmio                       (io_out_is_mmio)
   );
@@ -4008,7 +3864,6 @@ module top(
     .to_IDU_ready                  (_IDU_i_from_IFU_ready),
     .from_WBU_bits_redirect_valid  (_WBU_i_to_IFU_bits_redirect_valid),
     .from_WBU_bits_redirect_target (_WBU_i_to_IFU_bits_redirect_target),
-    .from_WBU_bits_pc              (_WBU_i_to_IFU_bits_pc),
     .to_mem_req_ready              (_icache_io_in_req_ready),
     .to_mem_resp_valid             (_icache_io_in_resp_valid),
     .to_mem_resp_bits_rdata        (_icache_io_in_resp_bits_rdata),
@@ -4054,8 +3909,8 @@ module top(
     .io_mem_req_bits_wdata    (_icache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd      (_icache_io_mem_req_bits_cmd),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
