@@ -1572,9 +1572,9 @@ module EXU_pipeline(
   wire        _to_WBU_bits_is_mmio_T = from_ISU_bits_ctrl_sig_fu_op == 3'h4;
   wire        _GEN = from_ISU_bits_ctrl_sig_fu_op != 3'h4;
   wire        taken = _Bru_i_io_out_ctrl_br | _Csr_i_io_out_csr_br;
+  wire [31:0] _to_WBU_bits_redirect_target_T_3 = from_ISU_bits_pc + 32'h4;
   wire        _to_ISU_hazard_isBR_T = from_ISU_bits_ctrl_sig_fu_op == 3'h3;
   wire        _to_ISU_hazard_isBR_T_1 = from_ISU_bits_ctrl_sig_fu_op == 3'h5;
-  wire [31:0] _to_WBU_bits_redirect_target_T_3 = from_ISU_bits_pc + 32'h20;
   Alu Alu_i (
     .io_in_src1
       (from_ISU_bits_ctrl_sig_src1_op == 2'h1
@@ -1641,7 +1641,7 @@ module EXU_pipeline(
   assign to_WBU_bits_fu_op = from_ISU_bits_ctrl_sig_fu_op;
   assign to_WBU_bits_redirect_valid =
     (taken & npc != _Alu_i_io_out_result & npc != _Csr_i_io_out_csr_addr | ~taken
-     & npc != from_ISU_bits_pc + 32'h4)
+     & npc != _to_WBU_bits_redirect_target_T_3)
     & (_to_ISU_hazard_isBR_T | _to_ISU_hazard_isBR_T_1) & from_ISU_valid;
   assign to_WBU_bits_redirect_target =
     from_ISU_bits_ctrl_sig_fu_op == 3'h5
