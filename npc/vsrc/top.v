@@ -2707,8 +2707,8 @@ module CacheStage2(
   output        io_dataWriteBus_req_valid,
   output [8:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-                io_in_bits_addr__bore,
-  output        io_in_valid__bore
+  output        io_in_valid__bore,
+  output [31:0] io_in_bits_addr__bore
 );
 
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
@@ -2725,8 +2725,8 @@ module CacheStage2(
   assign io_dataWriteBus_req_bits_wdata =
     io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
     & ~_io_dataWriteBus_req_bits_wdata_T_12;
-  assign io_in_bits_addr__bore = io_in_bits_addr;
   assign io_in_valid__bore = io_in_valid;
+  assign io_in_bits_addr__bore = io_in_bits_addr;
 endmodule
 
 module Arbiter2_SRAMBundleWriteReq(
@@ -2764,8 +2764,8 @@ module Cache(
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
   output [31:0] io_stage2Addr,
-                s2_io_in_bits_addr__bore,
-  output        s2_io_in_valid__bore
+  output        s2_io_in_valid__bore,
+  output [31:0] s2_io_in_bits_addr__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -2802,7 +2802,7 @@ module Cache(
       valid <=
         ~io_flush
         & (_s2_io_in_bits_T_1 | ~(io_in_resp_ready & _s2_io_out_resp_valid) & valid);
-    if (_s2_io_in_bits_T_1) begin
+    if (_s2_io_in_bits_T_1 | io_flush) begin
       if (io_flush) begin
         s2_io_in_bits_r_addr <= 32'h0;
         s2_io_in_bits_r_waddr <= 9'h0;
@@ -2874,8 +2874,8 @@ module Cache(
     .io_dataWriteBus_req_valid      (_s2_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata),
-    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore),
-    .io_in_valid__bore              (s2_io_in_valid__bore)
+    .io_in_valid__bore              (s2_io_in_valid__bore),
+    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore)
   );
   Arbiter2_SRAMBundleWriteReq dataWriteArb (
     .io_in_0_valid      (_s1_io_dataWriteBus_req_valid),
@@ -3106,7 +3106,7 @@ module Cache_1(
       valid <=
         ~io_flush
         & (_s2_io_in_bits_T_1 | ~(io_in_resp_ready & _s2_io_out_resp_valid) & valid);
-    if (_s2_io_in_bits_T_1) begin
+    if (_s2_io_in_bits_T_1 | io_flush) begin
       s2_io_in_bits_r_is_write <= ~io_flush & _s1_io_out_bits_is_write;
       if (io_flush) begin
         s2_io_in_bits_r_waddr <= 9'h0;
@@ -3285,8 +3285,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_wdata;
   wire [3:0]  _icache_io_mem_req_bits_cmd;
   wire [31:0] _icache_io_stage2Addr;
-  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _icache_s2_io_in_valid__bore;
+  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3455,7 +3455,7 @@ module top(
       valid_3 <=
         ~_WBU_i_to_IFU_bits_redirect_valid & (_EXU_i_to_WBU_valid | ~_WBU_i_wb & valid_3);
     end
-    if (_IDU_i_from_IFU_bits_T_1) begin
+    if (_IDU_i_from_IFU_bits_T_1 | _WBU_i_to_IFU_bits_redirect_valid) begin
       if (_WBU_i_to_IFU_bits_redirect_valid) begin
         IDU_i_from_IFU_bits_r_inst <= 32'h0;
         IDU_i_from_IFU_bits_r_pc <= 32'h0;
@@ -3465,7 +3465,7 @@ module top(
         IDU_i_from_IFU_bits_r_pc <= _IFU_i_to_IDU_bits_pc;
       end
     end
-    if (_ISU_i_from_IDU_bits_T_1) begin
+    if (_ISU_i_from_IDU_bits_T_1 | _WBU_i_to_IFU_bits_redirect_valid) begin
       if (_WBU_i_to_IFU_bits_redirect_valid) begin
         ISU_i_from_IDU_bits_r_imm <= 32'h0;
         ISU_i_from_IDU_bits_r_pc <= 32'h0;
@@ -3507,7 +3507,7 @@ module top(
       ISU_i_from_IDU_bits_r_ctrl_sig_not_impl <=
         ~_WBU_i_to_IFU_bits_redirect_valid & _IDU_i_to_ISU_bits_ctrl_sig_not_impl;
     end
-    if (_EXU_i_from_ISU_bits_T_1) begin
+    if (_EXU_i_from_ISU_bits_T_1 | _WBU_i_to_IFU_bits_redirect_valid) begin
       if (_WBU_i_to_IFU_bits_redirect_valid) begin
         EXU_i_from_ISU_bits_r_imm <= 32'h0;
         EXU_i_from_ISU_bits_r_pc <= 32'h0;
@@ -3549,7 +3549,7 @@ module top(
       EXU_i_from_ISU_bits_r_ctrl_sig_not_impl <=
         ~_WBU_i_to_IFU_bits_redirect_valid & _ISU_i_to_EXU_bits_ctrl_sig_not_impl;
     end
-    if (_EXU_i_to_WBU_valid) begin
+    if (_EXU_i_to_WBU_valid | _WBU_i_to_IFU_bits_redirect_valid) begin
       if (_WBU_i_to_IFU_bits_redirect_valid) begin
         WBU_i_from_EXU_bits_r_alu_result <= 32'h0;
         WBU_i_from_EXU_bits_r_mdu_result <= 32'h0;
@@ -3799,8 +3799,8 @@ module top(
     .io_mem_req_bits_wdata    (_icache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd      (_icache_io_mem_req_bits_cmd),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
