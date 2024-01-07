@@ -1203,7 +1203,6 @@ module ISU(
   input  [4:0]  from_EXU_hazard_rd,
   input         from_EXU_hazard_have_wb,
                 from_EXU_hazard_isBR,
-                flush,
   output        from_IDU_ready,
                 to_EXU_valid,
   output [31:0] to_EXU_bits_imm,
@@ -1227,11 +1226,11 @@ module ISU(
 );
 
   wire has_hazard =
-    ((from_EXU_hazard_rd == from_IDU_bits_rs1 | from_EXU_hazard_rd == from_IDU_bits_rs2)
-     & ~from_EXU_hazard_have_wb & from_IDU_valid & ~from_EXU_hazard_isBR
-     | (from_WBU_bits_hazard_rd == from_IDU_bits_rs1
-        | from_WBU_bits_hazard_rd == from_IDU_bits_rs2) & ~from_WBU_bits_hazard_have_wb
-     & from_IDU_valid & ~from_WBU_bits_hazard_isBR) & ~flush;
+    (from_EXU_hazard_rd == from_IDU_bits_rs1 | from_EXU_hazard_rd == from_IDU_bits_rs2)
+    & ~from_EXU_hazard_have_wb & from_IDU_valid & ~from_EXU_hazard_isBR
+    | (from_WBU_bits_hazard_rd == from_IDU_bits_rs1
+       | from_WBU_bits_hazard_rd == from_IDU_bits_rs2) & ~from_WBU_bits_hazard_have_wb
+    & from_IDU_valid & ~from_WBU_bits_hazard_isBR;
   RegFile RegFile_i (
     .clock         (clock),
     .reset         (reset),
@@ -3795,7 +3794,6 @@ module top(
     .from_EXU_hazard_rd               (_EXU_i_to_ISU_hazard_rd),
     .from_EXU_hazard_have_wb          (_EXU_i_to_ISU_hazard_have_wb),
     .from_EXU_hazard_isBR             (_EXU_i_to_ISU_hazard_isBR),
-    .flush                            (_WBU_i_to_IFU_bits_redirect_valid),
     .from_IDU_ready                   (_ISU_i_from_IDU_ready),
     .to_EXU_valid                     (_ISU_i_to_EXU_valid),
     .to_EXU_bits_imm                  (_ISU_i_to_EXU_bits_imm),
