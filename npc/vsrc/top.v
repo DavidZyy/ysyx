@@ -1925,7 +1925,7 @@ module IFU_pipeline(
   BPU BPU_i (
     .clock                 (clock),
     .reset                 (reset),
-    .io_in_pc_valid        (_BPU_i_io_in_pc_valid_T),
+    .io_in_pc_valid        (_BPU_i_io_in_pc_valid_T | from_WBU_bits_redirect_valid),
     .io_in_pc_bits
       (from_WBU_bits_redirect_valid
          ? from_WBU_bits_redirect_target
