@@ -2862,8 +2862,8 @@ module CacheStage2(
   output        io_dataWriteBus_req_valid,
   output [8:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-                io_in_bits_addr__bore,
-  output        io_in_valid__bore
+  output        io_in_valid__bore,
+  output [31:0] io_in_bits_addr__bore
 );
 
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
@@ -2880,8 +2880,8 @@ module CacheStage2(
   assign io_dataWriteBus_req_bits_wdata =
     io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
     & ~_io_dataWriteBus_req_bits_wdata_T_12;
-  assign io_in_bits_addr__bore = io_in_bits_addr;
   assign io_in_valid__bore = io_in_valid;
+  assign io_in_bits_addr__bore = io_in_bits_addr;
 endmodule
 
 module Arbiter2_SRAMBundleWriteReq(
@@ -2919,8 +2919,8 @@ module Cache(
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
   output [31:0] io_stage2Addr,
-                s2_io_in_bits_addr__bore,
-  output        s2_io_in_valid__bore
+  output        s2_io_in_valid__bore,
+  output [31:0] s2_io_in_bits_addr__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -3029,8 +3029,8 @@ module Cache(
     .io_dataWriteBus_req_valid      (_s2_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata),
-    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore),
-    .io_in_valid__bore              (s2_io_in_valid__bore)
+    .io_in_valid__bore              (s2_io_in_valid__bore),
+    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore)
   );
   Arbiter2_SRAMBundleWriteReq dataWriteArb (
     .io_in_0_valid      (_s1_io_dataWriteBus_req_valid),
@@ -3377,13 +3377,17 @@ module perfCnt(
   reg [31:0] perfCnts_1;
   reg [31:0] c;
   reg [31:0] c_1;
+  reg [31:0] c_2;
   `ifndef SYNTHESIS
     always @(posedge clock) begin
       if ((`PRINTF_COND_) & ebreak__bore & ~reset) begin
         $fwrite(32'h80000002, "[%d]: ", c);
-        $fwrite(32'h80000002, "%d <-BPUTime\n", perfCnts_0);
+        $fwrite(32'h80000002, "%d <- BPUTime\n", perfCnts_0);
         $fwrite(32'h80000002, "[%d]: ", c_1);
-        $fwrite(32'h80000002, "%d <-BPUWrong\n", perfCnts_1);
+        $fwrite(32'h80000002, "%d <- BPUWrong\n", perfCnts_1);
+        $fwrite(32'h80000002, "[%d]: ", c_2);
+        $fwrite(32'h80000002, "BPU accuracy: %d%%\n",
+                (perfCnts_0 - perfCnts_1) / perfCnts_0);
       end
     end // always @(posedge)
   `endif // not def SYNTHESIS
@@ -3393,6 +3397,7 @@ module perfCnt(
       perfCnts_1 <= 32'h0;
       c <= 32'h4;
       c_1 <= 32'h4;
+      c_2 <= 32'h4;
     end
     else begin
       if (perCntCond_0__bore)
@@ -3401,6 +3406,7 @@ module perfCnt(
         perfCnts_1 <= perfCnts_1 + 32'h1;
       c <= c + 32'h2;
       c_1 <= c_1 + 32'h2;
+      c_2 <= c_2 + 32'h2;
     end
   end // always @(posedge)
 endmodule
@@ -3480,8 +3486,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_wdata;
   wire [3:0]  _icache_io_mem_req_bits_cmd;
   wire [31:0] _icache_io_stage2Addr;
-  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _icache_s2_io_in_valid__bore;
+  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3999,8 +4005,8 @@ module top(
     .io_mem_req_bits_wdata    (_icache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd      (_icache_io_mem_req_bits_cmd),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
