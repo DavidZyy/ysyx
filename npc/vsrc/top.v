@@ -1658,14 +1658,16 @@ endmodule
 // external module EbreakBB
 
 module ebreak_moudle(
-  input clock,
-        valid
+  input  clock,
+         valid,
+  output valid__bore
 );
 
   EbreakBB EbreakBB_i1 (
     .clock (clock),
     .valid (valid)
   );
+  assign valid__bore = valid;
 endmodule
 
 // external module NotImplBB
@@ -1709,7 +1711,8 @@ module WBU(
   output [31:0] to_IFU_bits_redirect_target,
                 to_IFU_bits_pc,
   output        wb,
-                is_mmio
+                is_mmio,
+                ebreak_moudle_i_valid__bore
 );
 
   wire [7:0][31:0] _GEN =
@@ -1738,8 +1741,9 @@ module WBU(
       c <= c + 32'h2;
   end // always @(posedge)
   ebreak_moudle ebreak_moudle_i (
-    .clock (clock),
-    .valid (from_EXU_bits_is_ebreak)
+    .clock       (clock),
+    .valid       (from_EXU_bits_is_ebreak),
+    .valid__bore (ebreak_moudle_i_valid__bore)
   );
   not_impl_moudle not_impl_moudle_i (
     .clock (clock),
@@ -1852,7 +1856,9 @@ module BPU(
   input  [31:0] io_in_redirect_target,
                 io_in_missPC,
   output        io_out_valid,
-  output [31:0] io_out_target
+  output [31:0] io_out_target,
+  output        io_in_pc_valid__bore,
+                io_in_redirect_valid__bore
 );
 
   wire [64:0] _btb_io_r_resp_rdata;
@@ -1875,6 +1881,8 @@ module BPU(
     _btb_io_r_resp_rdata[64] & _btb_io_r_resp_rdata[63:32] == pcLatch
     & ~io_in_redirect_valid;
   assign io_out_target = _btb_io_r_resp_rdata[31:0];
+  assign io_in_pc_valid__bore = io_in_pc_valid;
+  assign io_in_redirect_valid__bore = io_in_redirect_valid;
 endmodule
 
 module IFU_pipeline(
@@ -1894,7 +1902,9 @@ module IFU_pipeline(
   output        to_mem_req_valid,
   output [31:0] to_mem_req_bits_addr,
   output        to_mem_resp_ready,
-  output [31:0] fetch_PC
+  output [31:0] fetch_PC,
+  output        BPU_i_io_in_pc_valid__bore,
+                BPU_i_io_in_redirect_valid__bore
 );
 
   wire        _BPU_i_io_out_valid;
@@ -1915,18 +1925,20 @@ module IFU_pipeline(
     end
   end // always @(posedge)
   BPU BPU_i (
-    .clock                 (clock),
-    .reset                 (reset),
-    .io_in_pc_valid        (_BPU_i_io_in_pc_valid_T | from_WBU_bits_redirect_valid),
+    .clock                      (clock),
+    .reset                      (reset),
+    .io_in_pc_valid             (_BPU_i_io_in_pc_valid_T | from_WBU_bits_redirect_valid),
     .io_in_pc_bits
       (from_WBU_bits_redirect_valid
          ? from_WBU_bits_redirect_target
          : _BPU_i_io_out_valid ? _BPU_i_io_out_target : _npc_T),
-    .io_in_redirect_valid  (from_WBU_bits_redirect_valid),
-    .io_in_redirect_target (from_WBU_bits_redirect_target),
-    .io_in_missPC          (from_WBU_bits_pc),
-    .io_out_valid          (_BPU_i_io_out_valid),
-    .io_out_target         (_BPU_i_io_out_target)
+    .io_in_redirect_valid       (from_WBU_bits_redirect_valid),
+    .io_in_redirect_target      (from_WBU_bits_redirect_target),
+    .io_in_missPC               (from_WBU_bits_pc),
+    .io_out_valid               (_BPU_i_io_out_valid),
+    .io_out_target              (_BPU_i_io_out_target),
+    .io_in_pc_valid__bore       (BPU_i_io_in_pc_valid__bore),
+    .io_in_redirect_valid__bore (BPU_i_io_in_redirect_valid__bore)
   );
   assign to_IDU_valid = to_mem_resp_valid;
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
@@ -3353,6 +3365,46 @@ module MMIO(
   );
 endmodule
 
+module perfCnt(
+  input clock,
+        reset,
+        ebreak__bore,
+        perCntCond_0__bore,
+        perCntCond_1__bore
+);
+
+  reg [31:0] perfCnts_0;
+  reg [31:0] perfCnts_1;
+  reg [31:0] c;
+  reg [31:0] c_1;
+  `ifndef SYNTHESIS
+    always @(posedge clock) begin
+      if ((`PRINTF_COND_) & ebreak__bore & ~reset) begin
+        $fwrite(32'h80000002, "[%d]: ", c);
+        $fwrite(32'h80000002, "%d <-BPUTime\n", perfCnts_0);
+        $fwrite(32'h80000002, "[%d]: ", c_1);
+        $fwrite(32'h80000002, "%d <-BPUWrong\n", perfCnts_1);
+      end
+    end // always @(posedge)
+  `endif // not def SYNTHESIS
+  always @(posedge clock) begin
+    if (reset) begin
+      perfCnts_0 <= 32'h0;
+      perfCnts_1 <= 32'h0;
+      c <= 32'h4;
+      c_1 <= 32'h4;
+    end
+    else begin
+      if (perCntCond_0__bore)
+        perfCnts_0 <= perfCnts_0 + 32'h1;
+      if (perCntCond_1__bore)
+        perfCnts_1 <= perfCnts_1 + 32'h1;
+      c <= c + 32'h2;
+      c_1 <= c_1 + 32'h2;
+    end
+  end // always @(posedge)
+endmodule
+
 module top(
   input         clock,
                 reset,
@@ -3442,6 +3494,8 @@ module top(
   wire [31:0] _IFU_i_to_mem_req_bits_addr;
   wire        _IFU_i_to_mem_resp_ready;
   wire [31:0] _IFU_i_fetch_PC;
+  wire        _IFU_i_BPU_i_io_in_pc_valid__bore;
+  wire        _IFU_i_BPU_i_io_in_redirect_valid__bore;
   wire        _WBU_i_to_ISU_valid;
   wire        _WBU_i_to_ISU_bits_reg_wen;
   wire [31:0] _WBU_i_to_ISU_bits_wdata;
@@ -3452,6 +3506,7 @@ module top(
   wire [31:0] _WBU_i_to_IFU_bits_redirect_target;
   wire [31:0] _WBU_i_to_IFU_bits_pc;
   wire        _WBU_i_wb;
+  wire        _WBU_i_ebreak_moudle_i_valid__bore;
   wire        _EXU_i_from_ISU_ready;
   wire        _EXU_i_to_WBU_valid;
   wire [31:0] _EXU_i_to_WBU_bits_alu_result;
@@ -3887,26 +3942,29 @@ module top(
     .to_IFU_bits_redirect_target   (_WBU_i_to_IFU_bits_redirect_target),
     .to_IFU_bits_pc                (_WBU_i_to_IFU_bits_pc),
     .wb                            (_WBU_i_wb),
-    .is_mmio                       (io_out_is_mmio)
+    .is_mmio                       (io_out_is_mmio),
+    .ebreak_moudle_i_valid__bore   (_WBU_i_ebreak_moudle_i_valid__bore)
   );
   IFU_pipeline IFU_i (
-    .clock                         (clock),
-    .reset                         (reset),
-    .to_IDU_ready                  (_IDU_i_from_IFU_ready),
-    .from_WBU_bits_redirect_valid  (_WBU_i_to_IFU_bits_redirect_valid),
-    .from_WBU_bits_redirect_target (_WBU_i_to_IFU_bits_redirect_target),
-    .from_WBU_bits_pc              (_WBU_i_to_IFU_bits_pc),
-    .to_mem_req_ready              (_icache_io_in_req_ready),
-    .to_mem_resp_valid             (_icache_io_in_resp_valid),
-    .to_mem_resp_bits_rdata        (_icache_io_in_resp_bits_rdata),
-    .to_IDU_PC                     (_icache_io_stage2Addr),
-    .to_IDU_valid                  (_IFU_i_to_IDU_valid),
-    .to_IDU_bits_inst              (_IFU_i_to_IDU_bits_inst),
-    .to_IDU_bits_pc                (_IFU_i_to_IDU_bits_pc),
-    .to_mem_req_valid              (_IFU_i_to_mem_req_valid),
-    .to_mem_req_bits_addr          (_IFU_i_to_mem_req_bits_addr),
-    .to_mem_resp_ready             (_IFU_i_to_mem_resp_ready),
-    .fetch_PC                      (_IFU_i_fetch_PC)
+    .clock                            (clock),
+    .reset                            (reset),
+    .to_IDU_ready                     (_IDU_i_from_IFU_ready),
+    .from_WBU_bits_redirect_valid     (_WBU_i_to_IFU_bits_redirect_valid),
+    .from_WBU_bits_redirect_target    (_WBU_i_to_IFU_bits_redirect_target),
+    .from_WBU_bits_pc                 (_WBU_i_to_IFU_bits_pc),
+    .to_mem_req_ready                 (_icache_io_in_req_ready),
+    .to_mem_resp_valid                (_icache_io_in_resp_valid),
+    .to_mem_resp_bits_rdata           (_icache_io_in_resp_bits_rdata),
+    .to_IDU_PC                        (_icache_io_stage2Addr),
+    .to_IDU_valid                     (_IFU_i_to_IDU_valid),
+    .to_IDU_bits_inst                 (_IFU_i_to_IDU_bits_inst),
+    .to_IDU_bits_pc                   (_IFU_i_to_IDU_bits_pc),
+    .to_mem_req_valid                 (_IFU_i_to_mem_req_valid),
+    .to_mem_req_bits_addr             (_IFU_i_to_mem_req_bits_addr),
+    .to_mem_resp_ready                (_IFU_i_to_mem_resp_ready),
+    .fetch_PC                         (_IFU_i_fetch_PC),
+    .BPU_i_io_in_pc_valid__bore       (_IFU_i_BPU_i_io_in_pc_valid__bore),
+    .BPU_i_io_in_redirect_valid__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore)
   );
   AXI4RAM ram_i (
     .clock            (clock),
@@ -4056,6 +4114,13 @@ module top(
     .io_out_aw_bits_addr   (_bridge_1_io_out_aw_bits_addr),
     .io_out_w_valid        (_bridge_1_io_out_w_valid),
     .io_out_w_bits_data    (_bridge_1_io_out_w_bits_data)
+  );
+  perfCnt PerfCnt_i (
+    .clock              (clock),
+    .reset              (reset),
+    .ebreak__bore       (_WBU_i_ebreak_moudle_i_valid__bore),
+    .perCntCond_0__bore (_IFU_i_BPU_i_io_in_pc_valid__bore),
+    .perCntCond_1__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore)
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
