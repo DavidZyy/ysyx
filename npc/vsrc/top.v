@@ -2299,7 +2299,7 @@ module CacheStage1(
   wire              _io_dataWriteBus_req_valid_output =
     _io_dataWriteBus_req_valid_T & _io_mem_resp_ready_T_1 & io_mem_resp_valid;
   wire              _GEN_6 = _io_in_ready_output & io_in_valid;
-  wire              _GEN_7 = hit & ~(|stateCache);
+  wire              _GEN_7 = hit & _GEN_6;
   wire              _GEN_8 = _io_dataWriteBus_req_valid_output & entryOff == 4'h0;
   wire [7:0][2:0]   _GEN_9 =
     {{stateCache},
@@ -2781,8 +2781,8 @@ module Cache(
   output [31:0] io_stage2Addr,
   output        s1__WIRE_1__bore,
                 s2_io_in_valid__bore,
-                s1__WIRE__bore,
-  output [31:0] s2_io_in_bits_addr__bore
+  output [31:0] s2_io_in_bits_addr__bore,
+  output        s1__WIRE__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -3256,7 +3256,7 @@ module CacheStage1_1(
   wire              _io_dataWriteBus_req_valid_output =
     _io_dataWriteBus_req_valid_T & _io_mem_resp_ready_T_1 & io_mem_resp_valid;
   wire              _GEN_6 = _io_in_ready_output & io_in_valid;
-  wire              _GEN_7 = hit & ~(|stateCache);
+  wire              _GEN_7 = hit & _GEN_6;
   wire              _GEN_8 = _io_dataWriteBus_req_valid_output & entryOff == 4'h0;
   wire [7:0][2:0]   _GEN_9 =
     {{stateCache},
@@ -3964,12 +3964,12 @@ endmodule
 module perfCnt(
   input clock,
         reset,
-        ebreak__bore,
-        perCntCond_3__bore,
         perCntCond_1__bore,
-        perCntCond_0__bore,
         perCntCond_4__bore,
+        perCntCond_3__bore,
         perCntCond_5__bore,
+        ebreak__bore,
+        perCntCond_0__bore,
         perCntCond_2__bore
 );
 
@@ -4138,8 +4138,8 @@ module top(
   wire [31:0] _icache_io_stage2Addr;
   wire        _icache_s1__WIRE_1__bore;
   wire        _icache_s2_io_in_valid__bore;
-  wire        _icache_s1__WIRE__bore;
   wire [31:0] _icache_s2_io_in_bits_addr__bore;
+  wire        _icache_s1__WIRE__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -4659,8 +4659,8 @@ module top(
     .io_stage2Addr            (_icache_io_stage2Addr),
     .s1__WIRE_1__bore         (_icache_s1__WIRE_1__bore),
     .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
-    .s1__WIRE__bore           (_icache_s1__WIRE__bore),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
+    .s1__WIRE__bore           (_icache_s1__WIRE__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
@@ -4780,12 +4780,12 @@ module top(
   perfCnt PerfCnt_i (
     .clock              (clock),
     .reset              (reset),
-    .ebreak__bore       (_WBU_i_ebreak_moudle_i_valid__bore),
-    .perCntCond_3__bore (_icache_s1__WIRE_1__bore),
     .perCntCond_1__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore),
-    .perCntCond_0__bore (_IFU_i_BPU_i_io_in_pc_valid__bore),
     .perCntCond_4__bore (_dcache_s1__WIRE__bore),
+    .perCntCond_3__bore (_icache_s1__WIRE_1__bore),
     .perCntCond_5__bore (_dcache_s1__WIRE_1__bore),
+    .ebreak__bore       (_WBU_i_ebreak_moudle_i_valid__bore),
+    .perCntCond_0__bore (_IFU_i_BPU_i_io_in_pc_valid__bore),
     .perCntCond_2__bore (_icache_s1__WIRE__bore)
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
