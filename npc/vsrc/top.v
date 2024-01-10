@@ -1812,8 +1812,8 @@ module BPU(
                 io_in_missPC,
   output        io_out_valid,
   output [31:0] io_out_target,
-  output        io_in_pc_valid__bore,
-                io_in_redirect_valid__bore
+  output        io_in_redirect_valid__bore,
+                io_in_pc_valid__bore
 );
 
   wire [64:0] _btb_io_r_resp_rdata;
@@ -1836,8 +1836,8 @@ module BPU(
     _btb_io_r_resp_rdata[64] & _btb_io_r_resp_rdata[63:32] == pcLatch
     & ~io_in_redirect_valid;
   assign io_out_target = _btb_io_r_resp_rdata[31:0];
-  assign io_in_pc_valid__bore = io_in_pc_valid;
   assign io_in_redirect_valid__bore = io_in_redirect_valid;
+  assign io_in_pc_valid__bore = io_in_pc_valid;
 endmodule
 
 module IFU_pipeline(
@@ -1858,8 +1858,8 @@ module IFU_pipeline(
   output [31:0] to_mem_req_bits_addr,
   output        to_mem_resp_ready,
   output [31:0] fetch_PC,
-  output        BPU_i_io_in_pc_valid__bore,
-                BPU_i_io_in_redirect_valid__bore
+  output        BPU_i_io_in_redirect_valid__bore,
+                BPU_i_io_in_pc_valid__bore
 );
 
   wire        _BPU_i_io_out_valid;
@@ -1892,8 +1892,8 @@ module IFU_pipeline(
     .io_in_missPC               (from_WBU_bits_pc),
     .io_out_valid               (_BPU_i_io_out_valid),
     .io_out_target              (_BPU_i_io_out_target),
-    .io_in_pc_valid__bore       (BPU_i_io_in_pc_valid__bore),
-    .io_in_redirect_valid__bore (BPU_i_io_in_redirect_valid__bore)
+    .io_in_redirect_valid__bore (BPU_i_io_in_redirect_valid__bore),
+    .io_in_pc_valid__bore       (BPU_i_io_in_pc_valid__bore)
   );
   assign to_IDU_valid = to_mem_resp_valid;
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
@@ -2099,8 +2099,8 @@ module CacheStage1(
   output        io_dataWriteBus_req_valid,
   output [6:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-  output        _WIRE_1__bore,
-                _WIRE__bore
+  output        _WIRE__bore,
+                _WIRE_1__bore
 );
 
   reg               replaceWayReg;
@@ -2294,7 +2294,8 @@ module CacheStage1(
   wire              _io_dataWriteBus_req_valid_output =
     _io_dataWriteBus_req_valid_T & _io_mem_resp_ready_T_1 & io_mem_resp_valid;
   wire              _GEN_6 = _io_in_ready_output & io_in_valid;
-  wire              _GEN_7 = hit & ~(|stateCache) & io_in_valid;
+  reg               REG;
+  wire              _GEN_7 = hit & REG;
   wire              _GEN_8 = _io_dataWriteBus_req_valid_output & entryOff == 2'h0;
   wire [7:0][2:0]   _GEN_9 =
     {{stateCache},
@@ -2779,6 +2780,7 @@ module CacheStage1(
       else
         stateCache <= 3'h0;
     end
+    REG <= _GEN_6;
   end // always @(posedge)
   assign io_in_ready = _io_in_ready_output;
   assign io_mem_req_valid = _io_mem_req_valid_output;
@@ -2804,8 +2806,8 @@ module CacheStage1(
   assign io_dataWriteBus_req_valid = _io_dataWriteBus_req_valid_output;
   assign io_dataWriteBus_req_bits_waddr = writeCacheAddr;
   assign io_dataWriteBus_req_bits_wdata = io_mem_resp_bits_rdata;
-  assign _WIRE_1__bore = _GEN_7;
   assign _WIRE__bore = _GEN_6;
+  assign _WIRE_1__bore = _GEN_7;
 endmodule
 
 module CacheStage2(
@@ -2824,8 +2826,8 @@ module CacheStage2(
   output        io_dataWriteBus_req_valid,
   output [6:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-  output        io_in_valid__bore,
-  output [31:0] io_in_bits_addr__bore
+                io_in_bits_addr__bore,
+  output        io_in_valid__bore
 );
 
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
@@ -2842,8 +2844,8 @@ module CacheStage2(
   assign io_dataWriteBus_req_bits_wdata =
     io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
     & ~_io_dataWriteBus_req_bits_wdata_T_12;
-  assign io_in_valid__bore = io_in_valid;
   assign io_in_bits_addr__bore = io_in_bits_addr;
+  assign io_in_valid__bore = io_in_valid;
 endmodule
 
 module Arbiter2_SRAMBundleWriteReq(
@@ -2881,10 +2883,10 @@ module Cache(
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
   output [31:0] io_stage2Addr,
-  output        s2_io_in_valid__bore,
-                s1__WIRE_1__bore,
-                s1__WIRE__bore,
-  output [31:0] s2_io_in_bits_addr__bore
+  output        s1__WIRE__bore,
+  output [31:0] s2_io_in_bits_addr__bore,
+  output        s1__WIRE_1__bore,
+                s2_io_in_valid__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -2976,8 +2978,8 @@ module Cache(
     .io_dataWriteBus_req_valid      (_s1_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s1_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s1_io_dataWriteBus_req_bits_wdata),
-    ._WIRE_1__bore                  (s1__WIRE_1__bore),
-    ._WIRE__bore                    (s1__WIRE__bore)
+    ._WIRE__bore                    (s1__WIRE__bore),
+    ._WIRE_1__bore                  (s1__WIRE_1__bore)
   );
   CacheStage2 s2 (
     .io_in_valid                    (valid),
@@ -2995,8 +2997,8 @@ module Cache(
     .io_dataWriteBus_req_valid      (_s2_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata),
-    .io_in_valid__bore              (s2_io_in_valid__bore),
-    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore)
+    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore),
+    .io_in_valid__bore              (s2_io_in_valid__bore)
   );
   Arbiter2_SRAMBundleWriteReq dataWriteArb (
     .io_in_0_valid      (_s1_io_dataWriteBus_req_valid),
@@ -3193,8 +3195,8 @@ module Cache_1(
   output [31:0] io_mem_req_bits_addr,
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
-  output        s1__WIRE_1__bore,
-                s1__WIRE__bore
+  output        s1__WIRE__bore,
+                s1__WIRE_1__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -3282,8 +3284,8 @@ module Cache_1(
     .io_dataWriteBus_req_valid      (_s1_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s1_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s1_io_dataWriteBus_req_bits_wdata),
-    ._WIRE_1__bore                  (s1__WIRE_1__bore),
-    ._WIRE__bore                    (s1__WIRE__bore)
+    ._WIRE__bore                    (s1__WIRE__bore),
+    ._WIRE_1__bore                  (s1__WIRE_1__bore)
   );
   CacheStage2_1 s2 (
     .io_in_valid                    (valid),
@@ -3338,13 +3340,13 @@ endmodule
 module perfCnt(
   input clock,
         reset,
-        perCntCond_5__bore,
-        ebreak__bore,
-        perCntCond_0__bore,
+        perCntCond_2__bore,
         perCntCond_1__bore,
-        perCntCond_3__bore,
         perCntCond_4__bore,
-        perCntCond_2__bore
+        perCntCond_3__bore,
+        perCntCond_0__bore,
+        perCntCond_5__bore,
+        ebreak__bore
 );
 
   reg [31:0] perfCnts_0;
@@ -3473,8 +3475,8 @@ module top(
   wire [31:0] _dcache_io_mem_req_bits_addr;
   wire [31:0] _dcache_io_mem_req_bits_wdata;
   wire [3:0]  _dcache_io_mem_req_bits_cmd;
-  wire        _dcache_s1__WIRE_1__bore;
   wire        _dcache_s1__WIRE__bore;
+  wire        _dcache_s1__WIRE_1__bore;
   wire        _memXbar_io_in_resp_valid;
   wire [31:0] _memXbar_io_in_resp_bits_rdata;
   wire        _memXbar_io_out_0_req_valid;
@@ -3510,10 +3512,10 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_wdata;
   wire [3:0]  _icache_io_mem_req_bits_cmd;
   wire [31:0] _icache_io_stage2Addr;
-  wire        _icache_s2_io_in_valid__bore;
-  wire        _icache_s1__WIRE_1__bore;
   wire        _icache_s1__WIRE__bore;
   wire [31:0] _icache_s2_io_in_bits_addr__bore;
+  wire        _icache_s1__WIRE_1__bore;
+  wire        _icache_s2_io_in_valid__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3526,8 +3528,8 @@ module top(
   wire [31:0] _IFU_i_to_mem_req_bits_addr;
   wire        _IFU_i_to_mem_resp_ready;
   wire [31:0] _IFU_i_fetch_PC;
-  wire        _IFU_i_BPU_i_io_in_pc_valid__bore;
   wire        _IFU_i_BPU_i_io_in_redirect_valid__bore;
+  wire        _IFU_i_BPU_i_io_in_pc_valid__bore;
   wire        _WBU_i_to_ISU_valid;
   wire        _WBU_i_to_ISU_bits_reg_wen;
   wire [31:0] _WBU_i_to_ISU_bits_wdata;
@@ -3993,8 +3995,8 @@ module top(
     .to_mem_req_bits_addr             (_IFU_i_to_mem_req_bits_addr),
     .to_mem_resp_ready                (_IFU_i_to_mem_resp_ready),
     .fetch_PC                         (_IFU_i_fetch_PC),
-    .BPU_i_io_in_pc_valid__bore       (_IFU_i_BPU_i_io_in_pc_valid__bore),
-    .BPU_i_io_in_redirect_valid__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore)
+    .BPU_i_io_in_redirect_valid__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore),
+    .BPU_i_io_in_pc_valid__bore       (_IFU_i_BPU_i_io_in_pc_valid__bore)
   );
   AXI4RAM ram_i (
     .clock            (clock),
@@ -4029,10 +4031,10 @@ module top(
     .io_mem_req_bits_wdata    (_icache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd      (_icache_io_mem_req_bits_cmd),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
-    .s1__WIRE_1__bore         (_icache_s1__WIRE_1__bore),
     .s1__WIRE__bore           (_icache_s1__WIRE__bore),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
+    .s1__WIRE_1__bore         (_icache_s1__WIRE_1__bore),
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
@@ -4117,8 +4119,8 @@ module top(
     .io_mem_req_bits_addr   (_dcache_io_mem_req_bits_addr),
     .io_mem_req_bits_wdata  (_dcache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd    (_dcache_io_mem_req_bits_cmd),
-    .s1__WIRE_1__bore       (_dcache_s1__WIRE_1__bore),
-    .s1__WIRE__bore         (_dcache_s1__WIRE__bore)
+    .s1__WIRE__bore         (_dcache_s1__WIRE__bore),
+    .s1__WIRE_1__bore       (_dcache_s1__WIRE_1__bore)
   );
   MMIO mmio (
     .clock                    (clock),
@@ -4152,13 +4154,13 @@ module top(
   perfCnt PerfCnt_i (
     .clock              (clock),
     .reset              (reset),
-    .perCntCond_5__bore (_dcache_s1__WIRE_1__bore),
-    .ebreak__bore       (_WBU_i_ebreak_moudle_i_valid__bore),
-    .perCntCond_0__bore (_IFU_i_BPU_i_io_in_pc_valid__bore),
+    .perCntCond_2__bore (_icache_s1__WIRE__bore),
     .perCntCond_1__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore),
-    .perCntCond_3__bore (_icache_s1__WIRE_1__bore),
     .perCntCond_4__bore (_dcache_s1__WIRE__bore),
-    .perCntCond_2__bore (_icache_s1__WIRE__bore)
+    .perCntCond_3__bore (_icache_s1__WIRE_1__bore),
+    .perCntCond_0__bore (_IFU_i_BPU_i_io_in_pc_valid__bore),
+    .perCntCond_5__bore (_dcache_s1__WIRE_1__bore),
+    .ebreak__bore       (_WBU_i_ebreak_moudle_i_valid__bore)
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
