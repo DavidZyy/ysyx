@@ -1812,8 +1812,8 @@ module BPU(
                 io_in_missPC,
   output        io_out_valid,
   output [31:0] io_out_target,
-  output        io_in_redirect_valid__bore,
-                io_in_pc_valid__bore
+  output        io_in_pc_valid__bore,
+                io_in_redirect_valid__bore
 );
 
   wire [64:0] _btb_io_r_resp_rdata;
@@ -1836,8 +1836,8 @@ module BPU(
     _btb_io_r_resp_rdata[64] & _btb_io_r_resp_rdata[63:32] == pcLatch
     & ~io_in_redirect_valid;
   assign io_out_target = _btb_io_r_resp_rdata[31:0];
-  assign io_in_redirect_valid__bore = io_in_redirect_valid;
   assign io_in_pc_valid__bore = io_in_pc_valid;
+  assign io_in_redirect_valid__bore = io_in_redirect_valid;
 endmodule
 
 module IFU_pipeline(
@@ -1858,8 +1858,8 @@ module IFU_pipeline(
   output [31:0] to_mem_req_bits_addr,
   output        to_mem_resp_ready,
   output [31:0] fetch_PC,
-  output        BPU_i_io_in_redirect_valid__bore,
-                BPU_i_io_in_pc_valid__bore
+  output        BPU_i_io_in_pc_valid__bore,
+                BPU_i_io_in_redirect_valid__bore
 );
 
   wire        _BPU_i_io_out_valid;
@@ -1892,8 +1892,8 @@ module IFU_pipeline(
     .io_in_missPC               (from_WBU_bits_pc),
     .io_out_valid               (_BPU_i_io_out_valid),
     .io_out_target              (_BPU_i_io_out_target),
-    .io_in_redirect_valid__bore (BPU_i_io_in_redirect_valid__bore),
-    .io_in_pc_valid__bore       (BPU_i_io_in_pc_valid__bore)
+    .io_in_pc_valid__bore       (BPU_i_io_in_pc_valid__bore),
+    .io_in_redirect_valid__bore (BPU_i_io_in_redirect_valid__bore)
   );
   assign to_IDU_valid = to_mem_resp_valid;
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
@@ -1954,7 +1954,7 @@ module AXI4RAM(
      {reg_AxLen},
      {reg_AxLen - 8'h1},
      {reg_AxLen},
-     {_GEN_1 ? 8'hF : reg_AxLen}};
+     {_GEN_1 ? 8'h3 : reg_AxLen}};
   wire [7:0][31:0] _GEN_10 =
     {{_GEN_8},
      {_GEN_8},
@@ -2013,8 +2013,8 @@ module AXI4RAM(
 endmodule
 
 // VCS coverage exclude_file
-module array_512x32(
-  input  [8:0]  RW0_addr,
+module array_128x32(
+  input  [6:0]  RW0_addr,
   input         RW0_en,
                 RW0_clk,
                 RW0_wmode,
@@ -2022,8 +2022,8 @@ module array_512x32(
   output [31:0] RW0_rdata
 );
 
-  reg [31:0] Memory[0:511];
-  reg [8:0]  _RW0_raddr_d0;
+  reg [31:0] Memory[0:127];
+  reg [6:0]  _RW0_raddr_d0;
   reg        _RW0_ren_d0;
   reg        _RW0_rmode_d0;
   always @(posedge RW0_clk) begin
@@ -2040,9 +2040,9 @@ module SRAMTemplate_1(
   input         clock,
                 reset,
                 io_r_req_valid,
-  input  [8:0]  io_r_req_bits_raddr,
+  input  [6:0]  io_r_req_bits_raddr,
   input         io_w_req_valid,
-  input  [8:0]  io_w_req_bits_waddr,
+  input  [6:0]  io_w_req_bits_waddr,
   input  [31:0] io_w_req_bits_wdata,
   output [31:0] io_r_resp_rdata
 );
@@ -2059,7 +2059,7 @@ module SRAMTemplate_1(
     else if (io_r_resp_rdata_REG)
       io_r_resp_rdata_r <= _array_ext_RW0_rdata;
   end // always @(posedge)
-  array_512x32 array_ext (
+  array_128x32 array_ext (
     .RW0_addr  (io_w_req_valid ? io_w_req_bits_waddr : io_r_req_bits_raddr),
     .RW0_en    (readEnable | io_w_req_valid),
     .RW0_clk   (clock),
@@ -2075,6 +2075,9 @@ module CacheStage1(
                 reset,
                 io_in_valid,
   input  [31:0] io_in_bits_addr,
+                io_in_bits_wdata,
+                io_in_bits_wmask,
+  input  [3:0]  io_in_bits_cmd,
   input         io_mem_req_ready,
                 io_mem_resp_valid,
   input  [31:0] io_mem_resp_bits_rdata,
@@ -2087,51 +2090,53 @@ module CacheStage1(
   output [3:0]  io_mem_req_bits_cmd,
   output        io_out_valid,
   output [31:0] io_out_bits_addr,
-  output [8:0]  io_out_bits_waddr,
+  output        io_out_bits_is_write,
+  output [6:0]  io_out_bits_waddr,
+  output [3:0]  io_out_bits_wmask,
   output [31:0] io_out_bits_wdata,
   output        io_dataReadBus_req_valid,
-  output [8:0]  io_dataReadBus_req_bits_raddr,
+  output [6:0]  io_dataReadBus_req_bits_raddr,
   output        io_dataWriteBus_req_valid,
-  output [8:0]  io_dataWriteBus_req_bits_waddr,
+  output [6:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-  output        _WIRE__bore,
-                _WIRE_1__bore
+  output        _WIRE_1__bore,
+                _WIRE__bore
 );
 
   reg               replaceWayReg;
   reg               randomNum;
-  reg  [21:0]       tagArray_0_0;
-  reg  [21:0]       tagArray_0_1;
-  reg  [21:0]       tagArray_0_2;
-  reg  [21:0]       tagArray_0_3;
-  reg  [21:0]       tagArray_0_4;
-  reg  [21:0]       tagArray_0_5;
-  reg  [21:0]       tagArray_0_6;
-  reg  [21:0]       tagArray_0_7;
-  reg  [21:0]       tagArray_0_8;
-  reg  [21:0]       tagArray_0_9;
-  reg  [21:0]       tagArray_0_10;
-  reg  [21:0]       tagArray_0_11;
-  reg  [21:0]       tagArray_0_12;
-  reg  [21:0]       tagArray_0_13;
-  reg  [21:0]       tagArray_0_14;
-  reg  [21:0]       tagArray_0_15;
-  reg  [21:0]       tagArray_1_0;
-  reg  [21:0]       tagArray_1_1;
-  reg  [21:0]       tagArray_1_2;
-  reg  [21:0]       tagArray_1_3;
-  reg  [21:0]       tagArray_1_4;
-  reg  [21:0]       tagArray_1_5;
-  reg  [21:0]       tagArray_1_6;
-  reg  [21:0]       tagArray_1_7;
-  reg  [21:0]       tagArray_1_8;
-  reg  [21:0]       tagArray_1_9;
-  reg  [21:0]       tagArray_1_10;
-  reg  [21:0]       tagArray_1_11;
-  reg  [21:0]       tagArray_1_12;
-  reg  [21:0]       tagArray_1_13;
-  reg  [21:0]       tagArray_1_14;
-  reg  [21:0]       tagArray_1_15;
+  reg  [23:0]       tagArray_0_0;
+  reg  [23:0]       tagArray_0_1;
+  reg  [23:0]       tagArray_0_2;
+  reg  [23:0]       tagArray_0_3;
+  reg  [23:0]       tagArray_0_4;
+  reg  [23:0]       tagArray_0_5;
+  reg  [23:0]       tagArray_0_6;
+  reg  [23:0]       tagArray_0_7;
+  reg  [23:0]       tagArray_0_8;
+  reg  [23:0]       tagArray_0_9;
+  reg  [23:0]       tagArray_0_10;
+  reg  [23:0]       tagArray_0_11;
+  reg  [23:0]       tagArray_0_12;
+  reg  [23:0]       tagArray_0_13;
+  reg  [23:0]       tagArray_0_14;
+  reg  [23:0]       tagArray_0_15;
+  reg  [23:0]       tagArray_1_0;
+  reg  [23:0]       tagArray_1_1;
+  reg  [23:0]       tagArray_1_2;
+  reg  [23:0]       tagArray_1_3;
+  reg  [23:0]       tagArray_1_4;
+  reg  [23:0]       tagArray_1_5;
+  reg  [23:0]       tagArray_1_6;
+  reg  [23:0]       tagArray_1_7;
+  reg  [23:0]       tagArray_1_8;
+  reg  [23:0]       tagArray_1_9;
+  reg  [23:0]       tagArray_1_10;
+  reg  [23:0]       tagArray_1_11;
+  reg  [23:0]       tagArray_1_12;
+  reg  [23:0]       tagArray_1_13;
+  reg  [23:0]       tagArray_1_14;
+  reg  [23:0]       tagArray_1_15;
   reg               validArray_0_0;
   reg               validArray_0_1;
   reg               validArray_0_2;
@@ -2164,7 +2169,39 @@ module CacheStage1(
   reg               validArray_1_13;
   reg               validArray_1_14;
   reg               validArray_1_15;
-  wire [15:0][21:0] _GEN =
+  reg               dirtyArray_0_0;
+  reg               dirtyArray_0_1;
+  reg               dirtyArray_0_2;
+  reg               dirtyArray_0_3;
+  reg               dirtyArray_0_4;
+  reg               dirtyArray_0_5;
+  reg               dirtyArray_0_6;
+  reg               dirtyArray_0_7;
+  reg               dirtyArray_0_8;
+  reg               dirtyArray_0_9;
+  reg               dirtyArray_0_10;
+  reg               dirtyArray_0_11;
+  reg               dirtyArray_0_12;
+  reg               dirtyArray_0_13;
+  reg               dirtyArray_0_14;
+  reg               dirtyArray_0_15;
+  reg               dirtyArray_1_0;
+  reg               dirtyArray_1_1;
+  reg               dirtyArray_1_2;
+  reg               dirtyArray_1_3;
+  reg               dirtyArray_1_4;
+  reg               dirtyArray_1_5;
+  reg               dirtyArray_1_6;
+  reg               dirtyArray_1_7;
+  reg               dirtyArray_1_8;
+  reg               dirtyArray_1_9;
+  reg               dirtyArray_1_10;
+  reg               dirtyArray_1_11;
+  reg               dirtyArray_1_12;
+  reg               dirtyArray_1_13;
+  reg               dirtyArray_1_14;
+  reg               dirtyArray_1_15;
+  wire [15:0][23:0] _GEN =
     {{tagArray_0_15},
      {tagArray_0_14},
      {tagArray_0_13},
@@ -2198,7 +2235,7 @@ module CacheStage1(
      {validArray_0_2},
      {validArray_0_1},
      {validArray_0_0}};
-  wire [15:0][21:0] _GEN_1 =
+  wire [15:0][23:0] _GEN_1 =
     {{tagArray_1_15},
      {tagArray_1_14},
      {tagArray_1_13},
@@ -2215,7 +2252,7 @@ module CacheStage1(
      {tagArray_1_2},
      {tagArray_1_1},
      {tagArray_1_0}};
-  wire [21:0]       _GEN_2 = _GEN_1[io_in_bits_addr[9:6]];
+  wire [23:0]       _GEN_2 = _GEN_1[io_in_bits_addr[7:4]];
   wire [15:0]       _GEN_3 =
     {{validArray_1_15},
      {validArray_1_14},
@@ -2234,28 +2271,31 @@ module CacheStage1(
      {validArray_1_1},
      {validArray_1_0}};
   wire              hit =
-    io_in_bits_addr[31:10] == _GEN[io_in_bits_addr[9:6]] & _GEN_0[io_in_bits_addr[9:6]]
-    | io_in_bits_addr[31:10] == _GEN_2 & _GEN_3[io_in_bits_addr[9:6]];
-  wire [8:0]        hitCacheAddr =
-    {_GEN_2 == io_in_bits_addr[31:10], io_in_bits_addr[9:2]};
-  reg  [3:0]        entryOff;
+    io_in_bits_addr[31:8] == _GEN[io_in_bits_addr[7:4]] & _GEN_0[io_in_bits_addr[7:4]]
+    | io_in_bits_addr[31:8] == _GEN_2 & _GEN_3[io_in_bits_addr[7:4]];
+  wire              wayIdx = _GEN_2 == io_in_bits_addr[31:8];
+  wire [6:0]        hitCacheAddr = {wayIdx, io_in_bits_addr[7:2]};
+  reg  [1:0]        entryOff;
   reg  [2:0]        stateCache;
   wire              _io_dataWriteBus_req_valid_T = stateCache == 3'h3;
-  wire [8:0]        writeCacheAddr = {replaceWayReg, io_in_bits_addr[9:6], entryOff};
+  wire [6:0]        writeCacheAddr = {replaceWayReg, io_in_bits_addr[7:4], entryOff};
   wire              _io_in_ready_output = hit & (~(|stateCache) | stateCache == 3'h5);
-  wire [94:0]       _io_out_bits_wdata_T_1 = 95'h0 << {90'h0, io_in_bits_addr[1:0], 3'h0};
+  wire              _io_out_valid_output = hit & io_in_valid;
+  wire              _io_out_bits_is_write_output = io_in_bits_cmd == 4'h2;
+  wire [94:0]       _io_out_bits_wdata_T_1 =
+    {63'h0, io_in_bits_wdata} << {90'h0, io_in_bits_addr[1:0], 3'h0};
   wire              _io_mem_req_bits_addr_T_7 = stateCache == 3'h2;
   wire              _io_mem_req_bits_cmd_T_4 = stateCache == 3'h4;
   wire              _GEN_4 = _io_mem_req_bits_cmd_T_4 | _io_mem_req_bits_addr_T_7;
   wire              _io_mem_req_bits_addr_T_5 = stateCache == 3'h1;
   wire              _io_mem_req_valid_output = _GEN_4 | _io_mem_req_bits_addr_T_5;
-  wire [15:0][21:0] _GEN_5 = replaceWayReg ? _GEN_1 : _GEN;
+  wire [15:0][23:0] _GEN_5 = replaceWayReg ? _GEN_1 : _GEN;
   wire              _io_mem_resp_ready_T_1 = stateCache == 3'h3;
   wire              _io_dataWriteBus_req_valid_output =
     _io_dataWriteBus_req_valid_T & _io_mem_resp_ready_T_1 & io_mem_resp_valid;
   wire              _GEN_6 = _io_in_ready_output & io_in_valid;
   wire              _GEN_7 = hit & ~(|stateCache) & io_in_valid;
-  wire              _GEN_8 = _io_dataWriteBus_req_valid_output & entryOff == 4'h0;
+  wire              _GEN_8 = _io_dataWriteBus_req_valid_output & entryOff == 2'h0;
   wire [7:0][2:0]   _GEN_9 =
     {{stateCache},
      {stateCache},
@@ -2265,122 +2305,157 @@ module CacheStage1(
      {io_mem_req_ready & _io_mem_req_valid_output ? 3'h4 : 3'h2},
      {{1'h0, io_mem_req_ready & _io_mem_req_valid_output, 1'h1}},
      {stateCache}};
-  wire              _GEN_10 = ~hit & io_in_valid;
-  wire              _GEN_11 = io_in_bits_addr[9:6] == 4'h0;
-  wire              _GEN_12 = ~replaceWayReg & _GEN_11;
-  wire              _GEN_13 = io_in_bits_addr[9:6] == 4'h1;
-  wire              _GEN_14 = ~replaceWayReg & _GEN_13;
-  wire              _GEN_15 = io_in_bits_addr[9:6] == 4'h2;
-  wire              _GEN_16 = ~replaceWayReg & _GEN_15;
-  wire              _GEN_17 = io_in_bits_addr[9:6] == 4'h3;
-  wire              _GEN_18 = ~replaceWayReg & _GEN_17;
-  wire              _GEN_19 = io_in_bits_addr[9:6] == 4'h4;
-  wire              _GEN_20 = ~replaceWayReg & _GEN_19;
-  wire              _GEN_21 = io_in_bits_addr[9:6] == 4'h5;
-  wire              _GEN_22 = ~replaceWayReg & _GEN_21;
-  wire              _GEN_23 = io_in_bits_addr[9:6] == 4'h6;
-  wire              _GEN_24 = ~replaceWayReg & _GEN_23;
-  wire              _GEN_25 = io_in_bits_addr[9:6] == 4'h7;
-  wire              _GEN_26 = ~replaceWayReg & _GEN_25;
-  wire              _GEN_27 = io_in_bits_addr[9:6] == 4'h8;
-  wire              _GEN_28 = ~replaceWayReg & _GEN_27;
-  wire              _GEN_29 = io_in_bits_addr[9:6] == 4'h9;
-  wire              _GEN_30 = ~replaceWayReg & _GEN_29;
-  wire              _GEN_31 = io_in_bits_addr[9:6] == 4'hA;
-  wire              _GEN_32 = ~replaceWayReg & _GEN_31;
-  wire              _GEN_33 = io_in_bits_addr[9:6] == 4'hB;
-  wire              _GEN_34 = ~replaceWayReg & _GEN_33;
-  wire              _GEN_35 = io_in_bits_addr[9:6] == 4'hC;
-  wire              _GEN_36 = ~replaceWayReg & _GEN_35;
-  wire              _GEN_37 = io_in_bits_addr[9:6] == 4'hD;
-  wire              _GEN_38 = ~replaceWayReg & _GEN_37;
-  wire              _GEN_39 = io_in_bits_addr[9:6] == 4'hE;
-  wire              _GEN_40 = ~replaceWayReg & _GEN_39;
-  wire              _GEN_41 = ~replaceWayReg & (&(io_in_bits_addr[9:6]));
-  wire              _GEN_42 = replaceWayReg & _GEN_11;
-  wire              _GEN_43 = replaceWayReg & _GEN_13;
-  wire              _GEN_44 = replaceWayReg & _GEN_15;
-  wire              _GEN_45 = replaceWayReg & _GEN_17;
-  wire              _GEN_46 = replaceWayReg & _GEN_19;
-  wire              _GEN_47 = replaceWayReg & _GEN_21;
-  wire              _GEN_48 = replaceWayReg & _GEN_23;
-  wire              _GEN_49 = replaceWayReg & _GEN_25;
-  wire              _GEN_50 = replaceWayReg & _GEN_27;
-  wire              _GEN_51 = replaceWayReg & _GEN_29;
-  wire              _GEN_52 = replaceWayReg & _GEN_31;
-  wire              _GEN_53 = replaceWayReg & _GEN_33;
-  wire              _GEN_54 = replaceWayReg & _GEN_35;
-  wire              _GEN_55 = replaceWayReg & _GEN_37;
-  wire              _GEN_56 = replaceWayReg & _GEN_39;
-  wire              _GEN_57 = replaceWayReg & (&(io_in_bits_addr[9:6]));
-  wire              _GEN_58 = _GEN_8 & _GEN_12;
-  wire              _GEN_59 = _GEN_8 & _GEN_14;
-  wire              _GEN_60 = _GEN_8 & _GEN_16;
-  wire              _GEN_61 = _GEN_8 & _GEN_18;
-  wire              _GEN_62 = _GEN_8 & _GEN_20;
-  wire              _GEN_63 = _GEN_8 & _GEN_22;
-  wire              _GEN_64 = _GEN_8 & _GEN_24;
-  wire              _GEN_65 = _GEN_8 & _GEN_26;
-  wire              _GEN_66 = _GEN_8 & _GEN_28;
-  wire              _GEN_67 = _GEN_8 & _GEN_30;
-  wire              _GEN_68 = _GEN_8 & _GEN_32;
-  wire              _GEN_69 = _GEN_8 & _GEN_34;
-  wire              _GEN_70 = _GEN_8 & _GEN_36;
-  wire              _GEN_71 = _GEN_8 & _GEN_38;
-  wire              _GEN_72 = _GEN_8 & _GEN_40;
-  wire              _GEN_73 = _GEN_8 & _GEN_41;
-  wire              _GEN_74 = _GEN_8 & _GEN_42;
-  wire              _GEN_75 = _GEN_8 & _GEN_43;
-  wire              _GEN_76 = _GEN_8 & _GEN_44;
-  wire              _GEN_77 = _GEN_8 & _GEN_45;
-  wire              _GEN_78 = _GEN_8 & _GEN_46;
-  wire              _GEN_79 = _GEN_8 & _GEN_47;
-  wire              _GEN_80 = _GEN_8 & _GEN_48;
-  wire              _GEN_81 = _GEN_8 & _GEN_49;
-  wire              _GEN_82 = _GEN_8 & _GEN_50;
-  wire              _GEN_83 = _GEN_8 & _GEN_51;
-  wire              _GEN_84 = _GEN_8 & _GEN_52;
-  wire              _GEN_85 = _GEN_8 & _GEN_53;
-  wire              _GEN_86 = _GEN_8 & _GEN_54;
-  wire              _GEN_87 = _GEN_8 & _GEN_55;
-  wire              _GEN_88 = _GEN_8 & _GEN_56;
-  wire              _GEN_89 = _GEN_8 & _GEN_57;
+  wire [15:0]       _GEN_10 =
+    randomNum
+      ? {{dirtyArray_1_15},
+         {dirtyArray_1_14},
+         {dirtyArray_1_13},
+         {dirtyArray_1_12},
+         {dirtyArray_1_11},
+         {dirtyArray_1_10},
+         {dirtyArray_1_9},
+         {dirtyArray_1_8},
+         {dirtyArray_1_7},
+         {dirtyArray_1_6},
+         {dirtyArray_1_5},
+         {dirtyArray_1_4},
+         {dirtyArray_1_3},
+         {dirtyArray_1_2},
+         {dirtyArray_1_1},
+         {dirtyArray_1_0}}
+      : {{dirtyArray_0_15},
+         {dirtyArray_0_14},
+         {dirtyArray_0_13},
+         {dirtyArray_0_12},
+         {dirtyArray_0_11},
+         {dirtyArray_0_10},
+         {dirtyArray_0_9},
+         {dirtyArray_0_8},
+         {dirtyArray_0_7},
+         {dirtyArray_0_6},
+         {dirtyArray_0_5},
+         {dirtyArray_0_4},
+         {dirtyArray_0_3},
+         {dirtyArray_0_2},
+         {dirtyArray_0_1},
+         {dirtyArray_0_0}};
+  wire              _GEN_11 = ~hit & io_in_valid;
+  wire              _GEN_12 = io_in_bits_addr[7:4] == 4'h0;
+  wire              _GEN_13 = ~replaceWayReg & _GEN_12;
+  wire              _GEN_14 = io_in_bits_addr[7:4] == 4'h1;
+  wire              _GEN_15 = ~replaceWayReg & _GEN_14;
+  wire              _GEN_16 = io_in_bits_addr[7:4] == 4'h2;
+  wire              _GEN_17 = ~replaceWayReg & _GEN_16;
+  wire              _GEN_18 = io_in_bits_addr[7:4] == 4'h3;
+  wire              _GEN_19 = ~replaceWayReg & _GEN_18;
+  wire              _GEN_20 = io_in_bits_addr[7:4] == 4'h4;
+  wire              _GEN_21 = ~replaceWayReg & _GEN_20;
+  wire              _GEN_22 = io_in_bits_addr[7:4] == 4'h5;
+  wire              _GEN_23 = ~replaceWayReg & _GEN_22;
+  wire              _GEN_24 = io_in_bits_addr[7:4] == 4'h6;
+  wire              _GEN_25 = ~replaceWayReg & _GEN_24;
+  wire              _GEN_26 = io_in_bits_addr[7:4] == 4'h7;
+  wire              _GEN_27 = ~replaceWayReg & _GEN_26;
+  wire              _GEN_28 = io_in_bits_addr[7:4] == 4'h8;
+  wire              _GEN_29 = ~replaceWayReg & _GEN_28;
+  wire              _GEN_30 = io_in_bits_addr[7:4] == 4'h9;
+  wire              _GEN_31 = ~replaceWayReg & _GEN_30;
+  wire              _GEN_32 = io_in_bits_addr[7:4] == 4'hA;
+  wire              _GEN_33 = ~replaceWayReg & _GEN_32;
+  wire              _GEN_34 = io_in_bits_addr[7:4] == 4'hB;
+  wire              _GEN_35 = ~replaceWayReg & _GEN_34;
+  wire              _GEN_36 = io_in_bits_addr[7:4] == 4'hC;
+  wire              _GEN_37 = ~replaceWayReg & _GEN_36;
+  wire              _GEN_38 = io_in_bits_addr[7:4] == 4'hD;
+  wire              _GEN_39 = ~replaceWayReg & _GEN_38;
+  wire              _GEN_40 = io_in_bits_addr[7:4] == 4'hE;
+  wire              _GEN_41 = ~replaceWayReg & _GEN_40;
+  wire              _GEN_42 = ~replaceWayReg & (&(io_in_bits_addr[7:4]));
+  wire              _GEN_43 = replaceWayReg & _GEN_12;
+  wire              _GEN_44 = replaceWayReg & _GEN_14;
+  wire              _GEN_45 = replaceWayReg & _GEN_16;
+  wire              _GEN_46 = replaceWayReg & _GEN_18;
+  wire              _GEN_47 = replaceWayReg & _GEN_20;
+  wire              _GEN_48 = replaceWayReg & _GEN_22;
+  wire              _GEN_49 = replaceWayReg & _GEN_24;
+  wire              _GEN_50 = replaceWayReg & _GEN_26;
+  wire              _GEN_51 = replaceWayReg & _GEN_28;
+  wire              _GEN_52 = replaceWayReg & _GEN_30;
+  wire              _GEN_53 = replaceWayReg & _GEN_32;
+  wire              _GEN_54 = replaceWayReg & _GEN_34;
+  wire              _GEN_55 = replaceWayReg & _GEN_36;
+  wire              _GEN_56 = replaceWayReg & _GEN_38;
+  wire              _GEN_57 = replaceWayReg & _GEN_40;
+  wire              _GEN_58 = replaceWayReg & (&(io_in_bits_addr[7:4]));
+  wire              _GEN_59 = _io_out_valid_output & _io_out_bits_is_write_output;
+  wire              _GEN_60 = _GEN_8 & _GEN_13;
+  wire              _GEN_61 = _GEN_8 & _GEN_15;
+  wire              _GEN_62 = _GEN_8 & _GEN_17;
+  wire              _GEN_63 = _GEN_8 & _GEN_19;
+  wire              _GEN_64 = _GEN_8 & _GEN_21;
+  wire              _GEN_65 = _GEN_8 & _GEN_23;
+  wire              _GEN_66 = _GEN_8 & _GEN_25;
+  wire              _GEN_67 = _GEN_8 & _GEN_27;
+  wire              _GEN_68 = _GEN_8 & _GEN_29;
+  wire              _GEN_69 = _GEN_8 & _GEN_31;
+  wire              _GEN_70 = _GEN_8 & _GEN_33;
+  wire              _GEN_71 = _GEN_8 & _GEN_35;
+  wire              _GEN_72 = _GEN_8 & _GEN_37;
+  wire              _GEN_73 = _GEN_8 & _GEN_39;
+  wire              _GEN_74 = _GEN_8 & _GEN_41;
+  wire              _GEN_75 = _GEN_8 & _GEN_42;
+  wire              _GEN_76 = _GEN_8 & _GEN_43;
+  wire              _GEN_77 = _GEN_8 & _GEN_44;
+  wire              _GEN_78 = _GEN_8 & _GEN_45;
+  wire              _GEN_79 = _GEN_8 & _GEN_46;
+  wire              _GEN_80 = _GEN_8 & _GEN_47;
+  wire              _GEN_81 = _GEN_8 & _GEN_48;
+  wire              _GEN_82 = _GEN_8 & _GEN_49;
+  wire              _GEN_83 = _GEN_8 & _GEN_50;
+  wire              _GEN_84 = _GEN_8 & _GEN_51;
+  wire              _GEN_85 = _GEN_8 & _GEN_52;
+  wire              _GEN_86 = _GEN_8 & _GEN_53;
+  wire              _GEN_87 = _GEN_8 & _GEN_54;
+  wire              _GEN_88 = _GEN_8 & _GEN_55;
+  wire              _GEN_89 = _GEN_8 & _GEN_56;
+  wire              _GEN_90 = _GEN_8 & _GEN_57;
+  wire              _GEN_91 = _GEN_8 & _GEN_58;
   always @(posedge clock) begin
     if (reset) begin
       replaceWayReg <= 1'h0;
       randomNum <= 1'h0;
-      tagArray_0_0 <= 22'h0;
-      tagArray_0_1 <= 22'h0;
-      tagArray_0_2 <= 22'h0;
-      tagArray_0_3 <= 22'h0;
-      tagArray_0_4 <= 22'h0;
-      tagArray_0_5 <= 22'h0;
-      tagArray_0_6 <= 22'h0;
-      tagArray_0_7 <= 22'h0;
-      tagArray_0_8 <= 22'h0;
-      tagArray_0_9 <= 22'h0;
-      tagArray_0_10 <= 22'h0;
-      tagArray_0_11 <= 22'h0;
-      tagArray_0_12 <= 22'h0;
-      tagArray_0_13 <= 22'h0;
-      tagArray_0_14 <= 22'h0;
-      tagArray_0_15 <= 22'h0;
-      tagArray_1_0 <= 22'h0;
-      tagArray_1_1 <= 22'h0;
-      tagArray_1_2 <= 22'h0;
-      tagArray_1_3 <= 22'h0;
-      tagArray_1_4 <= 22'h0;
-      tagArray_1_5 <= 22'h0;
-      tagArray_1_6 <= 22'h0;
-      tagArray_1_7 <= 22'h0;
-      tagArray_1_8 <= 22'h0;
-      tagArray_1_9 <= 22'h0;
-      tagArray_1_10 <= 22'h0;
-      tagArray_1_11 <= 22'h0;
-      tagArray_1_12 <= 22'h0;
-      tagArray_1_13 <= 22'h0;
-      tagArray_1_14 <= 22'h0;
-      tagArray_1_15 <= 22'h0;
+      tagArray_0_0 <= 24'h0;
+      tagArray_0_1 <= 24'h0;
+      tagArray_0_2 <= 24'h0;
+      tagArray_0_3 <= 24'h0;
+      tagArray_0_4 <= 24'h0;
+      tagArray_0_5 <= 24'h0;
+      tagArray_0_6 <= 24'h0;
+      tagArray_0_7 <= 24'h0;
+      tagArray_0_8 <= 24'h0;
+      tagArray_0_9 <= 24'h0;
+      tagArray_0_10 <= 24'h0;
+      tagArray_0_11 <= 24'h0;
+      tagArray_0_12 <= 24'h0;
+      tagArray_0_13 <= 24'h0;
+      tagArray_0_14 <= 24'h0;
+      tagArray_0_15 <= 24'h0;
+      tagArray_1_0 <= 24'h0;
+      tagArray_1_1 <= 24'h0;
+      tagArray_1_2 <= 24'h0;
+      tagArray_1_3 <= 24'h0;
+      tagArray_1_4 <= 24'h0;
+      tagArray_1_5 <= 24'h0;
+      tagArray_1_6 <= 24'h0;
+      tagArray_1_7 <= 24'h0;
+      tagArray_1_8 <= 24'h0;
+      tagArray_1_9 <= 24'h0;
+      tagArray_1_10 <= 24'h0;
+      tagArray_1_11 <= 24'h0;
+      tagArray_1_12 <= 24'h0;
+      tagArray_1_13 <= 24'h0;
+      tagArray_1_14 <= 24'h0;
+      tagArray_1_15 <= 24'h0;
       validArray_0_0 <= 1'h0;
       validArray_0_1 <= 1'h0;
       validArray_0_2 <= 1'h0;
@@ -2413,243 +2488,315 @@ module CacheStage1(
       validArray_1_13 <= 1'h0;
       validArray_1_14 <= 1'h0;
       validArray_1_15 <= 1'h0;
-      entryOff <= 4'h0;
+      dirtyArray_0_0 <= 1'h0;
+      dirtyArray_0_1 <= 1'h0;
+      dirtyArray_0_2 <= 1'h0;
+      dirtyArray_0_3 <= 1'h0;
+      dirtyArray_0_4 <= 1'h0;
+      dirtyArray_0_5 <= 1'h0;
+      dirtyArray_0_6 <= 1'h0;
+      dirtyArray_0_7 <= 1'h0;
+      dirtyArray_0_8 <= 1'h0;
+      dirtyArray_0_9 <= 1'h0;
+      dirtyArray_0_10 <= 1'h0;
+      dirtyArray_0_11 <= 1'h0;
+      dirtyArray_0_12 <= 1'h0;
+      dirtyArray_0_13 <= 1'h0;
+      dirtyArray_0_14 <= 1'h0;
+      dirtyArray_0_15 <= 1'h0;
+      dirtyArray_1_0 <= 1'h0;
+      dirtyArray_1_1 <= 1'h0;
+      dirtyArray_1_2 <= 1'h0;
+      dirtyArray_1_3 <= 1'h0;
+      dirtyArray_1_4 <= 1'h0;
+      dirtyArray_1_5 <= 1'h0;
+      dirtyArray_1_6 <= 1'h0;
+      dirtyArray_1_7 <= 1'h0;
+      dirtyArray_1_8 <= 1'h0;
+      dirtyArray_1_9 <= 1'h0;
+      dirtyArray_1_10 <= 1'h0;
+      dirtyArray_1_11 <= 1'h0;
+      dirtyArray_1_12 <= 1'h0;
+      dirtyArray_1_13 <= 1'h0;
+      dirtyArray_1_14 <= 1'h0;
+      dirtyArray_1_15 <= 1'h0;
+      entryOff <= 2'h0;
       stateCache <= 3'h0;
     end
     else begin
-      if (~(|stateCache) & _GEN_10)
+      if (~(|stateCache) & _GEN_11)
         replaceWayReg <= randomNum;
       randomNum <= randomNum - 1'h1;
       if ((&entryOff) & _io_dataWriteBus_req_valid_T) begin
-        if (_GEN_12)
-          tagArray_0_0 <= io_in_bits_addr[31:10];
-        if (_GEN_14)
-          tagArray_0_1 <= io_in_bits_addr[31:10];
-        if (_GEN_16)
-          tagArray_0_2 <= io_in_bits_addr[31:10];
-        if (_GEN_18)
-          tagArray_0_3 <= io_in_bits_addr[31:10];
-        if (_GEN_20)
-          tagArray_0_4 <= io_in_bits_addr[31:10];
-        if (_GEN_22)
-          tagArray_0_5 <= io_in_bits_addr[31:10];
-        if (_GEN_24)
-          tagArray_0_6 <= io_in_bits_addr[31:10];
-        if (_GEN_26)
-          tagArray_0_7 <= io_in_bits_addr[31:10];
-        if (_GEN_28)
-          tagArray_0_8 <= io_in_bits_addr[31:10];
-        if (_GEN_30)
-          tagArray_0_9 <= io_in_bits_addr[31:10];
-        if (_GEN_32)
-          tagArray_0_10 <= io_in_bits_addr[31:10];
-        if (_GEN_34)
-          tagArray_0_11 <= io_in_bits_addr[31:10];
-        if (_GEN_36)
-          tagArray_0_12 <= io_in_bits_addr[31:10];
-        if (_GEN_38)
-          tagArray_0_13 <= io_in_bits_addr[31:10];
-        if (_GEN_40)
-          tagArray_0_14 <= io_in_bits_addr[31:10];
+        if (_GEN_13)
+          tagArray_0_0 <= io_in_bits_addr[31:8];
+        if (_GEN_15)
+          tagArray_0_1 <= io_in_bits_addr[31:8];
+        if (_GEN_17)
+          tagArray_0_2 <= io_in_bits_addr[31:8];
+        if (_GEN_19)
+          tagArray_0_3 <= io_in_bits_addr[31:8];
+        if (_GEN_21)
+          tagArray_0_4 <= io_in_bits_addr[31:8];
+        if (_GEN_23)
+          tagArray_0_5 <= io_in_bits_addr[31:8];
+        if (_GEN_25)
+          tagArray_0_6 <= io_in_bits_addr[31:8];
+        if (_GEN_27)
+          tagArray_0_7 <= io_in_bits_addr[31:8];
+        if (_GEN_29)
+          tagArray_0_8 <= io_in_bits_addr[31:8];
+        if (_GEN_31)
+          tagArray_0_9 <= io_in_bits_addr[31:8];
+        if (_GEN_33)
+          tagArray_0_10 <= io_in_bits_addr[31:8];
+        if (_GEN_35)
+          tagArray_0_11 <= io_in_bits_addr[31:8];
+        if (_GEN_37)
+          tagArray_0_12 <= io_in_bits_addr[31:8];
+        if (_GEN_39)
+          tagArray_0_13 <= io_in_bits_addr[31:8];
         if (_GEN_41)
-          tagArray_0_15 <= io_in_bits_addr[31:10];
+          tagArray_0_14 <= io_in_bits_addr[31:8];
         if (_GEN_42)
-          tagArray_1_0 <= io_in_bits_addr[31:10];
+          tagArray_0_15 <= io_in_bits_addr[31:8];
         if (_GEN_43)
-          tagArray_1_1 <= io_in_bits_addr[31:10];
+          tagArray_1_0 <= io_in_bits_addr[31:8];
         if (_GEN_44)
-          tagArray_1_2 <= io_in_bits_addr[31:10];
+          tagArray_1_1 <= io_in_bits_addr[31:8];
         if (_GEN_45)
-          tagArray_1_3 <= io_in_bits_addr[31:10];
+          tagArray_1_2 <= io_in_bits_addr[31:8];
         if (_GEN_46)
-          tagArray_1_4 <= io_in_bits_addr[31:10];
+          tagArray_1_3 <= io_in_bits_addr[31:8];
         if (_GEN_47)
-          tagArray_1_5 <= io_in_bits_addr[31:10];
+          tagArray_1_4 <= io_in_bits_addr[31:8];
         if (_GEN_48)
-          tagArray_1_6 <= io_in_bits_addr[31:10];
+          tagArray_1_5 <= io_in_bits_addr[31:8];
         if (_GEN_49)
-          tagArray_1_7 <= io_in_bits_addr[31:10];
+          tagArray_1_6 <= io_in_bits_addr[31:8];
         if (_GEN_50)
-          tagArray_1_8 <= io_in_bits_addr[31:10];
+          tagArray_1_7 <= io_in_bits_addr[31:8];
         if (_GEN_51)
-          tagArray_1_9 <= io_in_bits_addr[31:10];
+          tagArray_1_8 <= io_in_bits_addr[31:8];
         if (_GEN_52)
-          tagArray_1_10 <= io_in_bits_addr[31:10];
+          tagArray_1_9 <= io_in_bits_addr[31:8];
         if (_GEN_53)
-          tagArray_1_11 <= io_in_bits_addr[31:10];
+          tagArray_1_10 <= io_in_bits_addr[31:8];
         if (_GEN_54)
-          tagArray_1_12 <= io_in_bits_addr[31:10];
+          tagArray_1_11 <= io_in_bits_addr[31:8];
         if (_GEN_55)
-          tagArray_1_13 <= io_in_bits_addr[31:10];
+          tagArray_1_12 <= io_in_bits_addr[31:8];
         if (_GEN_56)
-          tagArray_1_14 <= io_in_bits_addr[31:10];
+          tagArray_1_13 <= io_in_bits_addr[31:8];
         if (_GEN_57)
-          tagArray_1_15 <= io_in_bits_addr[31:10];
-        validArray_0_0 <= _GEN_12 | validArray_0_0;
-        validArray_0_1 <= _GEN_14 | validArray_0_1;
-        validArray_0_2 <= _GEN_16 | validArray_0_2;
-        validArray_0_3 <= _GEN_18 | validArray_0_3;
-        validArray_0_4 <= _GEN_20 | validArray_0_4;
-        validArray_0_5 <= _GEN_22 | validArray_0_5;
-        validArray_0_6 <= _GEN_24 | validArray_0_6;
-        validArray_0_7 <= _GEN_26 | validArray_0_7;
-        validArray_0_8 <= _GEN_28 | validArray_0_8;
-        validArray_0_9 <= _GEN_30 | validArray_0_9;
-        validArray_0_10 <= _GEN_32 | validArray_0_10;
-        validArray_0_11 <= _GEN_34 | validArray_0_11;
-        validArray_0_12 <= _GEN_36 | validArray_0_12;
-        validArray_0_13 <= _GEN_38 | validArray_0_13;
-        validArray_0_14 <= _GEN_40 | validArray_0_14;
-        validArray_0_15 <= _GEN_41 | validArray_0_15;
-        validArray_1_0 <= _GEN_42 | validArray_1_0;
-        validArray_1_1 <= _GEN_43 | validArray_1_1;
-        validArray_1_2 <= _GEN_44 | validArray_1_2;
-        validArray_1_3 <= _GEN_45 | validArray_1_3;
-        validArray_1_4 <= _GEN_46 | validArray_1_4;
-        validArray_1_5 <= _GEN_47 | validArray_1_5;
-        validArray_1_6 <= _GEN_48 | validArray_1_6;
-        validArray_1_7 <= _GEN_49 | validArray_1_7;
-        validArray_1_8 <= _GEN_50 | validArray_1_8;
-        validArray_1_9 <= _GEN_51 | validArray_1_9;
-        validArray_1_10 <= _GEN_52 | validArray_1_10;
-        validArray_1_11 <= _GEN_53 | validArray_1_11;
-        validArray_1_12 <= _GEN_54 | validArray_1_12;
-        validArray_1_13 <= _GEN_55 | validArray_1_13;
-        validArray_1_14 <= _GEN_56 | validArray_1_14;
-        validArray_1_15 <= _GEN_57 | validArray_1_15;
+          tagArray_1_14 <= io_in_bits_addr[31:8];
+        if (_GEN_58)
+          tagArray_1_15 <= io_in_bits_addr[31:8];
+        validArray_0_0 <= _GEN_13 | validArray_0_0;
+        validArray_0_1 <= _GEN_15 | validArray_0_1;
+        validArray_0_2 <= _GEN_17 | validArray_0_2;
+        validArray_0_3 <= _GEN_19 | validArray_0_3;
+        validArray_0_4 <= _GEN_21 | validArray_0_4;
+        validArray_0_5 <= _GEN_23 | validArray_0_5;
+        validArray_0_6 <= _GEN_25 | validArray_0_6;
+        validArray_0_7 <= _GEN_27 | validArray_0_7;
+        validArray_0_8 <= _GEN_29 | validArray_0_8;
+        validArray_0_9 <= _GEN_31 | validArray_0_9;
+        validArray_0_10 <= _GEN_33 | validArray_0_10;
+        validArray_0_11 <= _GEN_35 | validArray_0_11;
+        validArray_0_12 <= _GEN_37 | validArray_0_12;
+        validArray_0_13 <= _GEN_39 | validArray_0_13;
+        validArray_0_14 <= _GEN_41 | validArray_0_14;
+        validArray_0_15 <= _GEN_42 | validArray_0_15;
+        validArray_1_0 <= _GEN_43 | validArray_1_0;
+        validArray_1_1 <= _GEN_44 | validArray_1_1;
+        validArray_1_2 <= _GEN_45 | validArray_1_2;
+        validArray_1_3 <= _GEN_46 | validArray_1_3;
+        validArray_1_4 <= _GEN_47 | validArray_1_4;
+        validArray_1_5 <= _GEN_48 | validArray_1_5;
+        validArray_1_6 <= _GEN_49 | validArray_1_6;
+        validArray_1_7 <= _GEN_50 | validArray_1_7;
+        validArray_1_8 <= _GEN_51 | validArray_1_8;
+        validArray_1_9 <= _GEN_52 | validArray_1_9;
+        validArray_1_10 <= _GEN_53 | validArray_1_10;
+        validArray_1_11 <= _GEN_54 | validArray_1_11;
+        validArray_1_12 <= _GEN_55 | validArray_1_12;
+        validArray_1_13 <= _GEN_56 | validArray_1_13;
+        validArray_1_14 <= _GEN_57 | validArray_1_14;
+        validArray_1_15 <= _GEN_58 | validArray_1_15;
       end
       else begin
-        if (_GEN_58)
-          tagArray_0_0 <= 22'h0;
-        if (_GEN_59)
-          tagArray_0_1 <= 22'h0;
         if (_GEN_60)
-          tagArray_0_2 <= 22'h0;
+          tagArray_0_0 <= 24'h0;
         if (_GEN_61)
-          tagArray_0_3 <= 22'h0;
+          tagArray_0_1 <= 24'h0;
         if (_GEN_62)
-          tagArray_0_4 <= 22'h0;
+          tagArray_0_2 <= 24'h0;
         if (_GEN_63)
-          tagArray_0_5 <= 22'h0;
+          tagArray_0_3 <= 24'h0;
         if (_GEN_64)
-          tagArray_0_6 <= 22'h0;
+          tagArray_0_4 <= 24'h0;
         if (_GEN_65)
-          tagArray_0_7 <= 22'h0;
+          tagArray_0_5 <= 24'h0;
         if (_GEN_66)
-          tagArray_0_8 <= 22'h0;
+          tagArray_0_6 <= 24'h0;
         if (_GEN_67)
-          tagArray_0_9 <= 22'h0;
+          tagArray_0_7 <= 24'h0;
         if (_GEN_68)
-          tagArray_0_10 <= 22'h0;
+          tagArray_0_8 <= 24'h0;
         if (_GEN_69)
-          tagArray_0_11 <= 22'h0;
+          tagArray_0_9 <= 24'h0;
         if (_GEN_70)
-          tagArray_0_12 <= 22'h0;
+          tagArray_0_10 <= 24'h0;
         if (_GEN_71)
-          tagArray_0_13 <= 22'h0;
+          tagArray_0_11 <= 24'h0;
         if (_GEN_72)
-          tagArray_0_14 <= 22'h0;
+          tagArray_0_12 <= 24'h0;
         if (_GEN_73)
-          tagArray_0_15 <= 22'h0;
+          tagArray_0_13 <= 24'h0;
         if (_GEN_74)
-          tagArray_1_0 <= 22'h0;
+          tagArray_0_14 <= 24'h0;
         if (_GEN_75)
-          tagArray_1_1 <= 22'h0;
+          tagArray_0_15 <= 24'h0;
         if (_GEN_76)
-          tagArray_1_2 <= 22'h0;
+          tagArray_1_0 <= 24'h0;
         if (_GEN_77)
-          tagArray_1_3 <= 22'h0;
+          tagArray_1_1 <= 24'h0;
         if (_GEN_78)
-          tagArray_1_4 <= 22'h0;
+          tagArray_1_2 <= 24'h0;
         if (_GEN_79)
-          tagArray_1_5 <= 22'h0;
+          tagArray_1_3 <= 24'h0;
         if (_GEN_80)
-          tagArray_1_6 <= 22'h0;
+          tagArray_1_4 <= 24'h0;
         if (_GEN_81)
-          tagArray_1_7 <= 22'h0;
+          tagArray_1_5 <= 24'h0;
         if (_GEN_82)
-          tagArray_1_8 <= 22'h0;
+          tagArray_1_6 <= 24'h0;
         if (_GEN_83)
-          tagArray_1_9 <= 22'h0;
+          tagArray_1_7 <= 24'h0;
         if (_GEN_84)
-          tagArray_1_10 <= 22'h0;
+          tagArray_1_8 <= 24'h0;
         if (_GEN_85)
-          tagArray_1_11 <= 22'h0;
+          tagArray_1_9 <= 24'h0;
         if (_GEN_86)
-          tagArray_1_12 <= 22'h0;
+          tagArray_1_10 <= 24'h0;
         if (_GEN_87)
-          tagArray_1_13 <= 22'h0;
+          tagArray_1_11 <= 24'h0;
         if (_GEN_88)
-          tagArray_1_14 <= 22'h0;
+          tagArray_1_12 <= 24'h0;
         if (_GEN_89)
-          tagArray_1_15 <= 22'h0;
-        validArray_0_0 <= ~_GEN_58 & validArray_0_0;
-        validArray_0_1 <= ~_GEN_59 & validArray_0_1;
-        validArray_0_2 <= ~_GEN_60 & validArray_0_2;
-        validArray_0_3 <= ~_GEN_61 & validArray_0_3;
-        validArray_0_4 <= ~_GEN_62 & validArray_0_4;
-        validArray_0_5 <= ~_GEN_63 & validArray_0_5;
-        validArray_0_6 <= ~_GEN_64 & validArray_0_6;
-        validArray_0_7 <= ~_GEN_65 & validArray_0_7;
-        validArray_0_8 <= ~_GEN_66 & validArray_0_8;
-        validArray_0_9 <= ~_GEN_67 & validArray_0_9;
-        validArray_0_10 <= ~_GEN_68 & validArray_0_10;
-        validArray_0_11 <= ~_GEN_69 & validArray_0_11;
-        validArray_0_12 <= ~_GEN_70 & validArray_0_12;
-        validArray_0_13 <= ~_GEN_71 & validArray_0_13;
-        validArray_0_14 <= ~_GEN_72 & validArray_0_14;
-        validArray_0_15 <= ~_GEN_73 & validArray_0_15;
-        validArray_1_0 <= ~_GEN_74 & validArray_1_0;
-        validArray_1_1 <= ~_GEN_75 & validArray_1_1;
-        validArray_1_2 <= ~_GEN_76 & validArray_1_2;
-        validArray_1_3 <= ~_GEN_77 & validArray_1_3;
-        validArray_1_4 <= ~_GEN_78 & validArray_1_4;
-        validArray_1_5 <= ~_GEN_79 & validArray_1_5;
-        validArray_1_6 <= ~_GEN_80 & validArray_1_6;
-        validArray_1_7 <= ~_GEN_81 & validArray_1_7;
-        validArray_1_8 <= ~_GEN_82 & validArray_1_8;
-        validArray_1_9 <= ~_GEN_83 & validArray_1_9;
-        validArray_1_10 <= ~_GEN_84 & validArray_1_10;
-        validArray_1_11 <= ~_GEN_85 & validArray_1_11;
-        validArray_1_12 <= ~_GEN_86 & validArray_1_12;
-        validArray_1_13 <= ~_GEN_87 & validArray_1_13;
-        validArray_1_14 <= ~_GEN_88 & validArray_1_14;
-        validArray_1_15 <= ~_GEN_89 & validArray_1_15;
+          tagArray_1_13 <= 24'h0;
+        if (_GEN_90)
+          tagArray_1_14 <= 24'h0;
+        if (_GEN_91)
+          tagArray_1_15 <= 24'h0;
+        validArray_0_0 <= ~_GEN_60 & validArray_0_0;
+        validArray_0_1 <= ~_GEN_61 & validArray_0_1;
+        validArray_0_2 <= ~_GEN_62 & validArray_0_2;
+        validArray_0_3 <= ~_GEN_63 & validArray_0_3;
+        validArray_0_4 <= ~_GEN_64 & validArray_0_4;
+        validArray_0_5 <= ~_GEN_65 & validArray_0_5;
+        validArray_0_6 <= ~_GEN_66 & validArray_0_6;
+        validArray_0_7 <= ~_GEN_67 & validArray_0_7;
+        validArray_0_8 <= ~_GEN_68 & validArray_0_8;
+        validArray_0_9 <= ~_GEN_69 & validArray_0_9;
+        validArray_0_10 <= ~_GEN_70 & validArray_0_10;
+        validArray_0_11 <= ~_GEN_71 & validArray_0_11;
+        validArray_0_12 <= ~_GEN_72 & validArray_0_12;
+        validArray_0_13 <= ~_GEN_73 & validArray_0_13;
+        validArray_0_14 <= ~_GEN_74 & validArray_0_14;
+        validArray_0_15 <= ~_GEN_75 & validArray_0_15;
+        validArray_1_0 <= ~_GEN_76 & validArray_1_0;
+        validArray_1_1 <= ~_GEN_77 & validArray_1_1;
+        validArray_1_2 <= ~_GEN_78 & validArray_1_2;
+        validArray_1_3 <= ~_GEN_79 & validArray_1_3;
+        validArray_1_4 <= ~_GEN_80 & validArray_1_4;
+        validArray_1_5 <= ~_GEN_81 & validArray_1_5;
+        validArray_1_6 <= ~_GEN_82 & validArray_1_6;
+        validArray_1_7 <= ~_GEN_83 & validArray_1_7;
+        validArray_1_8 <= ~_GEN_84 & validArray_1_8;
+        validArray_1_9 <= ~_GEN_85 & validArray_1_9;
+        validArray_1_10 <= ~_GEN_86 & validArray_1_10;
+        validArray_1_11 <= ~_GEN_87 & validArray_1_11;
+        validArray_1_12 <= ~_GEN_88 & validArray_1_12;
+        validArray_1_13 <= ~_GEN_89 & validArray_1_13;
+        validArray_1_14 <= ~_GEN_90 & validArray_1_14;
+        validArray_1_15 <= ~_GEN_91 & validArray_1_15;
       end
+      dirtyArray_0_0 <= _GEN_59 & ~wayIdx & _GEN_12 | dirtyArray_0_0;
+      dirtyArray_0_1 <= _GEN_59 & ~wayIdx & _GEN_14 | dirtyArray_0_1;
+      dirtyArray_0_2 <= _GEN_59 & ~wayIdx & _GEN_16 | dirtyArray_0_2;
+      dirtyArray_0_3 <= _GEN_59 & ~wayIdx & _GEN_18 | dirtyArray_0_3;
+      dirtyArray_0_4 <= _GEN_59 & ~wayIdx & _GEN_20 | dirtyArray_0_4;
+      dirtyArray_0_5 <= _GEN_59 & ~wayIdx & _GEN_22 | dirtyArray_0_5;
+      dirtyArray_0_6 <= _GEN_59 & ~wayIdx & _GEN_24 | dirtyArray_0_6;
+      dirtyArray_0_7 <= _GEN_59 & ~wayIdx & _GEN_26 | dirtyArray_0_7;
+      dirtyArray_0_8 <= _GEN_59 & ~wayIdx & _GEN_28 | dirtyArray_0_8;
+      dirtyArray_0_9 <= _GEN_59 & ~wayIdx & _GEN_30 | dirtyArray_0_9;
+      dirtyArray_0_10 <= _GEN_59 & ~wayIdx & _GEN_32 | dirtyArray_0_10;
+      dirtyArray_0_11 <= _GEN_59 & ~wayIdx & _GEN_34 | dirtyArray_0_11;
+      dirtyArray_0_12 <= _GEN_59 & ~wayIdx & _GEN_36 | dirtyArray_0_12;
+      dirtyArray_0_13 <= _GEN_59 & ~wayIdx & _GEN_38 | dirtyArray_0_13;
+      dirtyArray_0_14 <= _GEN_59 & ~wayIdx & _GEN_40 | dirtyArray_0_14;
+      dirtyArray_0_15 <= _GEN_59 & ~wayIdx & (&(io_in_bits_addr[7:4])) | dirtyArray_0_15;
+      dirtyArray_1_0 <= _GEN_59 & wayIdx & _GEN_12 | dirtyArray_1_0;
+      dirtyArray_1_1 <= _GEN_59 & wayIdx & _GEN_14 | dirtyArray_1_1;
+      dirtyArray_1_2 <= _GEN_59 & wayIdx & _GEN_16 | dirtyArray_1_2;
+      dirtyArray_1_3 <= _GEN_59 & wayIdx & _GEN_18 | dirtyArray_1_3;
+      dirtyArray_1_4 <= _GEN_59 & wayIdx & _GEN_20 | dirtyArray_1_4;
+      dirtyArray_1_5 <= _GEN_59 & wayIdx & _GEN_22 | dirtyArray_1_5;
+      dirtyArray_1_6 <= _GEN_59 & wayIdx & _GEN_24 | dirtyArray_1_6;
+      dirtyArray_1_7 <= _GEN_59 & wayIdx & _GEN_26 | dirtyArray_1_7;
+      dirtyArray_1_8 <= _GEN_59 & wayIdx & _GEN_28 | dirtyArray_1_8;
+      dirtyArray_1_9 <= _GEN_59 & wayIdx & _GEN_30 | dirtyArray_1_9;
+      dirtyArray_1_10 <= _GEN_59 & wayIdx & _GEN_32 | dirtyArray_1_10;
+      dirtyArray_1_11 <= _GEN_59 & wayIdx & _GEN_34 | dirtyArray_1_11;
+      dirtyArray_1_12 <= _GEN_59 & wayIdx & _GEN_36 | dirtyArray_1_12;
+      dirtyArray_1_13 <= _GEN_59 & wayIdx & _GEN_38 | dirtyArray_1_13;
+      dirtyArray_1_14 <= _GEN_59 & wayIdx & _GEN_40 | dirtyArray_1_14;
+      dirtyArray_1_15 <= _GEN_59 & wayIdx & (&(io_in_bits_addr[7:4])) | dirtyArray_1_15;
       if (io_flush) begin
-        entryOff <= 4'h0;
+        entryOff <= 2'h0;
         stateCache <= 3'h0;
       end
       else if (|stateCache) begin
         if (stateCache == 3'h1 | stateCache == 3'h2)
-          entryOff <= 4'h0;
+          entryOff <= 2'h0;
         else if (stateCache == 3'h3) begin
           if (_io_mem_resp_ready_T_1 & io_mem_resp_valid)
-            entryOff <= entryOff + 4'h1;
+            entryOff <= entryOff + 2'h1;
         end
         else if (stateCache == 3'h4 & io_mem_req_ready & _io_mem_req_valid_output)
-          entryOff <= entryOff + 4'h1;
+          entryOff <= entryOff + 2'h1;
         stateCache <= _GEN_9[stateCache];
       end
+      else if (_GEN_11) begin
+        if (_GEN_10[io_in_bits_addr[7:4]])
+          stateCache <= 3'h2;
+        else
+          stateCache <= 3'h1;
+      end
       else
-        stateCache <= {2'h0, _GEN_10};
+        stateCache <= 3'h0;
     end
   end // always @(posedge)
   assign io_in_ready = _io_in_ready_output;
   assign io_mem_req_valid = _io_mem_req_valid_output;
   assign io_mem_req_bits_addr =
     _io_mem_req_bits_addr_T_7
-      ? {_GEN_5[io_in_bits_addr[9:6]], io_in_bits_addr[9:6], 6'h0}
-      : _io_mem_req_bits_addr_T_5 ? {io_in_bits_addr[31:6], 6'h0} : 32'h0;
+      ? {_GEN_5[io_in_bits_addr[7:4]], io_in_bits_addr[7:4], 4'h0}
+      : _io_mem_req_bits_addr_T_5 ? {io_in_bits_addr[31:4], 4'h0} : 32'h0;
   assign io_mem_req_bits_wdata = io_dataReadBus_resp_rdata;
   assign io_mem_req_bits_cmd =
     {1'h0,
      _io_mem_req_bits_cmd_T_4
        ? 3'h2
        : _io_mem_req_bits_addr_T_7 ? 3'h4 : {2'h0, _io_mem_req_bits_addr_T_5}};
-  assign io_out_valid = hit & io_in_valid;
+  assign io_out_valid = _io_out_valid_output;
   assign io_out_bits_addr = io_in_bits_addr;
+  assign io_out_bits_is_write = _io_out_bits_is_write_output;
   assign io_out_bits_waddr = hitCacheAddr;
+  assign io_out_bits_wmask = io_in_bits_wmask[3:0];
   assign io_out_bits_wdata = _io_out_bits_wdata_T_1[31:0];
   assign io_dataReadBus_req_valid =
     io_in_valid & hit | _io_mem_req_bits_cmd_T_4 | _io_mem_req_bits_addr_T_7;
@@ -2657,15 +2804,15 @@ module CacheStage1(
   assign io_dataWriteBus_req_valid = _io_dataWriteBus_req_valid_output;
   assign io_dataWriteBus_req_bits_waddr = writeCacheAddr;
   assign io_dataWriteBus_req_bits_wdata = io_mem_resp_bits_rdata;
-  assign _WIRE__bore = _GEN_6;
   assign _WIRE_1__bore = _GEN_7;
+  assign _WIRE__bore = _GEN_6;
 endmodule
 
 module CacheStage2(
   input         io_in_valid,
   input  [31:0] io_in_bits_addr,
   input         io_in_bits_is_write,
-  input  [8:0]  io_in_bits_waddr,
+  input  [6:0]  io_in_bits_waddr,
   input  [3:0]  io_in_bits_wmask,
   input  [31:0] io_in_bits_wdata,
                 io_dataReadBus_rdata,
@@ -2675,10 +2822,10 @@ module CacheStage2(
   output        io_out_resp_valid,
   output [31:0] io_out_resp_bits_rdata,
   output        io_dataWriteBus_req_valid,
-  output [8:0]  io_dataWriteBus_req_bits_waddr,
+  output [6:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-                io_in_bits_addr__bore,
-  output        io_in_valid__bore
+  output        io_in_valid__bore,
+  output [31:0] io_in_bits_addr__bore
 );
 
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
@@ -2695,19 +2842,19 @@ module CacheStage2(
   assign io_dataWriteBus_req_bits_wdata =
     io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
     & ~_io_dataWriteBus_req_bits_wdata_T_12;
-  assign io_in_bits_addr__bore = io_in_bits_addr;
   assign io_in_valid__bore = io_in_valid;
+  assign io_in_bits_addr__bore = io_in_bits_addr;
 endmodule
 
 module Arbiter2_SRAMBundleWriteReq(
   input         io_in_0_valid,
-  input  [8:0]  io_in_0_bits_waddr,
+  input  [6:0]  io_in_0_bits_waddr,
   input  [31:0] io_in_0_bits_wdata,
   input         io_in_1_valid,
-  input  [8:0]  io_in_1_bits_waddr,
+  input  [6:0]  io_in_1_bits_waddr,
   input  [31:0] io_in_1_bits_wdata,
   output        io_out_valid,
-  output [8:0]  io_out_bits_waddr,
+  output [6:0]  io_out_bits_waddr,
   output [31:0] io_out_bits_wdata
 );
 
@@ -2734,38 +2881,39 @@ module Cache(
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
   output [31:0] io_stage2Addr,
-  output        s1__WIRE__bore,
-  output [31:0] s2_io_in_bits_addr__bore,
   output        s2_io_in_valid__bore,
-                s1__WIRE_1__bore
+                s1__WIRE_1__bore,
+                s1__WIRE__bore,
+  output [31:0] s2_io_in_bits_addr__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
-  wire [8:0]  _dataWriteArb_io_out_bits_waddr;
+  wire [6:0]  _dataWriteArb_io_out_bits_waddr;
   wire [31:0] _dataWriteArb_io_out_bits_wdata;
   wire        _s2_io_in_ready;
   wire        _s2_io_out_resp_valid;
   wire        _s2_io_dataWriteBus_req_valid;
-  wire [8:0]  _s2_io_dataWriteBus_req_bits_waddr;
+  wire [6:0]  _s2_io_dataWriteBus_req_bits_waddr;
   wire [31:0] _s2_io_dataWriteBus_req_bits_wdata;
   wire        _s1_io_out_valid;
   wire [31:0] _s1_io_out_bits_addr;
-  wire [8:0]  _s1_io_out_bits_waddr;
+  wire        _s1_io_out_bits_is_write;
+  wire [6:0]  _s1_io_out_bits_waddr;
+  wire [3:0]  _s1_io_out_bits_wmask;
   wire [31:0] _s1_io_out_bits_wdata;
   wire        _s1_io_dataReadBus_req_valid;
-  wire [8:0]  _s1_io_dataReadBus_req_bits_raddr;
+  wire [6:0]  _s1_io_dataReadBus_req_bits_raddr;
   wire        _s1_io_dataWriteBus_req_valid;
-  wire [8:0]  _s1_io_dataWriteBus_req_bits_waddr;
+  wire [6:0]  _s1_io_dataWriteBus_req_bits_waddr;
   wire [31:0] _s1_io_dataWriteBus_req_bits_wdata;
   wire [31:0] _dataArray_io_r_resp_rdata;
   reg         valid;
   reg  [31:0] s2_io_in_bits_r_addr;
   reg         s2_io_in_bits_r_is_write;
-  reg  [8:0]  s2_io_in_bits_r_waddr;
+  reg  [6:0]  s2_io_in_bits_r_waddr;
   reg  [3:0]  s2_io_in_bits_r_wmask;
   reg  [31:0] s2_io_in_bits_r_wdata;
   wire        _s2_io_in_bits_T_1 = _s1_io_out_valid & _s2_io_in_ready;
-  wire        _s2_io_in_bits_T_2 = _s2_io_in_bits_T_1 | io_flush;
   always @(posedge clock) begin
     if (reset)
       valid <= 1'h0;
@@ -2773,20 +2921,21 @@ module Cache(
       valid <=
         ~io_flush
         & (_s2_io_in_bits_T_1 | ~(io_in_resp_ready & _s2_io_out_resp_valid) & valid);
-    if (_s2_io_in_bits_T_2) begin
+    if (_s2_io_in_bits_T_1 | io_flush) begin
       if (io_flush) begin
         s2_io_in_bits_r_addr <= 32'h0;
-        s2_io_in_bits_r_waddr <= 9'h0;
+        s2_io_in_bits_r_waddr <= 7'h0;
+        s2_io_in_bits_r_wmask <= 4'h0;
         s2_io_in_bits_r_wdata <= 32'h0;
       end
       else begin
         s2_io_in_bits_r_addr <= _s1_io_out_bits_addr;
         s2_io_in_bits_r_waddr <= _s1_io_out_bits_waddr;
+        s2_io_in_bits_r_wmask <= _s1_io_out_bits_wmask;
         s2_io_in_bits_r_wdata <= _s1_io_out_bits_wdata;
       end
-      s2_io_in_bits_r_wmask <= 4'h0;
+      s2_io_in_bits_r_is_write <= ~io_flush & _s1_io_out_bits_is_write;
     end
-    s2_io_in_bits_r_is_write <= ~_s2_io_in_bits_T_2 & s2_io_in_bits_r_is_write;
   end // always @(posedge)
   SRAMTemplate_1 dataArray (
     .clock               (clock),
@@ -2803,6 +2952,9 @@ module Cache(
     .reset                          (reset),
     .io_in_valid                    (io_in_req_valid),
     .io_in_bits_addr                (io_in_req_bits_addr),
+    .io_in_bits_wdata               (32'h0),
+    .io_in_bits_wmask               (32'h0),
+    .io_in_bits_cmd                 (4'h1),
     .io_mem_req_ready               (io_mem_req_ready),
     .io_mem_resp_valid              (io_mem_resp_valid),
     .io_mem_resp_bits_rdata         (io_mem_resp_bits_rdata),
@@ -2815,15 +2967,17 @@ module Cache(
     .io_mem_req_bits_cmd            (io_mem_req_bits_cmd),
     .io_out_valid                   (_s1_io_out_valid),
     .io_out_bits_addr               (_s1_io_out_bits_addr),
+    .io_out_bits_is_write           (_s1_io_out_bits_is_write),
     .io_out_bits_waddr              (_s1_io_out_bits_waddr),
+    .io_out_bits_wmask              (_s1_io_out_bits_wmask),
     .io_out_bits_wdata              (_s1_io_out_bits_wdata),
     .io_dataReadBus_req_valid       (_s1_io_dataReadBus_req_valid),
     .io_dataReadBus_req_bits_raddr  (_s1_io_dataReadBus_req_bits_raddr),
     .io_dataWriteBus_req_valid      (_s1_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s1_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s1_io_dataWriteBus_req_bits_wdata),
-    ._WIRE__bore                    (s1__WIRE__bore),
-    ._WIRE_1__bore                  (s1__WIRE_1__bore)
+    ._WIRE_1__bore                  (s1__WIRE_1__bore),
+    ._WIRE__bore                    (s1__WIRE__bore)
   );
   CacheStage2 s2 (
     .io_in_valid                    (valid),
@@ -2841,8 +2995,8 @@ module Cache(
     .io_dataWriteBus_req_valid      (_s2_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata),
-    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore),
-    .io_in_valid__bore              (s2_io_in_valid__bore)
+    .io_in_valid__bore              (s2_io_in_valid__bore),
+    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore)
   );
   Arbiter2_SRAMBundleWriteReq dataWriteArb (
     .io_in_0_valid      (_s1_io_dataWriteBus_req_valid),
@@ -2988,746 +3142,10 @@ module SimpleBusCrossBar1toN(
   assign io_out_1_req_bits_cmd = io_in_req_bits_cmd;
 endmodule
 
-module CacheStage1_1(
-  input         clock,
-                reset,
-                io_in_valid,
-  input  [31:0] io_in_bits_addr,
-                io_in_bits_wdata,
-                io_in_bits_wmask,
-  input  [3:0]  io_in_bits_cmd,
-  input         io_mem_req_ready,
-                io_mem_resp_valid,
-  input  [31:0] io_mem_resp_bits_rdata,
-                io_dataReadBus_resp_rdata,
-  input         io_flush,
-  output        io_in_ready,
-                io_mem_req_valid,
-  output [31:0] io_mem_req_bits_addr,
-                io_mem_req_bits_wdata,
-  output [3:0]  io_mem_req_bits_cmd,
-  output        io_out_valid,
-                io_out_bits_is_write,
-  output [8:0]  io_out_bits_waddr,
-  output [3:0]  io_out_bits_wmask,
-  output [31:0] io_out_bits_wdata,
-  output        io_dataReadBus_req_valid,
-  output [8:0]  io_dataReadBus_req_bits_raddr,
-  output        io_dataWriteBus_req_valid,
-  output [8:0]  io_dataWriteBus_req_bits_waddr,
-  output [31:0] io_dataWriteBus_req_bits_wdata,
-  output        _WIRE_1__bore,
-                _WIRE__bore
-);
-
-  reg               replaceWayReg;
-  reg               randomNum;
-  reg  [21:0]       tagArray_0_0;
-  reg  [21:0]       tagArray_0_1;
-  reg  [21:0]       tagArray_0_2;
-  reg  [21:0]       tagArray_0_3;
-  reg  [21:0]       tagArray_0_4;
-  reg  [21:0]       tagArray_0_5;
-  reg  [21:0]       tagArray_0_6;
-  reg  [21:0]       tagArray_0_7;
-  reg  [21:0]       tagArray_0_8;
-  reg  [21:0]       tagArray_0_9;
-  reg  [21:0]       tagArray_0_10;
-  reg  [21:0]       tagArray_0_11;
-  reg  [21:0]       tagArray_0_12;
-  reg  [21:0]       tagArray_0_13;
-  reg  [21:0]       tagArray_0_14;
-  reg  [21:0]       tagArray_0_15;
-  reg  [21:0]       tagArray_1_0;
-  reg  [21:0]       tagArray_1_1;
-  reg  [21:0]       tagArray_1_2;
-  reg  [21:0]       tagArray_1_3;
-  reg  [21:0]       tagArray_1_4;
-  reg  [21:0]       tagArray_1_5;
-  reg  [21:0]       tagArray_1_6;
-  reg  [21:0]       tagArray_1_7;
-  reg  [21:0]       tagArray_1_8;
-  reg  [21:0]       tagArray_1_9;
-  reg  [21:0]       tagArray_1_10;
-  reg  [21:0]       tagArray_1_11;
-  reg  [21:0]       tagArray_1_12;
-  reg  [21:0]       tagArray_1_13;
-  reg  [21:0]       tagArray_1_14;
-  reg  [21:0]       tagArray_1_15;
-  reg               validArray_0_0;
-  reg               validArray_0_1;
-  reg               validArray_0_2;
-  reg               validArray_0_3;
-  reg               validArray_0_4;
-  reg               validArray_0_5;
-  reg               validArray_0_6;
-  reg               validArray_0_7;
-  reg               validArray_0_8;
-  reg               validArray_0_9;
-  reg               validArray_0_10;
-  reg               validArray_0_11;
-  reg               validArray_0_12;
-  reg               validArray_0_13;
-  reg               validArray_0_14;
-  reg               validArray_0_15;
-  reg               validArray_1_0;
-  reg               validArray_1_1;
-  reg               validArray_1_2;
-  reg               validArray_1_3;
-  reg               validArray_1_4;
-  reg               validArray_1_5;
-  reg               validArray_1_6;
-  reg               validArray_1_7;
-  reg               validArray_1_8;
-  reg               validArray_1_9;
-  reg               validArray_1_10;
-  reg               validArray_1_11;
-  reg               validArray_1_12;
-  reg               validArray_1_13;
-  reg               validArray_1_14;
-  reg               validArray_1_15;
-  reg               dirtyArray_0_0;
-  reg               dirtyArray_0_1;
-  reg               dirtyArray_0_2;
-  reg               dirtyArray_0_3;
-  reg               dirtyArray_0_4;
-  reg               dirtyArray_0_5;
-  reg               dirtyArray_0_6;
-  reg               dirtyArray_0_7;
-  reg               dirtyArray_0_8;
-  reg               dirtyArray_0_9;
-  reg               dirtyArray_0_10;
-  reg               dirtyArray_0_11;
-  reg               dirtyArray_0_12;
-  reg               dirtyArray_0_13;
-  reg               dirtyArray_0_14;
-  reg               dirtyArray_0_15;
-  reg               dirtyArray_1_0;
-  reg               dirtyArray_1_1;
-  reg               dirtyArray_1_2;
-  reg               dirtyArray_1_3;
-  reg               dirtyArray_1_4;
-  reg               dirtyArray_1_5;
-  reg               dirtyArray_1_6;
-  reg               dirtyArray_1_7;
-  reg               dirtyArray_1_8;
-  reg               dirtyArray_1_9;
-  reg               dirtyArray_1_10;
-  reg               dirtyArray_1_11;
-  reg               dirtyArray_1_12;
-  reg               dirtyArray_1_13;
-  reg               dirtyArray_1_14;
-  reg               dirtyArray_1_15;
-  wire [15:0][21:0] _GEN =
-    {{tagArray_0_15},
-     {tagArray_0_14},
-     {tagArray_0_13},
-     {tagArray_0_12},
-     {tagArray_0_11},
-     {tagArray_0_10},
-     {tagArray_0_9},
-     {tagArray_0_8},
-     {tagArray_0_7},
-     {tagArray_0_6},
-     {tagArray_0_5},
-     {tagArray_0_4},
-     {tagArray_0_3},
-     {tagArray_0_2},
-     {tagArray_0_1},
-     {tagArray_0_0}};
-  wire [15:0]       _GEN_0 =
-    {{validArray_0_15},
-     {validArray_0_14},
-     {validArray_0_13},
-     {validArray_0_12},
-     {validArray_0_11},
-     {validArray_0_10},
-     {validArray_0_9},
-     {validArray_0_8},
-     {validArray_0_7},
-     {validArray_0_6},
-     {validArray_0_5},
-     {validArray_0_4},
-     {validArray_0_3},
-     {validArray_0_2},
-     {validArray_0_1},
-     {validArray_0_0}};
-  wire [15:0][21:0] _GEN_1 =
-    {{tagArray_1_15},
-     {tagArray_1_14},
-     {tagArray_1_13},
-     {tagArray_1_12},
-     {tagArray_1_11},
-     {tagArray_1_10},
-     {tagArray_1_9},
-     {tagArray_1_8},
-     {tagArray_1_7},
-     {tagArray_1_6},
-     {tagArray_1_5},
-     {tagArray_1_4},
-     {tagArray_1_3},
-     {tagArray_1_2},
-     {tagArray_1_1},
-     {tagArray_1_0}};
-  wire [21:0]       _GEN_2 = _GEN_1[io_in_bits_addr[9:6]];
-  wire [15:0]       _GEN_3 =
-    {{validArray_1_15},
-     {validArray_1_14},
-     {validArray_1_13},
-     {validArray_1_12},
-     {validArray_1_11},
-     {validArray_1_10},
-     {validArray_1_9},
-     {validArray_1_8},
-     {validArray_1_7},
-     {validArray_1_6},
-     {validArray_1_5},
-     {validArray_1_4},
-     {validArray_1_3},
-     {validArray_1_2},
-     {validArray_1_1},
-     {validArray_1_0}};
-  wire              hit =
-    io_in_bits_addr[31:10] == _GEN[io_in_bits_addr[9:6]] & _GEN_0[io_in_bits_addr[9:6]]
-    | io_in_bits_addr[31:10] == _GEN_2 & _GEN_3[io_in_bits_addr[9:6]];
-  wire              wayIdx = _GEN_2 == io_in_bits_addr[31:10];
-  wire [8:0]        hitCacheAddr = {wayIdx, io_in_bits_addr[9:2]};
-  reg  [3:0]        entryOff;
-  reg  [2:0]        stateCache;
-  wire              _io_dataWriteBus_req_valid_T = stateCache == 3'h3;
-  wire [8:0]        writeCacheAddr = {replaceWayReg, io_in_bits_addr[9:6], entryOff};
-  wire              _io_in_ready_output = hit & (~(|stateCache) | stateCache == 3'h5);
-  wire              _io_out_valid_output = hit & io_in_valid;
-  wire              _io_out_bits_is_write_output = io_in_bits_cmd == 4'h2;
-  wire [94:0]       _io_out_bits_wdata_T_1 =
-    {63'h0, io_in_bits_wdata} << {90'h0, io_in_bits_addr[1:0], 3'h0};
-  wire              _io_mem_req_bits_addr_T_7 = stateCache == 3'h2;
-  wire              _io_mem_req_bits_cmd_T_4 = stateCache == 3'h4;
-  wire              _GEN_4 = _io_mem_req_bits_cmd_T_4 | _io_mem_req_bits_addr_T_7;
-  wire              _io_mem_req_bits_addr_T_5 = stateCache == 3'h1;
-  wire              _io_mem_req_valid_output = _GEN_4 | _io_mem_req_bits_addr_T_5;
-  wire [15:0][21:0] _GEN_5 = replaceWayReg ? _GEN_1 : _GEN;
-  wire              _io_mem_resp_ready_T_1 = stateCache == 3'h3;
-  wire              _io_dataWriteBus_req_valid_output =
-    _io_dataWriteBus_req_valid_T & _io_mem_resp_ready_T_1 & io_mem_resp_valid;
-  wire              _GEN_6 = _io_in_ready_output & io_in_valid;
-  wire              _GEN_7 = hit & ~(|stateCache) & io_in_valid;
-  wire              _GEN_8 = _io_dataWriteBus_req_valid_output & entryOff == 4'h0;
-  wire [7:0][2:0]   _GEN_9 =
-    {{stateCache},
-     {stateCache},
-     {{2'h0, ~hit}},
-     {{2'h2, &entryOff}},
-     {(&entryOff) ? 3'h5 : 3'h3},
-     {io_mem_req_ready & _io_mem_req_valid_output ? 3'h4 : 3'h2},
-     {{1'h0, io_mem_req_ready & _io_mem_req_valid_output, 1'h1}},
-     {stateCache}};
-  wire [15:0]       _GEN_10 =
-    randomNum
-      ? {{dirtyArray_1_15},
-         {dirtyArray_1_14},
-         {dirtyArray_1_13},
-         {dirtyArray_1_12},
-         {dirtyArray_1_11},
-         {dirtyArray_1_10},
-         {dirtyArray_1_9},
-         {dirtyArray_1_8},
-         {dirtyArray_1_7},
-         {dirtyArray_1_6},
-         {dirtyArray_1_5},
-         {dirtyArray_1_4},
-         {dirtyArray_1_3},
-         {dirtyArray_1_2},
-         {dirtyArray_1_1},
-         {dirtyArray_1_0}}
-      : {{dirtyArray_0_15},
-         {dirtyArray_0_14},
-         {dirtyArray_0_13},
-         {dirtyArray_0_12},
-         {dirtyArray_0_11},
-         {dirtyArray_0_10},
-         {dirtyArray_0_9},
-         {dirtyArray_0_8},
-         {dirtyArray_0_7},
-         {dirtyArray_0_6},
-         {dirtyArray_0_5},
-         {dirtyArray_0_4},
-         {dirtyArray_0_3},
-         {dirtyArray_0_2},
-         {dirtyArray_0_1},
-         {dirtyArray_0_0}};
-  wire              _GEN_11 = ~hit & io_in_valid;
-  wire              _GEN_12 = io_in_bits_addr[9:6] == 4'h0;
-  wire              _GEN_13 = ~replaceWayReg & _GEN_12;
-  wire              _GEN_14 = io_in_bits_addr[9:6] == 4'h1;
-  wire              _GEN_15 = ~replaceWayReg & _GEN_14;
-  wire              _GEN_16 = io_in_bits_addr[9:6] == 4'h2;
-  wire              _GEN_17 = ~replaceWayReg & _GEN_16;
-  wire              _GEN_18 = io_in_bits_addr[9:6] == 4'h3;
-  wire              _GEN_19 = ~replaceWayReg & _GEN_18;
-  wire              _GEN_20 = io_in_bits_addr[9:6] == 4'h4;
-  wire              _GEN_21 = ~replaceWayReg & _GEN_20;
-  wire              _GEN_22 = io_in_bits_addr[9:6] == 4'h5;
-  wire              _GEN_23 = ~replaceWayReg & _GEN_22;
-  wire              _GEN_24 = io_in_bits_addr[9:6] == 4'h6;
-  wire              _GEN_25 = ~replaceWayReg & _GEN_24;
-  wire              _GEN_26 = io_in_bits_addr[9:6] == 4'h7;
-  wire              _GEN_27 = ~replaceWayReg & _GEN_26;
-  wire              _GEN_28 = io_in_bits_addr[9:6] == 4'h8;
-  wire              _GEN_29 = ~replaceWayReg & _GEN_28;
-  wire              _GEN_30 = io_in_bits_addr[9:6] == 4'h9;
-  wire              _GEN_31 = ~replaceWayReg & _GEN_30;
-  wire              _GEN_32 = io_in_bits_addr[9:6] == 4'hA;
-  wire              _GEN_33 = ~replaceWayReg & _GEN_32;
-  wire              _GEN_34 = io_in_bits_addr[9:6] == 4'hB;
-  wire              _GEN_35 = ~replaceWayReg & _GEN_34;
-  wire              _GEN_36 = io_in_bits_addr[9:6] == 4'hC;
-  wire              _GEN_37 = ~replaceWayReg & _GEN_36;
-  wire              _GEN_38 = io_in_bits_addr[9:6] == 4'hD;
-  wire              _GEN_39 = ~replaceWayReg & _GEN_38;
-  wire              _GEN_40 = io_in_bits_addr[9:6] == 4'hE;
-  wire              _GEN_41 = ~replaceWayReg & _GEN_40;
-  wire              _GEN_42 = ~replaceWayReg & (&(io_in_bits_addr[9:6]));
-  wire              _GEN_43 = replaceWayReg & _GEN_12;
-  wire              _GEN_44 = replaceWayReg & _GEN_14;
-  wire              _GEN_45 = replaceWayReg & _GEN_16;
-  wire              _GEN_46 = replaceWayReg & _GEN_18;
-  wire              _GEN_47 = replaceWayReg & _GEN_20;
-  wire              _GEN_48 = replaceWayReg & _GEN_22;
-  wire              _GEN_49 = replaceWayReg & _GEN_24;
-  wire              _GEN_50 = replaceWayReg & _GEN_26;
-  wire              _GEN_51 = replaceWayReg & _GEN_28;
-  wire              _GEN_52 = replaceWayReg & _GEN_30;
-  wire              _GEN_53 = replaceWayReg & _GEN_32;
-  wire              _GEN_54 = replaceWayReg & _GEN_34;
-  wire              _GEN_55 = replaceWayReg & _GEN_36;
-  wire              _GEN_56 = replaceWayReg & _GEN_38;
-  wire              _GEN_57 = replaceWayReg & _GEN_40;
-  wire              _GEN_58 = replaceWayReg & (&(io_in_bits_addr[9:6]));
-  wire              _GEN_59 = _io_out_valid_output & _io_out_bits_is_write_output;
-  wire              _GEN_60 = _GEN_8 & _GEN_13;
-  wire              _GEN_61 = _GEN_8 & _GEN_15;
-  wire              _GEN_62 = _GEN_8 & _GEN_17;
-  wire              _GEN_63 = _GEN_8 & _GEN_19;
-  wire              _GEN_64 = _GEN_8 & _GEN_21;
-  wire              _GEN_65 = _GEN_8 & _GEN_23;
-  wire              _GEN_66 = _GEN_8 & _GEN_25;
-  wire              _GEN_67 = _GEN_8 & _GEN_27;
-  wire              _GEN_68 = _GEN_8 & _GEN_29;
-  wire              _GEN_69 = _GEN_8 & _GEN_31;
-  wire              _GEN_70 = _GEN_8 & _GEN_33;
-  wire              _GEN_71 = _GEN_8 & _GEN_35;
-  wire              _GEN_72 = _GEN_8 & _GEN_37;
-  wire              _GEN_73 = _GEN_8 & _GEN_39;
-  wire              _GEN_74 = _GEN_8 & _GEN_41;
-  wire              _GEN_75 = _GEN_8 & _GEN_42;
-  wire              _GEN_76 = _GEN_8 & _GEN_43;
-  wire              _GEN_77 = _GEN_8 & _GEN_44;
-  wire              _GEN_78 = _GEN_8 & _GEN_45;
-  wire              _GEN_79 = _GEN_8 & _GEN_46;
-  wire              _GEN_80 = _GEN_8 & _GEN_47;
-  wire              _GEN_81 = _GEN_8 & _GEN_48;
-  wire              _GEN_82 = _GEN_8 & _GEN_49;
-  wire              _GEN_83 = _GEN_8 & _GEN_50;
-  wire              _GEN_84 = _GEN_8 & _GEN_51;
-  wire              _GEN_85 = _GEN_8 & _GEN_52;
-  wire              _GEN_86 = _GEN_8 & _GEN_53;
-  wire              _GEN_87 = _GEN_8 & _GEN_54;
-  wire              _GEN_88 = _GEN_8 & _GEN_55;
-  wire              _GEN_89 = _GEN_8 & _GEN_56;
-  wire              _GEN_90 = _GEN_8 & _GEN_57;
-  wire              _GEN_91 = _GEN_8 & _GEN_58;
-  always @(posedge clock) begin
-    if (reset) begin
-      replaceWayReg <= 1'h0;
-      randomNum <= 1'h0;
-      tagArray_0_0 <= 22'h0;
-      tagArray_0_1 <= 22'h0;
-      tagArray_0_2 <= 22'h0;
-      tagArray_0_3 <= 22'h0;
-      tagArray_0_4 <= 22'h0;
-      tagArray_0_5 <= 22'h0;
-      tagArray_0_6 <= 22'h0;
-      tagArray_0_7 <= 22'h0;
-      tagArray_0_8 <= 22'h0;
-      tagArray_0_9 <= 22'h0;
-      tagArray_0_10 <= 22'h0;
-      tagArray_0_11 <= 22'h0;
-      tagArray_0_12 <= 22'h0;
-      tagArray_0_13 <= 22'h0;
-      tagArray_0_14 <= 22'h0;
-      tagArray_0_15 <= 22'h0;
-      tagArray_1_0 <= 22'h0;
-      tagArray_1_1 <= 22'h0;
-      tagArray_1_2 <= 22'h0;
-      tagArray_1_3 <= 22'h0;
-      tagArray_1_4 <= 22'h0;
-      tagArray_1_5 <= 22'h0;
-      tagArray_1_6 <= 22'h0;
-      tagArray_1_7 <= 22'h0;
-      tagArray_1_8 <= 22'h0;
-      tagArray_1_9 <= 22'h0;
-      tagArray_1_10 <= 22'h0;
-      tagArray_1_11 <= 22'h0;
-      tagArray_1_12 <= 22'h0;
-      tagArray_1_13 <= 22'h0;
-      tagArray_1_14 <= 22'h0;
-      tagArray_1_15 <= 22'h0;
-      validArray_0_0 <= 1'h0;
-      validArray_0_1 <= 1'h0;
-      validArray_0_2 <= 1'h0;
-      validArray_0_3 <= 1'h0;
-      validArray_0_4 <= 1'h0;
-      validArray_0_5 <= 1'h0;
-      validArray_0_6 <= 1'h0;
-      validArray_0_7 <= 1'h0;
-      validArray_0_8 <= 1'h0;
-      validArray_0_9 <= 1'h0;
-      validArray_0_10 <= 1'h0;
-      validArray_0_11 <= 1'h0;
-      validArray_0_12 <= 1'h0;
-      validArray_0_13 <= 1'h0;
-      validArray_0_14 <= 1'h0;
-      validArray_0_15 <= 1'h0;
-      validArray_1_0 <= 1'h0;
-      validArray_1_1 <= 1'h0;
-      validArray_1_2 <= 1'h0;
-      validArray_1_3 <= 1'h0;
-      validArray_1_4 <= 1'h0;
-      validArray_1_5 <= 1'h0;
-      validArray_1_6 <= 1'h0;
-      validArray_1_7 <= 1'h0;
-      validArray_1_8 <= 1'h0;
-      validArray_1_9 <= 1'h0;
-      validArray_1_10 <= 1'h0;
-      validArray_1_11 <= 1'h0;
-      validArray_1_12 <= 1'h0;
-      validArray_1_13 <= 1'h0;
-      validArray_1_14 <= 1'h0;
-      validArray_1_15 <= 1'h0;
-      dirtyArray_0_0 <= 1'h0;
-      dirtyArray_0_1 <= 1'h0;
-      dirtyArray_0_2 <= 1'h0;
-      dirtyArray_0_3 <= 1'h0;
-      dirtyArray_0_4 <= 1'h0;
-      dirtyArray_0_5 <= 1'h0;
-      dirtyArray_0_6 <= 1'h0;
-      dirtyArray_0_7 <= 1'h0;
-      dirtyArray_0_8 <= 1'h0;
-      dirtyArray_0_9 <= 1'h0;
-      dirtyArray_0_10 <= 1'h0;
-      dirtyArray_0_11 <= 1'h0;
-      dirtyArray_0_12 <= 1'h0;
-      dirtyArray_0_13 <= 1'h0;
-      dirtyArray_0_14 <= 1'h0;
-      dirtyArray_0_15 <= 1'h0;
-      dirtyArray_1_0 <= 1'h0;
-      dirtyArray_1_1 <= 1'h0;
-      dirtyArray_1_2 <= 1'h0;
-      dirtyArray_1_3 <= 1'h0;
-      dirtyArray_1_4 <= 1'h0;
-      dirtyArray_1_5 <= 1'h0;
-      dirtyArray_1_6 <= 1'h0;
-      dirtyArray_1_7 <= 1'h0;
-      dirtyArray_1_8 <= 1'h0;
-      dirtyArray_1_9 <= 1'h0;
-      dirtyArray_1_10 <= 1'h0;
-      dirtyArray_1_11 <= 1'h0;
-      dirtyArray_1_12 <= 1'h0;
-      dirtyArray_1_13 <= 1'h0;
-      dirtyArray_1_14 <= 1'h0;
-      dirtyArray_1_15 <= 1'h0;
-      entryOff <= 4'h0;
-      stateCache <= 3'h0;
-    end
-    else begin
-      if (~(|stateCache) & _GEN_11)
-        replaceWayReg <= randomNum;
-      randomNum <= randomNum - 1'h1;
-      if ((&entryOff) & _io_dataWriteBus_req_valid_T) begin
-        if (_GEN_13)
-          tagArray_0_0 <= io_in_bits_addr[31:10];
-        if (_GEN_15)
-          tagArray_0_1 <= io_in_bits_addr[31:10];
-        if (_GEN_17)
-          tagArray_0_2 <= io_in_bits_addr[31:10];
-        if (_GEN_19)
-          tagArray_0_3 <= io_in_bits_addr[31:10];
-        if (_GEN_21)
-          tagArray_0_4 <= io_in_bits_addr[31:10];
-        if (_GEN_23)
-          tagArray_0_5 <= io_in_bits_addr[31:10];
-        if (_GEN_25)
-          tagArray_0_6 <= io_in_bits_addr[31:10];
-        if (_GEN_27)
-          tagArray_0_7 <= io_in_bits_addr[31:10];
-        if (_GEN_29)
-          tagArray_0_8 <= io_in_bits_addr[31:10];
-        if (_GEN_31)
-          tagArray_0_9 <= io_in_bits_addr[31:10];
-        if (_GEN_33)
-          tagArray_0_10 <= io_in_bits_addr[31:10];
-        if (_GEN_35)
-          tagArray_0_11 <= io_in_bits_addr[31:10];
-        if (_GEN_37)
-          tagArray_0_12 <= io_in_bits_addr[31:10];
-        if (_GEN_39)
-          tagArray_0_13 <= io_in_bits_addr[31:10];
-        if (_GEN_41)
-          tagArray_0_14 <= io_in_bits_addr[31:10];
-        if (_GEN_42)
-          tagArray_0_15 <= io_in_bits_addr[31:10];
-        if (_GEN_43)
-          tagArray_1_0 <= io_in_bits_addr[31:10];
-        if (_GEN_44)
-          tagArray_1_1 <= io_in_bits_addr[31:10];
-        if (_GEN_45)
-          tagArray_1_2 <= io_in_bits_addr[31:10];
-        if (_GEN_46)
-          tagArray_1_3 <= io_in_bits_addr[31:10];
-        if (_GEN_47)
-          tagArray_1_4 <= io_in_bits_addr[31:10];
-        if (_GEN_48)
-          tagArray_1_5 <= io_in_bits_addr[31:10];
-        if (_GEN_49)
-          tagArray_1_6 <= io_in_bits_addr[31:10];
-        if (_GEN_50)
-          tagArray_1_7 <= io_in_bits_addr[31:10];
-        if (_GEN_51)
-          tagArray_1_8 <= io_in_bits_addr[31:10];
-        if (_GEN_52)
-          tagArray_1_9 <= io_in_bits_addr[31:10];
-        if (_GEN_53)
-          tagArray_1_10 <= io_in_bits_addr[31:10];
-        if (_GEN_54)
-          tagArray_1_11 <= io_in_bits_addr[31:10];
-        if (_GEN_55)
-          tagArray_1_12 <= io_in_bits_addr[31:10];
-        if (_GEN_56)
-          tagArray_1_13 <= io_in_bits_addr[31:10];
-        if (_GEN_57)
-          tagArray_1_14 <= io_in_bits_addr[31:10];
-        if (_GEN_58)
-          tagArray_1_15 <= io_in_bits_addr[31:10];
-        validArray_0_0 <= _GEN_13 | validArray_0_0;
-        validArray_0_1 <= _GEN_15 | validArray_0_1;
-        validArray_0_2 <= _GEN_17 | validArray_0_2;
-        validArray_0_3 <= _GEN_19 | validArray_0_3;
-        validArray_0_4 <= _GEN_21 | validArray_0_4;
-        validArray_0_5 <= _GEN_23 | validArray_0_5;
-        validArray_0_6 <= _GEN_25 | validArray_0_6;
-        validArray_0_7 <= _GEN_27 | validArray_0_7;
-        validArray_0_8 <= _GEN_29 | validArray_0_8;
-        validArray_0_9 <= _GEN_31 | validArray_0_9;
-        validArray_0_10 <= _GEN_33 | validArray_0_10;
-        validArray_0_11 <= _GEN_35 | validArray_0_11;
-        validArray_0_12 <= _GEN_37 | validArray_0_12;
-        validArray_0_13 <= _GEN_39 | validArray_0_13;
-        validArray_0_14 <= _GEN_41 | validArray_0_14;
-        validArray_0_15 <= _GEN_42 | validArray_0_15;
-        validArray_1_0 <= _GEN_43 | validArray_1_0;
-        validArray_1_1 <= _GEN_44 | validArray_1_1;
-        validArray_1_2 <= _GEN_45 | validArray_1_2;
-        validArray_1_3 <= _GEN_46 | validArray_1_3;
-        validArray_1_4 <= _GEN_47 | validArray_1_4;
-        validArray_1_5 <= _GEN_48 | validArray_1_5;
-        validArray_1_6 <= _GEN_49 | validArray_1_6;
-        validArray_1_7 <= _GEN_50 | validArray_1_7;
-        validArray_1_8 <= _GEN_51 | validArray_1_8;
-        validArray_1_9 <= _GEN_52 | validArray_1_9;
-        validArray_1_10 <= _GEN_53 | validArray_1_10;
-        validArray_1_11 <= _GEN_54 | validArray_1_11;
-        validArray_1_12 <= _GEN_55 | validArray_1_12;
-        validArray_1_13 <= _GEN_56 | validArray_1_13;
-        validArray_1_14 <= _GEN_57 | validArray_1_14;
-        validArray_1_15 <= _GEN_58 | validArray_1_15;
-      end
-      else begin
-        if (_GEN_60)
-          tagArray_0_0 <= 22'h0;
-        if (_GEN_61)
-          tagArray_0_1 <= 22'h0;
-        if (_GEN_62)
-          tagArray_0_2 <= 22'h0;
-        if (_GEN_63)
-          tagArray_0_3 <= 22'h0;
-        if (_GEN_64)
-          tagArray_0_4 <= 22'h0;
-        if (_GEN_65)
-          tagArray_0_5 <= 22'h0;
-        if (_GEN_66)
-          tagArray_0_6 <= 22'h0;
-        if (_GEN_67)
-          tagArray_0_7 <= 22'h0;
-        if (_GEN_68)
-          tagArray_0_8 <= 22'h0;
-        if (_GEN_69)
-          tagArray_0_9 <= 22'h0;
-        if (_GEN_70)
-          tagArray_0_10 <= 22'h0;
-        if (_GEN_71)
-          tagArray_0_11 <= 22'h0;
-        if (_GEN_72)
-          tagArray_0_12 <= 22'h0;
-        if (_GEN_73)
-          tagArray_0_13 <= 22'h0;
-        if (_GEN_74)
-          tagArray_0_14 <= 22'h0;
-        if (_GEN_75)
-          tagArray_0_15 <= 22'h0;
-        if (_GEN_76)
-          tagArray_1_0 <= 22'h0;
-        if (_GEN_77)
-          tagArray_1_1 <= 22'h0;
-        if (_GEN_78)
-          tagArray_1_2 <= 22'h0;
-        if (_GEN_79)
-          tagArray_1_3 <= 22'h0;
-        if (_GEN_80)
-          tagArray_1_4 <= 22'h0;
-        if (_GEN_81)
-          tagArray_1_5 <= 22'h0;
-        if (_GEN_82)
-          tagArray_1_6 <= 22'h0;
-        if (_GEN_83)
-          tagArray_1_7 <= 22'h0;
-        if (_GEN_84)
-          tagArray_1_8 <= 22'h0;
-        if (_GEN_85)
-          tagArray_1_9 <= 22'h0;
-        if (_GEN_86)
-          tagArray_1_10 <= 22'h0;
-        if (_GEN_87)
-          tagArray_1_11 <= 22'h0;
-        if (_GEN_88)
-          tagArray_1_12 <= 22'h0;
-        if (_GEN_89)
-          tagArray_1_13 <= 22'h0;
-        if (_GEN_90)
-          tagArray_1_14 <= 22'h0;
-        if (_GEN_91)
-          tagArray_1_15 <= 22'h0;
-        validArray_0_0 <= ~_GEN_60 & validArray_0_0;
-        validArray_0_1 <= ~_GEN_61 & validArray_0_1;
-        validArray_0_2 <= ~_GEN_62 & validArray_0_2;
-        validArray_0_3 <= ~_GEN_63 & validArray_0_3;
-        validArray_0_4 <= ~_GEN_64 & validArray_0_4;
-        validArray_0_5 <= ~_GEN_65 & validArray_0_5;
-        validArray_0_6 <= ~_GEN_66 & validArray_0_6;
-        validArray_0_7 <= ~_GEN_67 & validArray_0_7;
-        validArray_0_8 <= ~_GEN_68 & validArray_0_8;
-        validArray_0_9 <= ~_GEN_69 & validArray_0_9;
-        validArray_0_10 <= ~_GEN_70 & validArray_0_10;
-        validArray_0_11 <= ~_GEN_71 & validArray_0_11;
-        validArray_0_12 <= ~_GEN_72 & validArray_0_12;
-        validArray_0_13 <= ~_GEN_73 & validArray_0_13;
-        validArray_0_14 <= ~_GEN_74 & validArray_0_14;
-        validArray_0_15 <= ~_GEN_75 & validArray_0_15;
-        validArray_1_0 <= ~_GEN_76 & validArray_1_0;
-        validArray_1_1 <= ~_GEN_77 & validArray_1_1;
-        validArray_1_2 <= ~_GEN_78 & validArray_1_2;
-        validArray_1_3 <= ~_GEN_79 & validArray_1_3;
-        validArray_1_4 <= ~_GEN_80 & validArray_1_4;
-        validArray_1_5 <= ~_GEN_81 & validArray_1_5;
-        validArray_1_6 <= ~_GEN_82 & validArray_1_6;
-        validArray_1_7 <= ~_GEN_83 & validArray_1_7;
-        validArray_1_8 <= ~_GEN_84 & validArray_1_8;
-        validArray_1_9 <= ~_GEN_85 & validArray_1_9;
-        validArray_1_10 <= ~_GEN_86 & validArray_1_10;
-        validArray_1_11 <= ~_GEN_87 & validArray_1_11;
-        validArray_1_12 <= ~_GEN_88 & validArray_1_12;
-        validArray_1_13 <= ~_GEN_89 & validArray_1_13;
-        validArray_1_14 <= ~_GEN_90 & validArray_1_14;
-        validArray_1_15 <= ~_GEN_91 & validArray_1_15;
-      end
-      dirtyArray_0_0 <= _GEN_59 & ~wayIdx & _GEN_12 | dirtyArray_0_0;
-      dirtyArray_0_1 <= _GEN_59 & ~wayIdx & _GEN_14 | dirtyArray_0_1;
-      dirtyArray_0_2 <= _GEN_59 & ~wayIdx & _GEN_16 | dirtyArray_0_2;
-      dirtyArray_0_3 <= _GEN_59 & ~wayIdx & _GEN_18 | dirtyArray_0_3;
-      dirtyArray_0_4 <= _GEN_59 & ~wayIdx & _GEN_20 | dirtyArray_0_4;
-      dirtyArray_0_5 <= _GEN_59 & ~wayIdx & _GEN_22 | dirtyArray_0_5;
-      dirtyArray_0_6 <= _GEN_59 & ~wayIdx & _GEN_24 | dirtyArray_0_6;
-      dirtyArray_0_7 <= _GEN_59 & ~wayIdx & _GEN_26 | dirtyArray_0_7;
-      dirtyArray_0_8 <= _GEN_59 & ~wayIdx & _GEN_28 | dirtyArray_0_8;
-      dirtyArray_0_9 <= _GEN_59 & ~wayIdx & _GEN_30 | dirtyArray_0_9;
-      dirtyArray_0_10 <= _GEN_59 & ~wayIdx & _GEN_32 | dirtyArray_0_10;
-      dirtyArray_0_11 <= _GEN_59 & ~wayIdx & _GEN_34 | dirtyArray_0_11;
-      dirtyArray_0_12 <= _GEN_59 & ~wayIdx & _GEN_36 | dirtyArray_0_12;
-      dirtyArray_0_13 <= _GEN_59 & ~wayIdx & _GEN_38 | dirtyArray_0_13;
-      dirtyArray_0_14 <= _GEN_59 & ~wayIdx & _GEN_40 | dirtyArray_0_14;
-      dirtyArray_0_15 <= _GEN_59 & ~wayIdx & (&(io_in_bits_addr[9:6])) | dirtyArray_0_15;
-      dirtyArray_1_0 <= _GEN_59 & wayIdx & _GEN_12 | dirtyArray_1_0;
-      dirtyArray_1_1 <= _GEN_59 & wayIdx & _GEN_14 | dirtyArray_1_1;
-      dirtyArray_1_2 <= _GEN_59 & wayIdx & _GEN_16 | dirtyArray_1_2;
-      dirtyArray_1_3 <= _GEN_59 & wayIdx & _GEN_18 | dirtyArray_1_3;
-      dirtyArray_1_4 <= _GEN_59 & wayIdx & _GEN_20 | dirtyArray_1_4;
-      dirtyArray_1_5 <= _GEN_59 & wayIdx & _GEN_22 | dirtyArray_1_5;
-      dirtyArray_1_6 <= _GEN_59 & wayIdx & _GEN_24 | dirtyArray_1_6;
-      dirtyArray_1_7 <= _GEN_59 & wayIdx & _GEN_26 | dirtyArray_1_7;
-      dirtyArray_1_8 <= _GEN_59 & wayIdx & _GEN_28 | dirtyArray_1_8;
-      dirtyArray_1_9 <= _GEN_59 & wayIdx & _GEN_30 | dirtyArray_1_9;
-      dirtyArray_1_10 <= _GEN_59 & wayIdx & _GEN_32 | dirtyArray_1_10;
-      dirtyArray_1_11 <= _GEN_59 & wayIdx & _GEN_34 | dirtyArray_1_11;
-      dirtyArray_1_12 <= _GEN_59 & wayIdx & _GEN_36 | dirtyArray_1_12;
-      dirtyArray_1_13 <= _GEN_59 & wayIdx & _GEN_38 | dirtyArray_1_13;
-      dirtyArray_1_14 <= _GEN_59 & wayIdx & _GEN_40 | dirtyArray_1_14;
-      dirtyArray_1_15 <= _GEN_59 & wayIdx & (&(io_in_bits_addr[9:6])) | dirtyArray_1_15;
-      if (io_flush) begin
-        entryOff <= 4'h0;
-        stateCache <= 3'h0;
-      end
-      else if (|stateCache) begin
-        if (stateCache == 3'h1 | stateCache == 3'h2)
-          entryOff <= 4'h0;
-        else if (stateCache == 3'h3) begin
-          if (_io_mem_resp_ready_T_1 & io_mem_resp_valid)
-            entryOff <= entryOff + 4'h1;
-        end
-        else if (stateCache == 3'h4 & io_mem_req_ready & _io_mem_req_valid_output)
-          entryOff <= entryOff + 4'h1;
-        stateCache <= _GEN_9[stateCache];
-      end
-      else if (_GEN_11) begin
-        if (_GEN_10[io_in_bits_addr[9:6]])
-          stateCache <= 3'h2;
-        else
-          stateCache <= 3'h1;
-      end
-      else
-        stateCache <= 3'h0;
-    end
-  end // always @(posedge)
-  assign io_in_ready = _io_in_ready_output;
-  assign io_mem_req_valid = _io_mem_req_valid_output;
-  assign io_mem_req_bits_addr =
-    _io_mem_req_bits_addr_T_7
-      ? {_GEN_5[io_in_bits_addr[9:6]], io_in_bits_addr[9:6], 6'h0}
-      : _io_mem_req_bits_addr_T_5 ? {io_in_bits_addr[31:6], 6'h0} : 32'h0;
-  assign io_mem_req_bits_wdata = io_dataReadBus_resp_rdata;
-  assign io_mem_req_bits_cmd =
-    {1'h0,
-     _io_mem_req_bits_cmd_T_4
-       ? 3'h2
-       : _io_mem_req_bits_addr_T_7 ? 3'h4 : {2'h0, _io_mem_req_bits_addr_T_5}};
-  assign io_out_valid = _io_out_valid_output;
-  assign io_out_bits_is_write = _io_out_bits_is_write_output;
-  assign io_out_bits_waddr = hitCacheAddr;
-  assign io_out_bits_wmask = io_in_bits_wmask[3:0];
-  assign io_out_bits_wdata = _io_out_bits_wdata_T_1[31:0];
-  assign io_dataReadBus_req_valid =
-    io_in_valid & hit | _io_mem_req_bits_cmd_T_4 | _io_mem_req_bits_addr_T_7;
-  assign io_dataReadBus_req_bits_raddr = _GEN_4 ? writeCacheAddr : hitCacheAddr;
-  assign io_dataWriteBus_req_valid = _io_dataWriteBus_req_valid_output;
-  assign io_dataWriteBus_req_bits_waddr = writeCacheAddr;
-  assign io_dataWriteBus_req_bits_wdata = io_mem_resp_bits_rdata;
-  assign _WIRE_1__bore = _GEN_7;
-  assign _WIRE__bore = _GEN_6;
-endmodule
-
 module CacheStage2_1(
   input         io_in_valid,
                 io_in_bits_is_write,
-  input  [8:0]  io_in_bits_waddr,
+  input  [6:0]  io_in_bits_waddr,
   input  [3:0]  io_in_bits_wmask,
   input  [31:0] io_in_bits_wdata,
                 io_dataReadBus_rdata,
@@ -3736,7 +3154,7 @@ module CacheStage2_1(
                 io_out_resp_valid,
   output [31:0] io_out_resp_bits_rdata,
   output        io_dataWriteBus_req_valid,
-  output [8:0]  io_dataWriteBus_req_bits_waddr,
+  output [6:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata
 );
 
@@ -3780,27 +3198,27 @@ module Cache_1(
 );
 
   wire        _dataWriteArb_io_out_valid;
-  wire [8:0]  _dataWriteArb_io_out_bits_waddr;
+  wire [6:0]  _dataWriteArb_io_out_bits_waddr;
   wire [31:0] _dataWriteArb_io_out_bits_wdata;
   wire        _s2_io_in_ready;
   wire        _s2_io_out_resp_valid;
   wire        _s2_io_dataWriteBus_req_valid;
-  wire [8:0]  _s2_io_dataWriteBus_req_bits_waddr;
+  wire [6:0]  _s2_io_dataWriteBus_req_bits_waddr;
   wire [31:0] _s2_io_dataWriteBus_req_bits_wdata;
   wire        _s1_io_out_valid;
   wire        _s1_io_out_bits_is_write;
-  wire [8:0]  _s1_io_out_bits_waddr;
+  wire [6:0]  _s1_io_out_bits_waddr;
   wire [3:0]  _s1_io_out_bits_wmask;
   wire [31:0] _s1_io_out_bits_wdata;
   wire        _s1_io_dataReadBus_req_valid;
-  wire [8:0]  _s1_io_dataReadBus_req_bits_raddr;
+  wire [6:0]  _s1_io_dataReadBus_req_bits_raddr;
   wire        _s1_io_dataWriteBus_req_valid;
-  wire [8:0]  _s1_io_dataWriteBus_req_bits_waddr;
+  wire [6:0]  _s1_io_dataWriteBus_req_bits_waddr;
   wire [31:0] _s1_io_dataWriteBus_req_bits_wdata;
   wire [31:0] _dataArray_io_r_resp_rdata;
   reg         valid;
   reg         s2_io_in_bits_r_is_write;
-  reg  [8:0]  s2_io_in_bits_r_waddr;
+  reg  [6:0]  s2_io_in_bits_r_waddr;
   reg  [3:0]  s2_io_in_bits_r_wmask;
   reg  [31:0] s2_io_in_bits_r_wdata;
   wire        _s2_io_in_bits_T_1 = _s1_io_out_valid & _s2_io_in_ready;
@@ -3814,7 +3232,7 @@ module Cache_1(
     if (_s2_io_in_bits_T_1 | io_flush) begin
       s2_io_in_bits_r_is_write <= ~io_flush & _s1_io_out_bits_is_write;
       if (io_flush) begin
-        s2_io_in_bits_r_waddr <= 9'h0;
+        s2_io_in_bits_r_waddr <= 7'h0;
         s2_io_in_bits_r_wmask <= 4'h0;
         s2_io_in_bits_r_wdata <= 32'h0;
       end
@@ -3835,7 +3253,7 @@ module Cache_1(
     .io_w_req_bits_wdata (_dataWriteArb_io_out_bits_wdata),
     .io_r_resp_rdata     (_dataArray_io_r_resp_rdata)
   );
-  CacheStage1_1 s1 (
+  CacheStage1 s1 (
     .clock                          (clock),
     .reset                          (reset),
     .io_in_valid                    (io_in_req_valid),
@@ -3854,6 +3272,7 @@ module Cache_1(
     .io_mem_req_bits_wdata          (io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd            (io_mem_req_bits_cmd),
     .io_out_valid                   (_s1_io_out_valid),
+    .io_out_bits_addr               (/* unused */),
     .io_out_bits_is_write           (_s1_io_out_bits_is_write),
     .io_out_bits_waddr              (_s1_io_out_bits_waddr),
     .io_out_bits_wmask              (_s1_io_out_bits_wmask),
@@ -3919,13 +3338,13 @@ endmodule
 module perfCnt(
   input clock,
         reset,
-        perCntCond_2__bore,
-        perCntCond_1__bore,
         perCntCond_5__bore,
         ebreak__bore,
         perCntCond_0__bore,
+        perCntCond_1__bore,
         perCntCond_3__bore,
-        perCntCond_4__bore
+        perCntCond_4__bore,
+        perCntCond_2__bore
 );
 
   reg [31:0] perfCnts_0;
@@ -4091,10 +3510,10 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_wdata;
   wire [3:0]  _icache_io_mem_req_bits_cmd;
   wire [31:0] _icache_io_stage2Addr;
-  wire        _icache_s1__WIRE__bore;
-  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _icache_s2_io_in_valid__bore;
   wire        _icache_s1__WIRE_1__bore;
+  wire        _icache_s1__WIRE__bore;
+  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -4107,8 +3526,8 @@ module top(
   wire [31:0] _IFU_i_to_mem_req_bits_addr;
   wire        _IFU_i_to_mem_resp_ready;
   wire [31:0] _IFU_i_fetch_PC;
-  wire        _IFU_i_BPU_i_io_in_redirect_valid__bore;
   wire        _IFU_i_BPU_i_io_in_pc_valid__bore;
+  wire        _IFU_i_BPU_i_io_in_redirect_valid__bore;
   wire        _WBU_i_to_ISU_valid;
   wire        _WBU_i_to_ISU_bits_reg_wen;
   wire [31:0] _WBU_i_to_ISU_bits_wdata;
@@ -4574,8 +3993,8 @@ module top(
     .to_mem_req_bits_addr             (_IFU_i_to_mem_req_bits_addr),
     .to_mem_resp_ready                (_IFU_i_to_mem_resp_ready),
     .fetch_PC                         (_IFU_i_fetch_PC),
-    .BPU_i_io_in_redirect_valid__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore),
-    .BPU_i_io_in_pc_valid__bore       (_IFU_i_BPU_i_io_in_pc_valid__bore)
+    .BPU_i_io_in_pc_valid__bore       (_IFU_i_BPU_i_io_in_pc_valid__bore),
+    .BPU_i_io_in_redirect_valid__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore)
   );
   AXI4RAM ram_i (
     .clock            (clock),
@@ -4610,10 +4029,10 @@ module top(
     .io_mem_req_bits_wdata    (_icache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd      (_icache_io_mem_req_bits_cmd),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s1__WIRE__bore           (_icache_s1__WIRE__bore),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
     .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
-    .s1__WIRE_1__bore         (_icache_s1__WIRE_1__bore)
+    .s1__WIRE_1__bore         (_icache_s1__WIRE_1__bore),
+    .s1__WIRE__bore           (_icache_s1__WIRE__bore),
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
@@ -4733,13 +4152,13 @@ module top(
   perfCnt PerfCnt_i (
     .clock              (clock),
     .reset              (reset),
-    .perCntCond_2__bore (_icache_s1__WIRE__bore),
-    .perCntCond_1__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore),
     .perCntCond_5__bore (_dcache_s1__WIRE_1__bore),
     .ebreak__bore       (_WBU_i_ebreak_moudle_i_valid__bore),
     .perCntCond_0__bore (_IFU_i_BPU_i_io_in_pc_valid__bore),
+    .perCntCond_1__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore),
     .perCntCond_3__bore (_icache_s1__WIRE_1__bore),
-    .perCntCond_4__bore (_dcache_s1__WIRE__bore)
+    .perCntCond_4__bore (_dcache_s1__WIRE__bore),
+    .perCntCond_2__bore (_icache_s1__WIRE__bore)
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
