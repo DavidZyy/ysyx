@@ -1812,8 +1812,8 @@ module BPU(
                 io_in_missPC,
   output        io_out_valid,
   output [31:0] io_out_target,
-  output        io_in_redirect_valid__bore,
-                io_in_pc_valid__bore
+  output        io_in_pc_valid__bore,
+                io_in_redirect_valid__bore
 );
 
   wire [64:0] _btb_io_r_resp_rdata;
@@ -1836,8 +1836,8 @@ module BPU(
     _btb_io_r_resp_rdata[64] & _btb_io_r_resp_rdata[63:32] == pcLatch
     & ~io_in_redirect_valid;
   assign io_out_target = _btb_io_r_resp_rdata[31:0];
-  assign io_in_redirect_valid__bore = io_in_redirect_valid;
   assign io_in_pc_valid__bore = io_in_pc_valid;
+  assign io_in_redirect_valid__bore = io_in_redirect_valid;
 endmodule
 
 module IFU_pipeline(
@@ -1858,8 +1858,8 @@ module IFU_pipeline(
   output [31:0] to_mem_req_bits_addr,
   output        to_mem_resp_ready,
   output [31:0] fetch_PC,
-  output        BPU_i_io_in_redirect_valid__bore,
-                BPU_i_io_in_pc_valid__bore
+  output        BPU_i_io_in_pc_valid__bore,
+                BPU_i_io_in_redirect_valid__bore
 );
 
   wire        _BPU_i_io_out_valid;
@@ -1892,8 +1892,8 @@ module IFU_pipeline(
     .io_in_missPC               (from_WBU_bits_pc),
     .io_out_valid               (_BPU_i_io_out_valid),
     .io_out_target              (_BPU_i_io_out_target),
-    .io_in_redirect_valid__bore (BPU_i_io_in_redirect_valid__bore),
-    .io_in_pc_valid__bore       (BPU_i_io_in_pc_valid__bore)
+    .io_in_pc_valid__bore       (BPU_i_io_in_pc_valid__bore),
+    .io_in_redirect_valid__bore (BPU_i_io_in_redirect_valid__bore)
   );
   assign to_IDU_valid = to_mem_resp_valid;
   assign to_IDU_bits_inst = to_mem_resp_bits_rdata;
@@ -2882,10 +2882,10 @@ module Cache(
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
   output [31:0] io_stage2Addr,
-                s2_io_in_bits_addr__bore,
-  output        s2_io_in_valid__bore,
-                s1__WIRE_1__bore,
-                s1__WIRE__bore
+  output        s1__WIRE_1__bore,
+  output [31:0] s2_io_in_bits_addr__bore,
+  output        s1__WIRE__bore,
+                s2_io_in_valid__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -3339,13 +3339,14 @@ endmodule
 module perfCnt(
   input clock,
         reset,
-        perCntCond_5__bore,
-        perCntCond_1__bore,
+        ebreak__bore,
         perCntCond_3__bore,
-        perCntCond_4__bore,
-        perCntCond_2__bore,
         perCntCond_0__bore,
-        ebreak__bore
+        perCntCond_2__bore,
+        perCntCond_5__bore,
+        perCntCond_6__bore,
+        perCntCond_4__bore,
+        perCntCond_1__bore
 );
 
   reg [31:0] perfCnts_0;
@@ -3354,6 +3355,7 @@ module perfCnt(
   reg [31:0] perfCnts_3;
   reg [31:0] perfCnts_4;
   reg [31:0] perfCnts_5;
+  reg [31:0] perfCnts_6;
   reg [31:0] c;
   reg [31:0] c_1;
   reg [31:0] c_2;
@@ -3363,6 +3365,7 @@ module perfCnt(
   reg [31:0] c_6;
   reg [31:0] c_7;
   reg [31:0] c_8;
+  reg [31:0] c_9;
   `ifndef SYNTHESIS
     always @(posedge clock) begin
       if ((`PRINTF_COND_) & ebreak__bore & ~reset) begin
@@ -3379,12 +3382,14 @@ module perfCnt(
         $fwrite(32'h80000002, "[%d]: ", c_5);
         $fwrite(32'h80000002, "dcacheMiss: %d\n", perfCnts_5);
         $fwrite(32'h80000002, "[%d]: ", c_6);
+        $fwrite(32'h80000002, "nrLSU: %d\n", perfCnts_6);
+        $fwrite(32'h80000002, "[%d]: ", c_7);
         $fwrite(32'h80000002, "BPU accuracy: %d%%\n",
                 {7'h0, perfCnts_0 - perfCnts_1} * 39'h64 / {7'h0, perfCnts_0});
-        $fwrite(32'h80000002, "[%d]: ", c_7);
+        $fwrite(32'h80000002, "[%d]: ", c_8);
         $fwrite(32'h80000002, "icache accuracy: %d%%\n",
                 {7'h0, perfCnts_2 - perfCnts_3} * 39'h64 / {7'h0, perfCnts_2});
-        $fwrite(32'h80000002, "[%d]: ", c_8);
+        $fwrite(32'h80000002, "[%d]: ", c_9);
         $fwrite(32'h80000002, "dcache accuracy: %d%%\n",
                 {7'h0, perfCnts_4 - perfCnts_5} * 39'h64 / {7'h0, perfCnts_4});
       end
@@ -3398,6 +3403,7 @@ module perfCnt(
       perfCnts_3 <= 32'h0;
       perfCnts_4 <= 32'h0;
       perfCnts_5 <= 32'h0;
+      perfCnts_6 <= 32'h0;
       c <= 32'h4;
       c_1 <= 32'h4;
       c_2 <= 32'h4;
@@ -3407,6 +3413,7 @@ module perfCnt(
       c_6 <= 32'h4;
       c_7 <= 32'h4;
       c_8 <= 32'h4;
+      c_9 <= 32'h4;
     end
     else begin
       if (perCntCond_0__bore)
@@ -3421,6 +3428,8 @@ module perfCnt(
         perfCnts_4 <= perfCnts_4 + 32'h1;
       if (perCntCond_5__bore)
         perfCnts_5 <= perfCnts_5 + 32'h1;
+      if (perCntCond_6__bore)
+        perfCnts_6 <= perfCnts_6 + 32'h1;
       c <= c + 32'h2;
       c_1 <= c_1 + 32'h2;
       c_2 <= c_2 + 32'h2;
@@ -3430,6 +3439,7 @@ module perfCnt(
       c_6 <= c_6 + 32'h2;
       c_7 <= c_7 + 32'h2;
       c_8 <= c_8 + 32'h2;
+      c_9 <= c_9 + 32'h2;
     end
   end // always @(posedge)
 endmodule
@@ -3511,10 +3521,10 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_wdata;
   wire [3:0]  _icache_io_mem_req_bits_cmd;
   wire [31:0] _icache_io_stage2Addr;
-  wire [31:0] _icache_s2_io_in_bits_addr__bore;
-  wire        _icache_s2_io_in_valid__bore;
   wire        _icache_s1__WIRE_1__bore;
+  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _icache_s1__WIRE__bore;
+  wire        _icache_s2_io_in_valid__bore;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
@@ -3527,8 +3537,8 @@ module top(
   wire [31:0] _IFU_i_to_mem_req_bits_addr;
   wire        _IFU_i_to_mem_resp_ready;
   wire [31:0] _IFU_i_fetch_PC;
-  wire        _IFU_i_BPU_i_io_in_redirect_valid__bore;
   wire        _IFU_i_BPU_i_io_in_pc_valid__bore;
+  wire        _IFU_i_BPU_i_io_in_redirect_valid__bore;
   wire        _WBU_i_to_ISU_valid;
   wire        _WBU_i_to_ISU_bits_reg_wen;
   wire [31:0] _WBU_i_to_ISU_bits_wdata;
@@ -3607,6 +3617,7 @@ module top(
   reg         valid;
   reg  [31:0] IDU_i_from_IFU_bits_r_inst;
   reg  [31:0] IDU_i_from_IFU_bits_r_pc;
+  wire        _GEN = _EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid;
   reg         valid_1;
   reg  [31:0] ISU_i_from_IDU_bits_r_imm;
   reg  [31:0] ISU_i_from_IDU_bits_r_pc;
@@ -3660,6 +3671,7 @@ module top(
   reg         WBU_i_from_EXU_bits_r_not_impl;
   reg         WBU_i_from_EXU_bits_r_is_mmio;
   reg  [31:0] WBU_i_from_EXU_bits_r_inst;
+  wire        _GEN_0 = _GEN & _ISU_i_to_EXU_bits_ctrl_sig_fu_op == 3'h4;
   wire        _IDU_i_from_IFU_bits_T_1 = _IFU_i_to_IDU_valid & _IDU_i_from_IFU_ready;
   wire        _ISU_i_from_IDU_bits_T_1 = _IDU_i_to_ISU_valid & _ISU_i_from_IDU_ready;
   wire        _EXU_i_from_ISU_bits_T_1 = _ISU_i_to_EXU_valid & _EXU_i_from_ISU_ready;
@@ -3676,9 +3688,7 @@ module top(
         & (_IDU_i_from_IFU_bits_T_1 | ~(_ISU_i_from_IDU_ready & _IDU_i_to_ISU_valid)
            & valid);
       valid_1 <=
-        ~_WBU_i_to_IFU_bits_redirect_valid
-        & (_ISU_i_from_IDU_bits_T_1 | ~(_EXU_i_from_ISU_ready & _ISU_i_to_EXU_valid)
-           & valid_1);
+        ~_WBU_i_to_IFU_bits_redirect_valid & (_ISU_i_from_IDU_bits_T_1 | ~_GEN & valid_1);
       valid_2 <=
         ~_WBU_i_to_IFU_bits_redirect_valid
         & (_EXU_i_from_ISU_bits_T_1 | ~_EXU_i_to_WBU_valid & valid_2);
@@ -3994,8 +4004,8 @@ module top(
     .to_mem_req_bits_addr             (_IFU_i_to_mem_req_bits_addr),
     .to_mem_resp_ready                (_IFU_i_to_mem_resp_ready),
     .fetch_PC                         (_IFU_i_fetch_PC),
-    .BPU_i_io_in_redirect_valid__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore),
-    .BPU_i_io_in_pc_valid__bore       (_IFU_i_BPU_i_io_in_pc_valid__bore)
+    .BPU_i_io_in_pc_valid__bore       (_IFU_i_BPU_i_io_in_pc_valid__bore),
+    .BPU_i_io_in_redirect_valid__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore)
   );
   AXI4RAM ram_i (
     .clock            (clock),
@@ -4030,10 +4040,10 @@ module top(
     .io_mem_req_bits_wdata    (_icache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd      (_icache_io_mem_req_bits_cmd),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
     .s1__WIRE_1__bore         (_icache_s1__WIRE_1__bore),
-    .s1__WIRE__bore           (_icache_s1__WIRE__bore)
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
+    .s1__WIRE__bore           (_icache_s1__WIRE__bore),
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
@@ -4153,13 +4163,14 @@ module top(
   perfCnt PerfCnt_i (
     .clock              (clock),
     .reset              (reset),
-    .perCntCond_5__bore (_dcache_s1__WIRE_1__bore),
-    .perCntCond_1__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore),
+    .ebreak__bore       (_WBU_i_ebreak_moudle_i_valid__bore),
     .perCntCond_3__bore (_icache_s1__WIRE_1__bore),
-    .perCntCond_4__bore (_dcache_s1__WIRE__bore),
-    .perCntCond_2__bore (_icache_s1__WIRE__bore),
     .perCntCond_0__bore (_IFU_i_BPU_i_io_in_pc_valid__bore),
-    .ebreak__bore       (_WBU_i_ebreak_moudle_i_valid__bore)
+    .perCntCond_2__bore (_icache_s1__WIRE__bore),
+    .perCntCond_5__bore (_dcache_s1__WIRE_1__bore),
+    .perCntCond_6__bore (_GEN_0),
+    .perCntCond_4__bore (_dcache_s1__WIRE__bore),
+    .perCntCond_1__bore (_IFU_i_BPU_i_io_in_redirect_valid__bore)
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
