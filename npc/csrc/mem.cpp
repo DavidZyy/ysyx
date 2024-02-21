@@ -53,6 +53,7 @@ extern uint32_t vgactl_port_base[2];
 #include<sys/time.h>
 extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
   // Assert(!(raddr & align_mask), "%s addr: " FMT_WORD" not align to 4 byte!, at pc: " FMT_WORD " instruction is: " FMT_WORD, __func__, raddr, top->io_out_ifu_fetchPc, top->io_out_ifu_inst);
+  dd
 
   raddr = raddr & ~align_mask;
   if (raddr == 0 && top->io_out_ifu_fetchPc == 0) {
