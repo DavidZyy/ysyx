@@ -1560,8 +1560,8 @@ module EXU_pipeline(
   output        lsu_to_mem_resp_ready,
   output [4:0]  to_ISU_hazard_rd,
   output        to_ISU_hazard_have_wb,
-  output [31:0] _WIRE__bore,
-                _WIRE_1__bore
+  output [31:0] _WIRE_1__bore,
+                _WIRE__bore
 );
 
   wire        _Csr_i_io_out_csr_br;
@@ -1657,8 +1657,8 @@ module EXU_pipeline(
   assign to_WBU_bits_inst = from_ISU_bits_inst;
   assign to_ISU_hazard_rd = from_ISU_bits_rd;
   assign to_ISU_hazard_have_wb = ~from_ISU_valid;
-  assign _WIRE__bore = _GEN;
   assign _WIRE_1__bore = _GEN_0;
+  assign _WIRE__bore = _GEN;
 endmodule
 
 // external module EbreakBB
@@ -1903,17 +1903,17 @@ endmodule
 module AXI4RAM(
   input         clock,
                 reset,
-                axi_ar_valid,
-  input  [31:0] axi_ar_bits_addr,
-  input         axi_aw_valid,
+                axi_aw_valid,
   input  [31:0] axi_aw_bits_addr,
   input         axi_w_valid,
   input  [31:0] axi_w_bits_data,
-  output        axi_ar_ready,
-                axi_r_valid,
-  output [31:0] axi_r_bits_data,
+  input         axi_ar_valid,
+  input  [31:0] axi_ar_bits_addr,
   output        axi_aw_ready,
-                axi_w_ready
+                axi_w_ready,
+                axi_ar_ready,
+                axi_r_valid,
+  output [31:0] axi_r_bits_data
 );
 
   reg  [3:0]       delay;
@@ -1921,14 +1921,14 @@ module AXI4RAM(
   reg  [31:0]      reg_addr;
   reg  [1:0]       reg_burst;
   reg  [2:0]       state_sram;
-  wire             _axi_aw_ready_output = state_sram == 3'h0;
+  wire             _axi_ar_ready_output = state_sram == 3'h0;
   wire             _axi_w_ready_T_2 = state_sram == 3'h6;
   wire             _axi_r_valid_T_1 = state_sram == 3'h2;
   wire             _axi_r_valid_T_2 = state_sram == 3'h3;
   wire             _axi_w_ready_output =
     (&state_sram) | _axi_w_ready_T_2 | state_sram == 3'h5;
-  wire             _GEN = _axi_aw_ready_output & axi_ar_valid;
-  wire             _GEN_0 = _axi_aw_ready_output & axi_aw_valid;
+  wire             _GEN = _axi_ar_ready_output & axi_ar_valid;
+  wire             _GEN_0 = _axi_ar_ready_output & axi_aw_valid;
   wire             _GEN_1 = _GEN | _GEN_0;
   wire             _GEN_2 = delay == 4'h0;
   wire             _GEN_3 = state_sram == 3'h3;
@@ -1976,7 +1976,7 @@ module AXI4RAM(
       state_sram <= 3'h0;
     end
     else begin
-      if (_axi_aw_ready_output)
+      if (_axi_ar_ready_output)
         delay <= 4'hA;
       else if (state_sram == 3'h1)
         delay <= delay - 4'h1;
@@ -1986,7 +1986,7 @@ module AXI4RAM(
         delay <= delay - 4'h1;
       reg_AxLen <= _GEN_9[state_sram];
       reg_addr <= _GEN_10[state_sram];
-      if (_axi_aw_ready_output & _GEN_1)
+      if (_axi_ar_ready_output & _GEN_1)
         reg_burst <= 2'h1;
       state_sram <= _GEN_11[state_sram];
     end
@@ -2000,10 +2000,10 @@ module AXI4RAM(
     .wmask   (4'hF),
     .rdata   (axi_r_bits_data)
   );
-  assign axi_ar_ready = _axi_aw_ready_output;
-  assign axi_r_valid = _axi_r_valid_T_2 | _axi_r_valid_T_1;
-  assign axi_aw_ready = _axi_aw_ready_output;
+  assign axi_aw_ready = _axi_ar_ready_output;
   assign axi_w_ready = _axi_w_ready_output;
+  assign axi_ar_ready = _axi_ar_ready_output;
+  assign axi_r_valid = _axi_r_valid_T_2 | _axi_r_valid_T_1;
 endmodule
 
 // VCS coverage exclude_file
@@ -3000,20 +3000,20 @@ module SimpleBus2AXI4Converter(
   input  [31:0] io_in_req_bits_addr,
                 io_in_req_bits_wdata,
   input  [3:0]  io_in_req_bits_cmd,
-  input         io_out_ar_ready,
-                io_out_r_valid,
-  input  [31:0] io_out_r_bits_data,
   input         io_out_aw_ready,
                 io_out_w_ready,
+                io_out_ar_ready,
+                io_out_r_valid,
+  input  [31:0] io_out_r_bits_data,
   output        io_in_req_ready,
                 io_in_resp_valid,
   output [31:0] io_in_resp_bits_rdata,
-  output        io_out_ar_valid,
-  output [31:0] io_out_ar_bits_addr,
   output        io_out_aw_valid,
   output [31:0] io_out_aw_bits_addr,
   output        io_out_w_valid,
-  output [31:0] io_out_w_bits_data
+  output [31:0] io_out_w_bits_data,
+  output        io_out_ar_valid,
+  output [31:0] io_out_ar_bits_addr
 );
 
   assign io_in_req_ready =
@@ -3024,12 +3024,12 @@ module SimpleBus2AXI4Converter(
           : io_in_req_bits_cmd == 4'h1 & io_out_ar_ready;
   assign io_in_resp_valid = io_out_r_valid;
   assign io_in_resp_bits_rdata = io_out_r_bits_data;
-  assign io_out_ar_valid = io_in_req_valid & io_in_req_bits_cmd == 4'h1;
-  assign io_out_ar_bits_addr = io_in_req_bits_addr;
   assign io_out_aw_valid = io_in_req_valid & io_in_req_bits_cmd == 4'h4;
   assign io_out_aw_bits_addr = io_in_req_bits_addr;
   assign io_out_w_valid = io_in_req_valid & io_in_req_bits_cmd == 4'h2;
   assign io_out_w_bits_data = io_in_req_bits_wdata;
+  assign io_out_ar_valid = io_in_req_valid & io_in_req_bits_cmd == 4'h1;
+  assign io_out_ar_bits_addr = io_in_req_bits_addr;
 endmodule
 
 module SimpleBusCrossBar1toN(
@@ -3333,8 +3333,8 @@ module CLINT(
                 reset,
                 io_in_req_valid,
   input  [31:0] io_in_req_bits_addr,
-                EXUPC__bore,
                 EXUInst__bore,
+                EXUPC__bore,
   output [31:0] io_in_resp_bits_rdata
 );
 
@@ -3389,12 +3389,12 @@ module top(
   wire        _bridge_1_io_in_req_ready;
   wire        _bridge_1_io_in_resp_valid;
   wire [31:0] _bridge_1_io_in_resp_bits_rdata;
-  wire        _bridge_1_io_out_ar_valid;
-  wire [31:0] _bridge_1_io_out_ar_bits_addr;
   wire        _bridge_1_io_out_aw_valid;
   wire [31:0] _bridge_1_io_out_aw_bits_addr;
   wire        _bridge_1_io_out_w_valid;
   wire [31:0] _bridge_1_io_out_w_bits_data;
+  wire        _bridge_1_io_out_ar_valid;
+  wire [31:0] _bridge_1_io_out_ar_bits_addr;
   wire [31:0] _clint_io_in_resp_bits_rdata;
   wire [31:0] _mmio_from_lsu_resp_bits_rdata;
   wire        _dcache_io_in_req_ready;
@@ -3419,20 +3419,20 @@ module top(
   wire [31:0] _memXbar_io_out_2_req_bits_wdata;
   wire [31:0] _memXbar_io_out_2_req_bits_wmask;
   wire [3:0]  _memXbar_io_out_2_req_bits_cmd;
+  wire        _ram_i2_axi_aw_ready;
+  wire        _ram_i2_axi_w_ready;
   wire        _ram_i2_axi_ar_ready;
   wire        _ram_i2_axi_r_valid;
   wire [31:0] _ram_i2_axi_r_bits_data;
-  wire        _ram_i2_axi_aw_ready;
-  wire        _ram_i2_axi_w_ready;
   wire        _bridge_io_in_req_ready;
   wire        _bridge_io_in_resp_valid;
   wire [31:0] _bridge_io_in_resp_bits_rdata;
-  wire        _bridge_io_out_ar_valid;
-  wire [31:0] _bridge_io_out_ar_bits_addr;
   wire        _bridge_io_out_aw_valid;
   wire [31:0] _bridge_io_out_aw_bits_addr;
   wire        _bridge_io_out_w_valid;
   wire [31:0] _bridge_io_out_w_bits_data;
+  wire        _bridge_io_out_ar_valid;
+  wire [31:0] _bridge_io_out_ar_bits_addr;
   wire        _icache_io_in_req_ready;
   wire        _icache_io_in_resp_valid;
   wire [31:0] _icache_io_in_resp_bits_rdata;
@@ -3443,11 +3443,11 @@ module top(
   wire [31:0] _icache_io_stage2Addr;
   wire        _icache_s2_io_in_valid__bore;
   wire [31:0] _icache_s2_io_in_bits_addr__bore;
+  wire        _ram_i_axi_aw_ready;
+  wire        _ram_i_axi_w_ready;
   wire        _ram_i_axi_ar_ready;
   wire        _ram_i_axi_r_valid;
   wire [31:0] _ram_i_axi_r_bits_data;
-  wire        _ram_i_axi_aw_ready;
-  wire        _ram_i_axi_w_ready;
   wire        _IFU_i_to_IDU_valid;
   wire [31:0] _IFU_i_to_IDU_bits_inst;
   wire [31:0] _IFU_i_to_IDU_bits_pc;
@@ -3489,8 +3489,8 @@ module top(
   wire        _EXU_i_lsu_to_mem_resp_ready;
   wire [4:0]  _EXU_i_to_ISU_hazard_rd;
   wire        _EXU_i_to_ISU_hazard_have_wb;
-  wire [31:0] _EXU_i__WIRE__bore;
   wire [31:0] _EXU_i__WIRE_1__bore;
+  wire [31:0] _EXU_i__WIRE__bore;
   wire        _ISU_i_from_IDU_ready;
   wire        _ISU_i_to_EXU_valid;
   wire [31:0] _ISU_i_to_EXU_bits_imm;
@@ -3873,8 +3873,8 @@ module top(
     .lsu_to_mem_resp_ready            (_EXU_i_lsu_to_mem_resp_ready),
     .to_ISU_hazard_rd                 (_EXU_i_to_ISU_hazard_rd),
     .to_ISU_hazard_have_wb            (_EXU_i_to_ISU_hazard_have_wb),
-    ._WIRE__bore                      (_EXU_i__WIRE__bore),
-    ._WIRE_1__bore                    (_EXU_i__WIRE_1__bore)
+    ._WIRE_1__bore                    (_EXU_i__WIRE_1__bore),
+    ._WIRE__bore                      (_EXU_i__WIRE__bore)
   );
   WBU WBU_i (
     .clock                         (clock),
@@ -3926,17 +3926,17 @@ module top(
   AXI4RAM ram_i (
     .clock            (clock),
     .reset            (reset),
-    .axi_ar_valid     (_bridge_io_out_ar_valid),
-    .axi_ar_bits_addr (_bridge_io_out_ar_bits_addr),
     .axi_aw_valid     (_bridge_io_out_aw_valid),
     .axi_aw_bits_addr (_bridge_io_out_aw_bits_addr),
     .axi_w_valid      (_bridge_io_out_w_valid),
     .axi_w_bits_data  (_bridge_io_out_w_bits_data),
+    .axi_ar_valid     (_bridge_io_out_ar_valid),
+    .axi_ar_bits_addr (_bridge_io_out_ar_bits_addr),
+    .axi_aw_ready     (_ram_i_axi_aw_ready),
+    .axi_w_ready      (_ram_i_axi_w_ready),
     .axi_ar_ready     (_ram_i_axi_ar_ready),
     .axi_r_valid      (_ram_i_axi_r_valid),
-    .axi_r_bits_data  (_ram_i_axi_r_bits_data),
-    .axi_aw_ready     (_ram_i_axi_aw_ready),
-    .axi_w_ready      (_ram_i_axi_w_ready)
+    .axi_r_bits_data  (_ram_i_axi_r_bits_data)
   );
   Cache icache (
     .clock                    (clock),
@@ -3964,35 +3964,35 @@ module top(
     .io_in_req_bits_addr   (_icache_io_mem_req_bits_addr),
     .io_in_req_bits_wdata  (_icache_io_mem_req_bits_wdata),
     .io_in_req_bits_cmd    (_icache_io_mem_req_bits_cmd),
+    .io_out_aw_ready       (_ram_i_axi_aw_ready),
+    .io_out_w_ready        (_ram_i_axi_w_ready),
     .io_out_ar_ready       (_ram_i_axi_ar_ready),
     .io_out_r_valid        (_ram_i_axi_r_valid),
     .io_out_r_bits_data    (_ram_i_axi_r_bits_data),
-    .io_out_aw_ready       (_ram_i_axi_aw_ready),
-    .io_out_w_ready        (_ram_i_axi_w_ready),
     .io_in_req_ready       (_bridge_io_in_req_ready),
     .io_in_resp_valid      (_bridge_io_in_resp_valid),
     .io_in_resp_bits_rdata (_bridge_io_in_resp_bits_rdata),
-    .io_out_ar_valid       (_bridge_io_out_ar_valid),
-    .io_out_ar_bits_addr   (_bridge_io_out_ar_bits_addr),
     .io_out_aw_valid       (_bridge_io_out_aw_valid),
     .io_out_aw_bits_addr   (_bridge_io_out_aw_bits_addr),
     .io_out_w_valid        (_bridge_io_out_w_valid),
-    .io_out_w_bits_data    (_bridge_io_out_w_bits_data)
+    .io_out_w_bits_data    (_bridge_io_out_w_bits_data),
+    .io_out_ar_valid       (_bridge_io_out_ar_valid),
+    .io_out_ar_bits_addr   (_bridge_io_out_ar_bits_addr)
   );
   AXI4RAM ram_i2 (
     .clock            (clock),
     .reset            (reset),
-    .axi_ar_valid     (_bridge_1_io_out_ar_valid),
-    .axi_ar_bits_addr (_bridge_1_io_out_ar_bits_addr),
     .axi_aw_valid     (_bridge_1_io_out_aw_valid),
     .axi_aw_bits_addr (_bridge_1_io_out_aw_bits_addr),
     .axi_w_valid      (_bridge_1_io_out_w_valid),
     .axi_w_bits_data  (_bridge_1_io_out_w_bits_data),
+    .axi_ar_valid     (_bridge_1_io_out_ar_valid),
+    .axi_ar_bits_addr (_bridge_1_io_out_ar_bits_addr),
+    .axi_aw_ready     (_ram_i2_axi_aw_ready),
+    .axi_w_ready      (_ram_i2_axi_w_ready),
     .axi_ar_ready     (_ram_i2_axi_ar_ready),
     .axi_r_valid      (_ram_i2_axi_r_valid),
-    .axi_r_bits_data  (_ram_i2_axi_r_bits_data),
-    .axi_aw_ready     (_ram_i2_axi_aw_ready),
-    .axi_w_ready      (_ram_i2_axi_w_ready)
+    .axi_r_bits_data  (_ram_i2_axi_r_bits_data)
   );
   SimpleBusCrossBar1toN memXbar (
     .clock                    (clock),
@@ -4060,8 +4060,8 @@ module top(
     .reset                 (reset),
     .io_in_req_valid       (_memXbar_io_out_1_req_valid),
     .io_in_req_bits_addr   (_memXbar_io_out_1_req_bits_addr),
-    .EXUPC__bore           (_EXU_i__WIRE__bore),
     .EXUInst__bore         (_EXU_i__WIRE_1__bore),
+    .EXUPC__bore           (_EXU_i__WIRE__bore),
     .io_in_resp_bits_rdata (_clint_io_in_resp_bits_rdata)
   );
   SimpleBus2AXI4Converter bridge_1 (
@@ -4069,20 +4069,20 @@ module top(
     .io_in_req_bits_addr   (_dcache_io_mem_req_bits_addr),
     .io_in_req_bits_wdata  (_dcache_io_mem_req_bits_wdata),
     .io_in_req_bits_cmd    (_dcache_io_mem_req_bits_cmd),
+    .io_out_aw_ready       (_ram_i2_axi_aw_ready),
+    .io_out_w_ready        (_ram_i2_axi_w_ready),
     .io_out_ar_ready       (_ram_i2_axi_ar_ready),
     .io_out_r_valid        (_ram_i2_axi_r_valid),
     .io_out_r_bits_data    (_ram_i2_axi_r_bits_data),
-    .io_out_aw_ready       (_ram_i2_axi_aw_ready),
-    .io_out_w_ready        (_ram_i2_axi_w_ready),
     .io_in_req_ready       (_bridge_1_io_in_req_ready),
     .io_in_resp_valid      (_bridge_1_io_in_resp_valid),
     .io_in_resp_bits_rdata (_bridge_1_io_in_resp_bits_rdata),
-    .io_out_ar_valid       (_bridge_1_io_out_ar_valid),
-    .io_out_ar_bits_addr   (_bridge_1_io_out_ar_bits_addr),
     .io_out_aw_valid       (_bridge_1_io_out_aw_valid),
     .io_out_aw_bits_addr   (_bridge_1_io_out_aw_bits_addr),
     .io_out_w_valid        (_bridge_1_io_out_w_valid),
-    .io_out_w_bits_data    (_bridge_1_io_out_w_bits_data)
+    .io_out_w_bits_data    (_bridge_1_io_out_w_bits_data),
+    .io_out_ar_valid       (_bridge_1_io_out_ar_valid),
+    .io_out_ar_bits_addr   (_bridge_1_io_out_ar_bits_addr)
   );
   assign io_out_ifu_fetchPc = _IFU_i_fetch_PC;
   assign io_out_nextExecPC =
