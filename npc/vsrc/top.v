@@ -1559,8 +1559,8 @@ module EXU_pipeline(
   output        lsu_to_mem_resp_ready,
   output [4:0]  to_ISU_hazard_rd,
   output        to_ISU_hazard_have_wb,
-  output [31:0] _WIRE__bore,
-                _WIRE_1__bore
+  output [31:0] _WIRE_1__bore,
+                _WIRE__bore
 );
 
   wire        _Csr_i_io_out_csr_br;
@@ -1656,8 +1656,8 @@ module EXU_pipeline(
   assign to_WBU_bits_inst = from_ISU_bits_inst;
   assign to_ISU_hazard_rd = from_ISU_bits_rd;
   assign to_ISU_hazard_have_wb = ~from_ISU_valid;
-  assign _WIRE__bore = _GEN;
   assign _WIRE_1__bore = _GEN_0;
+  assign _WIRE__bore = _GEN;
 endmodule
 
 // external module EbreakBB
@@ -2810,8 +2810,8 @@ module CacheStage2(
   output        io_dataWriteBus_req_valid,
   output [6:0]  io_dataWriteBus_req_bits_waddr,
   output [31:0] io_dataWriteBus_req_bits_wdata,
-                io_in_bits_addr__bore,
-  output        io_in_valid__bore
+  output        io_in_valid__bore,
+  output [31:0] io_in_bits_addr__bore
 );
 
   wire [31:0] _io_dataWriteBus_req_bits_wdata_T_12 =
@@ -2828,8 +2828,8 @@ module CacheStage2(
   assign io_dataWriteBus_req_bits_wdata =
     io_in_bits_wdata & _io_dataWriteBus_req_bits_wdata_T_12 | io_dataReadBus_rdata
     & ~_io_dataWriteBus_req_bits_wdata_T_12;
-  assign io_in_bits_addr__bore = io_in_bits_addr;
   assign io_in_valid__bore = io_in_valid;
+  assign io_in_bits_addr__bore = io_in_bits_addr;
 endmodule
 
 module Arbiter2_SRAMBundleWriteReq(
@@ -2867,8 +2867,8 @@ module Cache(
                 io_mem_req_bits_wdata,
   output [3:0]  io_mem_req_bits_cmd,
   output [31:0] io_stage2Addr,
-                s2_io_in_bits_addr__bore,
-  output        s2_io_in_valid__bore
+  output        s2_io_in_valid__bore,
+  output [31:0] s2_io_in_bits_addr__bore
 );
 
   wire        _dataWriteArb_io_out_valid;
@@ -2977,8 +2977,8 @@ module Cache(
     .io_dataWriteBus_req_valid      (_s2_io_dataWriteBus_req_valid),
     .io_dataWriteBus_req_bits_waddr (_s2_io_dataWriteBus_req_bits_waddr),
     .io_dataWriteBus_req_bits_wdata (_s2_io_dataWriteBus_req_bits_wdata),
-    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore),
-    .io_in_valid__bore              (s2_io_in_valid__bore)
+    .io_in_valid__bore              (s2_io_in_valid__bore),
+    .io_in_bits_addr__bore          (s2_io_in_bits_addr__bore)
   );
   Arbiter2_SRAMBundleWriteReq dataWriteArb (
     .io_in_0_valid      (_s1_io_dataWriteBus_req_valid),
@@ -3335,8 +3335,8 @@ module AXI4CLINT(
                 reset,
                 io_in_ar_valid,
   input  [31:0] io_in_ar_bits_addr,
-                EXUPC__bore,
                 EXUInst__bore,
+                EXUPC__bore,
   output [31:0] io_in_r_bits_data
 );
 
@@ -3466,8 +3466,8 @@ module top(
   wire [31:0] _icache_io_mem_req_bits_wdata;
   wire [3:0]  _icache_io_mem_req_bits_cmd;
   wire [31:0] _icache_io_stage2Addr;
-  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _icache_s2_io_in_valid__bore;
+  wire [31:0] _icache_s2_io_in_bits_addr__bore;
   wire        _ram_i_axi_aw_ready;
   wire        _ram_i_axi_w_ready;
   wire        _ram_i_axi_ar_ready;
@@ -3514,8 +3514,8 @@ module top(
   wire        _EXU_i_lsu_to_mem_resp_ready;
   wire [4:0]  _EXU_i_to_ISU_hazard_rd;
   wire        _EXU_i_to_ISU_hazard_have_wb;
-  wire [31:0] _EXU_i__WIRE__bore;
   wire [31:0] _EXU_i__WIRE_1__bore;
+  wire [31:0] _EXU_i__WIRE__bore;
   wire        _ISU_i_from_IDU_ready;
   wire        _ISU_i_to_EXU_valid;
   wire [31:0] _ISU_i_to_EXU_bits_imm;
@@ -3898,8 +3898,8 @@ module top(
     .lsu_to_mem_resp_ready            (_EXU_i_lsu_to_mem_resp_ready),
     .to_ISU_hazard_rd                 (_EXU_i_to_ISU_hazard_rd),
     .to_ISU_hazard_have_wb            (_EXU_i_to_ISU_hazard_have_wb),
-    ._WIRE__bore                      (_EXU_i__WIRE__bore),
-    ._WIRE_1__bore                    (_EXU_i__WIRE_1__bore)
+    ._WIRE_1__bore                    (_EXU_i__WIRE_1__bore),
+    ._WIRE__bore                      (_EXU_i__WIRE__bore)
   );
   WBU WBU_i (
     .clock                         (clock),
@@ -3981,8 +3981,8 @@ module top(
     .io_mem_req_bits_wdata    (_icache_io_mem_req_bits_wdata),
     .io_mem_req_bits_cmd      (_icache_io_mem_req_bits_cmd),
     .io_stage2Addr            (_icache_io_stage2Addr),
-    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore),
-    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore)
+    .s2_io_in_valid__bore     (_icache_s2_io_in_valid__bore),
+    .s2_io_in_bits_addr__bore (_icache_s2_io_in_bits_addr__bore)
   );
   SimpleBus2AXI4Converter bridge (
     .io_in_req_valid       (_icache_io_mem_req_valid),
@@ -4087,8 +4087,8 @@ module top(
     .reset              (reset),
     .io_in_ar_valid     (_bridge_1_io_out_ar_valid),
     .io_in_ar_bits_addr (_bridge_1_io_out_ar_bits_addr),
-    .EXUPC__bore        (_EXU_i__WIRE__bore),
     .EXUInst__bore      (_EXU_i__WIRE_1__bore),
+    .EXUPC__bore        (_EXU_i__WIRE__bore),
     .io_in_r_bits_data  (_clint_io_in_r_bits_data)
   );
   SimpleBus2AXI4Converter_1 bridge_1 (
