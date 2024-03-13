@@ -59,14 +59,12 @@ extern "C" void pmem_read(sword_t raddr, sword_t *rdata) {
     // not ready for inst fetch
     return;
   } else if (raddr == RTC_ADDR+4) {
-    // struct timeval now;
-    // gettimeofday(&now, NULL);
-    // us = now.tv_sec * 1000000 + now.tv_usec;
-    // *rdata = (uint32_t)(us>>32);
-    assert(0);
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    us = now.tv_sec * 1000000 + now.tv_usec;
+    *rdata = (uint32_t)(us>>32);
   } else if (raddr == RTC_ADDR) {
-    // *rdata = (uint32_t)us;
-    assert(0);
+    *rdata = (uint32_t)us;
   } else if (raddr == SERIAL_PORT) {
     // write dev, not read
   } else if (raddr == VGACTL_ADDR) {
