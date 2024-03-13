@@ -88,5 +88,8 @@
     "coremark.h": "c"
   },
   "digital-ide.dont-show-again.propose.issue": true,
-  "digital-ide.welcome.show": false
+  "digital-ide.welcome.show": false,
+  "files.watcherExclude": {
+    "**/target": true
+  }
 }
